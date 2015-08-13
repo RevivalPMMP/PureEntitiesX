@@ -1,0 +1,13 @@
+#name, main, version and api are required
+name: EntityManager
+main: plugin\EntityManager
+version: "2.2"
+api: 1.12.0
+load: POSTWORLD
+author: 우유맛비누
+commands:
+ entitymanager:
+  usage: false
+  description: ""
+  aliases: [ent, entity]
+  permission: entitymanager.command
