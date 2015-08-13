@@ -1,23 +1,25 @@
 <?php
 
-namespace plugin\Entity;
+namespace milk\entitymanager\entity;
 
+use pocketmine\entity\Colorable;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 
-class Chicken extends Animal{
-    const NETWORK_ID = 10;
+class Sheep extends Animal implements Colorable{
+    const NETWORK_ID = 13;
 
-    public $width = 0.4;
-    public $height = 0.75;
+    public $width = 1.6;
+    public $length = 0.8;
+    public $height = 1.12;
 
     public function getName(){
-        return "닭";
+        return "양";
     }
 
     public function initEntity(){
-        $this->setMaxHealth(4);
+        $this->setMaxHealth(8);
         if(isset($this->namedtag->Health)){
             $this->setHealth((int) $this->namedtag["Health"]);
         }else{
@@ -32,21 +34,10 @@ class Chicken extends Animal{
     }
 
     public function getDrops(){
-        $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            switch(mt_rand(0, 2)){
-                case 0 :
-                    $drops[] = Item::get(Item::RAW_CHICKEN, 0, 1);
-                    break;
-                case 1 :
-                    $drops[] = Item::get(Item::EGG, 0, 1);
-                    break;
-                case 2 :
-                    $drops[] = Item::get(Item::FEATHER, 0, 1);
-                    break;
-            }
+            return [Item::get(Item::WOOL, mt_rand(0, 15), 1)];
         }
-        return $drops;
+        return [];
     }
 
 }

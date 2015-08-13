@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\Entity;
+namespace milk\entitymanager\entity;
 
 use pocketmine\entity\Entity;
 use pocketmine\entity\Explosive;

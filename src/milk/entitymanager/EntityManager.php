@@ -1,22 +1,22 @@
 <?php
 
-namespace plugin;
+namespace milk\entitymanager;
 
-use plugin\Entity\Animal;
-use plugin\Entity\Chicken;
-use plugin\Entity\Cow;
-use plugin\Entity\Pig;
-use plugin\Entity\Sheep;
-use plugin\Entity\BaseEntity;
-use plugin\Entity\Creeper;
-use plugin\Entity\Enderman;
-use plugin\Entity\Monster;
-use plugin\Entity\PigZombie;
-use plugin\Entity\Skeleton;
-use plugin\Entity\Spider;
-use plugin\Entity\Zombie;
-use plugin\Task\SpawnEntityTask;
-use plugin\Task\UpdateEntityTask;
+use milk\entitymanager\entity\Animal;
+use milk\entitymanager\entity\Chicken;
+use milk\entitymanager\entity\Cow;
+use milk\entitymanager\entity\Pig;
+use milk\entitymanager\entity\Sheep;
+use milk\entitymanager\entity\BaseEntity;
+use milk\entitymanager\entity\Creeper;
+use milk\entitymanager\entity\Enderman;
+use milk\entitymanager\entity\Monster;
+use milk\entitymanager\entity\PigZombie;
+use milk\entitymanager\entity\Skeleton;
+use milk\entitymanager\entity\Spider;
+use milk\entitymanager\entity\Zombie;
+use milk\entitymanager\task\SpawnEntityTask;
+use milk\entitymanager\task\UpdateEntityTask;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;

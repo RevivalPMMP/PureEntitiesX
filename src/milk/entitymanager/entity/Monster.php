@@ -1,6 +1,6 @@
 <?php
 
-namespace plugin\Entity;
+namespace milk\entitymanager\entity;
 
 use pocketmine\block\Water;
 use pocketmine\entity\Effect;

@@ -1,21 +1,19 @@
 <?php
 
-namespace plugin\Entity;
+namespace milk\entitymanager\entity;
 
-use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 
-class Pig extends Animal implements Rideable{
-    const NETWORK_ID = 12;
+class Cow extends Animal{
+    const NETWORK_ID = 11;
 
     public $width = 1.6;
-    public $length = 0.8;
     public $height = 1.12;
 
     public function getName(){
-        return "돼지";
+        return "소";
     }
 
     public function initEntity(){
@@ -30,14 +28,21 @@ class Pig extends Animal implements Rideable{
     }
 
     public function targetOption(Player $player, $distance){
-        return $player->spawned && $player->isAlive() && !$player->closed && $player->getInventory()->getItemInHand()->getId() == Item::CARROT && $distance <= 49;
+        return $player->spawned && $player->isAlive() && !$player->closed && $player->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
     }
 
     public function getDrops(){
+        $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [Item::get(Item::RAW_PORKCHOP, 0, 1)];
+            switch(mt_rand(0, 1)){
+                case 0 :
+                    $drops[] = Item::get(Item::RAW_BEEF, 0, 1);
+                    break;
+                case 1 :
+                    $drops[] = Item::get(Item::LEATHER, 0, 1);
+                    break;
+            }
         }
-        return [];
+        return $drops;
     }
-
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace plugin\Task;
+namespace milk\entitymanager\task;
 
-use plugin\EntityManager;
+use milk\entitymanager\EntityManager;
 use pocketmine\scheduler\PluginTask;
 
 class UpdateEntityTask extends PluginTask{

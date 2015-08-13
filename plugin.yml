@@ -1,6 +1,6 @@
 #name, main, version and api are required
 name: EntityManager
-main: plugin\EntityManager
+main: milk\entitymanager\EntityManager
 version: "2.2"
 api: 1.12.0
 load: POSTWORLD
