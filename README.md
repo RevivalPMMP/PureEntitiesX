@@ -29,6 +29,7 @@ createEntity($type, $pos). See documentation page for details.
   * PigZombie
     * public bool isAngry() #r u angry?
     * public void setAngry(int $angry) #set how angry he is.  
+  
 ### Commands
   * /entitymanager
     * usage: /entitymanager (check|remove|spawn)
@@ -45,6 +46,7 @@ createEntity($type, $pos). See documentation page for details.
     * usage: /entitymanager spawn (type) (x="") (y="") (z="") (Level="")
     * permission: entitymanager.command.spawn
     * description: literally(If blank, it is set as a Player  
+  
 ### YAML Data
   * drops.yml
     * TODO
