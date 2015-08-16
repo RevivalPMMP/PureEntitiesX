@@ -15,10 +15,10 @@ class SpawnEntityTask extends PluginTask{
         $owner = $this->owner;
         if(count(EntityManager::getEntities()) >= $owner->getData("entity.maximum")) return;
         $rand = explode("/", $owner->getData("spawn.rand"));
-        foreach(EntityManager::$spawnerData as $key => $data){
+        foreach(EntityManager::$spawn as $key => $data){
             if(mt_rand(...$rand) > $rand[0]) continue;
             if(count($data["mob-list"]) === 0){
-                unset(EntityManager::$spawnerData[$key]);
+                unset(EntityManager::$spawn[$key]);
                 continue;
             }
             $radius = (int) $data["radius"];
