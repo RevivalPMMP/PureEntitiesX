@@ -27,12 +27,12 @@ class Enderman extends Monster{
     }
 
     public function getName(){
-        return "엔더맨";
+        return "Enderman";
     }
 
     public function attackEntity(Entity $player){
-        if($this->attackDelay > 20 && $this->distanceSquared($player) < 1){
-            $this->attackDelay = 20;
+        if($this->attackDelay > 10 && $this->distanceSquared($player) < 1){
+            $this->attackDelay = 0;
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
         }

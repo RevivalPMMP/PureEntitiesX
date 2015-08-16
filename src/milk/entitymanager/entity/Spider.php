@@ -27,12 +27,12 @@ class Spider extends Monster{
     }
 
     public function getName(){
-        return "거미";
+        return "Spider";
     }
 
     public function attackEntity(Entity $player){
-        if($this->attackDelay > 20 && $this->distanceSquared($player) < 1.32){
-            $this->attackDelay = 20;
+        if($this->attackDelay > 10 && $this->distanceSquared($player) < 1.32){
+            $this->attackDelay = 0;
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
         }

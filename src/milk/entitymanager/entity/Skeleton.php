@@ -32,11 +32,11 @@ class Skeleton extends Monster implements ProjectileSource{
     }
 
     public function getName(){
-        return "스켈레톤";
+        return "Skeleton";
     }
 
     public function attackEntity(Entity $player){
-        if($this->attackDelay > 20 && mt_rand(1, 12) < 3 && $this->distanceSquared($player) <= 40){
+        if($this->attackDelay > 25 && mt_rand(1, 12) < 3 && $this->distanceSquared($player) <= 40){
             $this->attackDelay = 0;
         
             $f = 1.5;
