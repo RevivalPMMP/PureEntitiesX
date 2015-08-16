@@ -115,7 +115,7 @@ class EntityManager extends PluginBase implements Listener{
             self::$spawnerData = yaml_parse($this->yaml($path . "spawner.yml"));
         }else{
             self::$spawnerData = [];
-            file_put_contents($path . "SpawnerData.yml", yaml_emit([], YAML_UTF8_ENCODING));
+            file_put_contents($path . "spawner.yml", yaml_emit([], YAML_UTF8_ENCODING));
         }
 
         if(file_exists($path. "drops.yml")){
