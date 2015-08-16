@@ -24,29 +24,29 @@ EntityManager also has simple API for developers, such as clearEntity($type, $le
 * PigZombie Method
   * public bool isAngry() #r u angry?
   * public void setAngry(int $angry) #set how angry he is.
-
+  
 * Commands:
   * /entitymanager:
-    * usage: /entitymanager <check|remove|spawn>
+    * usage: /entitymanager (check|remove|spawn)
     * permission: entitymanager.command
   * /entitymanager check:
     * usage: /entitymanager check
     * permission: entitymanager.command.check
     * description: Check the number of entities
   * /entitymanager remove:
-    * usage: /entitymanager remove <Level="">
+    * usage: /entitymanager remove (Level="")
     * permission: entitymanager.command.remove
     * description: Remove all entities in Level(If blank, it is set as a default Level)
   * /entitymanager spawn:
-    * usage: /entitymanager spawn <type> <x=""> <y=""> <z=""> <Level="">
+    * usage: /entitymanager spawn (type) (x="") (y="") (z="") (Level="")
     * permission: entitymanager.command.spawn
     * description: literally(If blank, it is set as a Player)
 
 ### Method Examples
 ``` php
 /** @var BaseEntity $entity */
-if(!$entity->isMovement()){
-    $entity->setMovement(true);
+if(!$entity-)isMovement()){
+    $entity-)setMovement(true);
 }
 EntityManager::clearEntity([BaseEntity::class, Projectile::class, Item::class]);
 ```

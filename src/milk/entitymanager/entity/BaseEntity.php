@@ -124,9 +124,7 @@ abstract class BaseEntity extends Creature{
         if($this->attacker instanceof Entity) return;
         if($this->attackTime > 0 or $this->noDamageTicks > 0){
             $lastCause = $this->getLastDamageCause();
-            if($lastCause !== null and $lastCause->getDamage() >= $damage){
-                $source->setCancelled();
-            }
+            if($lastCause !== null and $lastCause->getDamage() >= $damage) $source->setCancelled();
         }
 
         Entity::attack($damage, $source);
