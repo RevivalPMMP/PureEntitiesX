@@ -2,11 +2,15 @@
 
 Author: **[@milk0417](https://github.com/milk0417)**  
 
-**[NOTICE] This plugin is NOT perfect at all. It can cause your server crash, or something bad else :P**
+**[NOTICE] This plugin is NOT perfect at all.  
+It can cause your server crash, or something bad else :P**
   
-EntityManager is a plugin for managing entities, literally. Most entities and mobs are moving around, and jumps if needed.
+EntityManager is a plugin for managing entities, literally.  
+Most entities and mobs are moving around, and jumps if needed.
 
-EntityManager also has simple API for developers, such as clearEntity($type, $level) (Clears all entities with given type.), createEntity($type, $pos). See documentation page for details.
+EntityManager also has simple API for developers,  
+such as clearEntity($type, $level) (Clears all entities with given type.),  
+createEntity($type, $pos). See documentation page for details.
 
 ### Method
   * EntityManager
@@ -24,7 +28,7 @@ EntityManager also has simple API for developers, such as clearEntity($type, $le
     * public void setDamage(int $damage, int $difficulty = null) #set monster's damage with given difficulty.
   * PigZombie
     * public bool isAngry() #r u angry?
-    * public void setAngry(int $angry) #set how angry he is.
+    * public void setAngry(int $angry) #set how angry he is.  
 ### Commands
   * /entitymanager
     * usage: /entitymanager (check|remove|spawn)
@@ -40,7 +44,7 @@ EntityManager also has simple API for developers, such as clearEntity($type, $le
   * /entitymanager spawn:
     * usage: /entitymanager spawn (type) (x="") (y="") (z="") (Level="")
     * permission: entitymanager.command.spawn
-    * description: literally(If blank, it is set as a Player)
+    * description: literally(If blank, it is set as a Player  
 ### YAML Data
   * drops.yml
     * TODO
