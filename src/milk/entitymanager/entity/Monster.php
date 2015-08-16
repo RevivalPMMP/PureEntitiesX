@@ -12,9 +12,11 @@ use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
 
-abstract class Monster extends BaseEntity{
+abstract class Monster extends WalkEntity{
 
     private $damage = [];
+
+    protected $attackDelay = 0;
 
     public abstract function attackEntity(Entity $player);
 
@@ -56,15 +58,13 @@ abstract class Monster extends BaseEntity{
             return;
         }
 
-        if(!$this->knockBackCheck()){
-            --$this->moveTime;
-            $this->updateTarget();
-            $target = $this->updateMove();
-            if($target instanceof Entity){
-                $this->attackEntity($target);
-            }elseif($target instanceof Vector3){
-                if((($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1) $this->moveTime = 0;
-            }
+        --$this->moveTime;
+        ++$this->attackDelay;
+        $target = $this->updateMove();
+        if($target instanceof Entity){
+            $this->attackEntity($target);
+        }elseif($target instanceof Vector3){
+            if((($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1) $this->moveTime = 0;
         }
         $this->entityBaseTick();
     }

@@ -2,15 +2,12 @@
 
 namespace milk\entitymanager\entity;
 
-use pocketmine\block\Block;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Timings;
 use pocketmine\level\Level;
-use pocketmine\level\Position;
-use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\Byte;
 use pocketmine\network\Network;
@@ -31,7 +28,9 @@ abstract class BaseEntity extends Creature{
 
     protected $created = false;
 
+    /** @var Vector3|Entity */
     protected $baseTarget = null;
+    /** @var Vector3|Entity */
     protected $mainTarget = null;
 
     protected $attacker = null;
@@ -45,12 +44,8 @@ abstract class BaseEntity extends Creature{
 
     public abstract function updateTick();
 
-    /**
-     * @param Player $player
-     * @param float $distance
-     *
-     * @return bool
-     */
+    public abstract function updateMove();
+
     public abstract function targetOption(Player $player, $distance);
 
     public function getSaveId(){
@@ -86,7 +81,7 @@ abstract class BaseEntity extends Creature{
         if(isset($this->namedtag->Movement)){
             $this->setMovement($this->namedtag["Movement"]);
         }
-        $this->setDataProperty(self::DATA_NO_AI, self::DATA_TYPE_BYTE, 1);
+        $this->dataProperties[self::DATA_NO_AI] = [self::DATA_TYPE_BYTE, 1];
         Entity::initEntity();
     }
 
@@ -124,139 +119,6 @@ abstract class BaseEntity extends Creature{
         $this->lastPitch = $this->pitch;
 
         $this->level->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $this->x, $this->y, $this->z, $this->yaw, $this->pitch);
-    }
-
-    public function updateTarget(){
-        $nearDistance = PHP_INT_MAX;
-        foreach($this->getViewers() as $player){
-            if(($distance = $this->distanceSquared($player)) > $nearDistance || !$this->targetOption($player, $distance)) continue;
-            $nearDistance = $distance;
-            $this->baseTarget = $player;
-        }
-
-        if($this->baseTarget instanceof Player){
-            $x = $this->baseTarget->x - $this->x;
-            $y = $this->baseTarget->y - $this->y;
-            $z = $this->baseTarget->z - $this->z;
-            if($x ** 2 + $z ** 2 < 0.8){
-                $this->motionX = 0;
-                $this->motionZ = 0;
-            }else{
-                $diff = abs($x) + abs($z);
-                $this->motionX = $this->speed * 0.14 * ($x / $diff);
-                $this->motionZ = $this->speed * 0.14 * ($z / $diff);
-            }
-            $this->yaw = rad2deg(atan2($z, $x) - M_PI_2);
-            $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
-            return;
-        }
-        if($this->stayTime > 0){
-            if(mt_rand(1, 125) > 4) return;
-            $x = mt_rand(25, 80);
-            $z = mt_rand(25, 80);
-            $this->baseTarget = $this->add(mt_rand(0, 1) ? $x : -$x, mt_rand(-20, 20) / 10, mt_rand(0, 1) ? $z : -$z);
-
-            $x = $this->baseTarget->x - $this->x;
-            $y = $this->baseTarget->y - $this->y;
-            $z = $this->baseTarget->z - $this->z;
-            $this->motionX = 0;
-            $this->motionZ = 0;
-            $this->yaw = rad2deg(atan2($z, $x) - M_PI_2);
-            $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
-        }elseif(mt_rand(1, 420) == 1){
-            $this->stayTime = mt_rand(95, 420);
-            $x = mt_rand(25, 80);
-            $z = mt_rand(25, 80);
-            $this->baseTarget = $this->add(mt_rand(0, 1) ? $x : -$x, mt_rand(-20, 20) / 10, mt_rand(0, 1) ? $z : -$z);
-
-            $x = $this->baseTarget->x - $this->x;
-            $y = $this->baseTarget->y - $this->y;
-            $z = $this->baseTarget->z - $this->z;
-            $this->motionX = 0;
-            $this->motionZ = 0;
-            $this->yaw = rad2deg(atan2($z, $x) - M_PI_2);
-            $this->pitch = rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
-        }elseif($this->moveTime <= 0 or !$this->baseTarget instanceof Vector3){
-            $this->moveTime = mt_rand(100, 1000);
-            $x = mt_rand(25, 80);
-            $z = mt_rand(25, 80);
-            $this->baseTarget = $this->add(mt_rand(0, 1) ? $x : -$x, 0, mt_rand(0, 1) ? $z : -$z);
-
-            $x = $this->baseTarget->x - $this->x;
-            $y = $this->baseTarget->y - $this->y;
-            $z = $this->baseTarget->z - $this->z;
-
-            $diff = abs($x) + abs($z);
-            $this->motionX = $this->speed * 0.14 * ($x / $diff);
-            $this->motionZ = $this->speed * 0.14 * ($z / $diff);
-            $this->yaw = rad2deg(atan2($z, $x) - M_PI_2);
-            $this->pitch = rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
-        }
-    }
-
-    public function updateMove(){
-        if(!$this->isMovement()) return null;
-        /** @var Vector3 $target */
-        $target = $this->mainTarget != null ? $this->mainTarget : $this->baseTarget;
-        if($this->stayTime > 0){
-            --$this->stayTime;
-        }else{
-            $isJump = false;
-            $dx = $this->motionX;
-            $dy = $this->motionY;
-            $dz = $this->motionZ;
-
-            $bb = $this->boundingBox;
-            $maxX = Math::ceilFloat($bb->maxX + $dx);
-            $maxY = Math::ceilFloat($bb->maxY + $dy);
-            $maxZ = Math::ceilFloat($bb->maxZ + $dz);
-            $minX = Math::floorFloat($bb->minX + $dx);
-            $minY = Math::floorFloat($bb->minY + $dy);
-            $minZ = Math::floorFloat($bb->minZ + $dz);
-
-            $v = new Position(0, 0, 0, $this->level);
-            for($v->z = $minZ; $v->z <= $maxZ; ++$v->z){
-                for($v->x = $minX; $v->x <= $maxX; ++$v->x){
-                    for($v->y = $minY; $v->y <= $maxY; ++$v->y){
-                        $chunk = $this->level->getChunk($v->x >> 4, $v->z >> 4, true);
-                        if(!$chunk->isLoaded()) $chunk->load();
-                        if(!$chunk->isGenerated()) $chunk->setGenerated();
-                        if(!$chunk->isPopulated()) $chunk->setPopulated();
-                        $t = Block::get($chunk->getBlockId($v->x & 0x0f, $v->y, $v->z & 0x0f), $chunk->getBlockData($v->x & 0x0f, $v->y, $v->z & 0x0f), $v);
-                        if(!$t->canPassThrough() & $t->getBoundingBox() != null){
-                            if(
-                                $dy == 0
-                                && $this->boundingBox->minY < $bb->maxY
-                                && $this->boundingBox->minY >= $bb->minY
-                                && (($this->x - $t->x) ** 2 + ($this->z - $t->z) ** 2) <= 2
-                            ){
-                                $up = $t->getSide(Vector3::SIDE_UP)->getBoundingBox();
-                                if($up == null && ($height = $bb->maxY - $this->boundingBox->minY) > 0){
-                                    if($height <= 0.5){
-                                        $dy = 0.5;
-                                        $isJump = true;
-                                    }elseif($height <= 1){
-                                        $dy = 1;
-                                        $isJump = true;
-                                    }
-                                }elseif($up->maxY - $this->boundingBox->minY <= 1){
-                                    $dy = 1;
-                                    $isJump = true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            $this->move($dx, $dy, $dz);
-            if($this->onGround){
-                $this->motionY = 0;
-            }elseif(!$isJump){
-                $this->motionY = -0.32;
-            }
-        }
-        $this->updateMovement();
-        return $target;
     }
 
     public function attack($damage, EntityDamageEvent $source){
@@ -350,26 +212,6 @@ abstract class BaseEntity extends Creature{
 
         $this->checkChunks();
         Timings::$entityMoveTimer->stopTiming();
-    }
-
-    public function knockBackCheck(){
-        if(!$this->attacker instanceof Entity) return false;
-        if($this->attackTime == 5){
-            $target = $this->attacker;
-            $x = $target->x - $this->x;
-            $z = $target->z - $this->z;
-            $diff = abs($x) + abs($z);
-            $this->motionX = 0.5 * ($x / $diff);
-            $this->motionZ = 0.5 * ($z / $diff);
-        }
-        $y = [
-            4 => 0.32,
-            5 => 0.95,
-        ];
-        $motionY = isset($y[$this->attackTime]) ?  $y[$this->attackTime] : -0.32;
-        $this->move(-$this->motionX, $motionY, -$this->motionZ);
-        if(--$this->attackTime <= 0) $this->attacker = null;
-        return true;
     }
 
     public function close(){

@@ -59,7 +59,8 @@ class PigZombie extends Monster{
     }
 
     public function attackEntity(Entity $player){
-        if($this->distance($player) <= 1.18){
+        if($this->attackDelay > 20 && $this->distanceSquared($player) < 1.44){
+            $this->attackDelay = 20;
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
         }

@@ -21,8 +21,6 @@ class Skeleton extends Monster implements ProjectileSource{
     public $width = 0.65;
     public $height = 1.8;
 
-    private $attackDelay = 0;
-
     public function initEntity(){
         if(isset($this->namedtag->Health)){
             $this->setHealth((int) $this->namedtag["Health"]);
@@ -38,7 +36,9 @@ class Skeleton extends Monster implements ProjectileSource{
     }
 
     public function attackEntity(Entity $player){
-        if($this->attackDelay > 25 && mt_rand(1, 3) == 1 && $this->distanceSquared($player) <= 40){
+        if($this->attackDelay > 20 && mt_rand(1, 12) < 3 && $this->distanceSquared($player) <= 40){
+            $this->attackDelay = 0;
+        
             $f = 1.5;
             $yaw = $this->yaw + mt_rand(-180, 180) / 10;
             $pitch = $this->pitch + mt_rand(-90, 90) / 10;

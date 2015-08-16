@@ -57,14 +57,11 @@ class Creeper extends Monster implements Explosive{
     }
 
     public function attackEntity(Entity $player){
-        if($this->distance($player) > 6.2){
+        if($this->distanceSquared($player) > 38){
             if($this->bombTime > 0) $this->bombTime -= min(2, $this->bombTime);
         }else{
             $this->bombTime++;
-            if($this->bombTime >= 58){
-                $this->explode();
-                return;
-            }
+            if($this->bombTime >= mt_rand(55, 70)) $this->explode();
         }
     }
 

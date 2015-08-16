@@ -26,7 +26,6 @@ EntityManager also has simple API for developers, such as clearEntity($type, $le
 * PigZombie Method
   * public bool isAngry() #r u angry?
   * public void setAngry(int $angry) #set how angry he is.  
-  
 
 ### Method Examples
 ``` php
@@ -34,5 +33,5 @@ EntityManager also has simple API for developers, such as clearEntity($type, $le
 if(!$entity->isMovement()){
     $entity->setMovement(true);
 }
-EntityManager::clearEntity([BaseEntity::class, Projectile::class, ItemEntity::class]);
+EntityManager::clearEntity([BaseEntity::class, Projectile::class, Item::class]);
 ```

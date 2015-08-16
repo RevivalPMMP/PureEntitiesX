@@ -6,7 +6,7 @@ use pocketmine\entity\Ageable;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
-abstract class Animal extends BaseEntity implements Ageable{
+abstract class Animal extends WalkEntity implements Ageable{
 
     protected $speed = 0.7;
 
@@ -27,20 +27,17 @@ abstract class Animal extends BaseEntity implements Ageable{
             return;
         }
 
-        if(!$this->knockBackCheck()){
-            --$this->moveTime;
-            $this->updateTarget();
-            $target = $this->updateMove();
-            if($target instanceof Player){
-                if($this->distance($target) <= 2){
-                    $this->pitch = 22;
-                    $this->x = $this->lastX;
-                    $this->y = $this->lastY;
-                    $this->z = $this->lastZ;
-                }
-            }elseif($target instanceof Vector3){
-                if($this->distance($target) <= 1) $this->moveTime = 0;
+        --$this->moveTime;
+        $target = $this->updateMove();
+        if($target instanceof Player){
+            if($this->distance($target) <= 2){
+                $this->pitch = 22;
+                $this->x = $this->lastX;
+                $this->y = $this->lastY;
+                $this->z = $this->lastZ;
             }
+        }elseif($target instanceof Vector3){
+            if($this->distance($target) <= 1) $this->moveTime = 0;
         }
         $this->entityBaseTick();
     }
