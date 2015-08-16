@@ -62,7 +62,7 @@ abstract class WalkEntity extends BaseEntity{
         }
         $before = $this->baseTarget;
         $this->updateTarget();
-        if($before !== $this->baseTarget){
+        if($this->baseTarget instanceof Player or $before !== $this->baseTarget){
             $x = $this->baseTarget->x - $this->x;
             $y = $this->baseTarget->y - $this->y;
             $z = $this->baseTarget->z - $this->z;
