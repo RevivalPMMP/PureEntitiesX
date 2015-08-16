@@ -6,7 +6,6 @@ use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\Timings;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\Byte;
@@ -146,7 +145,7 @@ abstract class BaseEntity extends Creature{
         Server::broadcastPacket($this->hasSpawned, $pk->setChannel(Network::CHANNEL_WORLD_EVENTS));
     }
 
-    public function move($dx, $dy, $dz){
+    /*public function move($dx, $dy, $dz){
         Timings::$entityMoveTimer->startTiming();
         $movX = $dx;
         $movY = $dy;
@@ -212,7 +211,7 @@ abstract class BaseEntity extends Creature{
 
         $this->checkChunks();
         Timings::$entityMoveTimer->stopTiming();
-    }
+    }*/
 
     public function close(){
         $this->created = false;

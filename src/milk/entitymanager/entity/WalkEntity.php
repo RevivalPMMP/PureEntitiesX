@@ -132,8 +132,8 @@ abstract class WalkEntity extends BaseEntity{
             $this->move($dx, $dy, $dz);
             if($this->onGround){
                 $this->motionY = 0;
-            }elseif(!$isJump && $this->motionY == 0){
-                $this->motionY = -0.32;
+            }elseif(!$isJump){
+                $this->motionY -= $this->gravity;
             }
         }
         $this->updateMovement();
