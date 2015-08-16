@@ -48,7 +48,7 @@ class EntityManager extends PluginBase implements Listener{
 
     public static $data;
     public static $drops;
-    public static $spawnerData;
+    public static $spawn;
 
     /** @var BaseEntity[] */
     private static $entities = [];
@@ -109,12 +109,12 @@ class EntityManager extends PluginBase implements Listener{
         file_put_contents($path . "config.yml", yaml_emit(self::$data, YAML_UTF8_ENCODING));
 
         if(file_exists($path. "SpawnerData.yml")){
-            self::$spawnerData = yaml_parse($this->yaml($path . "SpawnerData.yml"));
+            self::$spawn = yaml_parse($this->yaml($path . "SpawnerData.yml"));
             unlink($path. "SpawnerData.yml");
         }elseif(file_exists($path. "spawner.yml")){
-            self::$spawnerData = yaml_parse($this->yaml($path . "spawner.yml"));
+            self::$spawn = yaml_parse($this->yaml($path . "spawner.yml"));
         }else{
-            self::$spawnerData = [];
+            self::$spawn = [];
             file_put_contents($path . "spawner.yml", yaml_emit([], YAML_UTF8_ENCODING));
         }
 
@@ -146,7 +146,7 @@ class EntityManager extends PluginBase implements Listener{
     }
 
     public function onDisable(){
-        file_put_contents($this->getServer()->getDataPath() . "plugins/EntityManager/spawner.yml", yaml_emit(self::$spawnerData, YAML_UTF8_ENCODING));
+        file_put_contents($this->getServer()->getDataPath() . "plugins/EntityManager/spawner.yml", yaml_emit(self::$spawn, YAML_UTF8_ENCODING));
     }
 
     public function yaml($file){
@@ -282,7 +282,7 @@ class EntityManager extends PluginBase implements Listener{
             }
             $ev->setCancelled();
         }elseif($item->getId() === Item::MONSTER_SPAWNER){
-            self::$spawnerData["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->level->getFolderName()}"] = [
+            self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->level->getFolderName()}"] = [
                 "radius" => 5,
                 "mob-list" => [
                     "Cow", "Pig", "Sheep", "Chicken",
@@ -295,10 +295,10 @@ class EntityManager extends PluginBase implements Listener{
     public function BlockBreakEvent(BlockBreakEvent $ev){
         $pos = $ev->getBlock();
         if($ev->isCancelled() || $pos->getId() != Item::MONSTER_SPAWNER) return;
-        if(isset(self::$spawnerData["{$pos->x}:{$pos->y}:{$pos->z}"])){
-            unset(self::$spawnerData["{$pos->x}:{$pos->y}:{$pos->z}"]);
-        }elseif(isset(self::$spawnerData["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"])){
-            unset(self::$spawnerData["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"]);
+        if(isset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}"])){
+            unset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}"]);
+        }elseif(isset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"])){
+            unset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"]);
         }
     }
 
