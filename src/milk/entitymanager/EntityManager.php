@@ -310,11 +310,19 @@ class EntityManager extends PluginBase implements Listener{
         $entity = $ev->getEntity();
         if(!$entity instanceof BaseEntity or !isset(self::$drops[$entity::NETWORK_ID])) return;
         $drops = [];
-        foreach(self::$drops[$entity::NETWORK_ID] as $data){
+        foreach(self::$drops[$entity::NETWORK_ID] as $key => $data){
+            if(!isset($data[0]) || !isset($data[1]) || !isset($data[2])){
+                unset(self::$drops[$entity::NETWORK_ID][$key]);
+                continue;
+            }
+            $count = explode(",", $data[2]);
+            if(min(...$count) !== $count[0]){
+                unset(self::$drops[$entity::NETWORK_ID][$key]);
+                continue;
+            }
             $item = Item::get($data[0], $data[1]);
-            $item->setCount(mt_rand(...explode(",", $data[2])));
-            $rand = explode("/", $data[3]);
-            if(mt_rand(...$rand) <= $rand[0]) $drops[] = $item;
+            $item->setCount(max(mt_rand(...$count), 0));
+            $drops[] = $item;
         }
         $ev->setDrops($drops);
     }
