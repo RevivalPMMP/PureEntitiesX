@@ -6,6 +6,7 @@ use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\Timings;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\Byte;
@@ -143,26 +144,15 @@ abstract class BaseEntity extends Creature{
         Server::broadcastPacket($this->hasSpawned, $pk->setChannel(Network::CHANNEL_WORLD_EVENTS));
     }
 
-    /*public function move($dx, $dy, $dz){
+    public function move($dx, $dy, $dz){
         Timings::$entityMoveTimer->startTiming();
+
         $movX = $dx;
         $movY = $dy;
         $movZ = $dz;
         $list = $this->level->getCollisionCubes($this, $this->level->getTickRate() > 1 ? $this->boundingBox->getOffsetBoundingBox($dx, $dy, $dz) : $this->boundingBox->addCoord($dx, $dy, $dz));
         foreach($list as $bb){
-            if(
-                $this->boundingBox->maxX > $bb->minX
-                and $this->boundingBox->minX < $bb->maxX
-                and $this->boundingBox->maxZ > $bb->minZ
-                and $this->boundingBox->minZ < $bb->maxZ
-            ){
-                if($this->boundingBox->maxY + $dy >= $bb->minY and $this->boundingBox->maxY <= $bb->minY){
-                    if(($y1 = $bb->minY - ($this->boundingBox->maxY + $dy)) < 0) $dy += $y1;
-                }
-                if($this->boundingBox->minY + $dy <= $bb->maxY and $this->boundingBox->minY >= $bb->maxY){
-                    if(($y1 = $bb->maxY - ($this->boundingBox->minY + $dy)) > 0) $dy += $y1;
-                }
-            }
+            $dy = $bb->calculateYOffset($this->boundingBox, $dy);
         }
         $this->boundingBox->offset(0, $dy, 0);
         foreach($list as $bb){
@@ -201,15 +191,13 @@ abstract class BaseEntity extends Creature{
         $this->boundingBox->offset(0, 0, $dz);
         $this->setComponents($this->x + $dx, $this->y + $dy, $this->z + $dz);
 
-        $this->updateFallState($dy, $this->onGround = ($movY != $dy and $movY < 0));
-
-        $this->isCollidedVertically = $movY != $dy;
-        $this->isCollidedHorizontally = ($movX != $dx or $movZ != $dz);
-        $this->isCollided = ($this->isCollidedHorizontally or $this->isCollidedVertically);
-
         $this->checkChunks();
+
+        $this->checkGroundState($movX, $movY, $movZ, $dx, $dy, $dz);
+        $this->updateFallState($dy, $this->onGround);
+
         Timings::$entityMoveTimer->stopTiming();
-    }*/
+    }
 
     public function close(){
         $this->created = false;

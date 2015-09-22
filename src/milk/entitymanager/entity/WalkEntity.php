@@ -2,15 +2,14 @@
 
 namespace milk\entitymanager\entity;
 
-use pocketmine\block\Block;
-use pocketmine\level\Position;
 use pocketmine\math\Math;
+use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
 abstract class WalkEntity extends BaseEntity{
 
-    private function updateTarget(){
+    private function checkTarget(){
         $get = function(Vector3 $pos, Vector3 $pos1){
             return ($pos1->x - $pos->x) ** 2 + ($pos1->y - $pos->y) ** 2 + ($pos1->z - $pos->z) ** 2;
         };
@@ -61,7 +60,7 @@ abstract class WalkEntity extends BaseEntity{
             return null;
         }
         $before = $this->baseTarget;
-        $this->updateTarget();
+        $this->checkTarget();
         if($this->baseTarget instanceof Player or $before !== $this->baseTarget){
             $x = $this->baseTarget->x - $this->x;
             $y = $this->baseTarget->y - $this->y;
@@ -74,7 +73,8 @@ abstract class WalkEntity extends BaseEntity{
                 $this->motionX = $this->speed * 0.15 * ($x / $diff);
                 $this->motionZ = $this->speed * 0.15 * ($z / $diff);
             }
-            $this->yaw = rad2deg(atan2($z, $x) - M_PI_2);
+            //$this->yaw = rad2deg(atan2($z, $x) - M_PI_2);
+            $this->yaw = -atan2($this->motionX, $this->motionZ) * 180 / M_PI;
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
         }
         $target = $this->mainTarget != null ? $this->mainTarget : $this->baseTarget;
@@ -86,51 +86,36 @@ abstract class WalkEntity extends BaseEntity{
             $dy = $this->motionY;
             $dz = $this->motionZ;
 
-            $bb = $this->boundingBox;
-            $maxX = Math::ceilFloat($bb->maxX + $dx);
-            $maxY = Math::ceilFloat($bb->maxY + $dy);
-            $maxZ = Math::ceilFloat($bb->maxZ + $dz);
-            $minX = Math::floorFloat($bb->minX + $dx);
-            $minY = Math::floorFloat($bb->minY + $dy);
-            $minZ = Math::floorFloat($bb->minZ + $dz);
+            $be = new Vector2($this->x + $dx, $this->z + $dz);
+            $this->move($dx, $dy, $dz);
+            $af = new Vector2($this->x, $this->z);
 
-            $v = new Position(0, 0, 0, $this->level);
-            for($v->x = $minX; $v->x <= $maxX; ++$v->x){
-                for($v->z = $minZ; $v->z <= $maxZ; ++$v->z){
-                    $chunk = $this->level->getChunk($v->x >> 4, $v->z >> 4, true);
-                    if(!$chunk->isLoaded()) $chunk->load();
-                    if(!$chunk->isGenerated()) $chunk->setGenerated();
-                    if(!$chunk->isPopulated()) $chunk->setPopulated();
-                    for($v->y = $minY; $v->y <= $maxY; ++$v->y){
-                        if($v->y < 0) continue;
-                        $t = Block::get($chunk->getBlockId($v->x & 0x0f, $v->y, $v->z & 0x0f), $chunk->getBlockData($v->x & 0x0f, $v->y, $v->z & 0x0f), $v);
-                        if(
-                            $dy == 0
-                            && !$t->canPassThrough()
-                            && $t->getBoundingBox() != null
-                            && $this->boundingBox->minY < $bb->maxY
-                            && $this->boundingBox->minY >= $bb->minY
-                            && (($this->x - $t->x) ** 2 + ($this->z - $t->z) ** 2) <= 2
-                        ){
-                            $up = $t->getSide(Vector3::SIDE_UP)->getBoundingBox();
-                            if($up == null && ($height = $bb->maxY - $this->boundingBox->minY) > 0){
-                                if($height <= 0.5){
-                                    $dy = 0.5;
-                                    $isJump = true;
-                                }elseif($height <= 1){
-                                    $dy = 1;
-                                    $isJump = true;
-                                }
-                            }elseif($up->maxY - $this->boundingBox->minY <= 1){
-                                $dy = 1;
-                                $isJump = true;
-                            }
+            if($be->x != $af->x || $be->y != $af->y){
+                $x = 0;
+                $z = 0;
+                if($be->x - $af->x != 0) $x += $be->x - $af->x > 0 ? 1 : -1;
+                if($be->y - $af->y != 0) $z += $be->y - $af->y > 0 ? 1 : -1;
+
+                $block = $this->level->getBlock(new Vector3(Math::floorFloat($be->x) + $x, $this->y, Math::floorFloat($af->y) + $z));
+                $block2 = $this->level->getBlock(new Vector3(Math::floorFloat($be->x) + $x, $this->y + 1, Math::floorFloat($af->y) + $z));
+                if(!$block->canPassThrough()){
+                    if($block2->canPassThrough()){
+                        $isJump = true;
+                        $this->motionY = 0.2;
+                    }else{
+                        $bb = $block2->getBoundingBox();
+                        if($bb == null || ($bb != null && $bb->maxY - $this->y <= 1)){
+                            $isJump = true;
+                            $this->motionY = 0.2;
                         }
                     }
                 }
+                if(!$isJump){
+                    $this->moveTime = 0;
+                }
             }
-            $this->move($dx, $dy, $dz);
-            if($this->onGround){
+
+            if($this->onGround && !$isJump){
                 $this->motionY = 0;
             }elseif(!$isJump){
                 $this->motionY -= $this->gravity;

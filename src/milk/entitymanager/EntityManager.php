@@ -14,6 +14,7 @@ use milk\entitymanager\entity\Monster;
 use milk\entitymanager\entity\PigZombie;
 use milk\entitymanager\entity\Skeleton;
 use milk\entitymanager\entity\Spider;
+use milk\entitymanager\entity\Squid;
 use milk\entitymanager\entity\Zombie;
 use milk\entitymanager\task\SpawnEntityTask;
 use milk\entitymanager\task\UpdateEntityTask;
@@ -66,7 +67,9 @@ class EntityManager extends PluginBase implements Listener{
             Skeleton::class,
             Spider::class,
             PigZombie::class,
-            Enderman::class
+            Enderman::class,
+
+            //Squid::class,
         ];
         foreach($classes as $name) self::registerEntity($name);
     }
@@ -235,6 +238,13 @@ class EntityManager extends PluginBase implements Listener{
                 new Float("", $source instanceof Location ? $source->pitch : 0)
             ]),
         ]);
+        $keys = array_keys(self::$knownEntities);
+        foreach($keys as $c => $name){
+            if(strtolower($type) == strtolower($name)){
+                $type = $name;
+                break;
+            }
+        }
         if(isset(self::$knownEntities[$type])){
             $class = self::$knownEntities[$type];
             /** @var BaseEntity $entity */
@@ -387,6 +397,7 @@ class EntityManager extends PluginBase implements Listener{
                     $output .= "Entity's name is incorrect";
                     break;
                 }
+                $pos = null;
                 if(count($sub) >= 4){
                     $level = $this->getServer()->getDefaultLevel();
                     if(isset($sub[4]) && ($k = $this->getServer()->getLevelByName($sub[4]))){
@@ -399,7 +410,7 @@ class EntityManager extends PluginBase implements Listener{
                     $pos = $i->getPosition();
                 }
 
-                if(!isset($pos) || self::createEntity($sub[0], $pos) == null){
+                if($pos == null || self::createEntity($sub[0], $pos) == null){
                     $output .= "usage: /$label create <id/name> (x) (y) (z) (level)";
                 }
                 break;
