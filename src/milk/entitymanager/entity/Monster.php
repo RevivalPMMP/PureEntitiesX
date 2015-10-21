@@ -14,7 +14,10 @@ use pocketmine\Server;
 
 abstract class Monster extends WalkEntity{
 
-    private $damage = [];
+    private $minDamage = [0, 0, 0, 0];
+    private $maxDamage = [0, 0, 0, 0];
+
+    private $entityTick = 0;
 
     protected $attackDelay = 0;
 
@@ -26,25 +29,63 @@ abstract class Monster extends WalkEntity{
      * @return int
      */
     public function getDamage($difficulty = null){
-        if($difficulty === null or !is_numeric($difficulty)){
+        return mt_rand($this->getMinDamage($difficulty), $this->getMaxDamage($difficulty));
+    }
+
+    public function getMinDamage($difficulty = null){
+        if($difficulty === null or !is_numeric($difficulty) || $difficulty > 3 || $difficulty < 0){
             $difficulty = Server::getInstance()->getDifficulty();
         }
-        return isset($this->damage[(int) $difficulty]) ? $this->damage[(int) $difficulty] : 0;
+        $difficulty = (int) $difficulty;
+        return $this->minDamage[$difficulty];
+    }
+
+    public function getMaxDamage($difficulty = null){
+        if($difficulty === null or !is_numeric($difficulty) || $difficulty > 3 || $difficulty < 0){
+            $difficulty = Server::getInstance()->getDifficulty();
+        }
+        $difficulty = (int) $difficulty;
+        return $this->maxDamage[$difficulty];
     }
 
     /**
+     * @deprecated
+     *
      * @param float|float[] $damage
      * @param int $difficulty
      */
     public function setDamage($damage, $difficulty = null){
+        $this->setMinDamage($damage, $difficulty);
+        $this->setMaxDamage($damage, $difficulty);
+    }
+
+    public function setMinDamage($damage, $difficulty = null){
         $difficulty = $difficulty === null ? Server::getInstance()->getDifficulty() : (int) $difficulty;
         if(is_array($damage)){
-            foreach($damage as $key => $int){
-                if(!is_numeric($key) || $key > 3 || $key < 0) continue;
-                $this->damage[(int) $key] = (float) $int;
+            foreach($damage as $key => $float){
+                if(!is_numeric($key) || !is_numeric($float) || $key > 3 || $key < 0) continue;
+                $key = (int) $key;
+                $float = (float) $float;
+                if($this->maxDamage[$key] >= $float) $this->minDamage[$key] = $float;
             }
         }elseif($difficulty >= 1 && $difficulty <= 3){
-            $this->damage[$difficulty] = (float) $damage;
+            $damage = (float) $damage;
+            if($this->maxDamage[$difficulty] >= $damage) $this->minDamage[$difficulty] = $damage;
+        }
+    }
+
+    public function setMaxDamage($damage, $difficulty = null){
+        $difficulty = $difficulty === null ? Server::getInstance()->getDifficulty() : (int) $difficulty;
+        if(is_array($damage)){
+            foreach($damage as $key => $float){
+                if(!is_numeric($key) || !is_numeric($float) || $key > 3 || $key < 0) continue;
+                $key = (int) $key;
+                $float = (float) $float;
+                if($this->minDamage[$key] <= $float) $this->maxDamage[$key] = $float;
+            }
+        }elseif($difficulty >= 1 && $difficulty <= 3){
+            $damage = (float) $damage;
+            if($this->minDamage[$difficulty] <= $damage) $this->maxDamage[$difficulty] = $damage;
         }
     }
 
@@ -66,7 +107,10 @@ abstract class Monster extends WalkEntity{
         }elseif($target instanceof Vector3){
             if((($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1) $this->moveTime = 0;
         }
-        $this->entityBaseTick();
+        if($this->entityTick++ >= 5){
+            $this->entityTick = 0;
+            $this->entityBaseTick(5);
+        }
     }
 
     public function entityBaseTick($tickDiff = 1){
@@ -77,8 +121,8 @@ abstract class Monster extends WalkEntity{
         }
 
         $hasUpdate = Entity::entityBaseTick($tickDiff);
-        if($this->attackTime > 0){
-            $this->attackTime -= $tickDiff;
+        if($this->atkTime > 0){
+            $this->atkTime -= $tickDiff;
         }
         if($this->isInsideOfSolid()){
             $hasUpdate = true;

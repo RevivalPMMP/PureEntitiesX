@@ -10,7 +10,6 @@ use pocketmine\event\Timings;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\Byte;
-use pocketmine\network\Network;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
@@ -34,7 +33,7 @@ abstract class BaseEntity extends Creature{
     protected $mainTarget = null;
 
     protected $attacker = null;
-    protected $attackTime = 0;
+    protected $atkTime = 0;
 
     public function __destruct(){}
 
@@ -122,7 +121,7 @@ abstract class BaseEntity extends Creature{
     }
 
     public function attack($damage, EntityDamageEvent $source){
-        if($this->attacker instanceof Entity) return;
+        if($this->atkTime > 0) return;
         if($this->attackTime > 0 or $this->noDamageTicks > 0){
             $lastCause = $this->getLastDamageCause();
             if($lastCause !== null and $lastCause->getDamage() >= $damage) $source->setCancelled();
@@ -133,15 +132,16 @@ abstract class BaseEntity extends Creature{
         if($source->isCancelled()) return;
 
         if($source instanceof EntityDamageByEntityEvent){
+            $this->atkTime = 16;
             $this->stayTime = 0;
-            $this->attackTime = 5;
             $this->attacker = $source->getDamager();
             if($this instanceof PigZombie) $this->setAngry(1000);
         }
+
         $pk = new EntityEventPacket();
         $pk->eid = $this->getId();
         $pk->event = $this->isAlive() ? 2 : 3;
-        Server::broadcastPacket($this->hasSpawned, $pk->setChannel(Network::CHANNEL_WORLD_EVENTS));
+        Server::broadcastPacket($this->hasSpawned, $pk);
     }
 
     public function move($dx, $dy, $dz){

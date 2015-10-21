@@ -2,6 +2,8 @@
 
 namespace milk\entitymanager\entity;
 
+use pocketmine\entity\Entity;
+use pocketmine\item\Item;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
@@ -10,11 +12,8 @@ use pocketmine\Player;
 abstract class WalkEntity extends BaseEntity{
 
     private function checkTarget(){
-        $get = function(Vector3 $pos, Vector3 $pos1){
-            return ($pos1->x - $pos->x) ** 2 + ($pos1->y - $pos->y) ** 2 + ($pos1->z - $pos->z) ** 2;
-        };
         $target = $this->baseTarget;
-        if(!$target instanceof Player or !$this->targetOption($target, $get($this, $target))){
+        if(!$target instanceof Player or !$this->targetOption($target, $this->distanceSquared($target))){
             $near = PHP_INT_MAX;
             foreach($this->getViewers() as $player){
                 if(($distance = $this->distanceSquared($player)) > $near or !$this->targetOption($player, $distance)) continue;
@@ -45,8 +44,8 @@ abstract class WalkEntity extends BaseEntity{
     public function updateMove(){
         if(!$this->isMovement()) return null;
         /** @var Vector3 $target */
-        if($this->attacker instanceof Player){
-            if($this->attackTime == 5 || ($this->motionX === 0 && $this->motionZ === 0)){
+        if($this->attacker instanceof Entity){
+            if($this->atkTime == 16 || ($this->motionX === 0 && $this->motionZ === 0)){
                 $target = $this->attacker;
                 $x = $target->x - $this->x;
                 $z = $target->z - $this->z;
@@ -54,9 +53,9 @@ abstract class WalkEntity extends BaseEntity{
                 $this->motionX = -0.5 * ($diff == 0 ? 0 : $x / $diff);
                 $this->motionZ = -0.5 * ($diff == 0 ? 0 : $z / $diff);
             }
-            $y = [4 => 0.32, 5 => 0.95];
-            $this->move($this->motionX, isset($y[$this->attackTime]) ?  $y[$this->attackTime] : -0.32, $this->motionZ);
-            if(--$this->attackTime <= 0) $this->attacker = null;
+            $y = [11 => 0.1, 12 => 0.1, 13 => 0.1, 14 => 0.1, 15 => 0.2, 16 => 0.2];
+            $this->move($this->motionX, isset($y[$this->atkTime]) ?  $y[$this->atkTime] : -0.32, $this->motionZ);
+            if(--$this->atkTime <= 0) $this->attacker = null;
             return null;
         }
         $before = $this->baseTarget;
@@ -99,12 +98,12 @@ abstract class WalkEntity extends BaseEntity{
                 $block = $this->level->getBlock(new Vector3(Math::floorFloat($be->x) + $x, $this->y, Math::floorFloat($af->y) + $z));
                 $block2 = $this->level->getBlock(new Vector3(Math::floorFloat($be->x) + $x, $this->y + 1, Math::floorFloat($af->y) + $z));
                 if(!$block->canPassThrough()){
-                    if($block2->canPassThrough()){
+                    $bb = $block2->getBoundingBox();
+                    if($block2->canPassThrough() || ($bb == null || ($bb != null && $bb->maxY - $this->y <= 1))){
                         $isJump = true;
                         $this->motionY = 0.2;
                     }else{
-                        $bb = $block2->getBoundingBox();
-                        if($bb == null || ($bb != null && $bb->maxY - $this->y <= 1)){
+                        if($this->level->getBlock($block->add(-$x, 0, -$z))->getId() == Item::LADDER){
                             $isJump = true;
                             $this->motionY = 0.2;
                         }

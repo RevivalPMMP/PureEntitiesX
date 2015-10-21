@@ -8,6 +8,8 @@ use pocketmine\Player;
 
 abstract class Animal extends WalkEntity implements Ageable{
 
+    private $entityTick = 0;
+
     protected $speed = 0.7;
 
     public function initEntity(){
@@ -39,7 +41,10 @@ abstract class Animal extends WalkEntity implements Ageable{
         }elseif($target instanceof Vector3){
             if($this->distance($target) <= 1) $this->moveTime = 0;
         }
-        $this->entityBaseTick();
+        if($this->entityTick++ >= 5){
+            $this->entityTick = 0;
+            $this->entityBaseTick(5);
+        }
     }
 
 }

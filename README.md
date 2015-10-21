@@ -56,20 +56,23 @@ createEntity($type, $pos). See documentation page for details.
     * TODO
 
 ### Method Examples
-``` php
-//Entity Method
-foreach(EntityManager::getEntities() as $baseEntity){
-    if(!$baseEntity->isMovement()){
-        $baseEntity->setMovement(true);
-    }
-    if($baseEntity instanceof Monster){
-        $baseEntity->setDamage(10);
-    }
-}
-//Create Entity
-$arrow = EntityManager::createEntity("Arrow", $position, $player, true); //PMMP Default Class
-$baseEntity = EntityManager::createEntity("Zombie", $position);
-
-//Remove Entity
-EntityManager::clearEntity([BaseEntity::class, Projectile::class, Item::class]);
+``` php  
+//Entity Method  
+foreach(EntityManager::getEntities() as $baseEntity){  
+    if(!$baseEntity->isMovement()){  
+        $baseEntity->setMovement(true);  
+    }  
+    if($baseEntity instanceof Monster){  
+        $baseEntity->~~setDamage~~(10); #@deprecated  
+          
+        $baseEntity->setMaxDamage(10); #$difficulty = null => Default difficulty  
+        $baseEntity->setMinDamage(10); #$difficulty = null => Default difficulty  
+    }  
+}  
+//Create Entity  
+$arrow = EntityManager::createEntity("Arrow", $position, $player, true); //PMMP Default Class  
+$baseEntity = EntityManager::createEntity("Zombie", $position);  
+  
+//Remove Entity  
+EntityManager::clearEntity([BaseEntity::class, Projectile::class, Item::class]);  
 ```

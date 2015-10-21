@@ -21,7 +21,8 @@ class Zombie extends Monster{
         }else{
             $this->setHealth($this->getMaxHealth());
         }
-        $this->setDamage([0, 3, 4, 6]);
+        $this->setMinDamage([0, 3, 4, 6]);
+        $this->setMaxDamage([0, 3, 4, 6]);
         parent::initEntity();
         $this->created = true;
     }

@@ -32,7 +32,8 @@ class PigZombie extends Monster{
         if(isset($this->namedtag->Angry)){
             $this->angry = (int) $this->namedtag["Angry"];
         }
-        $this->setDamage([0, 5, 9, 13]);
+        $this->setMinDamage([0, 5, 9, 13]);
+        $this->setMaxDamage([0, 5, 9, 13]);
         parent::initEntity();
         $this->created = true;
     }

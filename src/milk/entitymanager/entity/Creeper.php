@@ -40,11 +40,11 @@ class Creeper extends Monster implements Explosive{
     }
 
     public function getName(){
-        return "크리퍼";
+        return "Creeper";
     }
 
     public function explode(){
-        $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 3.2));
+        $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
 
         if(!$ev->isCancelled()){
             $explosion = new Explosion($this, $ev->getForce(), $this);

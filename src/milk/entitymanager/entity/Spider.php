@@ -21,7 +21,8 @@ class Spider extends Monster{
         }else{
             $this->setHealth($this->getMaxHealth());
         }
-        $this->setDamage([0, 2, 2, 3]);
+        $this->setMinDamage([0, 2, 2, 3]);
+        $this->setMaxDamage([0, 2, 2, 3]);
         parent::initEntity();
         $this->created = true;
     }

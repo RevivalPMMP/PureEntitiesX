@@ -45,8 +45,8 @@ abstract class FlyEntity extends BaseEntity{
     public function updateMove(){
         if(!$this->isMovement()) return null;
         /** @var Vector3 $target */
-        if($this->attacker instanceof Player && $this->attackTime > 0){
-            if($this->attackTime == 5 || ($this->motionX === 0 && $this->motionZ === 0)){
+        if($this->attacker instanceof Player && $this->atkTime > 0){
+            if($this->atkTime == 5 || ($this->motionX === 0 && $this->motionZ === 0)){
                 $target = $this->attacker;
                 $x = $target->x - $this->x;
                 $y = $this->baseTarget->y - $this->y;
@@ -57,7 +57,7 @@ abstract class FlyEntity extends BaseEntity{
                 $this->motionZ = -0.5 * ($diff == 0 ? 0 : $z / $diff);
             }
             $this->move($this->motionX, $this->motionY, $this->motionZ);
-            if(--$this->attackTime <= 0) $this->attacker = null;
+            if(--$this->atkTime <= 0) $this->attacker = null;
             return null;
         }
         $before = $this->baseTarget;

@@ -14,6 +14,7 @@ use pocketmine\nbt\tag\Compound;
 use pocketmine\nbt\tag\Double;
 use pocketmine\nbt\tag\Enum;
 use pocketmine\nbt\tag\Float;
+use pocketmine\Player;
 
 class Skeleton extends Monster implements ProjectileSource{
     const NETWORK_ID = 34;
@@ -36,12 +37,12 @@ class Skeleton extends Monster implements ProjectileSource{
     }
 
     public function attackEntity(Entity $player){
-        if($this->attackDelay > 25 && mt_rand(1, 12) < 3 && $this->distanceSquared($player) <= 40){
+        if($player instanceof Player && $this->attackDelay > 30 && mt_rand(1, 30) < 4 && $this->distanceSquared($player) <= 55){
             $this->attackDelay = 0;
         
-            $f = 1.5;
-            $yaw = $this->yaw + mt_rand(-180, 180) / 10;
-            $pitch = $this->pitch + mt_rand(-90, 90) / 10;
+            $f = 1.2;
+            $yaw = $this->yaw + mt_rand(-215, 215) / 10;
+            $pitch = $this->pitch + mt_rand(-120, 120) / 10;
             $nbt = new Compound("", [
                 "Pos" => new Enum("Pos", [
                     new Double("", $this->x),
@@ -67,7 +68,7 @@ class Skeleton extends Monster implements ProjectileSource{
 
             $projectile = $ev->getProjectile();
             if($ev->isCancelled()){
-                $ev->getProjectile()->kill();
+                $projectile->kill();
             }elseif($projectile instanceof Projectile){
                 $this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($projectile));
                 if($launch->isCancelled()){
