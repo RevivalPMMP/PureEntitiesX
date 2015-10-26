@@ -13,7 +13,7 @@ class Cow extends Animal{
     public $height = 1.12;
 
     public function getName(){
-        return "소";
+        return "Cow";
     }
 
     public function initEntity(){

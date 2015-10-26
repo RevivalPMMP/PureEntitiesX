@@ -15,7 +15,7 @@ class Sheep extends Animal implements Colorable{
     public $height = 1.12;
 
     public function getName(){
-        return "양";
+        return "Sheep";
     }
 
     public function initEntity(){
@@ -35,7 +35,9 @@ class Sheep extends Animal implements Colorable{
 
     public function getDrops(){
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [Item::get(Item::WOOL, mt_rand(0, 15), 1)];
+            return [
+                Item::get(Item::WOOL, mt_rand(0, 15), 1)
+            ];
         }
         return [];
     }

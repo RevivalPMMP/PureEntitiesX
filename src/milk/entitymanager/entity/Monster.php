@@ -23,16 +23,11 @@ abstract class Monster extends WalkEntity{
 
     public abstract function attackEntity(Entity $player);
 
-    /**
-     * @param int $difficulty
-     *
-     * @return int
-     */
-    public function getDamage($difficulty = null){
+    public function getDamage($difficulty = null) : float{
         return mt_rand($this->getMinDamage($difficulty), $this->getMaxDamage($difficulty));
     }
 
-    public function getMinDamage($difficulty = null){
+    public function getMinDamage($difficulty = null) : float{
         if($difficulty === null or !is_numeric($difficulty) || $difficulty > 3 || $difficulty < 0){
             $difficulty = Server::getInstance()->getDifficulty();
         }
@@ -40,7 +35,7 @@ abstract class Monster extends WalkEntity{
         return $this->minDamage[$difficulty];
     }
 
-    public function getMaxDamage($difficulty = null){
+    public function getMaxDamage($difficulty = null) : float{
         if($difficulty === null or !is_numeric($difficulty) || $difficulty > 3 || $difficulty < 0){
             $difficulty = Server::getInstance()->getDifficulty();
         }
@@ -49,8 +44,6 @@ abstract class Monster extends WalkEntity{
     }
 
     /**
-     * @deprecated
-     *
      * @param float|float[] $damage
      * @param int $difficulty
      */

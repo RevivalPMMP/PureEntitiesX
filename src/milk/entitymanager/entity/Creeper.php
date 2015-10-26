@@ -6,7 +6,7 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Explosive;
 use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\level\Explosion;
-use pocketmine\nbt\tag\Int;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
 
@@ -35,7 +35,7 @@ class Creeper extends Monster implements Explosive{
     }
 
     public function saveNBT(){
-        $this->namedtag->BombTime = new Int("BombTime", $this->bombTime);
+        $this->namedtag->BombTime = new IntTag("BombTime", $this->bombTime);
         parent::saveNBT();
     }
 

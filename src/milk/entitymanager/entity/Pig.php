@@ -15,7 +15,7 @@ class Pig extends Animal implements Rideable{
     public $height = 1.12;
 
     public function getName(){
-        return "돼지";
+        return "Pig";
     }
 
     public function initEntity(){

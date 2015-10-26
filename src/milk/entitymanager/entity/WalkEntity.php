@@ -53,8 +53,8 @@ abstract class WalkEntity extends BaseEntity{
                 $this->motionX = -0.5 * ($diff == 0 ? 0 : $x / $diff);
                 $this->motionZ = -0.5 * ($diff == 0 ? 0 : $z / $diff);
             }
-            $y = [11 => 0.1, 12 => 0.1, 13 => 0.1, 14 => 0.1, 15 => 0.2, 16 => 0.2];
-            $this->move($this->motionX, isset($y[$this->atkTime]) ?  $y[$this->atkTime] : -0.32, $this->motionZ);
+            $y = [11 => 0.3, 12 => 0.3, 13 => 0.4, 14 => 0.4, 15 => 0.5, 16 => 0.5];
+            $this->move($this->motionX, isset($y[$this->atkTime]) ?  $y[$this->atkTime] : -0.2, $this->motionZ);
             if(--$this->atkTime <= 0) $this->attacker = null;
             return null;
         }
@@ -95,8 +95,8 @@ abstract class WalkEntity extends BaseEntity{
                 if($be->x - $af->x != 0) $x += $be->x - $af->x > 0 ? 1 : -1;
                 if($be->y - $af->y != 0) $z += $be->y - $af->y > 0 ? 1 : -1;
 
-                $block = $this->level->getBlock(new Vector3(Math::floorFloat($be->x) + $x, $this->y, Math::floorFloat($af->y) + $z));
-                $block2 = $this->level->getBlock(new Vector3(Math::floorFloat($be->x) + $x, $this->y + 1, Math::floorFloat($af->y) + $z));
+                $block = $this->level->getBlock((new Vector3(Math::floorFloat($be->x) + $x, $this->y, Math::floorFloat($af->y) + $z))->floor());
+                $block2 = $this->level->getBlock((new Vector3(Math::floorFloat($be->x) + $x, $this->y + 1, Math::floorFloat($af->y) + $z))->floor());
                 if(!$block->canPassThrough()){
                     $bb = $block2->getBoundingBox();
                     if($block2->canPassThrough() || ($bb == null || ($bb != null && $bb->maxY - $this->y <= 1))){

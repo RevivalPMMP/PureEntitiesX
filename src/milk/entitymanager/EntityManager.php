@@ -14,7 +14,6 @@ use milk\entitymanager\entity\Monster;
 use milk\entitymanager\entity\PigZombie;
 use milk\entitymanager\entity\Skeleton;
 use milk\entitymanager\entity\Spider;
-use milk\entitymanager\entity\Squid;
 use milk\entitymanager\entity\Zombie;
 use milk\entitymanager\task\SpawnEntityTask;
 use milk\entitymanager\task\UpdateEntityTask;
@@ -33,10 +32,10 @@ use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
-use pocketmine\nbt\tag\Compound;
-use pocketmine\nbt\tag\Double;
-use pocketmine\nbt\tag\Enum;
-use pocketmine\nbt\tag\Float;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\DoubleTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\FloatTag;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
@@ -68,8 +67,6 @@ class EntityManager extends PluginBase implements Listener{
             Spider::class,
             PigZombie::class,
             Enderman::class,
-
-            //Squid::class,
         ];
         foreach($classes as $name) self::registerEntity($name);
     }
@@ -78,7 +75,7 @@ class EntityManager extends PluginBase implements Listener{
         $path = $this->getServer()->getDataPath() . "plugins/EntityManager/";
         if(!is_dir($path)) mkdir($path);
 
-        $getData = function($ar, $key, $default){
+        function getData($ar, $key, $default){
             $vars = explode(".", $key);
             $base = array_shift($vars);
             if(!isset($ar[$base])) return $default;
@@ -89,7 +86,7 @@ class EntityManager extends PluginBase implements Listener{
                 $base = $base[$baseKey];
             }
             return $base;
-        };
+        }
 
         $data = [];
         if(file_exists($path . "config.yml")){
@@ -97,16 +94,16 @@ class EntityManager extends PluginBase implements Listener{
         }
         self::$data = [
             "entity" => [
-                "maximum" => $getData($data, "entity.maximum", 50),
-                "explode" => $getData($data, "entity.explode", true),
+                "maximum" => getData($data, "entity.maximum", 50),
+                "explode" => getData($data, "entity.explode", true),
             ],
             "spawn" => [
-                "rand" => $getData($data, "spawn.rand", "1/5"),
-                "tick" => $getData($data, "spawn.tick", 150),
+                "rand" => getData($data, "spawn.rand", "1/5"),
+                "tick" => getData($data, "spawn.tick", 150),
             ],
             "autospawn" => [
-                "turn-on" => $getData($data, "autospawn.turn-on", $getData($data, "spawn.auto", true)),
-                "radius" => $getData($data, "autospawn.radius", $getData($data, "spawn.radius", 25)),
+                "turn-on" => getData($data, "autospawn.turn-on", getData($data, "spawn.auto", true)),
+                "radius" => getData($data, "autospawn.radius", getData($data, "spawn.radius", 25)),
             ]
         ];
         file_put_contents($path . "config.yml", yaml_emit(self::$data, YAML_UTF8_ENCODING));
@@ -222,20 +219,20 @@ class EntityManager extends PluginBase implements Listener{
         if(!$chunk->isLoaded()) $chunk->load();
         if(!$chunk->isGenerated()) $chunk->setGenerated();
         if(!$chunk->isPopulated()) $chunk->setPopulated();
-        $nbt = new Compound("", [
-            "Pos" => new Enum("Pos", [
-                new Double("", $source->x),
-                new Double("", $source->y),
-                new Double("", $source->z)
+        $nbt = new CompoundTag("", [
+            "Pos" => new ListTag("Pos", [
+                new DoubleTag("", $source->x),
+                new DoubleTag("", $source->y),
+                new DoubleTag("", $source->z)
             ]),
-            "Motion" => new Enum("Motion", [
-                new Double("", 0),
-                new Double("", 0),
-                new Double("", 0)
+            "Motion" => new ListTag("Motion", [
+                new DoubleTag("", 0),
+                new DoubleTag("", 0),
+                new DoubleTag("", 0)
             ]),
-            "Rotation" => new Enum("Rotation", [
-                new Float("", $source instanceof Location ? $source->yaw : 0),
-                new Float("", $source instanceof Location ? $source->pitch : 0)
+            "Rotation" => new ListTag("Rotation", [
+                new FloatTag("", $source instanceof Location ? $source->yaw : 0),
+                new FloatTag("", $source instanceof Location ? $source->pitch : 0)
             ]),
         ]);
         $keys = array_keys(self::$knownEntities);
