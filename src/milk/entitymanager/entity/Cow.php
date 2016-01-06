@@ -5,6 +5,7 @@ namespace milk\entitymanager\entity;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\entity\Creature;
 
 class Cow extends Animal{
     const NETWORK_ID = 11;
@@ -27,8 +28,10 @@ class Cow extends Animal{
         $this->created = true;
     }
 
-    public function targetOption(Player $player, $distance){
-        return $player->spawned && $player->isAlive() && !$player->closed && $player->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
+    public function targetOption(Creature $creature, $distance){
+    	if($creature instanceof Player)
+        	return $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
+    	return false;
     }
 
     public function getDrops(){

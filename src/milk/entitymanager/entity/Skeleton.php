@@ -14,7 +14,6 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
-use pocketmine\Player;
 
 class Skeleton extends Monster implements ProjectileSource{
     const NETWORK_ID = 34;
@@ -37,7 +36,7 @@ class Skeleton extends Monster implements ProjectileSource{
     }
 
     public function attackEntity(Entity $player){
-        if($player instanceof Player && $this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55){
+        if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55){
             $this->attackDelay = 0;
         
             $f = 1.2;
@@ -45,9 +44,9 @@ class Skeleton extends Monster implements ProjectileSource{
             $pitch = $this->pitch + mt_rand(-120, 120) / 10;
             $nbt = new CompoundTag("", [
                 "Pos" => new ListTag("Pos", [
-                    new DoubleTag("", $this->x),
+                    new DoubleTag("", $this->x + (-sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5)),
                     new DoubleTag("", $this->y + 1.62),
-                    new DoubleTag("", $this->z)
+                    new DoubleTag("", $this->z +(cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5))
                 ]),
                 "Motion" => new ListTag("Motion", [
                     new DoubleTag("", -sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * $f),

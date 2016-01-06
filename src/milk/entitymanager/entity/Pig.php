@@ -6,6 +6,7 @@ use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\entity\Creature;
 
 class Pig extends Animal implements Rideable{
     const NETWORK_ID = 12;
@@ -29,8 +30,10 @@ class Pig extends Animal implements Rideable{
         $this->created = true;
     }
 
-    public function targetOption(Player $player, $distance){
-        return $player->spawned && $player->isAlive() && !$player->closed && $player->getInventory()->getItemInHand()->getId() == Item::CARROT && $distance <= 49;
+    public function targetOption(Creature $creature, $distance){
+    	if($creature instanceof Player)
+        	return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::CARROT && $distance <= 49;
+    	return false;
     }
 
     public function getDrops(){

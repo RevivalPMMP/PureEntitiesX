@@ -11,6 +11,7 @@ use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
+use pocketmine\entity\Creature;
 
 abstract class Monster extends WalkEntity{
 
@@ -95,15 +96,26 @@ abstract class Monster extends WalkEntity{
         --$this->moveTime;
         ++$this->attackDelay;
         $target = $this->updateMove();
-        if($target instanceof Entity){
-            $this->attackEntity($target);
-        }elseif($target instanceof Vector3){
-            if((($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1) $this->moveTime = 0;
+        
+        if($this->isFriendly){
+        	if(! $target instanceof Player){
+        		if($target instanceof Entity){
+        			$this->attackEntity($target);
+        		}elseif($target instanceof Vector3){
+        			if((($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1) $this->moveTime = 0;
+        		}
+        	}
+        }else{
+		    if($target instanceof Entity){
+		        $this->attackEntity($target);
+		    }elseif($target instanceof Vector3){
+		        if((($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1) $this->moveTime = 0;
+		    }
         }
         if($this->entityTick++ >= 5){
-            $this->entityTick = 0;
-            $this->entityBaseTick(5);
-        }
+       		$this->entityTick = 0;
+      		$this->entityBaseTick(5);
+      	}
     }
 
     public function entityBaseTick($tickDiff = 1){
@@ -147,8 +159,10 @@ abstract class Monster extends WalkEntity{
         return $hasUpdate;
     }
 
-    public function targetOption(Player $player, $distance){
-        return $player->spawned && $player->isAlive() && !$player->closed && $player->isSurvival() && $distance <= 81;
+    public function targetOption(Creature $creature, $distance){
+    	if($creature instanceof Player)
+        	return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->isSurvival() && $distance <= 81;
+    	return $creature->isAlive() && !$creature->closed && $distance <= 81;
     }
 
 }

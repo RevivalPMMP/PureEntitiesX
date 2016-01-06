@@ -4,10 +4,10 @@ namespace milk\entitymanager\entity;
 
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
+use pocketmine\entity\Creature;
 
 class PigZombie extends Monster{
     const NETWORK_ID = 36;
@@ -55,8 +55,8 @@ class PigZombie extends Monster{
         $this->angry = (int) $val;
     }
 
-    public function targetOption(Player $player, $distance){
-        return parent::targetOption($player, $distance) && $this->isAngry();
+    public function targetOption(Creature $creature, $distance){
+        return parent::targetOption($creature, $distance) && $this->isAngry();
     }
 
     public function attackEntity(Entity $player){

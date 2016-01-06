@@ -6,6 +6,7 @@ use pocketmine\entity\Colorable;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\entity\Creature;
 
 class Sheep extends Animal implements Colorable{
     const NETWORK_ID = 13;
@@ -29,8 +30,10 @@ class Sheep extends Animal implements Colorable{
         $this->created = true;
     }
 
-    public function targetOption(Player $player, $distance){
-        return $player->spawned && $player->isAlive() && !$player->closed && $player->getInventory()->getItemInHand()->getId() == Item::SEEDS && $distance <= 49;
+    public function targetOption(Creature $creature, $distance){
+    	if($creature instanceof Player)
+        	return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::SEEDS && $distance <= 49;
+        return false;
     }
 
     public function getDrops(){
