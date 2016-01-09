@@ -41,6 +41,21 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 use pocketmine\entity\Item as ItemEntity;
+use milk\entitymanager\entity\CaveSpider;
+use milk\entitymanager\entity\MagmaCube;
+use milk\entitymanager\entity\ZombieVillager;
+use pocketmine\block\Block;
+use milk\entitymanager\entity\Ghast;
+use milk\entitymanager\entity\Blaze;
+use milk\entitymanager\entity\Wolf;
+use milk\entitymanager\entity\Ocelot;
+use milk\entitymanager\entity\Mooshroom;
+use milk\entitymanager\entity\Rabbit;
+use milk\entitymanager\entity\IronGolem;
+use milk\entitymanager\entity\SnowGolem;
+use milk\entitymanager\entity\Slime;
+use milk\entitymanager\entity\Silverfish;
+use milk\entitymanager\entity\FireBall;
 
 class EntityManager extends PluginBase implements Listener{
 
@@ -60,6 +75,13 @@ class EntityManager extends PluginBase implements Listener{
             Pig::class,
             Sheep::class,
             Chicken::class,
+        	Slime::class,
+        	Wolf::class,
+        	Ocelot::class,
+        	Mooshroom::class,
+        	Rabbit::class,
+        	IronGolem::class,
+        	SnowGolem::class,
 
             Zombie::class,
             Creeper::class,
@@ -67,8 +89,16 @@ class EntityManager extends PluginBase implements Listener{
             Spider::class,
             PigZombie::class,
             Enderman::class,
+        	Silverfish::class,
+        	CaveSpider::class,
+        	MagmaCube::class,
+        	ZombieVillager::class,
+        	Ghast::class,
+        	Blaze::class,
         ];
         foreach($classes as $name) self::registerEntity($name);
+       
+        Entity::registerEntity(FireBall::class);
     }
 
     public function onEnable(){
@@ -94,12 +124,12 @@ class EntityManager extends PluginBase implements Listener{
         }
         self::$data = [
             "entity" => [
-                "maximum" => getData($data, "entity.maximum", 50),
+                "maximum" => getData($data, "entity.maximum", 30),
                 "explode" => getData($data, "entity.explode", true),
             ],
             "spawn" => [
-                "rand" => getData($data, "spawn.rand", "1/5"),
-                "tick" => getData($data, "spawn.tick", 150),
+                "rand" => getData($data, "spawn.rand", "1/3"),
+                "tick" => getData($data, "spawn.tick", 120),
             ],
             "autospawn" => [
                 "turn-on" => getData($data, "autospawn.turn-on", getData($data, "spawn.auto", true)),
@@ -307,6 +337,9 @@ class EntityManager extends PluginBase implements Listener{
         }elseif(isset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"])){
             unset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"]);
         }
+        if($ev->getBlock()->getId() == Block::STONE or $ev->getBlock()->getId() == Block::STONE_BRICK or $ev->getBlock()->getId() == Block::STONE_WALL or $ev->getBlock()->getId() == Block::STONE_BRICK_STAIRS)
+        	if($ev->getBlock()->getLightLevel() < 12 and mt_rand(1,3) < 2)
+        		self::createEntity("Silverfish", $pos);
     }
 
     public function ExplosionPrimeEvent(ExplosionPrimeEvent $ev){

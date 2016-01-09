@@ -35,6 +35,15 @@ abstract class BaseEntity extends Creature{
     protected $attacker = null;
     protected $atkTime = 0;
 
+    protected $isFriendly = false;
+    
+    public function isFriendly(){
+    	return $this->isFriendly;
+    }
+    public function setFriendly($bool){
+    	$this->isFriendly = $bool;
+    }
+
     public function __destruct(){}
 
     public function onUpdate($currentTick){
@@ -45,7 +54,7 @@ abstract class BaseEntity extends Creature{
 
     public abstract function updateMove();
 
-    public abstract function targetOption(Player $player, $distance);
+    public abstract function targetOption(Creature $creature, $distance);
 
     public function getSaveId(){
         $class = new \ReflectionClass(static::class);
@@ -121,7 +130,7 @@ abstract class BaseEntity extends Creature{
     }
 
     public function attack($damage, EntityDamageEvent $source){
-        if($this->atkTime > 0) return;
+        //if($this->atkTime > 0) return;
         if($this->attackTime > 0 or $this->noDamageTicks > 0){
             $lastCause = $this->getLastDamageCause();
             if($lastCause !== null and $lastCause->getDamage() >= $damage) $source->setCancelled();
@@ -136,6 +145,8 @@ abstract class BaseEntity extends Creature{
             $this->stayTime = 0;
             $this->attacker = $source->getDamager();
             if($this instanceof PigZombie) $this->setAngry(1000);
+            if($this instanceof Wolf) $this->setAngry(1000);
+            if($this instanceof Ocelot) $this->setAngry(1000);
         }
 
         $pk = new EntityEventPacket();

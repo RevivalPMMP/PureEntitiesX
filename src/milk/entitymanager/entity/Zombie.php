@@ -32,7 +32,7 @@ class Zombie extends Monster{
     }
 
     public function attackEntity(Entity $player){
-        if($this->attackDelay > 10 && $this->distanceSquared($player) < 1){
+        if($this->attackDelay > 10 && $this->distanceSquared($player) < 2){
             $this->attackDelay = 0;
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);

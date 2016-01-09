@@ -31,12 +31,13 @@ class SpawnEntityTask extends PluginTask{
             if(mt_rand(...$rand) > $rand[0]) continue;
             $radius = (int) $owner->getData("autospawn.radius");
             $pos = $player->getPosition();
-            $pos->y = $player->level->getHighestBlockAt($pos->x += mt_rand(-$radius, $radius), $pos->z += mt_rand(-$radius, $radius));
+            $pos->y = $player->level->getHighestBlockAt($pos->x += mt_rand(-$radius, $radius), $pos->z += mt_rand(-$radius, $radius))+2;
+            
             $ent = [
-                ["Cow", "Pig", "Sheep", "Chicken", null, null],
-                ["Zombie", "Creeper", "Skeleton", "Spider", "PigZombie", "Enderman"]
+                ["Cow", "Pig", "Sheep", "Chicken", "Slime", "Wolf", "Ocelot", "Mooshroom", "Rabbit", "IronGolem", "SnowGolem"],
+                ["Zombie", "Creeper", "Skeleton", "Spider", "PigZombie", "Enderman", "CaveSpider", "MagmaCube", "ZombieVillager", "Ghast", "Blaze"]
             ];
-            EntityManager::createEntity($ent[mt_rand(0, 1)][mt_rand(0, 5)], $pos);
+            EntityManager::createEntity($ent[mt_rand(0, 1)][mt_rand(0, 10)], $pos);
         }
     }
 

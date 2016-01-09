@@ -7,22 +7,32 @@ use pocketmine\item\Item;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
-use pocketmine\Player;
+use pocketmine\entity\Creature;
 
 abstract class WalkEntity extends BaseEntity{
-
     private function checkTarget(){
+    	if(count($this->getViewers()) == 0)
+    		return;
         $target = $this->baseTarget;
-        if(!$target instanceof Player or !$this->targetOption($target, $this->distanceSquared($target))){
+        if(!$target instanceof Creature or !$this->targetOption($target, $this->distanceSquared($target))){
             $near = PHP_INT_MAX;
-            foreach($this->getViewers() as $player){
-                if(($distance = $this->distanceSquared($player)) > $near or !$this->targetOption($player, $distance)) continue;
+
+            foreach ($this->getLevel()->getEntities() as $creature){
+            	if(! $creature instanceof Creature) continue;
+            	if($creature instanceof Animal) continue;
+            	
+            	if($creature === $this) continue;
+            	if($creature instanceof BaseEntity)
+            		if($creature->isFriendly() == $this->isFriendly()) continue;
+            	
+                if(($distance = $this->distanceSquared($creature)) > $near or !$this->targetOption($creature, $distance)) continue;
                 $near = $distance;
-                $this->baseTarget = $player;
+                $this->baseTarget = $creature;
             }
         }
-        if($this->baseTarget instanceof Player) return;
-
+        if($this->baseTarget instanceof Creature)
+        	if($this->baseTarget->isAlive())
+        		return;
         if($this->stayTime > 0){
             if(mt_rand(1, 125) > 4) return;
             $x = mt_rand(25, 80);
@@ -44,23 +54,31 @@ abstract class WalkEntity extends BaseEntity{
     public function updateMove(){
         if(!$this->isMovement()) return null;
         /** @var Vector3 $target */
+        
         if($this->attacker instanceof Entity){
-            if($this->atkTime == 16 || ($this->motionX === 0 && $this->motionZ === 0)){
+            if($this->atkTime == 16){
                 $target = $this->attacker;
                 $x = $target->x - $this->x;
                 $z = $target->z - $this->z;
                 $diff = abs($x) + abs($z);
                 $this->motionX = -0.5 * ($diff == 0 ? 0 : $x / $diff);
                 $this->motionZ = -0.5 * ($diff == 0 ? 0 : $z / $diff);
+                --$this->atkTime;
             }
             $y = [11 => 0.3, 12 => 0.3, 13 => 0.4, 14 => 0.4, 15 => 0.5, 16 => 0.5];
             $this->move($this->motionX, isset($y[$this->atkTime]) ?  $y[$this->atkTime] : -0.2, $this->motionZ);
-            if(--$this->atkTime <= 0) $this->attacker = null;
+            if(--$this->atkTime <= 0){
+            	$this->attacker = null;
+            	$this->motionX = 0;
+            	$this->motionY = 0;
+            	$this->motionZ = 0;
+            }
             return null;
         }
+        
         $before = $this->baseTarget;
         $this->checkTarget();
-        if($this->baseTarget instanceof Player or $before !== $this->baseTarget){
+        if($this->baseTarget instanceof Creature or $before !== $this->baseTarget){
             $x = $this->baseTarget->x - $this->x;
             $y = $this->baseTarget->y - $this->y;
             $z = $this->baseTarget->z - $this->z;
