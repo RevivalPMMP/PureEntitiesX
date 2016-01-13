@@ -1,2 +1,3 @@
-# 지원 중단됐습니다  
-# 업데이트를 원하신다면 Nukkit으로
+# 개발 종료
+It does not develop anymore
+If you want to update, Come Nukkit repositories
