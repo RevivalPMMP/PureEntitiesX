@@ -1,13 +1,21 @@
 #name, main, version and api are required
 name: EntityManager
-main: milk\entitymanager\EntityManager
-version: "2.4 Beta"
-api: 2.0.0
-load: POSTWORLD
-author: 우유맛비누
+main: milk.entitymanager.EntityManager
+#remember version and api is string, don't write it like this: 1.0.0, or there will be an exception
+version: "3.0 Beta"
+api: ["2.0.0"]
+
+load: STARTUP
+author: milk0417
+description: control entity's movement
+website: https://github.com/EntityManager
 commands:
- entitymanager:
-  usage: false
-  description: ""
-  aliases: [ent, entity]
-  permission: entitymanager.command
+  entitymanager:
+    description: control entity command
+    aliases: ["entity", "ent"]
+    usage: "/entitymanager <remove/spawn/check>"
+    permission: entitymanager.command
+permissions:
+  exampleplugin.command:
+    description: ""
+    default: op
