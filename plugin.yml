@@ -16,6 +16,6 @@ commands:
     usage: "/entitymanager <remove/spawn/check>"
     permission: entitymanager.command
 permissions:
-  exampleplugin.command:
+  entitymanager.command:
     description: ""
     default: op
