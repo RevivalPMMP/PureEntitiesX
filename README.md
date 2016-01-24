@@ -1,9 +1,6 @@
 # EntityManager   
   
 Author: **[@milk0417(승원)](https://github.com/milk0417)**  
-
-**현재 자바에 맞게 작성되어져 있습니다  
-이 사항은 곧 수정됩니다**  
   
 자매품(Nukkit): [EntityManager-Nukkit](https://github.com/SW-Team/EntityManager)
     
