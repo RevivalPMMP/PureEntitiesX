@@ -31,9 +31,9 @@ class Pig extends Animal implements Rideable{
     }
 
     public function targetOption(Creature $creature, $distance){
-    	if($creature instanceof Player)
-        	return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::CARROT && $distance <= 49;
-    	return false;
+        if($creature instanceof Player)
+            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::CARROT && $distance <= 49;
+        return false;
     }
 
     public function getDrops(){

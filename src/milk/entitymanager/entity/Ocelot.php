@@ -58,9 +58,9 @@ class Ocelot extends Monster{
     }
 
     public function targetOption(Creature $creature, $distance){
-    	if($creature instanceof Player)
-    		return ($creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::RAW_FISH && $distance <= 49) or $this->isAngry();
-    	return parent::targetOption($creature, $distance);
+        if($creature instanceof Player)
+            return ($creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::RAW_FISH && $distance <= 49) or $this->isAngry();
+        return parent::targetOption($creature, $distance);
     }
 
     public function attackEntity(Entity $player){
@@ -72,7 +72,7 @@ class Ocelot extends Monster{
     }
 
     public function getDrops(){
-    	return [];
+        return [];
     }
 
 }

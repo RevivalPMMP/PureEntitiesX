@@ -53,7 +53,7 @@ class Wolf extends Monster{
     }
 
     public function targetOption(Creature $creature, $distance){
-    	return parent::targetOption($creature, $distance) and $this->isAngry();
+        return parent::targetOption($creature, $distance) and $this->isAngry();
     }
 
     public function attackEntity(Entity $player){
@@ -65,7 +65,7 @@ class Wolf extends Monster{
     }
 
     public function getDrops(){
-    	return [];
+        return [];
     }
 
 }

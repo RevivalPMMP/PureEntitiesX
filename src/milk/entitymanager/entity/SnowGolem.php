@@ -58,11 +58,10 @@ class SnowGolem extends Monster implements ProjectileSource{
                 ]),
             ]);
 
-            /** @var Projectile $arrow */
+            /** @var Projectile $snowball */
             $snowball = Entity::createEntity("Snowball", $this->chunk, $nbt, $this);
             $snowball->setMotion($snowball->getMotion()->multiply($f));
-            
-            /* Snowball damage change */
+
             $property = (new \ReflectionClass($snowball))->getProperty("damage");
             $property->setAccessible(true);
             $property->setValue($snowball, 2);
@@ -96,8 +95,8 @@ class SnowGolem extends Monster implements ProjectileSource{
     }
     
     public function targetOption(Creature $creature, $distance){
-    	if(! $creature instanceof Player)
-    		return $creature->isAlive() && $distance <= 60;
-    	return false;
+        if(! $creature instanceof Player)
+            return $creature->isAlive() && $distance <= 60;
+        return false;
     }
 }

@@ -112,25 +112,25 @@ abstract class Monster extends WalkEntity{
 
         $target = $this->updateMove();
         if($this->isFriendly){
-        	if(! $target instanceof Player){
-        		if($target instanceof Entity){
-        			$this->attackEntity($target);
-        		}elseif(
+            if(! $target instanceof Player){
+                if($target instanceof Entity){
+                    $this->attackEntity($target);
+                }elseif(
                     $target instanceof Vector3
-        			&&(($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
+                    &&(($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
                 ){
                     $this->moveTime = 0;
-        		}
-        	}
+                }
+            }
         }else{
-		    if($target instanceof Entity){
-		        $this->attackEntity($target);
-		    }elseif(
+            if($target instanceof Entity){
+                $this->attackEntity($target);
+            }elseif(
                 $target instanceof Vector3
-		        &&(($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
+                &&(($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
             ){
                 $this->moveTime = 0;
-		    }
+            }
         }
 
         $this->entityBaseTick();
@@ -180,9 +180,9 @@ abstract class Monster extends WalkEntity{
     }
 
     public function targetOption(Creature $creature, $distance){
-    	if($creature instanceof Player)
-        	return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->isSurvival() && $distance <= 81;
-    	return $creature->isAlive() && !$creature->closed && $distance <= 81;
+        if($creature instanceof Player)
+            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->isSurvival() && $distance <= 81;
+        return $creature->isAlive() && !$creature->closed && $distance <= 81;
     }
 
 }

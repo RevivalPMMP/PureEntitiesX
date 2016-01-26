@@ -12,28 +12,28 @@ use pocketmine\entity\Creature;
 abstract class WalkEntity extends BaseEntity{
 
     private function checkTarget(){
-    	if(count($this->getViewers()) == 0)
-    		return;
+        if(count($this->getViewers()) == 0)
+            return;
         $target = $this->baseTarget;
         if(!$target instanceof Creature or !$this->targetOption($target, $this->distanceSquared($target))){
             $near = PHP_INT_MAX;
 
             foreach ($this->getLevel()->getEntities() as $creature){
-            	if(! $creature instanceof Creature) continue;
-            	if($creature instanceof Animal) continue;
-            	
-            	if($creature === $this) continue;
-            	if($creature instanceof BaseEntity)
-            		if($creature->isFriendly() == $this->isFriendly()) continue;
-            	
+                if(! $creature instanceof Creature) continue;
+                if($creature instanceof Animal) continue;
+
+                if($creature === $this) continue;
+                if($creature instanceof BaseEntity)
+                    if($creature->isFriendly() == $this->isFriendly()) continue;
+
                 if(($distance = $this->distanceSquared($creature)) > $near or !$this->targetOption($creature, $distance)) continue;
                 $near = $distance;
                 $this->baseTarget = $creature;
             }
         }
         if($this->baseTarget instanceof Creature)
-        	if($this->baseTarget->isAlive())
-        		return;
+            if($this->baseTarget->isAlive())
+                return;
         if($this->stayTime > 0){
             if(mt_rand(1, 125) > 4) return;
             $x = mt_rand(25, 80);
@@ -68,10 +68,10 @@ abstract class WalkEntity extends BaseEntity{
             $this->move($this->motionX, isset($y[$this->atkTime]) ?  $y[$this->atkTime] : -0.2, $this->motionZ);
 
             if(--$this->atkTime <= 0){
-            	$this->attacker = null;
-            	$this->motionX = 0;
-            	$this->motionY = 0;
-            	$this->motionZ = 0;
+                $this->attacker = null;
+                $this->motionX = 0;
+                $this->motionY = 0;
+                $this->motionZ = 0;
             }
             return null;
         }

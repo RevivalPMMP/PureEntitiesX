@@ -153,7 +153,7 @@ abstract class FlyMonster extends FlyEntity{
 
     public function targetOption(Creature $creature, $distance){
         if($creature instanceof Player)
-        	return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->isSurvival() && $distance <= 200;
+            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->isSurvival() && $distance <= 200;
         return $creature->isAlive() && !$creature->closed && $distance <= 200;
     }
 

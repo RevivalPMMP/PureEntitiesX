@@ -29,9 +29,9 @@ class Cow extends Animal{
     }
 
     public function targetOption(Creature $creature, $distance){
-    	if($creature instanceof Player)
-        	return $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
-    	return false;
+        if($creature instanceof Player)
+            return $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
+        return false;
     }
 
     public function getDrops(){

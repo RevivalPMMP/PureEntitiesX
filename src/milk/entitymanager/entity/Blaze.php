@@ -41,7 +41,7 @@ class Blaze extends FlyMonster implements ProjectileSource{
         return "Blaze";
     }
 
-	public function attackEntity(Entity $player){
+    public function attackEntity(Entity $player){
         if($this->attackDelay > 20 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 100){
             $this->attackDelay = 0;
         
@@ -90,7 +90,7 @@ class Blaze extends FlyMonster implements ProjectileSource{
     public function getDrops(){
         $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-        	$drops[] = Item::get(Item::GLOWSTONE_DUST, 0, mt_rand(0, 2));
+            $drops[] = Item::get(Item::GLOWSTONE_DUST, 0, mt_rand(0, 2));
         }
         return $drops;
     }

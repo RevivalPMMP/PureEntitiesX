@@ -40,7 +40,7 @@ class Ghast extends FlyMonster implements ProjectileSource{
         return "Ghast";
     }
 
-	public function attackEntity(Entity $player){
+    public function attackEntity(Entity $player){
         if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 200){
             $this->attackDelay = 0;
         

@@ -28,13 +28,13 @@ class Slime extends Animal{
     }
 
     public function targetOption(Creature $creature, $distance){
-    	return false;
+        return false;
     }
     
     public function getDrops(){
         $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-        	$drops[] = Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2));
+            $drops[] = Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2));
         }
         return $drops;
     }

@@ -32,85 +32,85 @@ use pocketmine\level\Explosion;
 use pocketmine\event\entity\ExplosionPrimeEvent;
 
 class FireBall extends Projectile{
-	const NETWORK_ID = 85;
+    const NETWORK_ID = 85;
 
-	public $width = 0.5;
-	public $length = 0.5;
-	public $height = 0.5;
+    public $width = 0.5;
+    public $length = 0.5;
+    public $height = 0.5;
 
-	protected $gravity = 0.05;
-	protected $drag = 0.01;
+    protected $gravity = 0.05;
+    protected $drag = 0.01;
 
-	protected $damage = 4;
+    protected $damage = 4;
 
-	protected $isCritical;
-	protected $canExplode = false;
+    protected $isCritical;
+    protected $canExplode = false;
 
-	public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
-		$this->isCritical = $critical;
-		parent::__construct($chunk, $nbt, $shootingEntity);
-	}
+    public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
+        $this->isCritical = $critical;
+        parent::__construct($chunk, $nbt, $shootingEntity);
+    }
 
-	public function isExplode() : bool {
-		return $this->canExplode;
-	}
+    public function isExplode() : bool {
+        return $this->canExplode;
+    }
 
-	public function setExplode(bool $bool){
-		$this->canExplode = $bool;
-	}
+    public function setExplode(bool $bool){
+        $this->canExplode = $bool;
+    }
 
-	public function onUpdate($currentTick) : bool{
-		if($this->closed){
-			return false;
-		}
+    public function onUpdate($currentTick) : bool{
+        if($this->closed){
+            return false;
+        }
 
-		$this->timings->startTiming();
+        $this->timings->startTiming();
 
-		$hasUpdate = parent::onUpdate($currentTick);
+        $hasUpdate = parent::onUpdate($currentTick);
 
-		if(!$this->hadCollision and $this->isCritical){
-			$this->level->addParticle(new CriticalParticle($this->add(
-				$this->width / 2 + mt_rand(-100, 100) / 500,
-				$this->height / 2 + mt_rand(-100, 100) / 500,
-				$this->width / 2 + mt_rand(-100, 100) / 500)));
-		}elseif($this->onGround){
-			$this->isCritical = false;
-		}
+        if(!$this->hadCollision and $this->isCritical){
+            $this->level->addParticle(new CriticalParticle($this->add(
+                $this->width / 2 + mt_rand(-100, 100) / 500,
+                $this->height / 2 + mt_rand(-100, 100) / 500,
+                $this->width / 2 + mt_rand(-100, 100) / 500)));
+        }elseif($this->onGround){
+            $this->isCritical = false;
+        }
 
-		if($this->age > 1200 or $this->isCollided){
-			if($this->isCollided and $this->canExplode){
-				$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
-				if(!$ev->isCancelled()){
-					$explosion = new Explosion($this, $ev->getForce(), $this->shootingEntity);
-					if($ev->isBlockBreaking()){
+        if($this->age > 1200 or $this->isCollided){
+            if($this->isCollided and $this->canExplode){
+                $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
+                if(!$ev->isCancelled()){
+                    $explosion = new Explosion($this, $ev->getForce(), $this->shootingEntity);
+                    if($ev->isBlockBreaking()){
                         $explosion->explodeA();
                     }
-					$explosion->explodeB();
-				}
-			}
-			$this->kill();
-			$hasUpdate = true;
-		}
+                    $explosion->explodeB();
+                }
+            }
+            $this->kill();
+            $hasUpdate = true;
+        }
 
-		$this->timings->stopTiming();
+        $this->timings->stopTiming();
 
-		return $hasUpdate;
-	}
+        return $hasUpdate;
+    }
 
-	public function spawnTo(Player $player){
-		$pk = new AddEntityPacket();
-		$pk->type = FireBall::NETWORK_ID;
-		$pk->eid = $this->getId();
-		$pk->x = $this->x;
-		$pk->y = $this->y;
-		$pk->z = $this->z;
-		$pk->speedX = $this->motionX;
-		$pk->speedY = $this->motionY;
-		$pk->speedZ = $this->motionZ;
-		$pk->metadata = $this->dataProperties;
-		$player->dataPacket($pk);
+    public function spawnTo(Player $player){
+        $pk = new AddEntityPacket();
+        $pk->type = FireBall::NETWORK_ID;
+        $pk->eid = $this->getId();
+        $pk->x = $this->x;
+        $pk->y = $this->y;
+        $pk->z = $this->z;
+        $pk->speedX = $this->motionX;
+        $pk->speedY = $this->motionY;
+        $pk->speedZ = $this->motionZ;
+        $pk->metadata = $this->dataProperties;
+        $player->dataPacket($pk);
 
-		parent::spawnTo($player);
-	}
+        parent::spawnTo($player);
+    }
 
 }

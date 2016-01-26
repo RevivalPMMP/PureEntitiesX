@@ -21,7 +21,7 @@ class IronGolem extends Monster{
     }
 
     public function initEntity(){
-    	$this->setMaxHealth(100);
+        $this->setMaxHealth(100);
         if(isset($this->namedtag->Health)){
             $this->setHealth((int) $this->namedtag["Health"]);
         }else{
@@ -65,8 +65,8 @@ class IronGolem extends Monster{
         return $drops;
     }
     public function targetOption(Creature $creature, $distance){
-    	if(! $creature instanceof Player)
-    		return $creature->isAlive() && $distance <= 60;
-    	return false;
+        if(! $creature instanceof Player)
+            return $creature->isAlive() && $distance <= 60;
+        return false;
     }
 }

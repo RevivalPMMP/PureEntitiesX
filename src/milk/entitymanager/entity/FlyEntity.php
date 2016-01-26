@@ -9,7 +9,7 @@ use pocketmine\entity\Creature;
 abstract class FlyEntity extends BaseEntity{
 
     private function checkTarget(){
-    	if(count($this->getViewers()) == 0){
+        if(count($this->getViewers()) == 0){
             return;
         }
 
@@ -17,8 +17,8 @@ abstract class FlyEntity extends BaseEntity{
         if(!($target instanceof Creature) or !$this->targetOption($target, $this->distanceSquared($target))){
             $near = PHP_INT_MAX;
 
-        	foreach ($this->getLevel()->getEntities() as $creature){
-            	if(
+            foreach ($this->getLevel()->getEntities() as $creature){
+                if(
                     $creature === $this
                     || !($creature instanceof Creature)
                     || $creature instanceof Animal
@@ -26,13 +26,13 @@ abstract class FlyEntity extends BaseEntity{
                     continue;
                 }
 
-            	if(
+                if(
                     $creature instanceof BaseEntity
                     && $creature->isFriendly() == $this->isFriendly()
                 ){
                     continue;
                 }
-            	
+
                 if(($distance = $this->distanceSquared($creature)) > $near or !$this->targetOption($creature, $distance)){
                     continue;
                 }
@@ -56,9 +56,9 @@ abstract class FlyEntity extends BaseEntity{
             $ground = $this->getLevel()->getHighestBlockAt($this->x, $this->z);
             $maxAltitude = $ground + 10;
             if($this->y > $maxAltitude){
-            	$y = mt_rand(-10, -7);
+                $y = mt_rand(-10, -7);
             }else{
-            	$y = mt_rand(-2, 2);
+                $y = mt_rand(-2, 2);
             }
             $this->baseTarget = $this->add(mt_rand(0, 1) ? $x : -$x, $y, mt_rand(0, 1) ? $z : -$z);
         }elseif(mt_rand(1, 420) == 1){
@@ -68,9 +68,9 @@ abstract class FlyEntity extends BaseEntity{
             $ground = $this->getLevel()->getHighestBlockAt($this->x, $this->z);
             $maxAltitude = $ground + 10;
             if($this->y > $maxAltitude){
-            	$y = mt_rand(-10, -7);
+                $y = mt_rand(-10, -7);
             }else{
-            	$y = mt_rand(-2, 2);
+                $y = mt_rand(-2, 2);
             }
             $this->baseTarget = $this->add(mt_rand(0, 1) ? $x : -$x, $y, mt_rand(0, 1) ? $z : -$z);
         }elseif($this->moveTime <= 0 or !$this->baseTarget instanceof Vector3){
@@ -80,9 +80,9 @@ abstract class FlyEntity extends BaseEntity{
             $ground = $this->getLevel()->getHighestBlockAt($this->x, $this->z);
             $maxAltitude = $ground + 10;
             if($this->y > $maxAltitude){
-            	$y = mt_rand(-10, -7);
+                $y = mt_rand(-10, -7);
             }else{
-            	$y = mt_rand(-2, 2);
+                $y = mt_rand(-2, 2);
             }
             $this->baseTarget = $this->add(mt_rand(0, 1) ? $x : -$x, $y, mt_rand(0, 1) ? $z : -$z);
         }
@@ -107,10 +107,10 @@ abstract class FlyEntity extends BaseEntity{
             }
             $this->move($this->motionX, $this->motionY, $this->motionZ);
             if(--$this->atkTime <= 0){
-            	$this->attacker = null;
-            	$this->motionX = 0;
-            	$this->motionY = 0;
-            	$this->motionZ = 0;
+                $this->attacker = null;
+                $this->motionX = 0;
+                $this->motionY = 0;
+                $this->motionZ = 0;
             }
             return null;
         }

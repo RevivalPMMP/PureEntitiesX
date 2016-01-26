@@ -34,10 +34,10 @@ abstract class BaseEntity extends Creature{
     protected $isFriendly = false;
     
     public function isFriendly(){
-    	return $this->isFriendly;
+        return $this->isFriendly;
     }
     public function setFriendly($bool){
-    	$this->isFriendly = $bool;
+        $this->isFriendly = $bool;
     }
 
     public function __destruct(){}
