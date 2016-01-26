@@ -65,7 +65,7 @@ abstract class WalkEntity extends BaseEntity{
             $y[13] = 0.5;
             $y[14] = 0.5;
             $y[15] = 0.6;
-            $this->move($this->motionX, isset($y[$this->atkTime]) ?  $y[$this->atkTime] : -0.2, $this->motionZ);
+            $this->move($this->motionX, $y[$this->atkTime], $this->motionZ);
 
             if(--$this->atkTime <= 0){
                 $this->attacker = null;
