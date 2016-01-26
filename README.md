@@ -4,8 +4,7 @@ Author: **[@milk0417(승원)](https://github.com/milk0417)**
   
 자매품(Nukkit): [EntityManager-Nukkit](https://github.com/SW-Team/EntityManager)
     
-**[NOTICE] This plugin is NOT perfect at all.  
-It can cause your server crash, or something bad else :P**
+**[NOTICE] This plug-in is not perfect, the entity may move abnormally (PHP7 Only)**
   
 EntityManager is a plugin for managing entities, literally.  
 Most entities are moving around, and jumps if needed.  
@@ -15,11 +14,10 @@ such as **clear()** or **create()**.
   
 See documentation page for details.  
   
-**[알림] 이 플러그인은 완벽하지 않습니다  
-크래쉬가 발생하거나, 그외에 다른문제가 발생할수도 있습니다**  
+**[알림] 이 플러그인은 완벽하지 않으며 엔티티가 비정상적으로 움직일 수 있습니다 (PHP7만 지원합니다)**  
   
 엔티티매니저는 말 그대로 엔티티를 관리하는 플러그인을 의미합니다.  
-많은 엔티티들은 주위를 돌아다니고, 만약 필요하다면 점프도 합니다.  
+많은 엔티티들은 주위를 돌아다니거나 뛰어다닙니다.  
 
 엔티티매니저는 또한 개발자 여러분을 위해  
 **clear()** 또는 **create()** 와 같은 간단한 API가 제공됩니다.  
