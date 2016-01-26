@@ -17,31 +17,30 @@ class Wolf extends Monster{
 
     private $angry = 0;
 
-    protected $speed = 1.2;
+    public function getSpeed() : float{
+        return 1.2;
+    }
 
     public function initEntity(){
-        $this->fireProof = true;
         $this->setMaxHealth(8);
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
+
+        parent::initEntity();
+        $this->fireProof = true;
+
         if(isset($this->namedtag->Angry)){
             $this->angry = (int) $this->namedtag["Angry"];
         }
-        $this->setMinDamage([0, 3, 4, 6]);
-        $this->setMaxDamage([0, 3, 4, 6]);
-        parent::initEntity();
+
+        $this->setDamage([0, 3, 4, 6]);
         $this->created = true;
     }
 
     public function saveNBT(){
-        $this->namedtag->Angry = new IntTag("Angry", $this->angry);
         parent::saveNBT();
+        $this->namedtag->Angry = new IntTag("Angry", $this->angry);
     }
 
-    public function getName(){
+    public function getName() : string{
         return "Wolf";
     }
 

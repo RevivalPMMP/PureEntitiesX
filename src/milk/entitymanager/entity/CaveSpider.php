@@ -13,7 +13,9 @@ class CaveSpider extends Monster{
     public $width = 1.5;
     public $height = 1.2;
 
-    protected $speed = 1.3;
+    public function getSpeed() : float{
+        return 1.3;
+    }
 
     public function initEntity(){
         $this->setMaxHealth(12);
@@ -28,7 +30,7 @@ class CaveSpider extends Monster{
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "CaveSpider";
     }
 

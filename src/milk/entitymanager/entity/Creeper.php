@@ -19,7 +19,9 @@ class Creeper extends Monster implements Explosive{
 
     private $bombTime = 0;
 
-    protected $speed = 0.9;
+    public function getSpeed() : float{
+        return 0.9;
+    }
 
     public function initEntity(){
         if(isset($this->namedtag->BombTime)){
@@ -39,7 +41,7 @@ class Creeper extends Monster implements Explosive{
         parent::saveNBT();
     }
 
-    public function getName(){
+    public function getName() : string{
         return "Creeper";
     }
 

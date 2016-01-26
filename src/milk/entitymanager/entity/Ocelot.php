@@ -19,7 +19,9 @@ class Ocelot extends Monster{
 
     private $angry = 0;
 
-    protected $speed = 1.5;
+    public function getSpeed() : float{
+        return 1.5;
+    }
 
     public function initEntity(){
         $this->fireProof = true;
@@ -43,7 +45,7 @@ class Ocelot extends Monster{
         parent::saveNBT();
     }
 
-    public function getName(){
+    public function getName() : string{
         return "Ocelot";
     }
 

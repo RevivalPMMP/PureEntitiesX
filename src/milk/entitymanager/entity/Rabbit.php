@@ -12,9 +12,11 @@ class Rabbit extends Animal{
     public $width = 0.4;
     public $height = 0.75;
 
-    protected $speed = 1.2;
+    public function getSpeed() : float{
+        return 1.2;
+    }
     
-    public function getName(){
+    public function getName() : string{
         return "Rabbit";
     }
 

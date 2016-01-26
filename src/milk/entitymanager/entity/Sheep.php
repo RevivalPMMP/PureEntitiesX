@@ -11,11 +11,10 @@ use pocketmine\entity\Creature;
 class Sheep extends Animal implements Colorable{
     const NETWORK_ID = 13;
 
-    public $width = 1.6;
-    public $length = 0.8;
+    public $width = 1.3;
     public $height = 1.12;
 
-    public function getName(){
+    public function getName() : string{
         return "Sheep";
     }
 

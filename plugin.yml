@@ -8,7 +8,7 @@ api: ["2.0.0"]
 load: STARTUP
 author: milk0417
 description: control entity's movement
-website: https://github.com/EntityManager
+website: https://github.com/milk0417/EntityManager
 commands:
   entitymanager:
     description: control entity command

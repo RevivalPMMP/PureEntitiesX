@@ -13,7 +13,9 @@ class Enderman extends Monster{
     public $width = 0.7;
     public $height = 2.8;
 
-    protected $speed = 1.21;
+    public function getSpeed() : float{
+        return 1.21;
+    }
 
     public function initEntity(){
         if(isset($this->namedtag->Health)){
@@ -27,7 +29,7 @@ class Enderman extends Monster{
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "Enderman";
     }
 

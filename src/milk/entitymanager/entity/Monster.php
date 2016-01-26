@@ -18,8 +18,6 @@ abstract class Monster extends WalkEntity{
     private $minDamage = [0, 0, 0, 0];
     private $maxDamage = [0, 0, 0, 0];
 
-    private $entityTick = 0;
-
     protected $attackDelay = 0;
 
     public abstract function attackEntity(Entity $player);
@@ -48,27 +46,40 @@ abstract class Monster extends WalkEntity{
      * @param float|float[] $damage
      * @param int $difficulty
      */
-    public function setDamage($damage, $difficulty = null){
-        $this->setMinDamage($damage, $difficulty);
-        $this->setMaxDamage($damage, $difficulty);
+    public function setDamage($damage, int $difficulty = null){
+        if(is_array($damage)){
+            for($i = 0; $i < 4; $i++){
+                $this->minDamage[$i] = $damage[$i];
+                $this->maxDamage[$i] = $damage[$i];
+            }
+            return;
+        }elseif($difficulty === null){
+            $difficulty = Server::getInstance()->getDifficulty();
+        }
+
+        if($difficulty >= 1 && $difficulty <= 3){
+            $this->minDamage[$difficulty] = $damage[$difficulty];
+            $this->maxDamage[$difficulty] = $damage[$difficulty];
+        }
     }
 
     public function setMinDamage($damage, $difficulty = null){
         $difficulty = $difficulty === null ? Server::getInstance()->getDifficulty() : (int) $difficulty;
         if(is_array($damage)){
-            foreach($damage as $key => $float){
-                if(!is_numeric($key) || !is_numeric($float) || $key > 3 || $key < 0) continue;
-                $key = (int) $key;
-                $float = (float) $float;
-                if($this->maxDamage[$key] >= $float) $this->minDamage[$key] = $float;
+            for($i = 0; $i < 4; $i++){
+                $this->minDamage[$i] = min($damage[$i], $this->getMaxDamage($i));
             }
-        }elseif($difficulty >= 1 && $difficulty <= 3){
-            $damage = (float) $damage;
-            if($this->maxDamage[$difficulty] >= $damage) $this->minDamage[$difficulty] = $damage;
+            return;
+        }elseif($difficulty === null){
+            $difficulty = Server::getInstance()->getDifficulty();
+        }
+
+        if($difficulty >= 1 && $difficulty <= 3){
+            $this->minDamage[$difficulty] = min((float) $damage, $this->getMaxDamage($difficulty));
         }
     }
 
-    public function setMaxDamage($damage, $difficulty = null){
+    public function setMaxDamage($damage, int $difficulty = null){
         $difficulty = $difficulty === null ? Server::getInstance()->getDifficulty() : (int) $difficulty;
         if(is_array($damage)){
             foreach($damage as $key => $float){
@@ -88,34 +99,41 @@ abstract class Monster extends WalkEntity{
             $this->close();
             return;
         }
+
         if(!$this->isAlive()){
-            if(++$this->deadTicks >= 23) $this->close();
+            if(++$this->deadTicks >= 23){
+                $this->close();
+            }
             return;
         }
 
         --$this->moveTime;
         ++$this->attackDelay;
+
         $target = $this->updateMove();
-        
         if($this->isFriendly){
         	if(! $target instanceof Player){
         		if($target instanceof Entity){
         			$this->attackEntity($target);
-        		}elseif($target instanceof Vector3){
-        			if((($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1) $this->moveTime = 0;
+        		}elseif(
+                    $target instanceof Vector3
+        			&&(($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
+                ){
+                    $this->moveTime = 0;
         		}
         	}
         }else{
 		    if($target instanceof Entity){
 		        $this->attackEntity($target);
-		    }elseif($target instanceof Vector3){
-		        if((($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1) $this->moveTime = 0;
+		    }elseif(
+                $target instanceof Vector3
+		        &&(($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
+            ){
+                $this->moveTime = 0;
 		    }
         }
-        if($this->entityTick++ >= 5){
-       		$this->entityTick = 0;
-      		$this->entityBaseTick(5);
-      	}
+
+        $this->entityBaseTick();
     }
 
     public function entityBaseTick($tickDiff = 1){
@@ -126,9 +144,11 @@ abstract class Monster extends WalkEntity{
         }
 
         $hasUpdate = Entity::entityBaseTick($tickDiff);
+
         if($this->atkTime > 0){
             $this->atkTime -= $tickDiff;
         }
+
         if($this->isInsideOfSolid()){
             $hasUpdate = true;
             $ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_SUFFOCATION, 1);

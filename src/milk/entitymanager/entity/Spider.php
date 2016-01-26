@@ -12,22 +12,19 @@ class Spider extends Monster{
     public $width = 1.5;
     public $height = 1.2;
 
-    protected $speed = 1.13;
+    public function getSpeed() : float{
+        return 1.13;
+    }
 
     public function initEntity(){
-        $this->setMaxHealth(16);
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
-        $this->setMinDamage([0, 2, 2, 3]);
-        $this->setMaxDamage([0, 2, 2, 3]);
         parent::initEntity();
+
+        $this->setMaxHealth(16);
+        $this->setDamage([0, 2, 2, 3]);
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "Spider";
     }
 

@@ -10,6 +10,7 @@ use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
 
 abstract class WalkEntity extends BaseEntity{
+
     private function checkTarget(){
     	if(count($this->getViewers()) == 0)
     		return;
@@ -56,17 +57,16 @@ abstract class WalkEntity extends BaseEntity{
         /** @var Vector3 $target */
         
         if($this->attacker instanceof Entity){
-            if($this->atkTime == 16){
-                $target = $this->attacker;
-                $x = $target->x - $this->x;
-                $z = $target->z - $this->z;
-                $diff = abs($x) + abs($z);
-                $this->motionX = -0.5 * ($diff == 0 ? 0 : $x / $diff);
-                $this->motionZ = -0.5 * ($diff == 0 ? 0 : $z / $diff);
-                --$this->atkTime;
-            }
-            $y = [11 => 0.3, 12 => 0.3, 13 => 0.4, 14 => 0.4, 15 => 0.5, 16 => 0.5];
+            --$this->atkTime;
+
+            $y = array_fill(0, 11, -0.2);
+            $y[11] = 0.4;
+            $y[12] = 0.4;
+            $y[13] = 0.5;
+            $y[14] = 0.5;
+            $y[15] = 0.6;
             $this->move($this->motionX, isset($y[$this->atkTime]) ?  $y[$this->atkTime] : -0.2, $this->motionZ);
+
             if(--$this->atkTime <= 0){
             	$this->attacker = null;
             	$this->motionX = 0;
@@ -87,8 +87,8 @@ abstract class WalkEntity extends BaseEntity{
                 $this->motionZ = 0;
             }else{
                 $diff = abs($x) + abs($z);
-                $this->motionX = $this->speed * 0.15 * ($x / $diff);
-                $this->motionZ = $this->speed * 0.15 * ($z / $diff);
+                $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
+                $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
             }
             //$this->yaw = rad2deg(atan2($z, $x) - M_PI_2);
             $this->yaw = -atan2($this->motionX, $this->motionZ) * 180 / M_PI;

@@ -12,7 +12,9 @@ class Silverfish extends Monster{
     public $width = 0.7;
     public $height = 0.7;
 
-    protected $speed = 1.4;
+    public function getSpeed() : float{
+        return 1.4;
+    }
 
     public function initEntity(){
         if(isset($this->namedtag->Health)){
@@ -26,7 +28,7 @@ class Silverfish extends Monster{
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "Silverfish";
     }
 

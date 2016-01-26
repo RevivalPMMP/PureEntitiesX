@@ -24,17 +24,13 @@ class SnowGolem extends Monster implements ProjectileSource{
     public $height = 1.2;
 
     public function initEntity(){
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
         parent::initEntity();
+
         $this->setFriendly(true);
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "SnowGolem";
     }
 
@@ -64,12 +60,12 @@ class SnowGolem extends Monster implements ProjectileSource{
 
             /** @var Projectile $arrow */
             $snowball = Entity::createEntity("Snowball", $this->chunk, $nbt, $this);
-            $snowball->setMotion ( $snowball->getMotion ()->multiply ( $f ) );
+            $snowball->setMotion($snowball->getMotion()->multiply($f));
             
             /* Snowball damage change */
-            $property = (new \ReflectionClass ( $snowball ))->getProperty ( "damage" );
+            $property = (new \ReflectionClass($snowball))->getProperty("damage");
             $property->setAccessible(true);
-            $property->setValue ( $snowball, 2 );
+            $property->setValue($snowball, 2);
             
             $ev = new EntityShootBowEvent($this, Item::get(Item::ARROW, 0, 1), $snowball, $f);
 

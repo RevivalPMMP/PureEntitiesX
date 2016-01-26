@@ -13,21 +13,17 @@ class Zombie extends Monster{
     public $width = 0.72;
     public $height = 1.8;
 
-    protected $speed = 1.1;
+    public function getSpeed() : float{
+        return 1.1;
+    }
 
     public function initEntity(){
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
-        $this->setMinDamage([0, 3, 4, 6]);
-        $this->setMaxDamage([0, 3, 4, 6]);
         parent::initEntity();
+        $this->setDamage([0, 3, 4, 6]);
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "Zombie";
     }
 
@@ -56,5 +52,4 @@ class Zombie extends Monster{
         }
         return $drops;
     }
-
 }

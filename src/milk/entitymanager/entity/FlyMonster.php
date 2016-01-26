@@ -18,8 +18,6 @@ abstract class FlyMonster extends FlyEntity{
     private $minDamage = [0, 0, 0, 0];
     private $maxDamage = [0, 0, 0, 0];
 
-    private $entityTick = 0;
-
     protected $attackDelay = 0;
 
     public abstract function attackEntity(Entity $player);
@@ -88,23 +86,28 @@ abstract class FlyMonster extends FlyEntity{
             $this->close();
             return;
         }
+
         if(!$this->isAlive()){
-            if(++$this->deadTicks >= 23) $this->close();
+            if(++$this->deadTicks >= 23){
+                $this->close();
+            }
             return;
         }
 
         --$this->moveTime;
         ++$this->attackDelay;
+
         $target = $this->updateMove();
         if($target instanceof Entity){
             $this->attackEntity($target);
-        }elseif($target instanceof Vector3){
-            if((($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1) $this->moveTime = 0;
+        }elseif(
+            $target instanceof Vector3
+            && (($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
+        ){
+            $this->moveTime = 0;
         }
-        if($this->entityTick++ >= 5){
-            $this->entityTick = 0;
-            $this->entityBaseTick(5);
-        }
+
+        $this->entityBaseTick();
     }
 
     public function entityBaseTick($tickDiff = 1){

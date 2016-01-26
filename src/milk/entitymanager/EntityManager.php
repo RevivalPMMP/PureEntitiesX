@@ -96,7 +96,9 @@ class EntityManager extends PluginBase implements Listener{
         	Ghast::class,
         	Blaze::class,
         ];
-        foreach($classes as $name) self::registerEntity($name);
+        foreach($classes as $name){
+            self::registerEntity($name);
+        }
        
         Entity::registerEntity(FireBall::class);
     }
@@ -298,12 +300,16 @@ class EntityManager extends PluginBase implements Listener{
 
     public function EntitySpawnEvent(EntitySpawnEvent $ev){
         $entity = $ev->getEntity();
-        if(is_a($entity, BaseEntity::class, true) && !$entity->closed) self::$entities[$entity->getId()] = $entity;
+        if($entity instanceof BaseEntity && !$entity->closed){
+            self::$entities[$entity->getId()] = $entity;
+        }
     }
 
     public function EntityDespawnEvent(EntityDespawnEvent $ev){
         $entity = $ev->getEntity();
-        if($entity instanceof BaseEntity) unset(self::$entities[$entity->getId()]);
+        if($entity instanceof BaseEntity){
+            unset(self::$entities[$entity->getId()]);
+        }
     }
 
     public function PlayerInteractEvent(PlayerInteractEvent $ev){

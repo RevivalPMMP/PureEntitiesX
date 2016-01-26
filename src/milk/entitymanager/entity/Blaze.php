@@ -3,6 +3,7 @@
 namespace milk\entitymanager\entity;
 
 use pocketmine\entity\Entity;
+use pocketmine\entity\Projectile;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
@@ -20,7 +21,9 @@ class Blaze extends FlyMonster implements ProjectileSource{
     public $width = 0.72;
     public $height = 1.8;
 
-    protected $speed = 1.2;
+    public function getSpeed() : float{
+        return 1.2;
+    }
 
     public function initEntity(){
         if(isset($this->namedtag->Health)){
@@ -34,7 +37,7 @@ class Blaze extends FlyMonster implements ProjectileSource{
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "Blaze";
     }
 
@@ -64,7 +67,7 @@ class Blaze extends FlyMonster implements ProjectileSource{
 
             /** @var Projectile $fireball */
             $fireball = Entity::createEntity("FireBall", $this->chunk, $nbt, $this);
-            $fireball->setMotion ( $fireball->getMotion ()->multiply ( $f ) );
+            $fireball->setMotion($fireball->getMotion()->multiply($f));
             $ev = new EntityShootBowEvent($this, Item::get(Item::ARROW, 0, 1), $fireball, $f);
 
             $this->server->getPluginManager()->callEvent($ev);

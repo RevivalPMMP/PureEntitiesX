@@ -11,21 +11,19 @@ class Slime extends Animal{
 
     public $width = 1.2;
     public $height = 1.2;
-    
-    protected $speed = 0.8;
 
-    public function getName(){
+    public function getSpeed() : float{
+        return 0.8;
+    }
+
+    public function getName() : string{
         return "Slime";
     }
 
     public function initEntity(){
-        $this->setMaxHealth(4);
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
         parent::initEntity();
+
+        $this->setMaxHealth(4);
         $this->created = true;
     }
 

@@ -46,17 +46,20 @@ class FireBall extends Projectile{
 	protected $isCritical;
 	protected $canExplode = false;
 
-	public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null, $critical = false){
-		$this->isCritical = (bool) $critical;
+	public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
+		$this->isCritical = $critical;
 		parent::__construct($chunk, $nbt, $shootingEntity);
 	}
-	public function isExplode(){
+
+	public function isExplode() : bool {
 		return $this->canExplode;
 	}
-	public function setExplode($bool){
+
+	public function setExplode(bool $bool){
 		$this->canExplode = $bool;
 	}
-	public function onUpdate($currentTick){
+
+	public function onUpdate($currentTick) : bool{
 		if($this->closed){
 			return false;
 		}
@@ -78,9 +81,10 @@ class FireBall extends Projectile{
 			if($this->isCollided and $this->canExplode){
 				$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
 				if(!$ev->isCancelled()){
-					$explosion = new Explosion ( $this, $ev->getForce (), $this->shootingEntity );
-					//if($ev->isBlockBreaking())
-					//	$explosion->explodeA();
+					$explosion = new Explosion($this, $ev->getForce(), $this->shootingEntity);
+					if($ev->isBlockBreaking()){
+                        $explosion->explodeA();
+                    }
 					$explosion->explodeB();
 				}
 			}
@@ -108,4 +112,5 @@ class FireBall extends Projectile{
 
 		parent::spawnTo($player);
 	}
+
 }

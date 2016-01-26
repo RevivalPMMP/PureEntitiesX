@@ -22,16 +22,12 @@ class Skeleton extends Monster implements ProjectileSource{
     public $height = 1.8;
 
     public function initEntity(){
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
         parent::initEntity();
+
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "Skeleton";
     }
 

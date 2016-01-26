@@ -12,7 +12,9 @@ class MagmaCube extends Monster{
     public $width = 1.2;
     public $height = 1.2;
 
-    protected $speed = 0.8;
+    public function getSpeed() : float{
+        return 0.8;
+    }
 
     public function initEntity(){
         if(isset($this->namedtag->Health)){
@@ -26,7 +28,7 @@ class MagmaCube extends Monster{
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "MagmaCube";
     }
 

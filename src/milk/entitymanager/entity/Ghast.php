@@ -20,7 +20,9 @@ class Ghast extends FlyMonster implements ProjectileSource{
     public $width = 4;
     public $height = 4;
 
-    protected $speed = 1.2;
+    public function getSpeed() : float{
+        return 1.2;
+    }
 
     public function initEntity(){
         if(isset($this->namedtag->Health)){
@@ -34,7 +36,7 @@ class Ghast extends FlyMonster implements ProjectileSource{
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "Ghast";
     }
 
@@ -62,11 +64,11 @@ class Ghast extends FlyMonster implements ProjectileSource{
                 ]),
             ]);
 
-            /** @var Projectile $fireball */
             $fireball = Entity::createEntity("FireBall", $this->chunk, $nbt, $this);
-            if($fireball instanceof FireBall)
-            	$fireball->setExplode(true);
-            $fireball->setMotion ( $fireball->getMotion ()->multiply ( $f ) );
+            if($fireball instanceof FireBall){
+                $fireball->setExplode(true);
+            }
+            $fireball->setMotion($fireball->getMotion()->multiply($f));
             $ev = new EntityShootBowEvent($this, Item::get(Item::ARROW, 0, 1), $fireball, $f);
 
             $this->server->getPluginManager()->callEvent($ev);

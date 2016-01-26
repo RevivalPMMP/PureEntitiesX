@@ -13,7 +13,7 @@ class Chicken extends Animal{
     public $width = 0.4;
     public $height = 0.75;
 
-    public function getName(){
+    public function getName() : string{
         return "Chicken";
     }
 

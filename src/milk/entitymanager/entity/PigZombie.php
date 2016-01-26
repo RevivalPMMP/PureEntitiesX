@@ -13,37 +13,35 @@ class PigZombie extends Monster{
     const NETWORK_ID = 36;
 
     public $width = 0.72;
-    public $length = 0.6;
     public $height = 1.8;
     public $eyeHeight = 1.62;
 
     private $angry = 0;
 
-    protected $speed = 1.15;
+    public function getSpeed() : float{
+        return 1.15;
+    }
 
     public function initEntity(){
-        $this->fireProof = true;
         $this->setMaxHealth(22);
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
+
+        parent::initEntity();
+        $this->fireProof = true;
+
         if(isset($this->namedtag->Angry)){
             $this->angry = (int) $this->namedtag["Angry"];
         }
-        $this->setMinDamage([0, 5, 9, 13]);
-        $this->setMaxDamage([0, 5, 9, 13]);
-        parent::initEntity();
+
+        $this->setDamage([0, 5, 9, 13]);
         $this->created = true;
     }
 
     public function saveNBT(){
-        $this->namedtag->Angry = new IntTag("Angry", $this->angry);
         parent::saveNBT();
+        $this->namedtag->Angry = new IntTag("Angry", $this->angry);
     }
 
-    public function getName(){
+    public function getName() : string{
         return "PigZombie";
     }
 

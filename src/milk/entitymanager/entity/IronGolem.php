@@ -16,7 +16,9 @@ class IronGolem extends Monster{
     public $width = 1.3;
     public $height = 1.8;
 
-    protected $speed = 1.1;
+    public function getSpeed() : float{
+        return 1.2;
+    }
 
     public function initEntity(){
     	$this->setMaxHealth(100);
@@ -32,7 +34,7 @@ class IronGolem extends Monster{
         $this->created = true;
     }
 
-    public function getName(){
+    public function getName() : string{
         return "IronGolem";
     }
 
