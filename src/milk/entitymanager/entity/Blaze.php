@@ -26,14 +26,9 @@ class Blaze extends FlyMonster implements ProjectileSource{
     }
 
     public function initEntity(){
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
-        $this->setMinDamage([0, 4, 6, 9]);
-        $this->setMaxDamage([0, 4, 6, 9]);
         parent::initEntity();
+
+        $this->setDamage([0, 4, 6, 9]);
         $this->created = true;
     }
 

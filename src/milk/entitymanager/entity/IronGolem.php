@@ -22,15 +22,10 @@ class IronGolem extends Monster{
 
     public function initEntity(){
         $this->setMaxHealth(100);
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
-        $this->setFriendly(true);
-        $this->setMinDamage([0, 3, 4, 6]);
-        $this->setMaxDamage([0, 3, 4, 6]);
         parent::initEntity();
+
+        $this->setFriendly(true);
+        $this->setDamage([0, 3, 4, 6]);
         $this->created = true;
     }
 

@@ -18,15 +18,10 @@ class CaveSpider extends Monster{
     }
 
     public function initEntity(){
-        $this->setMaxHealth(12);
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
-        $this->setMinDamage([2, 3]);
-        $this->setMaxDamage([2, 3]);
         parent::initEntity();
+
+        $this->setMaxHealth(12);
+        $this->setDamage([0, 2, 3, 3]);
         $this->created = true;
     }
 

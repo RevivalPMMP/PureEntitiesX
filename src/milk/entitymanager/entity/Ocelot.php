@@ -24,25 +24,22 @@ class Ocelot extends Monster{
     }
 
     public function initEntity(){
+        parent::initEntity();
+
         $this->fireProof = true;
         $this->setMaxHealth(10);
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
+
         if(isset($this->namedtag->Angry)){
             $this->angry = (int) $this->namedtag["Angry"];
         }
-        $this->setMinDamage([0, 2]);
-        $this->setMaxDamage([0, 2]);
-        parent::initEntity();
+
+        $this->setDamage([0, 2, 2, 2]);
         $this->created = true;
     }
 
     public function saveNBT(){
-        $this->namedtag->Angry = new IntTag("Angry", $this->angry);
         parent::saveNBT();
+        $this->namedtag->Angry = new IntTag("Angry", $this->angry);
     }
 
     public function getName() : string{

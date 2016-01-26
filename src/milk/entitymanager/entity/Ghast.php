@@ -30,8 +30,7 @@ class Ghast extends FlyMonster implements ProjectileSource{
         }else{
             $this->setHealth($this->getMaxHealth());
         }
-        $this->setMinDamage([0, 4, 6, 9]);
-        $this->setMaxDamage([0, 4, 6, 9]);
+        $this->setDamage([0, 4, 6, 9]);
         parent::initEntity();
         $this->created = true;
     }

@@ -18,14 +18,9 @@ class Enderman extends Monster{
     }
 
     public function initEntity(){
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
-        $this->setMinDamage([0, 1, 2, 3]);
-        $this->setMaxDamage([0, 1, 2, 3]);
         parent::initEntity();
+
+        $this->setDamage([0, 1, 2, 3]);
         $this->created = true;
     }
 

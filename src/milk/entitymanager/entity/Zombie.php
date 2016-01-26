@@ -19,6 +19,7 @@ class Zombie extends Monster{
 
     public function initEntity(){
         parent::initEntity();
+
         $this->setDamage([0, 3, 4, 6]);
         $this->created = true;
     }
