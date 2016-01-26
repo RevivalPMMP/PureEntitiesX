@@ -77,7 +77,9 @@ abstract class BaseEntity extends Creature{
         $this->wallcheck = (bool) $value;
     }
 
-    public function getSpeed() : float{}
+    public function getSpeed() : float{
+        return 1;
+    }
 
     public function initEntity(){
         parent::initEntity();
