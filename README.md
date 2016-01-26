@@ -59,6 +59,9 @@ See documentation page for details.
     * permission: entitymanager.command.spawn
     * description: literally(If blank, it is set as a Player)
 
+### YAML data
+  * TODO
+
 ### Method Examples(메소드 예시)
 ``` php  
 //Entity Method
