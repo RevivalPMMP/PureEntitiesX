@@ -13,8 +13,6 @@ use milk\entitymanager\entity\animal\walking\Sheep;
 use milk\entitymanager\entity\BaseEntity;
 use milk\entitymanager\entity\monster\flying\Blaze;
 use milk\entitymanager\entity\monster\flying\Ghast;
-use milk\entitymanager\entity\monster\jumping\MagmaCube;
-use milk\entitymanager\entity\monster\jumping\Slime;
 use milk\entitymanager\entity\monster\Monster;
 use milk\entitymanager\entity\monster\walking\CaveSpider;
 use milk\entitymanager\entity\monster\walking\Creeper;
@@ -28,7 +26,6 @@ use milk\entitymanager\entity\monster\walking\Wolf;
 use milk\entitymanager\entity\monster\walking\Zombie;
 use milk\entitymanager\entity\monster\walking\ZombieVillager;
 use milk\entitymanager\entity\projectile\FireBall;
-use milk\entitymanager\task\AutoClearTask;
 use milk\entitymanager\task\SpawnEntityTask;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -37,8 +34,6 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Projectile;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDeathEvent;
-use pocketmine\event\entity\EntityDespawnEvent;
-use pocketmine\event\entity\EntitySpawnEvent;
 use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -59,14 +54,10 @@ use pocketmine\block\Block;
 
 class EntityManager extends PluginBase implements Listener{
 
-    public $path;
-
     public static $data;
     public static $drops;
     public static $spawn;
 
-    /** @var BaseEntity[] */
-    private static $entities = [];
     private static $knownEntities = [];
 
     public function __construct(){
@@ -187,26 +178,11 @@ class EntityManager extends PluginBase implements Listener{
         return preg_replace("#^([ ]*)([a-zA-Z_]{1}[^\:]*)\:#m", "$1\"$2\":", file_get_contents($file));
     }
 
-    /**
-     * @param Level $level
-     *
-     * @return BaseEntity[]
-     */
-    public static function getEntities(Level $level = null){
-        $entities = self::$entities;
-        if($level != null){
-            foreach($entities as $id => $entity){
-                if($entity->getLevel() !== $level) unset($entities[$id]);
-            }
-        }
-        return $entities;
-    }
-
     public static function clear(array $type = [BaseEntity::class], Level $level = null){
         $level = $level === null ? Server::getInstance()->getDefaultLevel() : $level;
         foreach($level->getEntities() as $id => $ent){
             foreach($type as $t){
-                if(is_a(get_class($ent), $t, true)){
+                if(is_a($ent, $t, true)){
                     $ent->close();
                     continue;
                 }
@@ -214,19 +190,19 @@ class EntityManager extends PluginBase implements Listener{
         }
     }
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function getData(string $key){
+    public function getData(string $key, mixed $defaultValue = null) : mixed{
         $vars = explode(".", $key);
         $base = array_shift($vars);
-        if(!isset(self::$data[$base])) return false;
+        if(!isset(self::$data[$base])){
+            return $defaultValue;
+        }
+
         $base = self::$data[$base];
         while(count($vars) > 0){
             $baseKey = array_shift($vars);
-            if(!is_array($base) or !isset($base[$baseKey])) return false;
+            if(!is_array($base) or !isset($base[$baseKey])){
+                return $defaultValue;
+            }
             $base = $base[$baseKey];
         }
         return $base;
@@ -283,20 +259,6 @@ class EntityManager extends PluginBase implements Listener{
         }
     }
 
-    public function EntitySpawnEvent(EntitySpawnEvent $ev){
-        $entity = $ev->getEntity();
-        if($entity instanceof BaseEntity && !$entity->closed){
-            self::$entities[$entity->getId()] = $entity;
-        }
-    }
-
-    public function EntityDespawnEvent(EntityDespawnEvent $ev){
-        $entity = $ev->getEntity();
-        if($entity instanceof BaseEntity){
-            unset(self::$entities[$entity->getId()]);
-        }
-    }
-
     public function PlayerInteractEvent(PlayerInteractEvent $ev){
         if($ev->getFace() == 255 || $ev->getAction() != PlayerInteractEvent::RIGHT_CLICK_BLOCK) return;
         $item = $ev->getItem();
@@ -333,6 +295,7 @@ class EntityManager extends PluginBase implements Listener{
         }elseif(isset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"])){
             unset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"]);
         }
+
         if(
             ($ev->getBlock()->getId() == Block::STONE or $ev->getBlock()->getId() == Block::STONE_BRICK or $ev->getBlock()->getId() == Block::STONE_WALL or $ev->getBlock()->getId() == Block::STONE_BRICK_STAIRS)
         	&& ($ev->getBlock()->getLightLevel() < 12 and mt_rand(1,3) < 2)
@@ -374,11 +337,13 @@ class EntityManager extends PluginBase implements Listener{
                     $i->sendMessage(TextFormat::RED . "You do not have permission to use this command");
                     return true;
                 }
+
                 if(isset($sub[0])){
                     $level = $this->getServer()->getLevelByName($sub[0]);
                 }else{
                     $level = $i instanceof Player ? $i->getLevel() : null;
                 }
+
                 self::clear([BaseEntity::class, Projectile::class, ItemEntity::class], $level);
                 $output .= "All spawned entities were removed";
                 break;
@@ -387,6 +352,7 @@ class EntityManager extends PluginBase implements Listener{
                     $i->sendMessage(TextFormat::RED . "You do not have permission to use this command");
                     return true;
                 }
+
                 $mob = 0;
                 $animal = 0;
                 $item = 0;
@@ -397,6 +363,7 @@ class EntityManager extends PluginBase implements Listener{
                 }else{
                     $level = $i instanceof Player ? $i->getLevel() : $this->getServer()->getDefaultLevel();
                 }
+
                 foreach($level->getEntities() as $id => $ent) {
                     if($ent instanceof Monster){
                         $mob++;
@@ -410,6 +377,7 @@ class EntityManager extends PluginBase implements Listener{
                         $other++;
                     }
                 }
+
                 $output = "--- All entities in Level \"{$level->getName()}\" ---\n";
                 $output .= TextFormat::YELLOW . "Monster: $mob\n";
                 $output .= TextFormat::YELLOW . "Animal: $animal\n";
@@ -422,10 +390,12 @@ class EntityManager extends PluginBase implements Listener{
                     $i->sendMessage(TextFormat::RED . "You do not have permission to use this command");
                     return true;
                 }
+
                 if(!isset($sub[0]) or (!is_numeric($sub[0]) and gettype($sub[0]) !== "string")){
                     $output .= "Entity's name is incorrect";
                     break;
                 }
+
                 $pos = null;
                 if(count($sub) >= 4){
                     $level = $this->getServer()->getDefaultLevel();
@@ -439,12 +409,17 @@ class EntityManager extends PluginBase implements Listener{
                     $pos = $i->getPosition();
                 }
 
-                $entity = self::create($sub[0], $pos);
-                if($pos == null || $entity == null){
+                if($pos == null){
                     $output .= "usage: /$label create <id/name> (x) (y) (z) (level)";
-                }else{
-                    $entity->spawnToAll();
+                    break;
                 }
+
+                $entity = self::create($sub[0], $pos);
+                if($entity == null){
+                    $output .= "An error occurred while summoning entity";
+                    break;
+                }
+                $entity->spawnToAll();
                 break;
             default:
                 $output .= "usage: /$label <remove/check/create>";

@@ -46,7 +46,6 @@ See documentation page for details.
 
 ### Method(메소드)
   * EntityManager
-    * public static function getEntities(Level $level = null) : array
     * public static function clear(array $type = [BaseEntity::class], Level $level = null) : void
     * public static function create(int|string $type, Position $pos, ...$args) : BaseEntity
   * BaseEntity
