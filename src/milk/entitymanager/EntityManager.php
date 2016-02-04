@@ -304,7 +304,12 @@ class EntityManager extends PluginBase implements Listener{
         $pos = $ev->getBlock()->getSide($ev->getFace());
 
         if($item->getId() === Item::SPAWN_EGG){
-            if(self::create($item->getDamage(), $pos) != null && $player->isSurvival()){
+            $entity = self::create($item->getDamage(), $pos);
+            if($entity != null){
+                $entity->spawnToAll();
+            }
+
+            if($player->isSurvival()){
                 $item->count--;
                 $player->getInventory()->setItemInHand($item);
             }
@@ -332,7 +337,10 @@ class EntityManager extends PluginBase implements Listener{
             ($ev->getBlock()->getId() == Block::STONE or $ev->getBlock()->getId() == Block::STONE_BRICK or $ev->getBlock()->getId() == Block::STONE_WALL or $ev->getBlock()->getId() == Block::STONE_BRICK_STAIRS)
         	&& ($ev->getBlock()->getLightLevel() < 12 and mt_rand(1,3) < 2)
         ){
-            self::create("Silverfish", $pos);
+            $entity = self::create("Silverfish", $pos);
+            if($entity != null){
+                $entity->spawnToAll();
+            }
         }
     }
 
@@ -431,8 +439,11 @@ class EntityManager extends PluginBase implements Listener{
                     $pos = $i->getPosition();
                 }
 
-                if($pos == null || self::create($sub[0], $pos) == null){
+                $entity = self::create($sub[0], $pos);
+                if($pos == null || $entity == null){
                     $output .= "usage: /$label create <id/name> (x) (y) (z) (level)";
+                }else{
+                    $entity->spawnToAll();
                 }
                 break;
             default:
