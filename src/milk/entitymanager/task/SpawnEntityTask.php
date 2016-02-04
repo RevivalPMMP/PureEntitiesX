@@ -21,23 +21,30 @@ class SpawnEntityTask extends PluginTask{
                 unset(EntityManager::$spawn[$key]);
                 continue;
             }
+
             $radius = (int) $data["radius"];
             $pos = Position::fromObject(new Vector3(...($vec = explode(":", $key))), ($k = Server::getInstance()->getLevelByName((string) array_pop($vec))) == null ? Server::getInstance()->getDefaultLevel() : $k);
             $pos->y = $pos->getLevel()->getHighestBlockAt($pos->x += mt_rand(-$radius, $radius), $pos->z += mt_rand(-$radius, $radius));
-            EntityManager::createEntity($data["mob-list"][mt_rand(0, count($data["mob-list"]) - 1)], $pos);
+            EntityManager::create($data["mob-list"][mt_rand(0, count($data["mob-list"]) - 1)], $pos);
         }
         if(!$owner->getData("autospawn.turn-on")) return;
         foreach($this->owner->getServer()->getOnlinePlayers() as $player){
-            if(mt_rand(...$rand) > $rand[0]) continue;
+            if(mt_rand(...$rand) > $rand[0]){
+                continue;
+            }
+
             $radius = (int) $owner->getData("autospawn.radius");
             $pos = $player->getPosition();
-            $pos->y = $player->level->getHighestBlockAt($pos->x += mt_rand(-$radius, $radius), $pos->z += mt_rand(-$radius, $radius))+2;
-            
+            $pos->y = $player->level->getHighestBlockAt($pos->x += mt_rand(-$radius, $radius), $pos->z += mt_rand(-$radius, $radius)) + 2;
+
             $ent = [
                 ["Cow", "Pig", "Sheep", "Chicken", "Slime", "Wolf", "Ocelot", "Mooshroom", "Rabbit", "IronGolem", "SnowGolem"],
                 ["Zombie", "Creeper", "Skeleton", "Spider", "PigZombie", "Enderman", "CaveSpider", "MagmaCube", "ZombieVillager", "Ghast", "Blaze"]
             ];
-            EntityManager::createEntity($ent[mt_rand(0, 1)][mt_rand(0, 10)], $pos);
+            $entity = EntityManager::create($ent[mt_rand(0, 1)][mt_rand(0, 10)], $pos);
+            if($entity != null){
+                $entity->spawnToAll();
+            }
         }
     }
 

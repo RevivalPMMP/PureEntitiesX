@@ -1,6 +1,6 @@
-# EntityManager   
+# EntityManager
   
-Author: **[@milk0417(승원)](https://github.com/milk0417)**  
+Author(제작자): **[@milk0417(승원)](https://github.com/milk0417)**  
   
 자매품(Nukkit): [EntityManager-Nukkit](https://github.com/SW-Team/EntityManager)
     
@@ -24,23 +24,8 @@ See documentation page for details.
   
 자세한 사항은 아래를 보시기 바랍니다
 
-### Method(메소드)
-  * EntityManager
-    * public static function getEntities(Level $level = null) : array
-    * public static function clear(array $type = [BaseEntity::class], Level $level = null) : void
-    * public static function create(int|string $type, Position $pos, ...$args) : BaseEntity
-  * BaseEntity
-    * public function isCreated() : bool
-    * public function isMovement() : bool
-    * public function isWallCheck() : bool
-    * public function setMovement(bool $value) : void
-    * public function setWallCheck(bool $value) : void
-  * Monster
-    * public function getDamage(int $difficulty = null) : float
-    * public function setDamage(float|float[] $damage, int $difficulty = null) : void
-  * PigZombie
-    * public function isAngry() : bool
-    * public function setAngry(int $angry) : void
+### YAML data
+  * TODO
   
 ### Commands(명령어)
   * /entitymanager
@@ -59,28 +44,43 @@ See documentation page for details.
     * permission: entitymanager.command.spawn
     * description: literally(If blank, it is set as a Player)
 
-### YAML data
-  * TODO
+### Method(메소드)
+  * EntityManager
+    * public static function getEntities(Level $level = null) : array
+    * public static function clear(array $type = [BaseEntity::class], Level $level = null) : void
+    * public static function create(int|string $type, Position $pos, ...$args) : BaseEntity
+  * BaseEntity
+    * public function isCreated() : bool
+    * public function isMovement() : bool
+    * public function isWallCheck() : bool
+    * public function setMovement(bool $value) : void
+    * public function setWallCheck(bool $value) : void
+  * Monster
+    * public function getDamage(int $difficulty = null) : float
+    * public function setDamage(float|float[] $damage, int $difficulty = null) : void
+  * PigZombie
+    * public function isAngry() : bool
+    * public function setAngry(int $angry) : void
 
 ### Method Examples(메소드 예시)
-``` php  
+``` php
 //Entity Method
 foreach(EntityManager::getEntity() as $entity){
-    if(!$entity->isMovement()){  
-        $entity->setMovement(true);  
-    }  
+    if(!$entity->isMovement()){
+        $entity->setMovement(true);
+    }
     if($entity instanceof Monster){
         $entity->setDamage(10);
-          
+
         $entity->setMaxDamage(10);
         $entity->setMinDamage(10);
     }
 }
-  
-//Create Entity  
+
+//Create Entity
 $arrow = EntityManager::create("Arrow", $pos, $player, true);
-$zombie = EntityManager::create("Zombie", $pos);  
-  
-//Remove Entity  
-EntityManager::clear([BaseEntity::class, Projectile::class, Item::class]);  
+$zombie = EntityManager::create("Zombie", $pos);
+
+//Remove Entity
+EntityManager::clear([BaseEntity::class, Projectile::class, Item::class]);
 ```

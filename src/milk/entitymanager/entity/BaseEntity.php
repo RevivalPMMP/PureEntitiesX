@@ -15,66 +15,55 @@ use pocketmine\Player;
 
 abstract class BaseEntity extends Creature{
 
-    private $movement = true;
-    private $wallcheck = true;
-
     protected $stayTime = 0;
     protected $moveTime = 0;
-
-    protected $created = false;
 
     /** @var Vector3|Entity */
     protected $baseTarget = null;
     /** @var Vector3|Entity */
     protected $mainTarget = null;
 
-    protected $attacker = null;
-    protected $atkTime = 0;
-
-    protected $isFriendly = false;
-    
-    public function isFriendly(){
-        return $this->isFriendly;
-    }
-    public function setFriendly($bool){
-        $this->isFriendly = $bool;
-    }
+    private $movement = true;
+    private $friendly = false;
+    private $wallcheck = true;
 
     public function __destruct(){}
 
-    public function onUpdate($currentTick){
-        return false;
-    }
+    public abstract function updateMove(int $tickDiff) : Vector3;
 
-    public abstract function updateTick();
-
-    public abstract function updateMove();
-
-    public abstract function targetOption(Creature $creature, $distance);
+    public abstract function targetOption(Creature $creature, float $distance) : bool;
 
     public function getSaveId(){
         $class = new \ReflectionClass(static::class);
         return $class->getShortName();
     }
 
-    public function isCreated(){
-        return $this->created;
-    }
-
-    public function isMovement(){
+    public function isMovement() : bool{
         return $this->movement;
     }
 
-    public function setMovement($value){
-        $this->movement = (bool) $value;
+    public function isFriendly() : bool{
+        return $this->friendly;
     }
 
-    public function isWallCheck(){
+    public function isKnockback() : bool{
+        return $this->attackTime > 0;
+    }
+
+    public function isWallCheck() : bool{
         return $this->wallcheck;
     }
 
-    public function setWallCheck($value){
-        $this->wallcheck = (bool) $value;
+    public function setMovement(bool $value){
+        $this->movement = $value;
+    }
+
+    public function setFriendly(bool $bool){
+        $this->friendly = $bool;
+    }
+
+    public function setWallCheck(bool $value){
+        $this->wallcheck = $value;
     }
 
     public function getSpeed() : float{
@@ -96,7 +85,10 @@ abstract class BaseEntity extends Creature{
     }
 
     public function spawnTo(Player $player){
-        if(!isset($this->hasSpawned[$player->getLoaderId()]) && isset($player->usedChunks[Level::chunkHash($this->chunk->getX(), $this->chunk->getZ())])){
+        if(
+            !isset($this->hasSpawned[$player->getLoaderId()])
+            && isset($player->usedChunks[Level::chunkHash($this->chunk->getX(), $this->chunk->getZ())])
+        ){
             $pk = new AddEntityPacket();
             $pk->eid = $this->getID();
             $pk->type = static::NETWORK_ID;
@@ -134,7 +126,7 @@ abstract class BaseEntity extends Creature{
     }
 
     public function attack($damage, EntityDamageEvent $source){
-        if($this->atkTime > 0) return;
+        if($this->isKnockback() > 0) return;
 
         parent::attack($damage, $source);
 
@@ -142,29 +134,46 @@ abstract class BaseEntity extends Creature{
             return;
         }
 
-        $this->atkTime = 15;
         $this->stayTime = 0;
+        $this->moveTime = 0;
+        $this->baseTarget = null;
 
-        $this->attacker = $source->getDamager();
-
-        $x = $this->attacker->x - $this->x;
-        $z = $this->attacker->z - $this->z;
-        $diff = abs($x) + abs($z);
-        $this->motionX = -0.4 * ($diff == 0 ? 0 : $x / $diff);
-        $this->motionZ = -0.4 * ($diff == 0 ? 0 : $z / $diff);
-        $this->move($this->motionX, 0.6, $this->motionZ);
-
-        if($this instanceof PigZombie){
-            $this->setAngry(1000);
-        }elseif($this instanceof Wolf){
-            $this->setAngry(1000);
-        }elseif($this instanceof Ocelot){
-            $this->setAngry(1000);
+        $damager = $source->getDamager();
+        $motion = (new Vector3($this->x - $damager->x, $this->y - $damager->y, $this->z - $damager->z))->normalize();
+        $this->motionX = $motion->x * 0.19;
+        $this->motionZ = $motion->z * 0.19;
+        if($this instanceof FlyingEntity){
+            $this->motionY = $motion->y * 0.19;
+        }else{
+            $this->motionY = 0.5;
         }
     }
 
     public function knockBack(Entity $attacker, $damage, $x, $z, $base = 0.4){
 
+    }
+
+    public function entityBaseTick($tickDiff = 1){
+        Timings::$timerEntityBaseTick->startTiming();
+
+        $hasUpdate = parent::entityBaseTick($tickDiff);
+
+        if($this->isInsideOfSolid()){
+            $hasUpdate = true;
+            $ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_SUFFOCATION, 1);
+            $this->attack($ev->getFinalDamage(), $ev);
+        }
+
+        if($this->moveTime > 0){
+            $this->moveTime -= $tickDiff;
+        }
+
+        if($this->attackTime > 0){
+            $this->attackTime -= $tickDiff;
+        }
+
+        Timings::$timerEntityBaseTick->startTiming();
+        return $hasUpdate;
     }
 
     public function move($dx, $dy, $dz) : bool{
@@ -173,48 +182,24 @@ abstract class BaseEntity extends Creature{
         $movX = $dx;
         $movY = $dy;
         $movZ = $dz;
-        $list = $this->level->getCollisionCubes($this, $this->level->getTickRate() > 1 ? $this->boundingBox->getOffsetBoundingBox($dx, $dy, $dz) : $this->boundingBox->addCoord($dx, $dy, $dz));
 
+        $list = $this->level->getCollisionCubes($this, $this->level->getTickRate() > 1 ? $this->boundingBox->getOffsetBoundingBox($dx, $dy, $dz) : $this->boundingBox->addCoord($dx, $dy, $dz));
         foreach($list as $bb){
             $dy = $bb->calculateYOffset($this->boundingBox, $dy);
         }
         $this->boundingBox->offset(0, $dy, 0);
 
-        foreach($list as $bb){
-            if(
-                $this->isWallCheck()
-                and $this->boundingBox->maxY > $bb->minY
-                and $this->boundingBox->minY < $bb->maxY
-                and $this->boundingBox->maxZ > $bb->minZ
-                and $this->boundingBox->minZ < $bb->maxZ
-            ){
-                if($this->boundingBox->maxX + $dx >= $bb->minX and $this->boundingBox->maxX <= $bb->minX){
-                    if(($x1 = $bb->minX - ($this->boundingBox->maxX + $dx)) < 0) $dx += $x1;
-                }
-                if($this->boundingBox->minX + $dx <= $bb->maxX and $this->boundingBox->minX >= $bb->maxX){
-                    if(($x1 = $bb->maxX - ($this->boundingBox->minX + $dx)) > 0) $dx += $x1;
-                }
+        if($this->isWallCheck()){
+            foreach($list as $bb){
+                $dx = $bb->calculateXOffset($this->boundingBox, $dx);
             }
-        }
-        $this->boundingBox->offset($dx, 0, 0);
+            $this->boundingBox->offset($dx, 0, 0);
 
-        foreach($list as $bb){
-            if(
-                $this->isWallCheck()
-                and $this->boundingBox->maxY > $bb->minY
-                and $this->boundingBox->minY < $bb->maxY
-                and $this->boundingBox->maxX > $bb->minX
-                and $this->boundingBox->minX < $bb->maxX
-            ){
-                if($this->boundingBox->maxZ + $dz >= $bb->minZ and $this->boundingBox->maxZ <= $bb->minZ){
-                    if(($z1 = $bb->minZ - ($this->boundingBox->maxZ + $dz)) < 0) $dz += $z1;
-                }
-                if($this->boundingBox->minZ + $dz <= $bb->maxZ and $this->boundingBox->minZ >= $bb->maxZ){
-                    if(($z1 = $bb->maxZ - ($this->boundingBox->minZ + $dz)) > 0) $dz += $z1;
-                }
+            foreach($list as $bb){
+                $dz = $bb->calculateZOffset($this->boundingBox, $dz);
             }
+            $this->boundingBox->offset(0, 0, $dz);
         }
-        $this->boundingBox->offset(0, 0, $dz);
 
         $this->setComponents($this->x + $dx, $this->y + $dy, $this->z + $dz);
         $this->checkChunks();
@@ -224,11 +209,6 @@ abstract class BaseEntity extends Creature{
 
         Timings::$entityMoveTimer->stopTiming();
         return true;
-    }
-
-    public function close(){
-        $this->created = false;
-        parent::close();
     }
 
 }

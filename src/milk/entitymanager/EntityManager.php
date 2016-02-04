@@ -2,23 +2,37 @@
 
 namespace milk\entitymanager;
 
-use milk\entitymanager\entity\Animal;
-use milk\entitymanager\entity\Chicken;
-use milk\entitymanager\entity\Cow;
-use milk\entitymanager\entity\Pig;
-use milk\entitymanager\entity\Sheep;
+use milk\entitymanager\entity\animal\Animal;
+use milk\entitymanager\entity\animal\walking\Chicken;
+use milk\entitymanager\entity\animal\walking\Cow;
+use milk\entitymanager\entity\animal\walking\Mooshroom;
+use milk\entitymanager\entity\animal\walking\Ocelot;
+use milk\entitymanager\entity\animal\walking\Pig;
+use milk\entitymanager\entity\animal\walking\Rabbit;
+use milk\entitymanager\entity\animal\walking\Sheep;
 use milk\entitymanager\entity\BaseEntity;
-use milk\entitymanager\entity\Creeper;
-use milk\entitymanager\entity\Enderman;
-use milk\entitymanager\entity\Monster;
-use milk\entitymanager\entity\PigZombie;
-use milk\entitymanager\entity\Skeleton;
-use milk\entitymanager\entity\Spider;
-use milk\entitymanager\entity\Zombie;
+use milk\entitymanager\entity\monster\flying\Blaze;
+use milk\entitymanager\entity\monster\flying\Ghast;
+use milk\entitymanager\entity\monster\jumping\MagmaCube;
+use milk\entitymanager\entity\monster\jumping\Slime;
+use milk\entitymanager\entity\monster\Monster;
+use milk\entitymanager\entity\monster\walking\CaveSpider;
+use milk\entitymanager\entity\monster\walking\Creeper;
+use milk\entitymanager\entity\monster\walking\IronGolem;
+use milk\entitymanager\entity\monster\walking\PigZombie;
+use milk\entitymanager\entity\monster\walking\Silverfish;
+use milk\entitymanager\entity\monster\walking\Skeleton;
+use milk\entitymanager\entity\monster\walking\SnowGolem;
+use milk\entitymanager\entity\monster\walking\Spider;
+use milk\entitymanager\entity\monster\walking\Wolf;
+use milk\entitymanager\entity\monster\walking\Zombie;
+use milk\entitymanager\entity\monster\walking\ZombieVillager;
+use milk\entitymanager\entity\projectile\FireBall;
+use milk\entitymanager\task\AutoClearTask;
 use milk\entitymanager\task\SpawnEntityTask;
-use milk\entitymanager\task\UpdateEntityTask;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
+use pocketmine\entity\Enderman;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Projectile;
 use pocketmine\event\block\BlockBreakEvent;
@@ -41,21 +55,7 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 use pocketmine\entity\Item as ItemEntity;
-use milk\entitymanager\entity\CaveSpider;
-use milk\entitymanager\entity\MagmaCube;
-use milk\entitymanager\entity\ZombieVillager;
 use pocketmine\block\Block;
-use milk\entitymanager\entity\Ghast;
-use milk\entitymanager\entity\Blaze;
-use milk\entitymanager\entity\Wolf;
-use milk\entitymanager\entity\Ocelot;
-use milk\entitymanager\entity\Mooshroom;
-use milk\entitymanager\entity\Rabbit;
-use milk\entitymanager\entity\IronGolem;
-use milk\entitymanager\entity\SnowGolem;
-use milk\entitymanager\entity\Slime;
-use milk\entitymanager\entity\Silverfish;
-use milk\entitymanager\entity\FireBall;
 
 class EntityManager extends PluginBase implements Listener{
 
@@ -104,8 +104,10 @@ class EntityManager extends PluginBase implements Listener{
     }
 
     public function onEnable(){
-        $path = $this->getServer()->getDataPath() . "plugins/EntityManager/";
-        if(!is_dir($path)) mkdir($path);
+        $path = $this->getDataFolder();
+        if(!is_dir($path)){
+            mkdir($path);
+        }
 
         function getData($ar, $key, $default){
             $vars = explode(".", $key);
@@ -155,8 +157,8 @@ class EntityManager extends PluginBase implements Listener{
         }else{
             self::$drops = [
                 Zombie::NETWORK_ID => [
-                    #[Item id, Item meta, Count, Percentage]
-                    #example: [Item::FEATHER, 0, "1,10", "1/1"]
+                    #[Item id, Item meta, Count]
+                    #example: [Item::FEATHER, 0, "1,10"]
                 ],
                 Creeper::NETWORK_ID => [
 
@@ -173,7 +175,7 @@ class EntityManager extends PluginBase implements Listener{
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[EntityManager]Plugin has been enabled");
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new UpdateEntityTask($this), 1);
+        //$this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoClearTask($this), 6000);
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new SpawnEntityTask($this), $this->getData("spawn.tick"));
     }
 
@@ -200,14 +202,7 @@ class EntityManager extends PluginBase implements Listener{
         return $entities;
     }
 
-    /**
-     * @param string[] $type
-     * @param Level $level
-     *
-     * @return bool
-     */
-    public static function clearEntity($type = [BaseEntity::class], Level $level = null){
-        if(!is_array($type)) return false;
+    public static function clear(array $type = [BaseEntity::class], Level $level = null){
         $level = $level === null ? Server::getInstance()->getDefaultLevel() : $level;
         foreach($level->getEntities() as $id => $ent){
             foreach($type as $t){
@@ -217,7 +212,6 @@ class EntityManager extends PluginBase implements Listener{
                 }
             }
         }
-        return true;
     }
 
     /**
@@ -225,7 +219,7 @@ class EntityManager extends PluginBase implements Listener{
      *
      * @return mixed
      */
-    public function getData($key){
+    public function getData(string $key){
         $vars = explode(".", $key);
         $base = array_shift($vars);
         if(!isset(self::$data[$base])) return false;
@@ -238,19 +232,13 @@ class EntityManager extends PluginBase implements Listener{
         return $base;
     }
 
-    /**
-     * @param int|string $type
-     * @param Position $source
-     * @param mixed ...$args
-     *
-     * @return BaseEntity|Entity
-     */
-    public static function createEntity($type, Position $source, ...$args){
+    public static function create(mixed $type, Position $source, mixed ...$args) : Entity{
         $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);
         if($chunk == null) return null;
         if(!$chunk->isLoaded()) $chunk->load();
         if(!$chunk->isGenerated()) $chunk->setGenerated();
         if(!$chunk->isPopulated()) $chunk->setPopulated();
+
         $nbt = new CompoundTag("", [
             "Pos" => new ListTag("Pos", [
                 new DoubleTag("", $source->x),
@@ -267,6 +255,7 @@ class EntityManager extends PluginBase implements Listener{
                 new FloatTag("", $source instanceof Location ? $source->pitch : 0)
             ]),
         ]);
+
         $keys = array_keys(self::$knownEntities);
         foreach($keys as $c => $name){
             if(strtolower($type) == strtolower($name)){
@@ -274,16 +263,12 @@ class EntityManager extends PluginBase implements Listener{
                 break;
             }
         }
+
         if(isset(self::$knownEntities[$type])){
             $class = self::$knownEntities[$type];
-            /** @var BaseEntity $entity */
-            $entity =  new $class($chunk, $nbt, ...$args);
-            if($entity != null && $entity->isCreated()) $entity->spawnToAll();
-            return $entity;
+            return new $class($chunk, $nbt, ...$args);
         }else{
-            $entity = Entity::createEntity($type, $chunk, $nbt, ...$args);
-            if($entity != null) $entity->spawnToAll();
-            return $entity;
+            return Entity::createEntity($type, $chunk, $nbt, ...$args);
         }
     }
 
@@ -319,7 +304,7 @@ class EntityManager extends PluginBase implements Listener{
         $pos = $ev->getBlock()->getSide($ev->getFace());
 
         if($item->getId() === Item::SPAWN_EGG){
-            if(self::createEntity($item->getDamage(), $pos) != null && $player->isSurvival()){
+            if(self::create($item->getDamage(), $pos) != null && $player->isSurvival()){
                 $item->count--;
                 $player->getInventory()->setItemInHand($item);
             }
@@ -343,9 +328,12 @@ class EntityManager extends PluginBase implements Listener{
         }elseif(isset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"])){
             unset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"]);
         }
-        if($ev->getBlock()->getId() == Block::STONE or $ev->getBlock()->getId() == Block::STONE_BRICK or $ev->getBlock()->getId() == Block::STONE_WALL or $ev->getBlock()->getId() == Block::STONE_BRICK_STAIRS)
-        	if($ev->getBlock()->getLightLevel() < 12 and mt_rand(1,3) < 2)
-        		self::createEntity("Silverfish", $pos);
+        if(
+            ($ev->getBlock()->getId() == Block::STONE or $ev->getBlock()->getId() == Block::STONE_BRICK or $ev->getBlock()->getId() == Block::STONE_WALL or $ev->getBlock()->getId() == Block::STONE_BRICK_STAIRS)
+        	&& ($ev->getBlock()->getLightLevel() < 12 and mt_rand(1,3) < 2)
+        ){
+            self::create("Silverfish", $pos);
+        }
     }
 
     public function ExplosionPrimeEvent(ExplosionPrimeEvent $ev){
@@ -361,11 +349,8 @@ class EntityManager extends PluginBase implements Listener{
                 unset(self::$drops[$entity::NETWORK_ID][$key]);
                 continue;
             }
+
             $count = explode(",", $data[2]);
-            if(min(...$count) !== $count[0]){
-                unset(self::$drops[$entity::NETWORK_ID][$key]);
-                continue;
-            }
             $item = Item::get($data[0], $data[1]);
             $item->setCount(max(mt_rand(...$count), 0));
             $drops[] = $item;
@@ -386,7 +371,7 @@ class EntityManager extends PluginBase implements Listener{
                 }else{
                     $level = $i instanceof Player ? $i->getLevel() : null;
                 }
-                self::clearEntity([BaseEntity::class, Projectile::class, ItemEntity::class], $level);
+                self::clear([BaseEntity::class, Projectile::class, ItemEntity::class], $level);
                 $output .= "All spawned entities were removed";
                 break;
             case "check":
@@ -446,7 +431,7 @@ class EntityManager extends PluginBase implements Listener{
                     $pos = $i->getPosition();
                 }
 
-                if($pos == null || self::createEntity($sub[0], $pos) == null){
+                if($pos == null || self::create($sub[0], $pos) == null){
                     $output .= "usage: /$label create <id/name> (x) (y) (z) (level)";
                 }
                 break;
