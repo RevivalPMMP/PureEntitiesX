@@ -28,17 +28,17 @@ See documentation page for details.
   * config.yml
 ``` yml
 entity:
-  explode: false #엔티티 폭발 여부
+  explode: false #Whether the entity explosion
 spawn:
-  rand: "1/4" #엔티티 스폰 확률
-  tick: 100 #엔티티 스폰 주기
+  rand: "1/4" #Entity spawn probability
+  tick: 100 #Entity spawn period
 autospawn:
-  turn-on: true #자동 스폰 여부
-  radius: 25 #스폰될 위치 반경
+  turn-on: true #Whether auto-spawn
+  radius: 25 #Radius will spawn location
 autoclear:
-  turn-on: true #엔티티 자동 제거 여부
-  tick: 6000 #엔티티 제거 주기
-  entities: [Projectile, DroppedItem] #제거할 엔티티들
+  turn-on: true #Whether the entity automatically removed
+  tick: 6000 #Entity remove period
+  entities: [Projectile, DroppedItem] #List of entities to be removed
 ```
   * spawner.yml
     * TODO
