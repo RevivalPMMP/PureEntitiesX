@@ -13,10 +13,12 @@ class SpawnEntityTask extends PluginTask{
     public function onRun($currentTicks){
         /** @var EntityManager $owner */
         $owner = $this->owner;
-        if(count(EntityManager::getEntities()) >= $owner->getData("entity.maximum")) return;
         $rand = explode("/", $owner->getData("spawn.rand"));
         foreach(EntityManager::$spawn as $key => $data){
-            if(mt_rand(...$rand) > $rand[0]) continue;
+            if(mt_rand(...$rand) > $rand[0]){
+                continue;
+            }
+
             if(count($data["mob-list"]) === 0){
                 unset(EntityManager::$spawn[$key]);
                 continue;
@@ -27,7 +29,11 @@ class SpawnEntityTask extends PluginTask{
             $pos->y = $pos->getLevel()->getHighestBlockAt($pos->x += mt_rand(-$radius, $radius), $pos->z += mt_rand(-$radius, $radius));
             EntityManager::create($data["mob-list"][mt_rand(0, count($data["mob-list"]) - 1)], $pos);
         }
-        if(!$owner->getData("autospawn.turn-on")) return;
+
+        if(!$owner->getData("autospawn.turn-on")){
+            return;
+        }
+
         foreach($this->owner->getServer()->getOnlinePlayers() as $player){
             if(mt_rand(...$rand) > $rand[0]){
                 continue;

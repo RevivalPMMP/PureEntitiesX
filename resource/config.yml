@@ -1,0 +1,12 @@
+entity:
+  explode: false
+spawn:
+  rand: "1/4"
+  tick: 100
+autospawn:
+  turn-on: true
+  radius: 25
+autoclear:
+  turn-on: true
+  tick: 6000
+  entities: [Projectile, DroppedItem]

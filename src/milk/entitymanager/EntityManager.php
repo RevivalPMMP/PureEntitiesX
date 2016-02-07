@@ -26,6 +26,7 @@ use milk\entitymanager\entity\monster\walking\Wolf;
 use milk\entitymanager\entity\monster\walking\Zombie;
 use milk\entitymanager\entity\monster\walking\ZombieVillager;
 use milk\entitymanager\entity\projectile\FireBall;
+use milk\entitymanager\task\AutoClearTask;
 use milk\entitymanager\task\SpawnEntityTask;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
@@ -48,6 +49,7 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
+use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use pocketmine\entity\Item as ItemEntity;
 use pocketmine\block\Block;
@@ -57,8 +59,6 @@ class EntityManager extends PluginBase implements Listener{
     public static $data;
     public static $drops;
     public static $spawn;
-
-    private static $knownEntities = [];
 
     public function __construct(){
         $classes = [
@@ -86,96 +86,54 @@ class EntityManager extends PluginBase implements Listener{
         	ZombieVillager::class,
         	Ghast::class,
         	Blaze::class,
+            FireBall::class
         ];
         foreach($classes as $name){
-            self::registerEntity($name);
+            Entity::registerEntity($name);
+            /*$item = Item::get(Item::SPAWN_EGG, $id);
+            if(!Item::isCreativeItem($item)){
+                Item::addCreativeItem($item);
+            }*/
         }
-       
-        Entity::registerEntity(FireBall::class);
     }
 
     public function onEnable(){
+        $this->saveDefaultConfig();
+        self::$data = $this->getConfig()->getAll();
+
         $path = $this->getDataFolder();
-        if(!is_dir($path)){
-            mkdir($path);
-        }
+        self::$spawn = (new Config($path . "spawner.yml"))->getAll();
+        self::$drops = (new Config($path . "drops.yml"))->getAll();
 
-        function getData($ar, $key, $default){
-            $vars = explode(".", $key);
-            $base = array_shift($vars);
-            if(!isset($ar[$base])) return $default;
-            $base = $ar[$base];
-            while(count($vars) > 0){
-                $baseKey = array_shift($vars);
-                if(!is_array($base) or !isset($base[$baseKey])) return $default;
-                $base = $base[$baseKey];
-            }
-            return $base;
-        }
-
-        $data = [];
-        if(file_exists($path . "config.yml")){
-            $data = yaml_parse($this->yaml($path . "config.yml"));
-        }
-        self::$data = [
-            "entity" => [
-                "maximum" => getData($data, "entity.maximum", 30),
-                "explode" => getData($data, "entity.explode", true),
+        /*self::$drops = [
+            Zombie::NETWORK_ID => [
+                #[Item id, Item meta, Count]
+                #example: [Item::FEATHER, 0, "1,10"]
             ],
-            "spawn" => [
-                "rand" => getData($data, "spawn.rand", "1/3"),
-                "tick" => getData($data, "spawn.tick", 120),
+            Creeper::NETWORK_ID => [
+
             ],
-            "autospawn" => [
-                "turn-on" => getData($data, "autospawn.turn-on", getData($data, "spawn.auto", true)),
-                "radius" => getData($data, "autospawn.radius", getData($data, "spawn.radius", 25)),
-            ]
-        ];
-        file_put_contents($path . "config.yml", yaml_emit(self::$data, YAML_UTF8_ENCODING));
-
-        if(file_exists($path. "SpawnerData.yml")){
-            self::$spawn = yaml_parse($this->yaml($path . "SpawnerData.yml"));
-            unlink($path. "SpawnerData.yml");
-        }elseif(file_exists($path. "spawner.yml")){
-            self::$spawn = yaml_parse($this->yaml($path . "spawner.yml"));
-        }else{
-            self::$spawn = [];
-            file_put_contents($path . "spawner.yml", yaml_emit([], YAML_UTF8_ENCODING));
-        }
-
-        if(file_exists($path. "drops.yml")){
-            self::$drops = yaml_parse($this->yaml($path . "drops.yml"));
-        }else{
-            self::$drops = [
-                Zombie::NETWORK_ID => [
-                    #[Item id, Item meta, Count]
-                    #example: [Item::FEATHER, 0, "1,10"]
-                ],
-                Creeper::NETWORK_ID => [
-
-                ],
-            ];
-            file_put_contents($path . "drops.yml", yaml_emit([], YAML_UTF8_ENCODING));
-        }
-
-        foreach(self::$knownEntities as $id => $name){
-            if(!is_numeric($id)) continue;
-            $item = Item::get(Item::SPAWN_EGG, $id);
-            if(!Item::isCreativeItem($item)) Item::addCreativeItem($item);
-        }
+        ];*/
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[EntityManager]Plugin has been enabled");
-        //$this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoClearTask($this), 6000);
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new SpawnEntityTask($this), $this->getData("spawn.tick"));
+
+        if($this->getData("autoclear.turn-on", true)){
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoClearTask($this), $this->getData("autoclear.tick", 6000));
+        }
     }
 
     public function onDisable(){
-        file_put_contents($this->getServer()->getDataPath() . "plugins/EntityManager/spawner.yml", yaml_emit(self::$spawn, YAML_UTF8_ENCODING));
-    }
+        $path = $this->getDataFolder();
+        $conf = new Config($path . "spawner.yml");
+        $conf->setAll(self::$spawn);
+        $conf->save();
 
-    public function yaml($file){
-        return preg_replace("#^([ ]*)([a-zA-Z_]{1}[^\:]*)\:#m", "$1\"$2\":", file_get_contents($file));
+        $conf2 = new Config($path . "drops.yml");
+        $conf2->setAll(self::$drops);
+        $conf2->save();
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[EntityManager]Plugin has been disable");
     }
 
     public static function clear(array $type = [BaseEntity::class], Level $level = null){
@@ -210,10 +168,12 @@ class EntityManager extends PluginBase implements Listener{
 
     public static function create(mixed $type, Position $source, mixed ...$args) : Entity{
         $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);
-        if($chunk == null) return null;
-        if(!$chunk->isLoaded()) $chunk->load();
-        if(!$chunk->isGenerated()) $chunk->setGenerated();
-        if(!$chunk->isPopulated()) $chunk->setPopulated();
+        if(!$chunk->isGenerated()){
+            $chunk->setGenerated();
+        }
+        if(!$chunk->isPopulated()){
+            $chunk->setPopulated();
+        }
 
         $nbt = new CompoundTag("", [
             "Pos" => new ListTag("Pos", [
@@ -232,31 +192,7 @@ class EntityManager extends PluginBase implements Listener{
             ]),
         ]);
 
-        $keys = array_keys(self::$knownEntities);
-        foreach($keys as $c => $name){
-            if(strtolower($type) == strtolower($name)){
-                $type = $name;
-                break;
-            }
-        }
-
-        if(isset(self::$knownEntities[$type])){
-            $class = self::$knownEntities[$type];
-            return new $class($chunk, $nbt, ...$args);
-        }else{
-            return Entity::createEntity($type, $chunk, $nbt, ...$args);
-        }
-    }
-
-    public static function registerEntity($name){
-        $class = new \ReflectionClass($name);
-        if(is_a($name, BaseEntity::class, true) and !$class->isAbstract()){
-            Entity::registerEntity($name, true);
-            if($name::NETWORK_ID !== -1){
-                self::$knownEntities[$name::NETWORK_ID] = $name;
-            }
-            self::$knownEntities[$class->getShortName()] = $name;
-        }
+        return Entity::createEntity($type, $chunk, $nbt, ...$args);
     }
 
     public function PlayerInteractEvent(PlayerInteractEvent $ev){
