@@ -18,14 +18,9 @@ class Silverfish extends WalkingMonster{
     }
 
     public function initEntity(){
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth(8);
-        }
-        $this->setMinDamage(1);
-        $this->setMaxDamage(1);
         parent::initEntity();
+
+        $this->setDamage([0, 1, 1, 1]);
     }
 
     public function getName() : string{

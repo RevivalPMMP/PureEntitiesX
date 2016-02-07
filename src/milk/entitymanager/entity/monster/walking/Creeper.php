@@ -25,15 +25,11 @@ class Creeper extends WalkingMonster implements Explosive{
     }
 
     public function initEntity(){
+        parent::initEntity();
+
         if(isset($this->namedtag->BombTime)){
             $this->bombTime = (int) $this->namedtag["BombTime"];
         }
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
-        parent::initEntity();
     }
 
     public function saveNBT(){

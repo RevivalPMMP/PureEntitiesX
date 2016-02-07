@@ -22,13 +22,9 @@ class Rabbit extends WalkingAnimal{
     }
 
     public function initEntity(){
-        $this->setMaxHealth(4);
-        if(isset($this->namedtag->Health)){
-            $this->setHealth((int) $this->namedtag["Health"]);
-        }else{
-            $this->setHealth($this->getMaxHealth());
-        }
         parent::initEntity();
+
+        $this->setMaxHealth(4);
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{
