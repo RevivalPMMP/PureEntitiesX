@@ -25,7 +25,25 @@ See documentation page for details.
 자세한 사항은 아래를 보시기 바랍니다
 
 ### YAML data
-  * TODO
+  * config.yml
+``` yml
+entity:
+  explode: false #엔티티 폭발 여부
+spawn:
+  rand: "1/4" #엔티티 스폰 확률
+  tick: 100 #엔티티 스폰 주기
+autospawn:
+  turn-on: true #자동 스폰 여부
+  radius: 25 #스폰될 위치 반경
+autoclear:
+  turn-on: true #엔티티 자동 제거 여부
+  tick: 6000 #엔티티 제거 주기
+  entities: [Projectile, DroppedItem] #제거할 엔티티들
+```
+  * spawner.yml
+    * TODO
+  * drops.yml
+    * TODO
   
 ### Commands(명령어)
   * /entitymanager
