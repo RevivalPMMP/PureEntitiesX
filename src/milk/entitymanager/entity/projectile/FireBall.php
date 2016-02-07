@@ -59,7 +59,7 @@ class FireBall extends Projectile{
         $this->canExplode = $bool;
     }
 
-    public function onUpdate($currentTick) : bool{
+    public function onUpdate(int $currentTick) : bool{
         if($this->closed){
             return false;
         }
@@ -98,7 +98,7 @@ class FireBall extends Projectile{
 
     public function spawnTo(Player $player){
         $pk = new AddEntityPacket();
-        $pk->type = FireBall::NETWORK_ID;
+        $pk->type = self::NETWORK_ID;
         $pk->eid = $this->getId();
         $pk->x = $this->x;
         $pk->y = $this->y;

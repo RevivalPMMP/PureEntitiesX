@@ -20,11 +20,11 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
         }
     }
 
-    public function isBaby(){
+    public function isBaby() : bool{
         return $this->getDataFlag(self::DATA_AGEABLE_FLAGS, self::DATA_FLAG_BABY);
     }
 
-    public function onUpdate($currentTick){
+    public function onUpdate(int $currentTick) : bool{
         if(!$this->isAlive()){
             if(++$this->deadTicks >= 23){
                 $this->close();
