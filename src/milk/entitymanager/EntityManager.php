@@ -117,7 +117,7 @@ class EntityManager extends PluginBase implements Listener{
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[EntityManager]Plugin has been enabled");
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new SpawnEntityTask($this), $this->getData("spawn.tick"));
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new SpawnEntityTask($this), $this->getData("spawn.tick", 100));
 
         if($this->getData("autoclear.turn-on", true)){
             $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoClearTask($this), $this->getData("autoclear.tick", 6000));
@@ -148,7 +148,7 @@ class EntityManager extends PluginBase implements Listener{
         }
     }
 
-    public function getData(string $key, mixed $defaultValue = null) : mixed{
+    public function getData(string $key, mixed $defaultValue) : mixed{
         $vars = explode(".", $key);
         $base = array_shift($vars);
         if(!isset(self::$data[$base])){
@@ -244,7 +244,7 @@ class EntityManager extends PluginBase implements Listener{
     }
 
     public function ExplosionPrimeEvent(ExplosionPrimeEvent $ev){
-        $ev->setCancelled(!$this->getData("entity.explode"));
+        $ev->setCancelled(!$this->getData("entity.explode", false));
     }
 
     public function EntityDeathEvent(EntityDeathEvent $ev){

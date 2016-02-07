@@ -13,7 +13,7 @@ class SpawnEntityTask extends PluginTask{
     public function onRun($currentTicks){
         /** @var EntityManager $owner */
         $owner = $this->owner;
-        $rand = explode("/", $owner->getData("spawn.rand"));
+        $rand = explode("/", $owner->getData("spawn.rand", "1/4"));
         foreach(EntityManager::$spawn as $key => $data){
             if(mt_rand(...$rand) > $rand[0]){
                 continue;
@@ -30,7 +30,7 @@ class SpawnEntityTask extends PluginTask{
             EntityManager::create($data["mob-list"][mt_rand(0, count($data["mob-list"]) - 1)], $pos);
         }
 
-        if(!$owner->getData("autospawn.turn-on")){
+        if(!$owner->getData("autospawn.turn-on", true)){
             return;
         }
 
@@ -39,7 +39,7 @@ class SpawnEntityTask extends PluginTask{
                 continue;
             }
 
-            $radius = (int) $owner->getData("autospawn.radius");
+            $radius = (int) $owner->getData("autospawn.radius", 25);
             $pos = $player->getPosition();
             $pos->y = $player->level->getHighestBlockAt($pos->x += mt_rand(-$radius, $radius), $pos->z += mt_rand(-$radius, $radius)) + 2;
 
