@@ -29,7 +29,7 @@ abstract class BaseEntity extends Creature{
 
     public function __destruct(){}
 
-    public abstract function updateMove(int $tickDiff) : Vector3;
+    public abstract function updateMove(int $tickDiff);
 
     public abstract function targetOption(Creature $creature, float $distance) : bool;
 
