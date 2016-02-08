@@ -44,10 +44,10 @@ class SpawnEntityTask extends PluginTask{
             $pos->y = $player->level->getHighestBlockAt($pos->x += mt_rand(-$radius, $radius), $pos->z += mt_rand(-$radius, $radius)) + 2;
 
             $ent = [
-                ["Cow", "Pig", "Sheep", "Chicken", "Slime", "Wolf", "Ocelot", "Mooshroom", "Rabbit", "IronGolem", "SnowGolem"],
-                ["Zombie", "Creeper", "Skeleton", "Spider", "PigZombie", "Enderman", "CaveSpider", "MagmaCube", "ZombieVillager", "Ghast", "Blaze"]
+                ["Cow", "Pig", "Sheep", "Chicken", "Slime", "Wolf", "Ocelot"],
+                ["Zombie", "Creeper", "Skeleton", "Spider", "PigZombie", "Enderman", ""]
             ];
-            $entity = EntityManager::create($ent[mt_rand(0, 1)][mt_rand(0, 10)], $pos);
+            $entity = EntityManager::create($ent[mt_rand(0, 1)][mt_rand(0, 6)], $pos);
             if($entity != null){
                 $entity->spawnToAll();
             }

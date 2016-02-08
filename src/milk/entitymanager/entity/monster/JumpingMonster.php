@@ -92,7 +92,7 @@ abstract class JumpingMonster extends JumpingEntity implements Monster{
         }
     }
 
-    public function onUpdate(int $currentTick) : bool{
+    public function onUpdate($currentTick){
         if($this->server->getDifficulty() < 1){
             $this->close();
             return false;
