@@ -225,7 +225,10 @@ class EntityManager extends PluginBase implements Listener{
 
     public function BlockBreakEvent(BlockBreakEvent $ev){
         $pos = $ev->getBlock();
-        if($ev->isCancelled() || $pos->getId() != Item::MONSTER_SPAWNER) return;
+        if($ev->isCancelled() || $pos->getId() != Item::MONSTER_SPAWNER){
+            return;
+        }
+
         if(isset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}"])){
             unset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}"]);
         }elseif(isset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"])){

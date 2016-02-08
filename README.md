@@ -65,12 +65,13 @@ autoclear:
 ### Method(메소드)
   * EntityManager
     * public static function clear(array $type = [BaseEntity::class], Level $level = null) : void
-    * public static function create(int|string $type, Position $pos, ...$args) : BaseEntity
+    * public static function create(int|string $type, Position $pos, ...$args) : Entity
   * BaseEntity
-    * public function isCreated() : bool
     * public function isMovement() : bool
+    * public function isFriendly() : bool
     * public function isWallCheck() : bool
     * public function setMovement(bool $value) : void
+    * public function setFriendly(bool $value) : void
     * public function setWallCheck(bool $value) : void
   * Monster
     * public function getDamage(int $difficulty = null) : float
