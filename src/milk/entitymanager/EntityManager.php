@@ -102,8 +102,8 @@ class EntityManager extends PluginBase implements Listener{
         self::$data = $this->getConfig()->getAll();
 
         $path = $this->getDataFolder();
-        self::$spawn = (new Config($path . "spawner.yml"))->getAll();
-        self::$drops = (new Config($path . "drops.yml"))->getAll();
+        self::$spawn = (new Config($path . "spawner.yml", Config::YAML))->getAll();
+        self::$drops = (new Config($path . "drops.yml", Config::YAML))->getAll();
 
         /*self::$drops = [
             Zombie::NETWORK_ID => [
@@ -126,11 +126,11 @@ class EntityManager extends PluginBase implements Listener{
 
     public function onDisable(){
         $path = $this->getDataFolder();
-        $conf = new Config($path . "spawner.yml");
+        $conf = new Config($path . "spawner.yml", Config::YAML);
         $conf->setAll(self::$spawn);
         $conf->save();
 
-        $conf2 = new Config($path . "drops.yml");
+        $conf2 = new Config($path . "drops.yml", Config::YAML);
         $conf2->setAll(self::$drops);
         $conf2->save();
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[EntityManager]Plugin has been disable");
@@ -249,7 +249,10 @@ class EntityManager extends PluginBase implements Listener{
 
     public function EntityDeathEvent(EntityDeathEvent $ev){
         $entity = $ev->getEntity();
-        if(!$entity instanceof BaseEntity or !isset(self::$drops[$entity::NETWORK_ID])) return;
+        if(!$entity instanceof BaseEntity or !isset(self::$drops[$entity::NETWORK_ID])){
+            return;
+        }
+
         $drops = [];
         foreach(self::$drops[$entity::NETWORK_ID] as $key => $data){
             if(!isset($data[0]) || !isset($data[1]) || !isset($data[2])){
