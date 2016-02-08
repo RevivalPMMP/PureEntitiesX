@@ -148,7 +148,7 @@ class EntityManager extends PluginBase implements Listener{
         }
     }
 
-    public function getData(string $key, mixed $defaultValue) : mixed{
+    public function getData(string $key, $defaultValue){
         $vars = explode(".", $key);
         $base = array_shift($vars);
         if(!isset(self::$data[$base])){
@@ -166,7 +166,7 @@ class EntityManager extends PluginBase implements Listener{
         return $base;
     }
 
-    public static function create(mixed $type, Position $source, mixed ...$args) : Entity{
+    public static function create($type, Position $source, ...$args) : Entity{
         $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);
         if(!$chunk->isGenerated()){
             $chunk->setGenerated();
