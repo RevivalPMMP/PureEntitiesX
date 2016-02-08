@@ -47,7 +47,7 @@ class SpawnEntityTask extends PluginTask{
                 ["Cow", "Pig", "Sheep", "Chicken", "Slime", "Wolf", "Ocelot", "Rabbit"],
                 ["Zombie", "Creeper", "Skeleton", "Spider", "PigZombie", "Enderman", "", ""]
             ];
-            $entity = EntityManager::create($ent[mt_rand(0, 1)][mt_rand(0, 6)], $pos);
+            $entity = EntityManager::create($ent[mt_rand(0, 1)][mt_rand(0, 7)], $pos);
             if($entity != null){
                 $entity->spawnToAll();
             }
