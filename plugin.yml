@@ -12,7 +12,7 @@ website: https://github.com/milk0417/EntityManager
 commands:
   entitymanager:
     description: control entity command
-    aliases: ["entity", "ent"]
+    aliases: ["entity", "ent", "em"]
     usage: "/entitymanager <remove/spawn/check>"
     permission: entitymanager.command
 permissions:
