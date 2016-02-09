@@ -63,7 +63,7 @@ class EntityManager extends PluginBase implements Listener{
     public function __construct(){
         $classes = [
             Blaze::class,
-        	CaveSpider::class,
+            CaveSpider::class,
             Chicken::class,
             Cow::class,
             Creeper::class,
@@ -255,7 +255,7 @@ class EntityManager extends PluginBase implements Listener{
 
         if(
             ($ev->getBlock()->getId() == Block::STONE or $ev->getBlock()->getId() == Block::STONE_BRICK or $ev->getBlock()->getId() == Block::STONE_WALL or $ev->getBlock()->getId() == Block::STONE_BRICK_STAIRS)
-        	&& ($ev->getBlock()->getLightLevel() < 12 and mt_rand(1,3) < 2)
+            && ($ev->getBlock()->getLightLevel() < 12 and mt_rand(1,3) < 2)
         ){
             $entity = self::create("Silverfish", $pos);
             if($entity != null){
