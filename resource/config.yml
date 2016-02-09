@@ -1,11 +1,17 @@
 entity:
   explode: false
-spawn:
+spawner:
+  turn-on: true
   rand: "1/4"
   tick: 100
 autospawn:
   turn-on: true
+  rand: "1/4"
   radius: 25
+  tick: 100
+  entities:
+    animal: [Cow, Pig, Sheep, Chicken, Slime, Wolf, Ocelot, Rabbit]
+    monster: [Zombie, Creeper, Skeleton, Spider, PigZombie, Enderman]
 autoclear:
   turn-on: true
   tick: 6000

@@ -26,8 +26,8 @@ use milk\entitymanager\entity\monster\walking\Wolf;
 use milk\entitymanager\entity\monster\walking\Zombie;
 use milk\entitymanager\entity\monster\walking\ZombieVillager;
 use milk\entitymanager\entity\projectile\FireBall;
-use milk\entitymanager\task\AutoClearTask;
-use milk\entitymanager\task\SpawnEntityTask;
+use milk\entitymanager\task\AutoSpawnTask;
+use milk\entitymanager\task\EntitySpawnerTask;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Enderman;
@@ -99,6 +99,11 @@ class EntityManager extends PluginBase implements Listener{
 
     public function onEnable(){
         $this->saveDefaultConfig();
+        if($this->getConfig()->exists("spawn")){
+            $this->saveResource("config.yml", true);
+            $this->reloadConfig();
+            $this->getServer()->getLogger()->info(TextFormat::GOLD . "[EntityManager]Your config has been updated. Please check \"config.yml\" file and restart the server.");
+        }
         self::$data = $this->getConfig()->getAll();
 
         $path = $this->getDataFolder();
@@ -117,11 +122,17 @@ class EntityManager extends PluginBase implements Listener{
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[EntityManager]Plugin has been enabled");
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new SpawnEntityTask($this), $this->getData("spawn.tick", 100));
 
-        if($this->getData("autoclear.turn-on", true)){
-            $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoClearTask($this), $this->getData("autoclear.tick", 6000));
+        if($this->getData("spawner.turn-on", true)){
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new EntitySpawnerTask($this), $this->getData("spawner.tick", 100));
         }
+        if($this->getData("autospawn.turn-on", true)){
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getData("autospawn.tick", 100));
+        }
+        //TODO: This isn't implemeted yet
+        /*if($this->getData("autoclear.turn-on", true)){
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoClearTask($this), $this->getData("autoclear.tick", $this->getData("autoclear.tick", 60)));
+        }*/
     }
 
     public function onDisable(){
