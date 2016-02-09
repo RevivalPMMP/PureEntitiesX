@@ -11,7 +11,7 @@ use pocketmine\entity\Creature;
 class Cow extends WalkingAnimal{
     const NETWORK_ID = 11;
 
-    public $width = 1.6;
+    public $width = 1.45;
     public $height = 1.12;
 
     public function getName() : string{
@@ -32,17 +32,14 @@ class Cow extends WalkingAnimal{
     }
 
     public function getDrops(){
-        $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             switch(mt_rand(0, 1)){
-                case 0 :
-                    $drops[] = Item::get(Item::RAW_BEEF, 0, 1);
-                    break;
-                case 1 :
-                    $drops[] = Item::get(Item::LEATHER, 0, 1);
-                    break;
+                case 0:
+                    return [Item::get(Item::RAW_BEEF, 0, 1)];
+                case 1:
+                    return [Item::get(Item::LEATHER, 0, 1)];
             }
         }
-        return $drops;
+        return [];
     }
 }

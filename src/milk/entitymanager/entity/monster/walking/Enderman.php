@@ -11,7 +11,7 @@ use pocketmine\item\Item;
 class Enderman extends WalkingMonster{
     const NETWORK_ID = 38;
 
-    public $width = 0.7;
+    public $width = 0.72;
     public $height = 2.8;
 
     public function getSpeed() : float{
@@ -21,7 +21,7 @@ class Enderman extends WalkingMonster{
     public function initEntity(){
         parent::initEntity();
 
-        $this->setDamage([0, 1, 2, 3]);
+        $this->setDamage([0, 4, 7, 10]);
     }
 
     public function getName() : string{
@@ -37,9 +37,8 @@ class Enderman extends WalkingMonster{
     }
 
     public function getDrops(){
-        $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            $drops[] = Item::get(Item::END_STONE, 0, 1);
+            return [Item::get(Item::END_STONE, 0, 1)];
         }
         return [];
     }

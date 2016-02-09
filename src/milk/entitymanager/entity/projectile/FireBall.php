@@ -78,7 +78,6 @@ class FireBall extends Projectile{
         }
 
         if($this->age > 1200 or $this->isCollided){
-            $hasUpdate = true;
             if($this->isCollided and $this->canExplode){
                 $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
                 if(!$ev->isCancelled()){
@@ -90,6 +89,7 @@ class FireBall extends Projectile{
                 }
             }
             $this->kill();
+            $hasUpdate = true;
         }
 
         $this->timings->stopTiming();

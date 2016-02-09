@@ -20,6 +20,7 @@ class ZombieVillager extends WalkingMonster{
 
     public function initEntity(){
         parent::initEntity();
+
         $this->setDamage([0, 3, 4, 6]);
     }
 
@@ -36,21 +37,17 @@ class ZombieVillager extends WalkingMonster{
     }
 
     public function getDrops(){
-        $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             switch(mt_rand(0, 2)){
                 case 0:
-                    $drops[] = Item::get(Item::FEATHER, 0, 1);
-                    break;
+                    return [Item::get(Item::FEATHER, 0, 1)];
                 case 1:
-                    $drops[] = Item::get(Item::CARROT, 0, 1);
-                    break;
+                    return [Item::get(Item::CARROT, 0, 1)];
                 case 2:
-                    $drops[] = Item::get(Item::POTATO, 0, 1);
-                    break;
+                    return [Item::get(Item::POTATO, 0, 1)];
             }
         }
-        return $drops;
+        return [];
     }
 
 }

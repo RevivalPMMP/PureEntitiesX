@@ -8,6 +8,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Timings;
 use pocketmine\level\Level;
+use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\network\protocol\AddEntityPacket;
@@ -15,13 +16,10 @@ use pocketmine\Player;
 
 abstract class BaseEntity extends Creature{
 
-    protected $stayTime = 0;
     protected $moveTime = 0;
 
     /** @var Vector3|Entity */
     protected $baseTarget = null;
-    /** @var Vector3|Entity */
-    protected $mainTarget = null;
 
     private $movement = true;
     private $friendly = false;
@@ -34,7 +32,7 @@ abstract class BaseEntity extends Creature{
     public abstract function targetOption(Creature $creature, float $distance) : bool;
 
     public function getSaveId(){
-        $class = new \ReflectionClass(static::class);
+        $class = new \ReflectionClass(get_class($this));
         return $class->getShortName();
     }
 
@@ -76,12 +74,17 @@ abstract class BaseEntity extends Creature{
         if(isset($this->namedtag->Movement)){
             $this->setMovement($this->namedtag["Movement"]);
         }
+
+        if(isset($this->namedtag->WallCheck)){
+            $this->setWallCheck($this->namedtag["WallCheck"]);
+        }
         $this->dataProperties[self::DATA_NO_AI] = [self::DATA_TYPE_BYTE, 1];
     }
 
     public function saveNBT(){
         parent::saveNBT();
         $this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
+        $this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
     }
 
     public function spawnTo(Player $player){
@@ -120,9 +123,14 @@ abstract class BaseEntity extends Creature{
             $this->lastZ = $this->z;
             $this->lastYaw = $this->yaw;
             $this->lastPitch = $this->pitch;
-
-            $this->level->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $this->x, $this->y, $this->z, $this->yaw, $this->pitch);
         }
+        $this->level->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $this->x, $this->y, $this->z, $this->yaw, $this->pitch);
+    }
+
+    public function isInsideOfSolid(){
+        $block = $this->level->getBlock($this->temporalVector->setComponents(Math::floorFloat($this->x), Math::floorFloat($this->y + $this->height - 0.18), Math::floorFloat($this->z)));
+        $bb = $block->getBoundingBox();
+        return $bb !== null and $block->isSolid() and !$block->isTransparent() and $bb->intersectsWith($this->getBoundingBox());
     }
 
     public function attack($damage, EntityDamageEvent $source){
@@ -133,10 +141,6 @@ abstract class BaseEntity extends Creature{
         if($source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)){
             return;
         }
-
-        $this->stayTime = 0;
-        $this->moveTime = 0;
-        $this->baseTarget = null;
 
         $damager = $source->getDamager();
         $motion = (new Vector3($this->x - $damager->x, $this->y - $damager->y, $this->z - $damager->z))->normalize();
@@ -156,7 +160,7 @@ abstract class BaseEntity extends Creature{
     public function entityBaseTick($tickDiff = 1){
         Timings::$timerEntityBaseTick->startTiming();
 
-        $hasUpdate = parent::entityBaseTick($tickDiff);
+        $hasUpdate = Entity::entityBaseTick($tickDiff);
 
         if($this->isInsideOfSolid()){
             $hasUpdate = true;

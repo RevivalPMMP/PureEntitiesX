@@ -11,8 +11,8 @@ use pocketmine\item\Item;
 class CaveSpider extends WalkingMonster{
     const NETWORK_ID = 40;
 
-    public $width = 1.5;
-    public $height = 1.2;
+    public $width = 0.9;
+    public $height = 0.8;
 
     public function getSpeed() : float{
         return 1.3;

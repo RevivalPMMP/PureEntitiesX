@@ -7,7 +7,6 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Projectile;
 use pocketmine\entity\ProjectileSource;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\item\Item;
 use pocketmine\level\sound\LaunchSound;
@@ -21,8 +20,8 @@ use pocketmine\entity\Creature;
 class SnowGolem extends WalkingMonster implements ProjectileSource{
     const NETWORK_ID = 21;
 
-    public $width = 0.65;
-    public $height = 1.2;
+    public $width = 0.6;
+    public $height = 1.8;
 
     public function initEntity(){
         parent::initEntity();
@@ -35,10 +34,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource{
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{
-        if(!($creature instanceof Player)){
-            return $creature->isAlive() && $distance <= 60;
-        }
-        return false;
+        return !($creature instanceof Player) && $creature->isAlive() && $distance <= 60;
     }
 
     public function attackEntity(Entity $player){
@@ -69,34 +65,19 @@ class SnowGolem extends WalkingMonster implements ProjectileSource{
             $snowball = Entity::createEntity("Snowball", $this->chunk, $nbt, $this);
             $snowball->setMotion($snowball->getMotion()->multiply($f));
 
-            $property = (new \ReflectionClass($snowball))->getProperty("damage");
-            $property->setAccessible(true);
-            $property->setValue($snowball, 2);
-            
-            $ev = new EntityShootBowEvent($this, Item::get(Item::ARROW, 0, 1), $snowball, $f);
-
-            $this->server->getPluginManager()->callEvent($ev);
-
-            $projectile = $ev->getProjectile();
-            if($ev->isCancelled()){
-                $projectile->kill();
-            }elseif($projectile instanceof Projectile){
-                $this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($projectile));
-                if($launch->isCancelled()){
-                    $projectile->kill();
-                }else{
-                    $projectile->spawnToAll();
-                    $this->level->addSound(new LaunchSound($this), $this->getViewers());
-                }
+            $this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($snowball));
+            if($launch->isCancelled()){
+                $snowball->kill();
+            }else{
+                $snowball->spawnToAll();
+                $this->level->addSound(new LaunchSound($this), $this->getViewers());
             }
         }
     }
 
     public function getDrops(){
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [
-                Item::get(Item::SNOWBALL, 0, 15)
-            ];
+            return [Item::get(Item::SNOWBALL, 0, 15)];
         }
         return [];
     }

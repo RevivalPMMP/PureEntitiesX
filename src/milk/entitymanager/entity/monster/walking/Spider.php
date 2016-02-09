@@ -10,8 +10,8 @@ use pocketmine\item\Item;
 class Spider extends WalkingMonster{
     const NETWORK_ID = 35;
 
-    public $width = 1.5;
-    public $height = 1.2;
+    public $width = 1.3;
+    public $height = 1.12;
 
     public function getSpeed() : float{
         return 1.13;
@@ -31,6 +31,7 @@ class Spider extends WalkingMonster{
     public function attackEntity(Entity $player){
         if($this->attackDelay > 10 && $this->distanceSquared($player) < 1.32){
             $this->attackDelay = 0;
+
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
         }

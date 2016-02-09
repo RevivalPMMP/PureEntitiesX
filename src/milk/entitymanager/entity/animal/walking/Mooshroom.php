@@ -11,7 +11,7 @@ use pocketmine\entity\Creature;
 class Mooshroom extends WalkingAnimal{
     const NETWORK_ID = 16;
 
-    public $width = 1.6;
+    public $width = 1.45;
     public $height = 1.12;
 
     public function getName() : string{

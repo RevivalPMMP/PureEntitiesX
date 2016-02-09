@@ -26,6 +26,7 @@ class Slime extends JumpingMonster{
         parent::initEntity();
 
         $this->setMaxHealth(4);
+        $this->setDamage([0, 2, 2, 3]);
     }
 
     public function attackEntity(Entity $player){
@@ -38,10 +39,9 @@ class Slime extends JumpingMonster{
     }
     
     public function getDrops(){
-        $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            $drops[] = Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2));
+            return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
         }
-        return $drops;
+        return [];
     }
 }

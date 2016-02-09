@@ -10,6 +10,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\event\Timings;
+use pocketmine\item\Bow;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\level\sound\LaunchSound;
@@ -17,6 +18,8 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
+use pocketmine\network\protocol\MobEquipmentPacket;
+use pocketmine\Player;
 
 class Skeleton extends WalkingMonster implements ProjectileSource{
     const NETWORK_ID = 34;
@@ -26,20 +29,6 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
 
     public function getName() : string{
         return "Skeleton";
-    }
-
-    public function entityBaseTick($tickDiff = 1){
-        Timings::$timerEntityBaseTick->startTiming();
-
-        $hasUpdate = parent::entityBaseTick($tickDiff);
-
-        $time = $this->getLevel()->getTime() % Level::TIME_FULL;
-        if(($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE) && !$this->isOnFire()){
-            $this->setOnFire(5);
-        }
-
-        Timings::$timerEntityBaseTick->startTiming();
-        return $hasUpdate;
     }
 
     public function attackEntity(Entity $player){
@@ -85,6 +74,34 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
                 }
             }
         }
+    }
+
+    public function spawnTo(Player $player){
+        parent::spawnTo($player);
+
+        $pk = new MobEquipmentPacket();
+        $pk->eid = $this->getId();
+        $pk->item = new Bow();
+        $pk->slot = 10;
+        $pk->selectedSlot = 10;
+        $player->dataPacket($pk);
+    }
+
+    public function entityBaseTick($tickDiff = 1){
+        Timings::$timerEntityBaseTick->startTiming();
+
+        $hasUpdate = parent::entityBaseTick($tickDiff);
+
+        $time = $this->getLevel()->getTime() % Level::TIME_FULL;
+        if(
+            !$this->isOnFire()
+            && ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)
+        ){
+            $this->setOnFire(100);
+        }
+
+        Timings::$timerEntityBaseTick->startTiming();
+        return $hasUpdate;
     }
 
     public function getDrops(){

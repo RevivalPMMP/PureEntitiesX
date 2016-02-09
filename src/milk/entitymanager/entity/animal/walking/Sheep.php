@@ -12,7 +12,7 @@ use pocketmine\entity\Creature;
 class Sheep extends WalkingAnimal implements Colorable{
     const NETWORK_ID = 13;
 
-    public $width = 1.3;
+    public $width = 1.45;
     public $height = 1.12;
 
     public function getName() : string{
@@ -34,9 +34,7 @@ class Sheep extends WalkingAnimal implements Colorable{
 
     public function getDrops(){
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [
-                Item::get(Item::WOOL, mt_rand(0, 15), 1)
-            ];
+            return [Item::get(Item::WOOL, mt_rand(0, 15), 1)];
         }
         return [];
     }

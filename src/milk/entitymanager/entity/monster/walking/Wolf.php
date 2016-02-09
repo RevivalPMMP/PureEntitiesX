@@ -12,26 +12,24 @@ use pocketmine\entity\Creature;
 class Wolf extends WalkingMonster{
     const NETWORK_ID = 14;
 
-    public $width = 0.72;
-    public $length = 0.6;
-    public $height = 0.9;
-
     private $angry = 0;
+
+    public $width = 0.72;
+    public $height = 0.9;
 
     public function getSpeed() : float{
         return 1.2;
     }
 
     public function initEntity(){
-        $this->setMaxHealth(8);
-
         parent::initEntity();
-        $this->fireProof = true;
 
         if(isset($this->namedtag->Angry)){
             $this->angry = (int) $this->namedtag["Angry"];
         }
 
+        $this->setMaxHealth(8);
+        $this->fireProof = true;
         $this->setDamage([0, 3, 4, 6]);
     }
 

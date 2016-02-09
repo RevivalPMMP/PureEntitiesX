@@ -14,11 +14,11 @@ use pocketmine\Player;
 class IronGolem extends WalkingMonster{
     const NETWORK_ID = 20;
 
-    public $width = 1.3;
-    public $height = 1.8;
+    public $width = 1.9;
+    public $height = 2.1;
 
     public function getSpeed() : float{
-        return 1.2;
+        return 0.8;
     }
 
     public function initEntity(){
@@ -37,28 +37,11 @@ class IronGolem extends WalkingMonster{
     public function attackEntity(Entity $player){
         if($this->attackDelay > 10 && $this->distanceSquared($player) < 4){
             $this->attackDelay = 0;
+
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
             $player->setMotion(new Vector3(0, 0.7, 0));
         }
-    }
-
-    public function getDrops(){
-        $drops = [];
-        if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            switch(mt_rand(0, 2)){
-                case 0:
-                    $drops[] = Item::get(Item::FEATHER, 0, 1);
-                    break;
-                case 1:
-                    $drops[] = Item::get(Item::CARROT, 0, 1);
-                    break;
-                case 2:
-                    $drops[] = Item::get(Item::POTATO, 0, 1);
-                    break;
-            }
-        }
-        return $drops;
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{
@@ -66,6 +49,20 @@ class IronGolem extends WalkingMonster{
             return $creature->isAlive() && $distance <= 60;
         }
         return false;
+    }
+
+    public function getDrops(){
+        if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
+            switch(mt_rand(0, 2)){
+                case 0:
+                    return [Item::get(Item::FEATHER, 0, 1)];
+                case 1:
+                    return [Item::get(Item::CARROT, 0, 1)];
+                case 2:
+                    return [Item::get(Item::POTATO, 0, 1)];
+            }
+        }
+        return [];
     }
 
 }

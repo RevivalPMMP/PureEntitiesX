@@ -29,7 +29,9 @@ class Ghast extends FlyingMonster implements ProjectileSource{
     public function initEntity(){
         parent::initEntity();
 
-        $this->setDamage([0, 4, 6, 9]);
+        $this->fireProof = true;
+        $this->setMaxHealth(10);
+        $this->setDamage([0, 0, 0, 0]);
     }
 
     public function getName() : string{

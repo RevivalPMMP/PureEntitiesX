@@ -20,6 +20,7 @@ class MagmaCube extends JumpingMonster{
     public function initEntity(){
         parent::initEntity();
 
+        $this->fireProof = true;
         $this->setDamage([0, 3, 4, 6]);
     }
 

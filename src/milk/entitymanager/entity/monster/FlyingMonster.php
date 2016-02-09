@@ -26,14 +26,14 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
     }
 
     public function getMinDamage(int $difficulty = null) : float{
-        if($difficulty === null or !is_numeric($difficulty) || $difficulty > 3 || $difficulty < 0){
+        if($difficulty === null || $difficulty > 3 || $difficulty < 0){
             $difficulty = Server::getInstance()->getDifficulty();
         }
         return $this->minDamage[$difficulty];
     }
 
     public function getMaxDamage(int $difficulty = null) : float{
-        if($difficulty === null or !is_numeric($difficulty) || $difficulty > 3 || $difficulty < 0){
+        if($difficulty === null || $difficulty > 3 || $difficulty < 0){
             $difficulty = Server::getInstance()->getDifficulty();
         }
         return $this->maxDamage[$difficulty];
@@ -61,7 +61,6 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
     }
 
     public function setMinDamage($damage, int $difficulty = null){
-        $difficulty = $difficulty === null ? Server::getInstance()->getDifficulty() : (int) $difficulty;
         if(is_array($damage)){
             for($i = 0; $i < 4; $i++){
                 $this->minDamage[$i] = min($damage[$i], $this->getMaxDamage($i));
@@ -77,7 +76,6 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
     }
 
     public function setMaxDamage($damage, int $difficulty = null){
-        $difficulty = $difficulty === null ? Server::getInstance()->getDifficulty() : (int) $difficulty;
         if(is_array($damage)){
             for($i = 0; $i < 4; $i++){
                 $this->maxDamage[$i] = max((int) $damage[$i], $this->getMaxDamage($i));

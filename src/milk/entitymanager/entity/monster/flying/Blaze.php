@@ -6,7 +6,6 @@ use milk\entitymanager\entity\monster\FlyingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Projectile;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\item\Item;
 use pocketmine\entity\ProjectileSource;
@@ -31,7 +30,7 @@ class Blaze extends FlyingMonster implements ProjectileSource{
         parent::initEntity();
 
         $this->fireProof = true;
-        $this->setDamage([0, 4, 6, 9]);
+        $this->setDamage([0, 0, 0, 0]);
     }
 
     public function getName() : string{
@@ -65,31 +64,22 @@ class Blaze extends FlyingMonster implements ProjectileSource{
             /** @var Projectile $fireball */
             $fireball = Entity::createEntity("FireBall", $this->chunk, $nbt, $this);
             $fireball->setMotion($fireball->getMotion()->multiply($f));
-            $ev = new EntityShootBowEvent($this, Item::get(Item::ARROW, 0, 1), $fireball, $f);
 
-            $this->server->getPluginManager()->callEvent($ev);
-
-            $projectile = $ev->getProjectile();
-            if($ev->isCancelled()){
-                $projectile->kill();
-            }elseif($projectile instanceof Projectile){
-                $this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($projectile));
-                if($launch->isCancelled()){
-                    $projectile->kill();
-                }else{
-                    $projectile->spawnToAll();
-                    $this->level->addSound(new LaunchSound($this), $this->getViewers());
-                }
+            $this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($fireball));
+            if($launch->isCancelled()){
+                $fireball->kill();
+            }else{
+                $fireball->spawnToAll();
+                $this->level->addSound(new LaunchSound($this), $this->getViewers());
             }
         }
     }
 
     public function getDrops(){
-        $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            $drops[] = Item::get(Item::GLOWSTONE_DUST, 0, mt_rand(0, 2));
+            return [Item::get(Item::GLOWSTONE_DUST, 0, mt_rand(0, 2))];
         }
-        return $drops;
+        return [];
     }
 
 }

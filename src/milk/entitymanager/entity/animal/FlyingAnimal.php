@@ -2,7 +2,7 @@
 
 namespace milk\entitymanager\entity\animal;
 
-use milk\entitymanager\entity\WalkingEntity;
+use milk\entitymanager\entity\FlyingEntity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -10,7 +10,7 @@ use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
-abstract class WalkingAnimal extends WalkingEntity implements Animal{
+abstract class FlyingAnimal extends FlyingEntity implements Animal{
 
     public function getSpeed() : float{
         return 0.7;

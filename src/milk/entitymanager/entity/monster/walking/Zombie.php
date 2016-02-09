@@ -3,6 +3,7 @@
 namespace milk\entitymanager\entity\monster\walking;
 
 use milk\entitymanager\entity\monster\WalkingMonster;
+use pocketmine\entity\Ageable;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -10,7 +11,7 @@ use pocketmine\event\Timings;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 
-class Zombie extends WalkingMonster{
+class Zombie extends WalkingMonster implements Ageable{
     const NETWORK_ID = 32;
 
     public $width = 0.72;
@@ -23,6 +24,9 @@ class Zombie extends WalkingMonster{
     public function initEntity(){
         parent::initEntity();
 
+        if($this->getDataProperty(self::DATA_AGEABLE_FLAGS) == null){
+            $this->setDataProperty(self::DATA_AGEABLE_FLAGS, self::DATA_TYPE_BYTE, 0);
+        }
         $this->setDamage([0, 3, 4, 6]);
     }
 
@@ -30,9 +34,30 @@ class Zombie extends WalkingMonster{
         return "Zombie";
     }
 
+    public function isBaby(){
+        return $this->getDataFlag(self::DATA_AGEABLE_FLAGS, self::DATA_FLAG_BABY);
+    }
+
+    public function setHealth($amount){
+        parent::setHealth($amount);
+
+        if($this->isAlive()){
+            if(15 < $this->getHealth()){
+                $this->setDamage([0, 2, 3, 4]);
+            }else if(10 < $this->getHealth()){
+                $this->setDamage([0, 3, 4, 6]);
+            }else if(5 < $this->getHealth()){
+                $this->setDamage([0, 3, 5, 7]);
+            }else{
+                $this->setDamage([0, 4, 6, 9]);
+            }
+        }
+    }
+
     public function attackEntity(Entity $player){
         if($this->attackDelay > 10 && $this->distanceSquared($player) < 2){
             $this->attackDelay = 0;
+
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
         }
@@ -44,8 +69,11 @@ class Zombie extends WalkingMonster{
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
         $time = $this->getLevel()->getTime() % Level::TIME_FULL;
-        if(($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE) && !$this->isOnFire()){
-            $this->setOnFire(5);
+        if(
+            !$this->isOnFire()
+            && ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)
+        ){
+            $this->setOnFire(100);
         }
 
         Timings::$timerEntityBaseTick->startTiming();

@@ -61,7 +61,6 @@ abstract class JumpingMonster extends JumpingEntity implements Monster{
     }
 
     public function setMinDamage($damage, int $difficulty = null){
-        $difficulty = $difficulty === null ? Server::getInstance()->getDifficulty() : (int) $difficulty;
         if(is_array($damage)){
             for($i = 0; $i < 4; $i++){
                 $this->minDamage[$i] = min($damage[$i], $this->getMaxDamage($i));
@@ -77,7 +76,6 @@ abstract class JumpingMonster extends JumpingEntity implements Monster{
     }
 
     public function setMaxDamage($damage, int $difficulty = null){
-        $difficulty = $difficulty === null ? Server::getInstance()->getDifficulty() : (int) $difficulty;
         if(is_array($damage)){
             for($i = 0; $i < 4; $i++){
                 $this->maxDamage[$i] = max((int) $damage[$i], $this->getMaxDamage($i));

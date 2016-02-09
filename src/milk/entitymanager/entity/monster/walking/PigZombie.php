@@ -4,35 +4,36 @@ namespace milk\entitymanager\entity\monster\walking;
 
 use milk\entitymanager\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
+use pocketmine\item\GoldSword;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
 use pocketmine\entity\Creature;
+use pocketmine\network\protocol\MobEquipmentPacket;
+use pocketmine\Player;
 
 class PigZombie extends WalkingMonster{
     const NETWORK_ID = 36;
 
+    private $angry = 0;
+
     public $width = 0.72;
     public $height = 1.8;
     public $eyeHeight = 1.62;
-
-    private $angry = 0;
 
     public function getSpeed() : float{
         return 1.15;
     }
 
     public function initEntity(){
-        $this->setMaxHealth(22);
-
         parent::initEntity();
-        $this->fireProof = true;
 
         if(isset($this->namedtag->Angry)){
             $this->angry = (int) $this->namedtag["Angry"];
         }
 
+        $this->fireProof = true;
         $this->setDamage([0, 5, 9, 13]);
     }
 
@@ -63,6 +64,17 @@ class PigZombie extends WalkingMonster{
         if(!$source->isCancelled()){
             $this->setAngry(1000);
         }
+    }
+
+    public function spawnTo(Player $player){
+        parent::spawnTo($player);
+
+        $pk = new MobEquipmentPacket();
+        $pk->eid = $this->getId();
+        $pk->item = new GoldSword();
+        $pk->slot = 10;
+        $pk->selectedSlot = 10;
+        $player->dataPacket($pk);
     }
 
     public function attackEntity(Entity $player){

@@ -62,38 +62,45 @@ class EntityManager extends PluginBase implements Listener{
 
     public function __construct(){
         $classes = [
-            Cow::class,
-            Pig::class,
-            Sheep::class,
-            Chicken::class,
-        	//Slime::class,
-        	Wolf::class,
-        	Ocelot::class,
-        	Mooshroom::class,
-        	Rabbit::class,
-        	IronGolem::class,
-        	SnowGolem::class,
-
-            Zombie::class,
-            Creeper::class,
-            Skeleton::class,
-            Spider::class,
-            PigZombie::class,
-            Enderman::class,
-        	Silverfish::class,
+            Blaze::class,
         	CaveSpider::class,
-        	//MagmaCube::class,
-        	ZombieVillager::class,
-        	Ghast::class,
-        	Blaze::class,
+            Chicken::class,
+            Cow::class,
+            Creeper::class,
+            Enderman::class,
+            Ghast::class,
+            IronGolem::class,
+            //MagmaCube::class,
+            Mooshroom::class,
+            Ocelot::class,
+            Pig::class,
+            PigZombie::class,
+            Rabbit::class,
+            Sheep::class,
+            Silverfish::class,
+            Skeleton::class,
+            //Slime::class,
+            SnowGolem::class,
+            Spider::class,
+            Wolf::class,
+            Zombie::class,
+            ZombieVillager::class,
             FireBall::class
         ];
         foreach($classes as $name){
             Entity::registerEntity($name);
-            /*$item = Item::get(Item::SPAWN_EGG, $id);
+            if(
+                $name == IronGolem::class
+                || $name == FireBall::class
+                || $name == SnowGolem::class
+                || $name == ZombieVillager::class
+            ){
+                continue;
+            }
+            $item = Item::get(Item::SPAWN_EGG, $name::NETWORK_ID);
             if(!Item::isCreativeItem($item)){
                 Item::addCreativeItem($item);
-            }*/
+            }
         }
     }
 
