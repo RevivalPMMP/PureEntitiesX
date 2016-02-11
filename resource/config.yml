@@ -10,7 +10,7 @@ autospawn:
   radius: 25
   tick: 100
   entities:
-    animal: [Cow, Pig, Sheep, Chicken, Slime, Wolf, Ocelot, Rabbit]
+    animal: [Cow, Pig, Sheep, Chicken, Ocelot, Rabbit]
     monster: [Zombie, Creeper, Skeleton, Spider, PigZombie, Enderman]
 autoclear:
   turn-on: true

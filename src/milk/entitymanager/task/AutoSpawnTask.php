@@ -18,9 +18,9 @@ class AutoSpawnTask extends Task{
             }
 
             if(mt_rand(0, 1)){
-                $ent = $owner->getData("autospawn.entities.animal", []);
+                $ent = $owner->getData("autospawn.entities.animal", ["Cow", "Pig", "Sheep", "Chicken", "Ocelot", "Rabbit"]);
             }else{
-                $ent = $owner->getData("autospawn.entities.monster", []);
+                $ent = $owner->getData("autospawn.entities.monster", ["Zombie", "Creeper", "Skeleton", "Spider", "PigZombie", "Enderman"]);
             }
 
             if(count($ent) < 1){
