@@ -14,13 +14,13 @@ class EntitySpawnerTask extends Task{
         /** @var EntityManager $owner */
         $owner = Server::getInstance()->getPluginManager()->getPlugin("EntityManager");
         $rand = explode("/", $owner->getData("spawner.rand", "1/4"));
-        foreach(EntityManager::$spawn as $key => $data){
+        foreach(EntityManager::$spawner as $key => $data){
             if(mt_rand(...$rand) > $rand[0]){
                 continue;
             }
 
             if(count($data["mob-list"]) === 0){
-                unset(EntityManager::$spawn[$key]);
+                unset(EntityManager::$spawner[$key]);
                 continue;
             }
 

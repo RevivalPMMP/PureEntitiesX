@@ -59,7 +59,7 @@ class EntityManager extends PluginBase implements Listener{
 
     public static $data;
     public static $drops;
-    public static $spawn;
+    public static $spawner;
 
     public function __construct(){
         $classes = [
@@ -115,8 +115,8 @@ class EntityManager extends PluginBase implements Listener{
         self::$data = $this->getConfig()->getAll();
 
         $path = $this->getDataFolder();
-        self::$spawn = (new Config($path . "spawner.yml", Config::YAML))->getAll();
         self::$drops = (new Config($path . "drops.yml", Config::YAML))->getAll();
+        self::$spawner = (new Config($path . "spawner.yml", Config::YAML))->getAll();
 
         /*self::$drops = [
             Zombie::NETWORK_ID => [
@@ -145,7 +145,7 @@ class EntityManager extends PluginBase implements Listener{
     public function onDisable(){
         $path = $this->getDataFolder();
         $conf = new Config($path . "spawner.yml", Config::YAML);
-        $conf->setAll(self::$spawn);
+        $conf->setAll(self::$spawner);
         $conf->save();
 
         $conf2 = new Config($path . "drops.yml", Config::YAML);
@@ -231,7 +231,7 @@ class EntityManager extends PluginBase implements Listener{
             }
             $ev->setCancelled();
         }elseif($item->getId() === Item::MONSTER_SPAWNER){
-            self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->level->getFolderName()}"] = [
+            self::$spawner["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->level->getFolderName()}"] = [
                 "radius" => 5,
                 "mob-list" => [
                     "Cow", "Pig", "Sheep", "Chicken",
@@ -247,10 +247,10 @@ class EntityManager extends PluginBase implements Listener{
             return;
         }
 
-        if(isset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}"])){
-            unset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}"]);
-        }elseif(isset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"])){
-            unset(self::$spawn["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"]);
+        if(isset(self::$spawner["{$pos->x}:{$pos->y}:{$pos->z}"])){
+            unset(self::$spawner["{$pos->x}:{$pos->y}:{$pos->z}"]);
+        }elseif(isset(self::$spawner["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"])){
+            unset(self::$spawner["{$pos->x}:{$pos->y}:{$pos->z}:{$pos->getLevel()->getFolderName()}"]);
         }
 
         if(
