@@ -26,6 +26,7 @@ use milk\entitymanager\entity\monster\walking\Wolf;
 use milk\entitymanager\entity\monster\walking\Zombie;
 use milk\entitymanager\entity\monster\walking\ZombieVillager;
 use milk\entitymanager\entity\projectile\FireBall;
+use milk\entitymanager\task\AutoClearTask;
 use milk\entitymanager\task\AutoSpawnTask;
 use milk\entitymanager\task\EntitySpawnerTask;
 use pocketmine\command\Command;
@@ -136,10 +137,9 @@ class EntityManager extends PluginBase implements Listener{
         if($this->getData("autospawn.turn-on", true)){
             $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getData("autospawn.tick", 100));
         }
-        //TODO: This isn't implemeted yet
-        /*if($this->getData("autoclear.turn-on", true)){
+        if($this->getData("autoclear.turn-on", true)){
             $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoClearTask($this), $this->getData("autoclear.tick", $this->getData("autoclear.tick", 60)));
-        }*/
+        }
     }
 
     public function onDisable(){
