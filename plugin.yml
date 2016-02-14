@@ -3,7 +3,7 @@ name: EntityManager
 main: milk\entitymanager\EntityManager
 #remember version and api is string, don't write it like this: 1.0.0, or there will be an exception
 version: "2.6"
-api: ["2.0.0", "1.14.0"]
+api: ["1.13.0", "1.13.1"]
 
 load: STARTUP
 author: milk0417
