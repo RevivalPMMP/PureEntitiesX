@@ -4,7 +4,7 @@ namespace milk\entitymanager\entity;
 
 abstract class JumpingEntity extends BaseEntity{
 
-    private function checkTarget(){
+    protected function checkTarget(){
         //TODO
     }
 

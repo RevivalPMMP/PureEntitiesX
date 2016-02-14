@@ -12,7 +12,7 @@ use pocketmine\entity\Creature;
 
 abstract class WalkingEntity extends BaseEntity{
 
-    private function checkTarget(){
+    protected function checkTarget(){
         if($this->isKnockback()){
             return;
         }
