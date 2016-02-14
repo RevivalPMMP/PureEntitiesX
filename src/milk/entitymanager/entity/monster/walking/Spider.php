@@ -63,41 +63,37 @@ class Spider extends WalkingMonster{
             return null;
         }
 
-        $target = $this->updateMove($tickDiff);
-        if($this->isFriendly()){
-            if(!($target instanceof Player)){
-                if($target instanceof Entity){
-                    $this->attackEntity($target);
-                }elseif(
-                    $target instanceof Vector3
-                    &&(($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
-                ){
-                    $this->moveTime = 0;
-                }
-            }
-        }else{
-            if($target instanceof Entity){
-                $this->attackEntity($target);
-            }elseif(
-                $target instanceof Vector3
-                &&(($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
-            ){
-                $this->moveTime = 0;
-            }
-        }
-        return true;
-    }
-
-    public function updateMove(int $tickDiff){
         $before = $this->baseTarget;
         $this->checkTarget();
         if($this->baseTarget instanceof Creature or $before !== $this->baseTarget){
             $x = $this->baseTarget->x - $this->x;
             $y = $this->baseTarget->y - $this->y;
             $z = $this->baseTarget->z - $this->z;
-            if($x ** 2 + $z ** 2 < 0.7){
-                $this->motionX = 0;
-                $this->motionZ = 0;
+
+            $distance = $this->distance($target = $this->baseTarget);
+            if($distance <= 2){
+                if($target instanceof Creature){
+                    if($distance <= $this->width / 2 + 0.05){
+                        if($this->attackDelay < 10){
+                            $diff = abs($x) + abs($z);
+                            $this->motionX = $this->getSpeed() * 0.1 * ($x / $diff);
+                            $this->motionZ = $this->getSpeed() * 0.1 * ($z / $diff);
+                        }else{
+                            $this->motionX = 0;
+                            $this->motionZ = 0;
+                            $this->attackEntity($target);
+                        }
+                    }else{
+                        $diff = abs($x) + abs($z);
+                        if(!$this->isFriendly()){
+                            $this->motionY = 0.2;
+                        }
+                        $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
+                        $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
+                    }
+                }else if($target != null && (pow($this->x - $target->x, 2) + pow($this->z - $target->z, 2)) <= 1){
+                    $this->moveTime = 0;
+                }
             }else{
                 $diff = abs($x) + abs($z);
                 $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
@@ -107,7 +103,6 @@ class Spider extends WalkingMonster{
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
         }
 
-        $target = $this->baseTarget;
         $isJump = false;
         $dx = $this->motionX * $tickDiff;
         $dy = $this->motionY * $tickDiff;
@@ -142,7 +137,7 @@ class Spider extends WalkingMonster{
                     }else{
                         $this->motionY = 0.3;
                     }
-                }elseif($this->level->getBlock($vec)->getId() == Item::LADDER){
+                }else{
                     $isJump = true;
                     $this->motionY = 0.15;
                 }
@@ -163,11 +158,15 @@ class Spider extends WalkingMonster{
             }
         }
         $this->updateMovement();
-        return $target;
+        return true;
+    }
+
+    public function updateMove(int $tickDiff){
+        return null;
     }
 
     public function attackEntity(Entity $player){
-        if($this->attackDelay > 10 && $this->distanceSquared($player) < 1.32){
+        if($this->attackDelay > 10 && (($this->isFriendly() && !($player instanceof Player)) || !$this->isFriendly())){
             $this->attackDelay = 0;
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
