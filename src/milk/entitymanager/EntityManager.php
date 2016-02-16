@@ -2,7 +2,6 @@
 
 namespace milk\entitymanager;
 
-use milk\entitymanager\entity\animal\Animal;
 use milk\entitymanager\entity\animal\walking\Chicken;
 use milk\entitymanager\entity\animal\walking\Cow;
 use milk\entitymanager\entity\animal\walking\Mooshroom;
@@ -13,7 +12,6 @@ use milk\entitymanager\entity\animal\walking\Sheep;
 use milk\entitymanager\entity\BaseEntity;
 use milk\entitymanager\entity\monster\flying\Blaze;
 use milk\entitymanager\entity\monster\flying\Ghast;
-use milk\entitymanager\entity\monster\Monster;
 use milk\entitymanager\entity\monster\walking\CaveSpider;
 use milk\entitymanager\entity\monster\walking\Creeper;
 use milk\entitymanager\entity\monster\walking\Enderman;
@@ -33,6 +31,8 @@ use milk\entitymanager\task\EntitySpawnerTask;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\entity\Human;
+use pocketmine\entity\Living;
 use pocketmine\entity\Projectile;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\entity\EntityDeathEvent;
@@ -106,7 +106,8 @@ class EntityManager extends PluginBase implements Listener{
     }
 
     public function onEnable(){
-        $this->saveDefaultConfig();
+        @mkdir($this->getDataFolder());
+        $this->saveResource("config.yml", false);
         if($this->getConfig()->exists("spawn")){
             $this->saveResource("config.yml", true);
             $this->reloadConfig();
@@ -119,12 +120,12 @@ class EntityManager extends PluginBase implements Listener{
         self::$spawner = (new Config($path . "spawner.yml", Config::YAML))->getAll();
 
         /*self::$drops = [
-            Zombie::NETWORK_ID => [
+            "Zombie" => [
                 #[Item id, Item meta, Count]
-                #example: [Item::FEATHER, 0, "1,10"]
+                [Item::FEATHER, 0, "1,10"]
             ],
-            Creeper::NETWORK_ID => [
-
+            "Creeper" => [
+                [Item::FEATHER, 0, "1,10"]
             ],
         ];*/
 
@@ -143,14 +144,13 @@ class EntityManager extends PluginBase implements Listener{
     }
 
     public function onDisable(){
-        $path = $this->getDataFolder();
-        $conf = new Config($path . "spawner.yml", Config::YAML);
-        $conf->setAll(self::$spawner);
-        $conf->save();
-
-        $conf2 = new Config($path . "drops.yml", Config::YAML);
+        $conf2 = new Config($this->getDataFolder() . "drops.yml", Config::YAML);
         $conf2->setAll(self::$drops);
         $conf2->save();
+
+        $conf = new Config($this->getDataFolder() . "spawner.yml", Config::YAML);
+        $conf->setAll(self::$spawner);
+        $conf->save();
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[EntityManager]Plugin has been disable");
     }
 
@@ -269,15 +269,15 @@ class EntityManager extends PluginBase implements Listener{
     }
 
     public function EntityDeathEvent(EntityDeathEvent $ev){
-        $entity = $ev->getEntity();
-        if(!$entity instanceof BaseEntity or !isset(self::$drops[$entity::NETWORK_ID])){
+        $reflect = new \ReflectionClass(get_class($ev->getEntity()));
+        if(!isset(self::$drops[$reflect->getShortName()])){
             return;
         }
 
         $drops = [];
-        foreach(self::$drops[$entity::NETWORK_ID] as $key => $data){
+        foreach(self::$drops[$reflect->getShortName()] as $key => $data){
             if(!isset($data[0]) || !isset($data[1]) || !isset($data[2])){
-                unset(self::$drops[$entity::NETWORK_ID][$key]);
+                unset(self::$drops[$reflect->getShortName()][$key]);
                 continue;
             }
 
@@ -313,8 +313,8 @@ class EntityManager extends PluginBase implements Listener{
                     return true;
                 }
 
-                $mob = 0;
-                $animal = 0;
+                $human = 0;
+                $living = 0;
                 $item = 0;
                 $projectile = 0;
                 $other = 0;
@@ -325,22 +325,22 @@ class EntityManager extends PluginBase implements Listener{
                 }
 
                 foreach($level->getEntities() as $id => $ent) {
-                    if($ent instanceof Monster){
-                        $mob++;
-                    }elseif($ent instanceof Animal){
-                        $animal++;
+                    if($ent instanceof Human){
+                        $human++;
+                    }elseif($ent instanceof Living){
+                        $living++;
                     }elseif($ent instanceof ItemEntity){
                         $item++;
                     }elseif($ent instanceof Projectile){
                         $projectile++;
-                    }elseif(!$ent instanceof Player){
+                    }else{
                         $other++;
                     }
                 }
 
                 $output = "--- All entities in Level \"{$level->getName()}\" ---\n";
-                $output .= TextFormat::YELLOW . "Monster: $mob\n";
-                $output .= TextFormat::YELLOW . "Animal: $animal\n";
+                $output .= TextFormat::YELLOW . "Human: $human\n";
+                $output .= TextFormat::YELLOW . "Living: $living\n";
                 $output .= TextFormat::YELLOW . "Items: $item\n";
                 $output .= TextFormat::YELLOW . "Projectiles: $projectile\n";
                 $output .= TextFormat::YELLOW . "Others: $other\n";
