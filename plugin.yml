@@ -1,21 +1,12 @@
 #name, main, version and api are required
-name: EntityManager
-main: milk\entitymanager\EntityManager
+name: PureEntities
+main: milk\pureentities\PureEntities
 #remember version and api is string, don't write it like this: 1.0.0, or there will be an exception
-version: "2.7"
+version: "1.0"
 api: ["2.0.0", "1.14.0"]
 
 load: STARTUP
 author: milk0417
-description: control entity's movement
-website: https://github.com/milk0417/EntityManager
-commands:
-  entitymanager:
-    description: control entity command
-    aliases: ["entity", "ent", "em"]
-    usage: "/entitymanager <remove/spawn/check>"
-    permission: entitymanager.command
-permissions:
-  entitymanager.command:
-    description: ""
-    default: op
+description: Implement all MCPE entities
+website: https://github.com/milk0417/PureEntities
+commands: []
