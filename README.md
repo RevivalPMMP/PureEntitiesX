@@ -1,8 +1,8 @@
-# EntityManager
+# PureEntities
   
 Author(제작자): **[SW승원(milk0417)](https://github.com/milk0417)**  
   
-자매품(Nukkit): [PureEntities-Nukkit](https://github.com/SW-Team/PureEntities)
+자매품(Nukkit): [PureEntities-JAVA](https://github.com/SW-Team/PureEntities)
     
 **[NOTICE] This plug-in is not perfect, the entity may move abnormally (It was written in Java8)**
   
@@ -21,7 +21,7 @@ PureEntities는 또한 개발자 여러분을 위해 **isMovement()** 또는 **i
 자세한 사항은 아래를 보시기 바랍니다  
 
 ### Method(메소드)
-  * EntityManager
+  * PureEntities
     * public static function create(int|string $type, Position $pos, ...$args) : Entity
   * BaseEntity
     * public function isMovement() : bool
