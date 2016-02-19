@@ -2,7 +2,8 @@
   
 Author(제작자): **[SW승원(milk0417)](https://github.com/milk0417)**  
   
-자매품(Nukkit): [PureEntities-JAVA](https://github.com/SW-Team/PureEntities)
+자매품(Nukkit): [PureEntities-JAVA](https://github.com/SW-Team/PureEntities)  
+추가 플러그인(Sub Module): [EntityManager](https://github.com/milk0417/EntityManager)
     
 **[NOTICE] This plug-in is not perfect, the entity may move abnormally (It was written in Java8)**
   
