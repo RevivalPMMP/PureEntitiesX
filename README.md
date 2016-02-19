@@ -5,7 +5,7 @@ Author(제작자): **[SW승원(milk0417)](https://github.com/milk0417)**
 자매품(Nukkit): [PureEntities-Nukkit](https://github.com/SW-Team/PureEntities)  
 추가 플러그인(Sub Module): [EntityManager](https://github.com/milk0417/EntityManager)
     
-**[NOTICE] This plug-in is not perfect, the entity may move abnormally (It was written in Java8)**
+**[NOTICE] This plug-in is not perfect, the entity may move abnormally (It was written in PHP7)**
   
 PureEntities is a plugin for implement entities.  
 The plugin provides Mob AIs like walking, auto-jumping, etc.  
@@ -13,7 +13,7 @@ The plugin provides Mob AIs like walking, auto-jumping, etc.
 PureEntities also has simple API for developers, such as **isMovement()** or **isWallCheck()**.  
 See documentation page for details.  
   
-**[알림] 이 플러그인은 완벽하지 않으며 엔티티가 비정상적으로 움직일 수 있습니다 (Java8로 작성되었습니다)**  
+**[알림] 이 플러그인은 완벽하지 않으며 엔티티가 비정상적으로 움직일 수 있습니다 (PHP7로 작성되었습니다)**  
   
 PureEntities는 엔티티를 구현시켜주는 플러그인입니다.  
 이 플러그인은 MobAI(움직임, 자동점프 및 기타 등등)을 제공합니다.  
