@@ -30,7 +30,7 @@ class IronGolem extends WalkingMonster{
         $this->setMinDamage([0, 7, 7, 7]);
     }
 
-    public function getName() : string{
+    public function getName(){
         return "IronGolem";
     }
 

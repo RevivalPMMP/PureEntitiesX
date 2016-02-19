@@ -25,10 +25,7 @@ abstract class FlyingEntity extends BaseEntity{
                     continue;
                 }
 
-                if(
-                    $creature instanceof BaseEntity
-                    && $creature->isFriendly() == $this->isFriendly()
-                ){
+                if($creature instanceof BaseEntity && $creature->isFriendly() == $this->isFriendly()){
                     continue;
                 }
 
@@ -67,7 +64,6 @@ abstract class FlyingEntity extends BaseEntity{
             return null;
         }
 
-        /** @var Vector3 $target */
         if($this->isKnockback()){
             $this->move($this->motionX * $tickDiff, $this->motionY * $tickDiff, $this->motionZ * $tickDiff);
             $this->updateMovement();
@@ -80,31 +76,17 @@ abstract class FlyingEntity extends BaseEntity{
             $x = $this->baseTarget->x - $this->x;
             $y = $this->baseTarget->y - $this->y;
             $z = $this->baseTarget->z - $this->z;
+
+            $diff = abs($x) + abs($z);
             if($x ** 2 + $z ** 2 < 0.5){
                 $this->motionX = 0;
                 $this->motionZ = 0;
             }else{
-                $diff = abs($x) + abs($z);
-                if($this instanceof Blaze){
-                    if($this->baseTarget instanceof Creature){
-                        $this->motionX = 0;
-                        $this->motionZ = 0;
-                        if($this->distance($this->baseTarget) < $this->y - $this->getLevel()->getHighestBlockAt((int) $this->x, (int) $this->z)){
-                            $this->motionY = $this->gravity * 4;
-                        }else{
-                            $this->motionY = 0;
-                        }
-                    }else{
-                        $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
-                        $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
-                    }
-                }else{
-                    $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
-                    $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
-                    $this->motionY = $this->getSpeed() * 0.27 * ($y / $diff);
-                }
+                $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
+                $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
+                $this->motionY = $this->getSpeed() * 0.27 * ($y / $diff);
             }
-            $this->yaw = -atan2($this->motionX, $this->motionZ) * 180 / M_PI;
+            $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
         }
 

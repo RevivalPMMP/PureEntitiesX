@@ -23,7 +23,7 @@ class Ocelot extends WalkingAnimal{
         $this->setMaxHealth(10);
     }
 
-    public function getName() : string{
+    public function getName(){
         return "Ocelot";
     }
 

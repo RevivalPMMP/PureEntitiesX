@@ -40,7 +40,7 @@ class Creeper extends WalkingMonster implements Explosive{
         $this->namedtag->BombTime = new IntTag("BombTime", $this->bombTime);
     }
 
-    public function getName() : string{
+    public function getName(){
         return "Creeper";
     }
 

@@ -24,7 +24,7 @@ class ZombieVillager extends WalkingMonster{
         $this->setDamage([0, 3, 4, 6]);
     }
 
-    public function getName() : string{
+    public function getName(){
         return "ZombieVillager";
     }
 

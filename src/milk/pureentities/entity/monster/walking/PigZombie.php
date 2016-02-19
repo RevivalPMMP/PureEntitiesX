@@ -42,7 +42,7 @@ class PigZombie extends WalkingMonster{
         $this->namedtag->Angry = new IntTag("Angry", $this->angry);
     }
 
-    public function getName() : string{
+    public function getName(){
         return "PigZombie";
     }
 

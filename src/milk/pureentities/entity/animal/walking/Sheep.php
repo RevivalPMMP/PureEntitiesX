@@ -15,7 +15,7 @@ class Sheep extends WalkingAnimal implements Colorable{
     public $width = 1.45;
     public $height = 1.12;
 
-    public function getName() : string{
+    public function getName(){
         return "Sheep";
     }
 

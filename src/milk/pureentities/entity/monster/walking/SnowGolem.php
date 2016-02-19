@@ -29,7 +29,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource{
         $this->setFriendly(true);
     }
 
-    public function getName() : string{
+    public function getName(){
         return "SnowGolem";
     }
 

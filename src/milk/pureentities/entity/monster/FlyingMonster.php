@@ -8,9 +8,7 @@ use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
-use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\entity\Creature;
 
 abstract class FlyingMonster extends FlyingEntity implements Monster{
 
@@ -141,13 +139,6 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
-    }
-
-    public function targetOption(Creature $creature, float $distance) : bool{
-        if($creature instanceof Player){
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->isSurvival() && $distance <= 200;
-        }
-        return $creature->isAlive() && !$creature->closed && $distance <= 200;
     }
 
 }

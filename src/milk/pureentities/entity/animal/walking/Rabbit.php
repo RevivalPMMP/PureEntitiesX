@@ -17,7 +17,7 @@ class Rabbit extends WalkingAnimal{
         return 1.2;
     }
     
-    public function getName() : string{
+    public function getName(){
         return "Rabbit";
     }
 

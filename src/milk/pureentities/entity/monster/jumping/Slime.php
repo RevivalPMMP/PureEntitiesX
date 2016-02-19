@@ -18,7 +18,7 @@ class Slime extends JumpingMonster{
         return 0.8;
     }
 
-    public function getName() : string{
+    public function getName(){
         return "Slime";
     }
 

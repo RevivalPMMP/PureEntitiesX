@@ -27,7 +27,7 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
     public $width = 0.65;
     public $height = 1.8;
 
-    public function getName() : string{
+    public function getName(){
         return "Skeleton";
     }
 

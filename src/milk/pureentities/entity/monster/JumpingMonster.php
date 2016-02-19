@@ -3,7 +3,6 @@
 namespace milk\pureentities\entity\monster;
 
 use milk\pureentities\entity\JumpingEntity;
-use pocketmine\entity\Creature;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -154,13 +153,6 @@ abstract class JumpingMonster extends JumpingEntity implements Monster{
 
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
-    }
-
-    public function targetOption(Creature $creature, float $distance) : bool{
-        if($creature instanceof Player){
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->isSurvival() && $distance <= 81;
-        }
-        return $creature->isAlive() && !$creature->closed && $distance <= 81;
     }
 
 }

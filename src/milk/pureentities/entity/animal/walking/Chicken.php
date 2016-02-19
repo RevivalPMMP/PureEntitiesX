@@ -14,7 +14,7 @@ class Chicken extends WalkingAnimal{
     public $width = 0.4;
     public $height = 0.75;
 
-    public function getName() : string{
+    public function getName(){
         return "Chicken";
     }
 

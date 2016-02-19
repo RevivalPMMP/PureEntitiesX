@@ -13,7 +13,6 @@ use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\entity\Creature;
 
 abstract class WalkingMonster extends WalkingEntity implements Monster{
 
@@ -165,13 +164,6 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
-    }
-
-    public function targetOption(Creature $creature, float $distance) : bool{
-        if($creature instanceof Player){
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->isSurvival() && $distance <= 81;
-        }
-        return $creature->isAlive() && !$creature->closed && $distance <= 81;
     }
 
 }

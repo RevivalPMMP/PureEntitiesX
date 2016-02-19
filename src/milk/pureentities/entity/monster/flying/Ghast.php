@@ -5,12 +5,14 @@ namespace milk\pureentities\entity\monster\flying;
 use milk\pureentities\entity\monster\FlyingMonster;
 use milk\pureentities\entity\projectile\FireBall;
 use milk\pureentities\PureEntities;
+use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\entity\ProjectileSource;
 use pocketmine\level\Location;
 use pocketmine\level\sound\LaunchSound;
 use pocketmine\math\Vector3;
+use pocketmine\Player;
 
 class Ghast extends FlyingMonster implements ProjectileSource{
     const NETWORK_ID = 41;
@@ -30,12 +32,16 @@ class Ghast extends FlyingMonster implements ProjectileSource{
         $this->setDamage([0, 0, 0, 0]);
     }
 
-    public function getName() : string{
+    public function getName(){
         return "Ghast";
     }
 
+    public function targetOption(Creature $creature, float $distance) : bool{
+        return (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 10000;
+    }
+
     public function attackEntity(Entity $player){
-        if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 200){
+        if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distance($player) <= 100){
             $this->attackDelay = 0;
         
             $f = 2;
@@ -49,9 +55,8 @@ class Ghast extends FlyingMonster implements ProjectileSource{
                 $pitch,
                 $this->level
             );
-            /** @var FireBall $fireball */
             $fireball = PureEntities::create("FireBall", $pos, $this);
-            if($fireball == null){
+            if(!($fireball instanceof FireBall)){
                 return;
             }
 

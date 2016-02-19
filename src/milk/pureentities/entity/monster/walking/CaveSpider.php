@@ -25,7 +25,7 @@ class CaveSpider extends WalkingMonster{
         $this->setDamage([0, 2, 3, 3]);
     }
 
-    public function getName() : string{
+    public function getName(){
         return "CaveSpider";
     }
 

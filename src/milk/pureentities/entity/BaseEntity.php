@@ -2,6 +2,7 @@
 
 namespace milk\pureentities\entity;
 
+use milk\pureentities\entity\monster\Monster;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -28,8 +29,6 @@ abstract class BaseEntity extends Creature{
     public function __destruct(){}
 
     public abstract function updateMove(int $tickDiff);
-
-    public abstract function targetOption(Creature $creature, float $distance) : bool;
 
     public function getSaveId(){
         $class = new \ReflectionClass(get_class($this));
@@ -188,11 +187,6 @@ abstract class BaseEntity extends Creature{
         $movZ = $dz;
 
         $list = $this->level->getCollisionCubes($this, $this->level->getTickRate() > 1 ? $this->boundingBox->getOffsetBoundingBox($dx, $dy, $dz) : $this->boundingBox->addCoord($dx, $dy, $dz));
-        foreach($list as $bb){
-            $dy = $bb->calculateYOffset($this->boundingBox, $dy);
-        }
-        $this->boundingBox->offset(0, $dy, 0);
-
         if($this->isWallCheck()){
             foreach($list as $bb){
                 $dx = $bb->calculateXOffset($this->boundingBox, $dx);
@@ -204,6 +198,10 @@ abstract class BaseEntity extends Creature{
             }
             $this->boundingBox->offset(0, 0, $dz);
         }
+        foreach($list as $bb){
+            $dy = $bb->calculateYOffset($this->boundingBox, $dy);
+        }
+        $this->boundingBox->offset(0, $dy, 0);
 
         $this->setComponents($this->x + $dx, $this->y + $dy, $this->z + $dz);
         $this->checkChunks();
@@ -213,6 +211,10 @@ abstract class BaseEntity extends Creature{
 
         Timings::$entityMoveTimer->stopTiming();
         return true;
+    }
+
+    public function targetOption(Creature $creature, float $distance) : bool{
+        return $this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 81;
     }
 
 }
