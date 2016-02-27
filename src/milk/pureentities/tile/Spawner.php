@@ -2,7 +2,10 @@
 
 namespace milk\pureentities\tile;
 
+use milk\pureentities\PureEntities;
+use milk\randomjoin\Player;
 use pocketmine\level\format\FullChunk;
+use pocketmine\level\Position;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
@@ -29,7 +32,7 @@ class Spawner extends Spawnable{
         }
 
         if(!isset($this->namedtag->SpawnRange)){
-            $this->namedtag->SpawnRange = new ShortTag("SpawnRange", 25);
+            $this->namedtag->SpawnRange = new ShortTag("SpawnRange", 8);
         }
 
         if(!isset($this->namedtag->MinSpawnDelay)){
@@ -62,6 +65,34 @@ class Spawner extends Spawnable{
             return false;
         }
 
+        if($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)){
+            $this->delay = 0;
+
+            $list = [];
+            $isVaild = false;
+            foreach($this->level->getEntities() as $entity){
+                if($entity->distance($this) <= $this->requiredPlayerRange){
+                    if($entity instanceof Player){
+                        $isVaild = true;
+                    }
+                    $list[] = $entity;
+                    break;
+                }
+            }
+
+            if($isVaild && count($list) <= $this->maxNearbyEntities){
+                $pos = new Position(
+                    $this->x + mt_rand(-$this->spawnRange, $this->spawnRange),
+                    $this->y,
+                    $this->z + mt_rand(-$this->spawnRange, $this->spawnRange),
+                    $this->level
+                );
+                $entity = PureEntities::create($this->entityId, $pos);
+                if($entity != null){
+                    $entity->spawnToAll();
+                }
+            }
+        }
         return true;
     }
 
