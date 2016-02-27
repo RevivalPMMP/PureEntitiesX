@@ -24,6 +24,8 @@ use milk\pureentities\entity\monster\walking\Wolf;
 use milk\pureentities\entity\monster\walking\Zombie;
 use milk\pureentities\entity\monster\walking\ZombieVillager;
 use milk\pureentities\entity\projectile\FireBall;
+use milk\pureentities\tile\Spawner;
+use pocketmine\block\Air;
 use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
@@ -32,17 +34,21 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
+use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\StringTag;
 use pocketmine\plugin\PluginBase;
+use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
 use pocketmine\block\Block;
 
 class PureEntities extends PluginBase implements Listener{
 
-    public function __construct(){
+    public function onLoad(){
         $classes = [
             Blaze::class,
             CaveSpider::class,
@@ -84,6 +90,8 @@ class PureEntities extends PluginBase implements Listener{
                 Item::addCreativeItem($item);
             }
         }
+
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities]All entities were registered");
     }
 
     public function onEnable(){
@@ -92,7 +100,7 @@ class PureEntities extends PluginBase implements Listener{
     }
 
     public function onDisable(){
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities]Plugin has been disable");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities]Plugin has been disabled");
     }
 
     public static function create($type, Position $source, ...$args) : Entity{
@@ -120,32 +128,64 @@ class PureEntities extends PluginBase implements Listener{
                 new FloatTag("", $source instanceof Location ? $source->pitch : 0)
             ]),
         ]);
-
         return Entity::createEntity($type, $chunk, $nbt, ...$args);
     }
 
     public function PlayerInteractEvent(PlayerInteractEvent $ev){
-        if($ev->getFace() == 255 || $ev->getAction() != PlayerInteractEvent::RIGHT_CLICK_BLOCK) return;
+        if($ev->getFace() == 255 || $ev->getAction() != PlayerInteractEvent::RIGHT_CLICK_BLOCK){
+            return;
+        }
+
         $item = $ev->getItem();
         $block = $ev->getBlock();
-
         if($item->getId() === Item::SPAWN_EGG && $block->getId() == Item::MONSTER_SPAWNER){
             $ev->setCancelled();
 
-            //TODO: This isn't implemeted yet
-            /*$nbt = new CompoundTag("", [
-                new StringTag("id", Tile::MOB_SPAWNER),
-                new IntTag("EntityId", $item->getId()),
-                new IntTag("x", $block->x),
-                new IntTag("y", $block->y),
-                new IntTag("z", $block->z),
-            ]);
-            new Spawner($block->getLevel()->getChunk((int) $block->x >> 4, (int) $block->z >> 4), $nbt);*/
+            $tile = $block->level->getTile($block);
+            if($tile != null && $tile instanceof Spawner){
+                $tile->setSpawnEntityType($item->getDamage());
+            }else{
+                if($tile != null){
+                    $tile->close();
+                }
+                $nbt = new CompoundTag("", [
+                    new StringTag("id", Tile::MOB_SPAWNER),
+                    new IntTag("EntityId", $item->getId()),
+                    new IntTag("x", $block->x),
+                    new IntTag("y", $block->y),
+                    new IntTag("z", $block->z),
+                ]);
+                new Spawner($block->getLevel()->getChunk((int) $block->x >> 4, (int) $block->z >> 4), $nbt);
+            }
         }
     }
 
     public function BlockPlaceEvent(BlockPlaceEvent $ev){
+        if($ev->isCancelled()){
+            return;
+        }
 
+        $block = $ev->getBlock();
+        if($block->getId() == Item::JACK_O_LANTERN || $block->getId() == Item::PUMPKIN){
+            if(
+                $block->getSide(Vector3::SIDE_DOWN)->getId() == Item::SNOW_BLOCK
+                && $block->getSide(Vector3::SIDE_DOWN, 2)->getId() == Item::SNOW_BLOCK
+            ){
+                for($y = 1; $y < 3; $y++){
+                    $block->getLevel()->setBlock($block->add(0, -$y, 0), new Air());
+                }
+                $entity = PureEntities::create("SnowGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
+                if($entity != null){
+                    $entity->spawnToAll();
+                }
+                $ev->setCancelled();
+            }elseif(
+                $block->getSide(Vector3::SIDE_DOWN)->getId() == Item::IRON_BLOCK
+                && $block->getSide(Vector3::SIDE_DOWN, 2)->getId() == Item::IRON_BLOCK
+            ){
+                //TODO: spawn IronGolem
+            }
+        }
     }
 
     public function BlockBreakEvent(BlockBreakEvent $ev){
@@ -160,9 +200,9 @@ class PureEntities extends PluginBase implements Listener{
                 or $block->getId() == Block::STONE_WALL
                 or $block->getId() == Block::STONE_BRICK
                 or $block->getId() == Block::STONE_BRICK_STAIRS
-            ) && ($block->getLightLevel() < 12 and mt_rand(1,3) < 2)
+            ) && ($block->level->getBlockLightAt((int) $block->x, (int) $block->y, (int) $block->z) < 12 and mt_rand(1, 5) < 2)
         ){
-            $entity = self::create("Silverfish", $block);
+            $entity = PureEntities::create("Silverfish", $block);
             if($entity != null){
                 $entity->spawnToAll();
             }

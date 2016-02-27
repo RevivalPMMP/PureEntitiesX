@@ -96,10 +96,60 @@ class Spawner extends Spawnable{
         return true;
     }
 
+    public function saveNBT(){
+        parent::saveNBT();
+
+        $this->namedtag->EntityId = new ShortTag("EntityId", $this->entityId);
+        $this->namedtag->SpawnRange = new ShortTag("SpawnRange", $this->spawnRange);
+        $this->namedtag->MinSpawnDelay = new ShortTag("MinSpawnDelay", $this->minSpawnDelay);
+        $this->namedtag->MaxSpawnDelay = new ShortTag("MaxSpawnDelay", $this->maxSpawnDelay);
+        $this->namedtag->MaxNearbyEntities = new ShortTag("MaxNearbyEntities", $this->maxNearbyEntities);
+        $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", $this->requiredPlayerRange);
+    }
+
     public function getSpawnCompound(){
         return new CompoundTag("", [
             new StringTag("id", "MobSpawner"),
             new IntTag("EntityId", $this->entityId)
         ]);
     }
+
+    public function setSpawnEntityType(int $entityId){
+        $this->entityId = $entityId;
+        $this->spawnToAll();
+    }
+
+    public function setMinSpawnDelay(int $minDelay){
+        if($minDelay > $this->maxSpawnDelay){
+            return;
+        }
+
+        $this->minSpawnDelay = $minDelay;
+    }
+
+    public function setMaxSpawnDelay(int $maxDelay){
+        if($this->minSpawnDelay > $maxDelay){
+            return;
+        }
+
+        $this->maxSpawnDelay = $maxDelay;
+    }
+
+    public function setSpawnDelay(int $minDelay, int $maxDelay){
+        if($minDelay > $maxDelay){
+            return;
+        }
+
+        $this->minSpawnDelay = $minDelay;
+        $this->maxSpawnDelay = $maxDelay;
+    }
+
+    public function setRequiredPlayerRange(int $range){
+        $this->requiredPlayerRange = $range;
+    }
+
+    public function setMaxNearbyEntities(int $count){
+        $this->maxNearbyEntities = $count;
+    }
+
 }
