@@ -2,6 +2,7 @@
 
 namespace milk\pureentities\entity;
 
+use milk\pureentities\entity\monster\flying\Blaze;
 use milk\pureentities\entity\monster\Monster;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
@@ -141,14 +142,17 @@ abstract class BaseEntity extends Creature{
             return;
         }
 
+        //$this->stayTime = 0;
+        $this->moveTime = 0;
+
         $damager = $source->getDamager();
         $motion = (new Vector3($this->x - $damager->x, $this->y - $damager->y, $this->z - $damager->z))->normalize();
         $this->motionX = $motion->x * 0.19;
         $this->motionZ = $motion->z * 0.19;
-        if($this instanceof FlyingEntity){
+        if(($this instanceof FlyingEntity) && !($this instanceof Blaze)){
             $this->motionY = $motion->y * 0.19;
         }else{
-            $this->motionY = 0.5;
+            $this->motionY = 0.6;
         }
     }
 
