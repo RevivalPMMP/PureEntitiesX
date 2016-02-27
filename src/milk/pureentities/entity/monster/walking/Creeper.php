@@ -94,6 +94,7 @@ class Creeper extends WalkingMonster implements Explosive{
             $y = $this->baseTarget->y - $this->y;
             $z = $this->baseTarget->z - $this->z;
 
+            $diff = abs($x) + abs($z);
             $target = $this->baseTarget;
             $distance = sqrt(pow($this->x - $target->x, 2) + pow($this->z - $target->z, 2));
             if($distance <= 4.5){
@@ -112,11 +113,10 @@ class Creeper extends WalkingMonster implements Explosive{
                     $this->bombTime = 0;
                 }
 
-                $diff = abs($x) + abs($z);
                 $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                 $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
             }
-            $this->yaw = rad2deg(-atan2($this->motionX, $this->motionZ));
+            $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
         }
 

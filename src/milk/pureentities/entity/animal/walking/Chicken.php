@@ -12,7 +12,8 @@ class Chicken extends WalkingAnimal{
     const NETWORK_ID = 10;
 
     public $width = 0.4;
-    public $height = 0.75;
+    public $height = 0.7;
+    public $eyeHeight = 0.7;
 
     public function getName(){
         return "Chicken";

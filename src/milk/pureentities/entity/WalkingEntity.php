@@ -25,10 +25,7 @@ abstract class WalkingEntity extends BaseEntity{
                     continue;
                 }
 
-                if(
-                    $creature instanceof BaseEntity
-                    && $creature->isFriendly() == $this->isFriendly()
-                ){
+                if($creature instanceof BaseEntity && $creature->isFriendly() == $this->isFriendly()){
                     continue;
                 }
 
@@ -51,10 +48,7 @@ abstract class WalkingEntity extends BaseEntity{
             }
         }
 
-        if(
-            $this->baseTarget instanceof Creature
-            && $this->baseTarget->isAlive()
-        ){
+        if($this->baseTarget instanceof Creature && $this->baseTarget->isAlive()){
             return;
         }
 
@@ -84,15 +78,16 @@ abstract class WalkingEntity extends BaseEntity{
             $x = $this->baseTarget->x - $this->x;
             $y = $this->baseTarget->y - $this->y;
             $z = $this->baseTarget->z - $this->z;
+
+            $diff = abs($x) + abs($z);
             if($x ** 2 + $z ** 2 < 0.7){
                 $this->motionX = 0;
                 $this->motionZ = 0;
             }else{
-                $diff = abs($x) + abs($z);
                 $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                 $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
             }
-            $this->yaw = -atan2($this->motionX, $this->motionZ) * 180 / M_PI;
+            $this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
         }
 

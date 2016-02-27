@@ -11,8 +11,9 @@ use pocketmine\entity\Creature;
 class Cow extends WalkingAnimal{
     const NETWORK_ID = 11;
 
-    public $width = 1.45;
-    public $height = 1.12;
+    public $width = 0.9;
+    public $height = 1.3;
+    public $eyeHeight = 1.2;
 
     public function getName(){
         return "Cow";
