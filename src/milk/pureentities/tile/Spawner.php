@@ -69,18 +69,18 @@ class Spawner extends Spawnable{
             $this->delay = 0;
 
             $list = [];
-            $isVaild = false;
+            $isValid = false;
             foreach($this->level->getEntities() as $entity){
                 if($entity->distance($this) <= $this->requiredPlayerRange){
                     if($entity instanceof Player){
-                        $isVaild = true;
+                        $isValid = true;
                     }
                     $list[] = $entity;
                     break;
                 }
             }
 
-            if($isVaild && count($list) <= $this->maxNearbyEntities){
+            if($isValid && count($list) <= $this->maxNearbyEntities){
                 $pos = new Position(
                     $this->x + mt_rand(-$this->spawnRange, $this->spawnRange),
                     $this->y,
