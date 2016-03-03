@@ -91,6 +91,8 @@ class PureEntities extends PluginBase implements Listener{
             }
         }
 
+        Tile::registerTile(Spawner::class);
+
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities]All entities were registered");
     }
 
