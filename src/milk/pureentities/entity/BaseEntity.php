@@ -143,7 +143,7 @@ abstract class BaseEntity extends Creature{
             return;
         }
 
-        //$this->stayTime = 0;
+        $this->stayTime = 0;
         $this->moveTime = 0;
 
         $damager = $source->getDamager();

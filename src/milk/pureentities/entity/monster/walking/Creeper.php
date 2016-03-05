@@ -15,6 +15,7 @@ use pocketmine\item\Item;
 
 class Creeper extends WalkingMonster implements Explosive{
     const NETWORK_ID = 33;
+    const DATA_POWERED = 19;
 
     public $width = 0.72;
     public $height = 1.8;
@@ -28,9 +29,24 @@ class Creeper extends WalkingMonster implements Explosive{
     public function initEntity(){
         parent::initEntity();
 
+        if(isset($this->namedtag->IsPowered)){
+            $this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->namedtag->IsPowerd ? 1 : 0);
+        }elseif(isset($this->namedtag->powered)){
+            $this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->namedtag->powered ? 1 : 0);
+        }
+
         if(isset($this->namedtag->BombTime)){
             $this->bombTime = (int) $this->namedtag["BombTime"];
         }
+    }
+
+    public function isPowered(){
+        return $this->getDataProperty(self::DATA_POWERED) == 1;
+    }
+
+    public function setPowered($value = true){
+        $this->namedtag->powered = $value;
+        $this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $value ? 1 : 0);
     }
 
     public function saveNBT(){
