@@ -7,6 +7,9 @@ use milk\pureentities\entity\BaseEntity;
 use milk\pureentities\entity\monster\FlyingMonster;
 use milk\pureentities\entity\projectile\FireBall;
 use milk\pureentities\PureEntities;
+use pocketmine\block\Liquid;
+use pocketmine\block\Slab;
+use pocketmine\block\Stair;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -79,7 +82,37 @@ class Blaze extends FlyingMonster implements ProjectileSource{
         }
     }
 
-    public function updateMove(int $tickDiff){
+    /**
+     * @param int $dx
+     * @param int $dz
+     *
+     * @return bool
+     */
+    protected function checkJump($dx, $dz){
+        if($this->motionY < 0){
+            return false;
+        }
+
+        if($this->motionY == $this->gravity * 2){
+            return $this->level->getBlock(new Vector3(Math::floorFloat($this->x), (int) $this->y, Math::floorFloat($this->z))) instanceof Liquid;
+        }else if($this->level->getBlock(new Vector3(Math::floorFloat($this->x), (int) ($this->y + 0.8), Math::floorFloat($this->z))) instanceof Liquid){
+            $this->motionY = $this->gravity * 2;
+            return true;
+        }
+
+        if($this->stayTime > 0){
+            return false;
+        }
+
+        $block = $this->level->getBlock($this->add($dx, 0, $dz));
+        if($block instanceof Slab || $block instanceof Stair){
+            $this->motionY = 0.5;
+            return true;
+        }
+        return false;
+    }
+
+    public function updateMove($tickDiff){
         if(!$this->isMovement()){
             return null;
         }
@@ -119,60 +152,33 @@ class Blaze extends FlyingMonster implements ProjectileSource{
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
         }
 
-        $target = $this->baseTarget;
-        $isJump = false;
         $dx = $this->motionX * $tickDiff;
-        $dy = $this->motionY * $tickDiff;
         $dz = $this->motionZ * $tickDiff;
+        $isJump = $this->checkJump($dx, $dz);
+        if($this->stayTime > 0){
+            $this->stayTime -= $tickDiff;
+            $this->move(0, $this->motionY * $tickDiff, 0);
+        }else{
+            $be = new Vector2($this->x + $dx, $this->z + $dz);
+            $this->move($dx, $this->motionY * $tickDiff, $dz);
+            $af = new Vector2($this->x, $this->z);
 
-        $be = new Vector2($this->x + $dx, $this->z + $dz);
-        $this->move($dx, $dy, $dz);
-        $af = new Vector2($this->x, $this->z);
-
-        if($be->x != $af->x || $be->y != $af->y){
-            $x = 0;
-            $z = 0;
-            if($be->x - $af->x != 0){
-                $x = $be->x > $af->x ? 1 : -1;
-            }
-            if($be->y - $af->y != 0){
-                $z = $be->y > $af->y ? 1 : -1;
-            }
-
-            $vec = new Vector3(Math::floorFloat($be->x) + $x, $this->y, Math::floorFloat($be->y) + $z);
-            $block = $this->level->getBlock($vec->add($x, 0, $z));
-            $block2 = $this->level->getBlock($vec->add($x, 1, $z));
-            if(!$block->canPassThrough()){
-                $bb = $block2->getBoundingBox();
-                if(
-                    $this->motionY > -$this->gravity * 4
-                    && ($block2->canPassThrough() || ($bb == null || $bb->maxY - $this->y <= 1))
-                ){
-                    $isJump = true;
-                    if($this->motionY >= 0.3){
-                        $this->motionY += $this->gravity;
-                    }else{
-                        $this->motionY = 0.3;
-                    }
-                }
-            }
-
-            if(!$isJump){
+            if(($be->x != $af->x || $be->y != $af->y) && !$isJump){
                 $this->moveTime -= 90 * $tickDiff;
             }
         }
 
-        if($this->onGround && !$isJump){
-            $this->motionY = 0;
-        }else if(!$isJump){
-            if($this->motionY > -$this->gravity * 4){
+        if(!$isJump){
+            if($this->onGround){
+                $this->motionY = 0;
+            }elseif($this->motionY > -$this->gravity * 4){
                 $this->motionY = -$this->gravity * 4;
             }else{
                 $this->motionY -= $this->gravity;
             }
         }
         $this->updateMovement();
-        return $target;
+        return $this->baseTarget;
     }
 
     public function attackEntity(Entity $player){

@@ -8,9 +8,7 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\Explosive;
 use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\level\Explosion;
-use pocketmine\math\Math;
 use pocketmine\math\Vector2;
-use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
@@ -120,55 +118,26 @@ class Creeper extends WalkingMonster implements Explosive{
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
         }
 
-        $isJump = false;
         $dx = $this->motionX * $tickDiff;
-        $dy = $this->motionY * $tickDiff;
         $dz = $this->motionZ * $tickDiff;
+        $isJump = $this->checkJump($dx, $dz);
+        if($this->stayTime > 0){
+            $this->stayTime -= $tickDiff;
+            $this->move(0, $this->motionY * $tickDiff, 0);
+        }else{
+            $be = new Vector2($this->x + $dx, $this->z + $dz);
+            $this->move($dx, $this->motionY * $tickDiff, $dz);
+            $af = new Vector2($this->x, $this->z);
 
-        $be = new Vector2($this->x + $dx, $this->z + $dz);
-        $this->move($dx, $dy, $dz);
-        $af = new Vector2($this->x, $this->z);
-
-        if($be->x != $af->x || $be->y != $af->y){
-            $x = 0;
-            $z = 0;
-            if($be->x - $af->x != 0){
-                $x = $be->x > $af->x ? 1 : -1;
-            }
-            if($be->y - $af->y != 0){
-                $z = $be->y > $af->y ? 1 : -1;
-            }
-
-            $vec = new Vector3(Math::floorFloat($be->x), $this->y, Math::floorFloat($be->y));
-            $block = $this->level->getBlock($vec->add($x, 0, $z));
-            $block2 = $this->level->getBlock($vec->add($x, 1, $z));
-            if(!$block->canPassThrough()){
-                $bb = $block2->getBoundingBox();
-                if(
-                    $this->motionY > -$this->gravity * 4
-                    && ($block2->canPassThrough() || ($bb == null || $bb->maxY - $this->y <= 1))
-                ){
-                    $isJump = true;
-                    if($this->motionY >= 0.3){
-                        $this->motionY += $this->gravity;
-                    }else{
-                        $this->motionY = 0.3;
-                    }
-                }elseif($this->level->getBlock($vec)->getId() == Item::LADDER){
-                    $isJump = true;
-                    $this->motionY = 0.15;
-                }
-            }
-
-            if(!$isJump){
+            if(($be->x != $af->x || $be->y != $af->y) && !$isJump){
                 $this->moveTime -= 90 * $tickDiff;
             }
         }
 
-        if($this->onGround && !$isJump){
-            $this->motionY = 0;
-        }else if(!$isJump){
-            if($this->motionY > -$this->gravity * 4){
+        if(!$isJump){
+            if($this->onGround){
+                $this->motionY = 0;
+            }elseif($this->motionY > -$this->gravity * 4){
                 $this->motionY = -$this->gravity * 4;
             }else{
                 $this->motionY -= $this->gravity;
@@ -178,7 +147,7 @@ class Creeper extends WalkingMonster implements Explosive{
         return true;
     }
 
-    public function updateMove(int $tickDiff){
+    public function updateMove($tickDiff){
         return null;
     }
 

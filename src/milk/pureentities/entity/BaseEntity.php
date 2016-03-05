@@ -18,6 +18,7 @@ use pocketmine\Player;
 
 abstract class BaseEntity extends Creature{
 
+    protected $stayTime = 0;
     protected $moveTime = 0;
 
     /** @var Vector3|Entity */
@@ -29,7 +30,7 @@ abstract class BaseEntity extends Creature{
 
     public function __destruct(){}
 
-    public abstract function updateMove(int $tickDiff);
+    public abstract function updateMove($tickDiff);
 
     public function getSaveId(){
         $class = new \ReflectionClass(get_class($this));
