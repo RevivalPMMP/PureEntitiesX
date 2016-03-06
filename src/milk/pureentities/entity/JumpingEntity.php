@@ -8,7 +8,7 @@ abstract class JumpingEntity extends BaseEntity{
         //TODO
     }
 
-    public function updateMove(int $tickDiff){
+    public function updateMove($tickDiff){
         // TODO
         return null;
     }

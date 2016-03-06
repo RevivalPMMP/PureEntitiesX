@@ -59,7 +59,7 @@ abstract class FlyingEntity extends BaseEntity{
         }
     }
 
-    public function updateMove(int $tickDiff){
+    public function updateMove($tickDiff){
         if(!$this->isMovement()){
             return null;
         }

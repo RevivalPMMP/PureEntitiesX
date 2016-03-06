@@ -69,7 +69,7 @@ abstract class WalkingEntity extends BaseEntity{
      * @return bool
      */
     protected function checkJump($dx, $dz){
-        if($this->motionY < 0){
+        if(!$this->onGround){
             return false;
         }
 
