@@ -105,7 +105,7 @@ class PureEntities extends PluginBase implements Listener{
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities]Plugin has been disabled");
     }
 
-    public static function create($type, Position $source, ...$args) : Entity{
+    public static function create($type, Position $source, ...$args){
         $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);
         if(!$chunk->isGenerated()){
             $chunk->setGenerated();
