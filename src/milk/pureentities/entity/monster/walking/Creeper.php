@@ -30,7 +30,7 @@ class Creeper extends WalkingMonster implements Explosive{
         parent::initEntity();
 
         if(isset($this->namedtag->IsPowered)){
-            $this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->namedtag->IsPowerd ? 1 : 0);
+            $this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->namedtag->IsPowered ? 1 : 0);
         }elseif(isset($this->namedtag->powered)){
             $this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->namedtag->powered ? 1 : 0);
         }
