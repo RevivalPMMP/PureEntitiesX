@@ -1,12 +1,12 @@
 #name, main, version and api are required
 name: PureEntities
-main: milk\pureentities\PureEntities
+main: Magicode\pureentities\PureEntities
 #remember version and api is string, don't write it like this: 1.0.0, or there will be an exception
 version: "1.0"
 api: ["2.1.0", "2.0.0", "1.14.0"]
 
 load: STARTUP
-author: milk0417
+author: milk0417, now magicode
 description: Implement all MCPE entities
-website: https://github.com/milk0417/PureEntities
+website: https://github.com/magicode1/PureEntitiesX
 commands: []
