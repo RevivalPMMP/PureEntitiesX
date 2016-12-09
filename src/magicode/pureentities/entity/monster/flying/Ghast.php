@@ -78,6 +78,8 @@ class Ghast extends FlyingMonster implements ProjectileSource{
     }
 
     public function getDrops(){
+        if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
+            return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
         return [];
     }
 

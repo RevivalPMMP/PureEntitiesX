@@ -178,8 +178,6 @@ class Creeper extends WalkingMonster implements Explosive{
                     return [Item::get(Item::FLINT, 0, 1)];
                 case 1:
                     return [Item::get(Item::GUNPOWDER, 0, 1)];
-                case 2:
-                    return [Item::get(Item::REDSTONE_DUST, 0, 1)];
             }
         }
         return [];

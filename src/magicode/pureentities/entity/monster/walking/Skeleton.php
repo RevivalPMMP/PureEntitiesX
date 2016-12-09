@@ -105,13 +105,21 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
     }
 
     public function getDrops(){
+        $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [
-                Item::get(Item::BONE, 0, mt_rand(0, 2)),
-                Item::get(Item::ARROW, 0, mt_rand(0, 3)),
-            ];
+            switch(mt_rand(0, 2)){
+                case 0:
+                    $drops[] = Item::get(Item::BONE, 0, 1);
+                    break;
+                case 1:
+                    $drops[] = Item::get(Item::ARROW, 0, 1);
+                    break;
+                case 2:
+                    $drops[] = Item::get(Item::BOW, 0, 1);
+                    break;
+            }
         }
-        return [];
+        return $drops;
     }
 
 }

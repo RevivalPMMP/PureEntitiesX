@@ -85,7 +85,7 @@ class Zombie extends WalkingMonster implements Ageable{
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             switch(mt_rand(0, 2)){
                 case 0:
-                    $drops[] = Item::get(Item::FEATHER, 0, 1);
+                    $drops[] = Item::get(Item::ROTTEN_FLESH, 0, 1);
                     break;
                 case 1:
                     $drops[] = Item::get(Item::CARROT, 0, 1);
