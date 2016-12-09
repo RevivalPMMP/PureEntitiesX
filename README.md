@@ -9,7 +9,8 @@ Sorry, This project is deprecated
 
 # Not Anymore!
 
-I am taking it up again and am trying to get it to work again for PMMP "Unleashed".
+RevivalPMMP is taking it up again and trying to get it to work again for PMMP "Unleashed".
 
-It is not Ready for actual use yet, I still need to test it. I will change the ReadMe once it is ready.
+It is not Ready for actual use yet, we still need to test it. We will change the ReadMe once it is ready.
 
+[![Join the chat at https://gitter.im/RevivalPMMP/Lobby#](https://badges.gitter.im/RevivalPMMP/Lobby.svg)](https://gitter.im/RevivalPMMP/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
