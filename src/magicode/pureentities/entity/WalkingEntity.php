@@ -5,8 +5,8 @@ namespace magicode\pureentities\entity;
 use magicode\pureentities\entity\animal\Animal;
 use magicode\pureentities\entity\monster\walking\PigZombie;
 use pocketmine\block\Liquid;
-use pocketmine\block\Slab;
-use pocketmine\block\Stair;
+use pocketmine\block\Fence;
+use pocketmine\block\FenceGate;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
@@ -85,9 +85,15 @@ abstract class WalkingEntity extends BaseEntity{
         }
 
         $block = $this->level->getBlock($this->add($dx, 0, $dz));
-        if($block instanceof Slab || $block instanceof Stair){
-            $this->motionY = 0.5;
+        
+        if($block instanceof Fence || $block instanceof FenceGate){
+            $this->motionY = $this->gravity;
             return true;
+        } elseif($this->motionY <= $this->gravity * 4) {
+            $this->motionY = $this->gravity * 4;
+            return true;
+        } else {
+            $this->motionY += $this->gravity * 0.25;
         }
         return false;
     }

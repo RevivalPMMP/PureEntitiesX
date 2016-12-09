@@ -93,18 +93,18 @@ class PureEntities extends PluginBase implements Listener{
 
         Tile::registerTile(Spawner::class);
         
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX]You're Running PureEntitiesX 2.0");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're Running PureEntitiesX 2.0");
         
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities]The Original Code for this Plugin was Written by milk0417. It is now being maintained by Magicode1 for PMMP.");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities] The Original Code for this Plugin was Written by milk0417. It is now being maintained by Magicode1 for PMMP.");
     }
 
     public function onEnable(){
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities]Plugin has been enabled");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities] Plugin has been enabled");
     }
 
     public function onDisable(){
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities]Plugin has been disabled");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities] Plugin has been disabled");
     }
 
     public static function create($type, Position $source, ...$args){
@@ -235,7 +235,7 @@ class PureEntities extends PluginBase implements Listener{
                 or $block->getId() == Block::STONE_WALL
                 or $block->getId() == Block::STONE_BRICK
                 or $block->getId() == Block::STONE_BRICK_STAIRS
-            ) && ($block->level->getBlockLightAt((int) $block->x, (int) $block->y, (int) $block->z) < 12 and mt_rand(1, 5) < 2)
+            ) && ($block->level->getBlockLightAt((int) $block->x, (int) $block->y, (int) $block->z) < 12 and mt_rand(1, 9) === 1)
         ){
             $entity = PureEntities::create("Silverfish", $block);
             if($entity != null){
