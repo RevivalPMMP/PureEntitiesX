@@ -2,8 +2,8 @@
 
 namespace magicode\pureentities\entity\monster;
 
-use milk\pureentities\entity\monster\walking\Enderman;
-use milk\pureentities\entity\WalkingEntity;
+use magicode\pureentities\entity\monster\walking\Enderman;
+use magicode\pureentities\entity\WalkingEntity;
 use pocketmine\block\Water;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
