@@ -29,7 +29,7 @@ class Wolf extends WalkingMonster{
         }
 
         $this->setMaxHealth(8);
-        $this->fireProof = true;
+        $this->fireProof = false;
         $this->setDamage([0, 3, 4, 6]);
     }
 
