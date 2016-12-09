@@ -2,6 +2,8 @@
 
 namespace magicode\pureentities;
 
+use magicode\pureentities\entity\animal\walking\MagmaCube;
+use magicode\pureentities\entity\animal\walking\Slime;
 use magicode\pureentities\entity\animal\walking\Villager;
 use magicode\pureentities\entity\animal\walking\Chicken;
 use magicode\pureentities\entity\animal\walking\Cow;
@@ -60,7 +62,7 @@ class PureEntities extends PluginBase implements Listener{
             Enderman::class,
             Ghast::class,
             IronGolem::class,
-            //MagmaCube::class,
+            MagmaCube::class,
             Mooshroom::class,
             Ocelot::class,
             Pig::class,
@@ -69,7 +71,7 @@ class PureEntities extends PluginBase implements Listener{
             Sheep::class,
             Silverfish::class,
             Skeleton::class,
-            //Slime::class,
+            Slime::class,
             SnowGolem::class,
             Spider::class,
             Wolf::class,
