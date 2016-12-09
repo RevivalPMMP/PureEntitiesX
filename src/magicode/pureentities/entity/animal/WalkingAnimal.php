@@ -19,7 +19,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
     public function initEntity(){
         parent::initEntity();
 
-        if($this->getDataFlag(self::DATA_FLAG_BABY) === null){
+        if($this->getDataFlag(self::DATA_FLAG_BABY , "" ) === null){
             $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
         }
     }
