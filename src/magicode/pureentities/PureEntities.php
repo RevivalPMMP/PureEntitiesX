@@ -2,6 +2,7 @@
 
 namespace magicode\pureentities;
 
+use magicode\pureentities\entity\animal\walking\Villager;
 use magicode\pureentities\entity\animal\walking\Chicken;
 use magicode\pureentities\entity\animal\walking\Cow;
 use magicode\pureentities\entity\animal\walking\Mooshroom;
@@ -50,6 +51,7 @@ class PureEntities extends PluginBase implements Listener{
 
     public function onLoad(){
         $classes = [
+            Villager::class,
             Blaze::class,
             CaveSpider::class,
             Chicken::class,
