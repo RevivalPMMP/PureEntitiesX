@@ -15,7 +15,7 @@ public $width = 0.72;
     public $height = 1.8;
 
     public function getSpeed() : float{
-        return 1.5;
+        return 1.1;
     }
     public function getName(){
         return "Villager";
