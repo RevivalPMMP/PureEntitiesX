@@ -84,7 +84,7 @@ abstract class WalkingEntity extends BaseEntity{
             return false;
         }
 
-        $block = $this->level->getBlock($this->add($dx, 0, $dz));
+        $block = $this->level->getBlock($this->add($dx, -0.1, $dz));
         
         if($block instanceof Fence || $block instanceof FenceGate){
             $this->motionY = $this->gravity;
@@ -92,8 +92,12 @@ abstract class WalkingEntity extends BaseEntity{
         } elseif($this->motionY <= $this->gravity * 4) {
             $this->motionY = $this->gravity * 4;
             return true;
-        } else {
+        } elseif($block instanceof Transparent) {
             $this->motionY += $this->gravity * 0.25;
+            return true;
+        } elseif($block instanceof Solid) {
+            $this->motionY = $this->gravity * 4;
+            return true;
         }
         return false;
     }
