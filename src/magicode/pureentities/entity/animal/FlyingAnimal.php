@@ -19,13 +19,13 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
     public function initEntity(){
         parent::initEntity();
 
-        if($this->getDataProperty(self::DATA_AGEABLE_FLAGS) === null){
-            $this->setDataProperty(self::DATA_AGEABLE_FLAGS, self::DATA_TYPE_BYTE, 0);
+        if($this->getDataFlag(self::DATA_FLAG_BABY , "" ) === null){
+            $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
         }
     }
 
     public function isBaby() : bool{
-        return $this->getDataFlag(self::DATA_AGEABLE_FLAGS, self::DATA_FLAG_BABY);
+        return $this->getDataFlag(self::DATA_FLAG_BABY);
     }
 
     public function entityBaseTick($tickDiff = 1){

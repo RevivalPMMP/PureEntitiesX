@@ -36,6 +36,23 @@ class ZombieVillager extends WalkingMonster{
         }
     }
 
+    public function entityBaseTick($tickDiff = 1){
+        Timings::$timerEntityBaseTick->startTiming();
+
+        $hasUpdate = parent::entityBaseTick($tickDiff);
+
+        $time = $this->getLevel()->getTime() % Level::TIME_FULL;
+        if(
+            !$this->isOnFire()
+            && ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)
+        ){
+            $this->setOnFire(100);
+        }
+
+        Timings::$timerEntityBaseTick->startTiming();
+        return $hasUpdate;
+    }
+    
     public function getDrops(){
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             switch(mt_rand(0, 2)){
