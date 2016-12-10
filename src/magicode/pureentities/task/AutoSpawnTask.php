@@ -6,6 +6,7 @@ use pocketmine\scheduler\PluginTask;
 use magicode\pureentities\PureEntities;
 use pocketmine\entity\Entity;
 use pocketmine\level\Position;
+use pocketmine\level\Level;
 
 class AutoSpawnTask extends PluginTask {
 
