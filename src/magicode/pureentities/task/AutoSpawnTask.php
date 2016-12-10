@@ -10,7 +10,7 @@ use pocketmine\level\Position;
 class AutoSpawnTask extends PluginTask {
 
     public function __construct(PureEntities $plugin) {
-        parent::construct($plugin);
+        parent::__construct($plugin);
         $this->plugin = $plugin;
     }
     
