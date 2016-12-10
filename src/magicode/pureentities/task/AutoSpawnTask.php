@@ -61,7 +61,7 @@ class AutoSpawnTask extends PluginTask {
             
                 if(
                     !$player->distance($entity) <= 8 &&
-                    ($light = $this->getBlock($pos)->getLightLevel()) <= 7
+                    ($light = $level->getBlock($pos)->getLightLevel()) <= 7
                 ) {
                     $entity->spawnToAll();
                 }
