@@ -14,4 +14,4 @@ RevivalPMMP is taking it up again and trying to get it to work again for PMMP "U
 It is not Ready for actual use yet, we still need to test it. We will change the ReadMe once it is ready.
 
 [![Join the chat at https://gitter.im/RevivalPMMP/Lobby#](https://badges.gitter.im/RevivalPMMP/Lobby.svg)](https://gitter.im/RevivalPMMP/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX
+![alt text](https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX "Poggit Status")
