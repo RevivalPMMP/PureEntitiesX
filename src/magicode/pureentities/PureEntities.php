@@ -106,18 +106,18 @@ class PureEntities extends PluginBase implements Listener{
         
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're Running PureEntitiesX 2.0");
         
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
     }
 
     public function onEnable(){
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities] Plugin has been enabled");
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities] You're running PureEntitiesX Dev!");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been enabled");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're running PureEntitiesX Dev!");
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), 100);
     }
 
     public function onDisable(){
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntities] Plugin has been disabled");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been disabled");
     }
 
     public static function create($type, Position $source, ...$args){
