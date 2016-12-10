@@ -21,7 +21,7 @@ class AutoSpawnTask extends PluginTask {
         foreach($this->plugin->getServer()->getLevels() as $level) {
             foreach($level->getPlayers() as $player){
                 foreach($level->getEntities() as $entity) {
-                    if($player->distance($entity <= 20)) {
+                    if($player->distance($entity) <= 20) {
                         $valid = true;
                     }
                 }
