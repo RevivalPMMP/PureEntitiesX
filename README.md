@@ -1,5 +1,4 @@
 [![Join the chat at https://gitter.im/RevivalPMMP/Lobby#](https://badges.gitter.im/RevivalPMMP/Lobby.svg)](https://gitter.im/RevivalPMMP/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-![alt text](https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX "Poggit Status")
 
 # PureEntitiesX
 
@@ -17,7 +16,7 @@ This is a Fork of the original PureEntities, which went inactive about half a ye
 
 # How to Install
 
-There is no Official release yet, because we want to give you the best as possible plugin. But, you can download our Development builds from Poggit: https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX
+There is no Official release yet, because we want to give you the best as possible plugin. You can build it yourself if you want.
 
 It still has some bugs, but it is still very usable, and we will work to get them resolved ASAP. 
 
