@@ -10,7 +10,7 @@ This is a Fork of the original PureEntities, which went inactive about half a ye
 
 -Auto Spawning of Mobs around players. We don't have them spawn in each loaded chunk, just near players to maximize server performance
 
--Correct Mob drops. Creepers don't grop Redstone, last we checked, so we updated mobs drops with new items!
+-Correct Mob drops. Creepers don't drop Redstone, last we checked, so we updated mobs drops with new items!
 
 -More Configuration Coming Soon! We are adding a config with complete custimizability. Stay Tuned!
 
