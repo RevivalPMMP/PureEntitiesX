@@ -92,13 +92,10 @@ abstract class WalkingEntity extends BaseEntity{
         } elseif($this->motionY <= $this->gravity * 4) {
             $this->motionY = $this->gravity * 4;
             return true;
-        } elseif($block instanceof Transparent) {
+        } else {
             $this->motionY += $this->gravity * 0.25;
             return true;
-        } elseif($block instanceof Solid) {
-            $this->motionY = $this->gravity * 4;
-            return true;
-        }
+        } 
         return false;
     }
 
@@ -160,7 +157,7 @@ abstract class WalkingEntity extends BaseEntity{
             }elseif($this->motionY > -$this->gravity * 4){
                 $this->motionY = -$this->gravity * 4;
             }else{
-                $this->motionY -= $this->gravity;
+                $this->motionY -= $this->gravity * $tickDiff;
             }
         }
         $this->updateMovement();
