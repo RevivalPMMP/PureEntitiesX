@@ -2,6 +2,9 @@
 
 namespace magicode\pureentities;
 
+use magicode\pureentities\entity\animal\swimming\Squid;
+use magicode\pureentities\entity\monster\swimming\Guardian;
+use magicode\pureentities\entity\monster\swimming\ElderGuardian;
 use magicode\pureentities\entity\monster\jumping\MagmaCube;
 use magicode\pureentities\entity\monster\jumping\Slime;
 use magicode\pureentities\entity\animal\walking\Villager;
@@ -54,6 +57,9 @@ class PureEntities extends PluginBase implements Listener{
 
     public function onLoad(){
         $classes = [
+            //ElderGuardian::class,
+            //Guardian::class,
+            //Squid::class,
             Villager::class,
             Blaze::class,
             CaveSpider::class,
