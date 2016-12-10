@@ -2,8 +2,8 @@
 
 namespace magicode\pureentities;
 
-use magicode\pureentities\entity\animal\walking\MagmaCube;
-use magicode\pureentities\entity\animal\walking\Slime;
+use magicode\pureentities\entity\monster\jumping\MagmaCube;
+use magicode\pureentities\entity\monster\jumping\Slime;
 use magicode\pureentities\entity\animal\walking\Villager;
 use magicode\pureentities\entity\animal\walking\Chicken;
 use magicode\pureentities\entity\animal\walking\Cow;
