@@ -30,11 +30,15 @@ class AutoDespawnTask extends PluginTask {
                 if($despawnable[$entity->getId()] === 2) {
                     $probability = mt_rand(1, 64);
                     if($probability === 1) {
-                        $entity->close();
+                        if(!$entity instanceof Player) {
+                            $entity->close();
+                        }
                     }
                     
                 } elseif($despawnable[$entity->getId()] === 3) {
-                    $entity->close();
+                    if(!$entity instanceof Player) {
+                        $entity->close();
+                    }
                 }
             }
         }
