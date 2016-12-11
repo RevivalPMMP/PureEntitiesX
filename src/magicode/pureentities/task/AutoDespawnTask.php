@@ -6,6 +6,7 @@ use pocketmine\scheduler\PluginTask;
 use magicode\pureentities\PureEntities;
 use pocketmine\entity\Entity;
 use pocketmine\level\Level;
+use pocketmine\Player;
 
 class AutoDespawnTask extends PluginTask {
 
@@ -20,9 +21,9 @@ class AutoDespawnTask extends PluginTask {
             foreach($level->getEntities() as $entity) {
                 $despawnable[$entity->getId()] = 2; 
                 foreach($level->getPlayers() as $player) {
-                    if($player->distance($entity) <= 32 || $entity instanceof Player) {
+                    if($player->distance($entity) <= 32) {
                         $despawnable[$entity->getId()] = 1;
-                    } elseif($player->distance($entity) >= 128 && !$entity instanceof Player) {
+                    } elseif($player->distance($entity) >= 128) {
                         $despawnable[$entity->getId()] = 3;
                     }
                 }
@@ -30,13 +31,13 @@ class AutoDespawnTask extends PluginTask {
                 if($despawnable[$entity->getId()] === 2) {
                     $probability = mt_rand(1, 100);
                     if($probability === 1) {
-                        if($entity !== $player) {
+                        if(!$entity instanceof Player) {
                             $entity->close();
                         }
                     }
                     
                 } elseif($despawnable[$entity->getId()] === 3) {
-                    if($entity !== $player) {
+                    if(!$entity instanceof Player) {
                         $entity->close();
                     }
                 }
