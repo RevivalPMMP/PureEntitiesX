@@ -7,7 +7,7 @@ use magicode\pureentities\PureEntities;
 use pocketmine\entity\Entity;
 use pocketmine\level\Level;
 use pocketmine\Player;
-
+use pocketmine\entity\Monster;
 class AutoDespawnTask extends PluginTask {
 
     public function __construct(PureEntities $plugin) {
@@ -31,13 +31,13 @@ class AutoDespawnTask extends PluginTask {
                 if($despawnable[$entity->getId()] === 2) {
                     $probability = mt_rand(1, 100);
                     if($probability === 1) {
-                        if(!$entity instanceof Player) {
+                        if(!$entity instanceof Player && $entity instanceof Monster) {
                             $entity->close();
                         }
                     }
                     
                 } elseif($despawnable[$entity->getId()] === 3) {
-                    if(!$entity instanceof Player) {
+                    if(!$entity instanceof Player && $entity instanceof Monster) {
                         $entity->close();
                     }
                 }
