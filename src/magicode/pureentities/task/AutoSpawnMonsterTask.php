@@ -45,7 +45,7 @@ class AutoSpawnMonsterTask extends PluginTask {
                 $probability = mt_rand(1, 100);
                 
                 /*
-                 * Plains Biome Entity Generator
+                 * Plains | (Birch) Forest | (Small) Mountains Biome Entity Generator
                  * Entities:
                  * - Zombie
                  * - Villager Zombie
@@ -55,7 +55,7 @@ class AutoSpawnMonsterTask extends PluginTask {
                  * - Witch
                  * - Creeper
                  */
-                if($biome === Biome::PLAINS) {
+                if($biome === Biome::PLAINS || $biome === Biome::FOREST || Biome::BIRCH_FOREST || Biome::MOUNTAINS || Biome::SMALL_MOUNTAIN) {
                     if($probability <= 10) {
                         $type = 38; // Enderman
                     } elseif($probability <= 25) {
@@ -96,6 +96,78 @@ class AutoSpawnMonsterTask extends PluginTask {
                         $type = 33; // Creeper
                     } else {
                         //$type = 45; // Witch (Yet to be implemented)
+                    }
+                }
+                
+                /*
+                 * Swamp Biome Entity Generator
+                 * Entities:
+                 * - Zombie
+                 * - Villager Zombie
+                 * - Skeleton
+                 * - Spider
+                 * - Enderman
+                 * - Witch
+                 * - Creeper
+                 * - Slime
+                 */
+                if($biome === Biome::SWAMP) {
+                    if($probability <= 10) {
+                        $type = 38; // Enderman
+                    } elseif($probability <= 25) {
+                        $type = 35; // Spider
+                    } elseif($probability <= 30) {
+                        $type = 44; // Villager Zombie
+                    } elseif($probability <= 50) {
+                        $type = 32; // Zombie
+                    } elseif($probability <= 70) {
+                        $type = 34; // Skeleton
+                    } elseif($probability <= 85) {
+                        $type = 33; // Creeper
+                    } elseif($probability <= 95) {
+                        $type = 37; // Slime
+                    } else {
+                        //$type = 45; // Witch (Yet to be implemented)
+                    }
+                }
+                
+                /*
+                 * Taiga | Ice Plains Biome Entity Generator
+                 * Entities:
+                 * - Stray
+                 * - Zombie
+                 * - Zombie Villager
+                 * - Spider
+                 * - Enderman
+                 * - Witch
+                 * - Creeper
+                 */
+                if($biome === Biome::TAIGA || $biome === Biome::ICE_PLAINS) {
+                    if($probability <= 10) {
+                        $type = 38; // Enderman
+                    } elseif($probability <= 25) {
+                        $type = 35; // Spider
+                    } elseif($probability <= 30) {
+                        $type = 44; // Villager Zombie
+                    } elseif($probability <= 55) {
+                        $type = 32; // Zombie
+                    } elseif($probability <= 80) {
+                        $type = 46; // Stray
+                    } elseif($probability <= 95) {
+                        $type = 33; // Creeper
+                    } else {
+                        //$type = 45; // Witch (Yet to be implemented)
+                    }
+                }
+                
+                /*
+                 * Ocean | River Biome Entity Generator
+                 * Entities:
+                 * - Guardian?
+                 */
+                if($biome === Biome::RIVER || $biome === Biome::OCEAN) {
+                    if($probability <= 5) {
+                        //$type = 49; // Guardian (Should it be kept vanilla or should we add some more action?)
                     }
                 }
                 
