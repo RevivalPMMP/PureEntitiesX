@@ -244,26 +244,4 @@ class PureEntities extends PluginBase implements Listener{
             }
         }
     }
-
-    public function BlockBreakEvent(BlockBreakEvent $ev){
-        if($ev->isCancelled()){
-            return;
-        }
-
-        $block = $ev->getBlock();
-        if(
-            (
-                $block->getId() == Block::STONE
-                or $block->getId() == Block::STONE_WALL
-                or $block->getId() == Block::STONE_BRICK
-                or $block->getId() == Block::STONE_BRICK_STAIRS
-            ) && ($block->level->getBlockLightAt((int) $block->x, (int) $block->y, (int) $block->z) < 12 and mt_rand(1, 25) === 1)
-        ){
-            $entity = PureEntities::create("Silverfish", $block);
-            if($entity != null){
-                $entity->spawnToAll();
-            }
-        }
-    }
-
 }
