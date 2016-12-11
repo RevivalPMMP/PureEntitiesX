@@ -20,7 +20,7 @@ class AutoDespawnTask extends PluginTask {
             foreach($level->getEntities() as $entity) {
                 $despawnable[$entity->getId()] = 2; 
                 foreach($level->getPlayers() as $player) {
-                    if($player->distance($entity) <= 32) {
+                    if($player->distance($entity) <= 32 || $entity instanceof Player) {
                         $despawnable[$entity->getId()] = 1;
                     } elseif($player->distance($entity) >= 128) {
                         $despawnable[$entity->getId()] = 3;
@@ -28,7 +28,7 @@ class AutoDespawnTask extends PluginTask {
                 }
                 
                 if($despawnable[$entity->getId()] === 2) {
-                    $probability = mt_rand(1, 64);
+                    $probability = mt_rand(1, 100);
                     if($probability === 1) {
                         if(!$entity instanceof Player) {
                             $entity->close();
