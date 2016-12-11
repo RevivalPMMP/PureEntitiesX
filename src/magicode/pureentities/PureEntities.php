@@ -113,7 +113,9 @@ class PureEntities extends PluginBase implements Listener{
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been enabled");
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're running PureEntitiesX Dev!");
+        
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), 100);
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), 20);
     }
 
     public function onDisable(){
