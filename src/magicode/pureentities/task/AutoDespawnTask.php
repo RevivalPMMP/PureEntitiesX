@@ -7,7 +7,8 @@ use magicode\pureentities\PureEntities;
 use pocketmine\entity\Entity;
 use pocketmine\level\Level;
 use pocketmine\Player;
-use pocketmine\entity\Monster;
+use magicode\pureentities\entity\monster\Monster;
+
 class AutoDespawnTask extends PluginTask {
 
     public function __construct(PureEntities $plugin) {
