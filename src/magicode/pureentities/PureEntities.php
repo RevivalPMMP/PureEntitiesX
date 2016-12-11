@@ -1,3 +1,4 @@
+
 <?php
 
 namespace magicode\pureentities;
@@ -32,6 +33,7 @@ use magicode\pureentities\entity\monster\walking\ZombieVillager;
 use magicode\pureentities\entity\projectile\FireBall;
 use magicode\pureentities\tile\Spawner;
 use magicode\pureentities\task\AutoSpawnTask;
+use magicode\pureentities\task\AutoDespawnTask;
 use pocketmine\block\Air;
 use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockBreakEvent;
