@@ -41,7 +41,7 @@ class AutoSpawnMonsterTask extends PluginTask {
                     );
                 }
                 
-                $biome = $level->getBiome($x, $z);
+                $biome = $level->getBiomeId($x, $z);
                 $probability = mt_rand(1, 100);
                 
                 /*
