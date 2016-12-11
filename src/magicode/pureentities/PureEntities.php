@@ -8,6 +8,9 @@ use magicode\pureentities\entity\monster\swimming\ElderGuardian;
 use magicode\pureentities\entity\monster\jumping\MagmaCube;
 use magicode\pureentities\entity\monster\jumping\Slime;
 use magicode\pureentities\entity\animal\walking\Villager;
+use magicode\pureentities\entity\animal\walking\Horse;
+use magicode\pureentities\entity\animal\walking\Mule;
+use magicode\pureentities\entity\animal\walking\Donkey;
 use magicode\pureentities\entity\animal\walking\Chicken;
 use magicode\pureentities\entity\animal\walking\Cow;
 use magicode\pureentities\entity\animal\walking\Mooshroom;
@@ -58,6 +61,9 @@ class PureEntities extends PluginBase implements Listener{
 
     public function onLoad(){
         $classes = [
+            Horse::class,
+            Donkey::class,
+            Mule::class,
             //ElderGuardian::class,
             //Guardian::class,
             //Squid::class,
