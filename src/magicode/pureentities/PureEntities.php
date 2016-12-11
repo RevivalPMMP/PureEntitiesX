@@ -32,13 +32,14 @@ use magicode\pureentities\entity\monster\walking\Spider;
 use magicode\pureentities\entity\monster\walking\Wolf;
 use magicode\pureentities\entity\monster\walking\Zombie;
 use magicode\pureentities\entity\monster\walking\ZombieVillager;
+use magicode\pureentities\entity\monster\walking\Husk;
+use magicode\pureentities\entity\monster\walking\Stray;
 use magicode\pureentities\entity\projectile\FireBall;
 use magicode\pureentities\tile\Spawner;
 use magicode\pureentities\task\AutoSpawnTask;
 use magicode\pureentities\task\AutoDespawnTask;
 use pocketmine\block\Air;
 use pocketmine\entity\Entity;
-use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -55,12 +56,13 @@ use pocketmine\nbt\tag\StringTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
-use pocketmine\block\Block;
 
 class PureEntities extends PluginBase implements Listener{
 
     public function onLoad(){
         $classes = [
+            Stray::class,
+            Husk::class,
             Horse::class,
             Donkey::class,
             Mule::class,
