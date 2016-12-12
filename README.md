@@ -4,6 +4,10 @@
 
 This is a Fork of the original PureEntities, which went inactive about half a year back. RevivalPMMP is now maintaining it and updating it, so now you can have mobs on your server with this plugin! (At least until Pocketmine implements it)
 
+> PureEntitiesX does not officially provide compatibility with _Third Party PocketMine_ server softwares.
+>
+> Compatibility can be found with some, but do not complain if it happens not to be.
+
 # Features:
 
 -All mobs Implemented (Besides Bosses) From Pig to Magma Cubes, we've got them all! 
