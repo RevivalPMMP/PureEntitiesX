@@ -24,14 +24,13 @@ class AutoSpawnAnimalTask extends PluginTask {
         foreach($this->plugin->getServer()->getLevels() as $level) {
             foreach($level->getPlayers() as $player){
                 foreach($level->getEntities() as $entity) {
-                    if($player->distance($entity) <= 50) {
+                    if($player->distance($entity) <= 25) {
                         $valid = true;
+                        $entities[] = $entity;
                     }
                 }
-            
-                $entities[] = $entity;
         
-                if($valid && count($entities) <= 2) {
+                if($valid && count($entities) <= 10) {
                     $x = $player->x + mt_rand(-20, 20);
                     $z = $player->z + mt_rand(-20, 20);
                     $pos = new Position(
