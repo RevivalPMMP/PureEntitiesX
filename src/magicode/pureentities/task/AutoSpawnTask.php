@@ -64,8 +64,7 @@ class AutoSpawnTask extends PluginTask {
                 
                 if(
                     !$player->distance($entity) <= 8 &&
-                    $level->getFullLight(new Vector3($x, $y, $z)) <= 7 &&
-                    ($time < Level::TIME_DAY || $time > Level::TIME_SUNSET)
+                    $time >= 10900 && $time < 17800
                 ) {
                     $entity->spawnToAll();
                 }
