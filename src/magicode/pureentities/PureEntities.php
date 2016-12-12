@@ -32,6 +32,7 @@ use magicode\pureentities\entity\monster\walking\ZombieVillager;
 use magicode\pureentities\entity\projectile\FireBall;
 use magicode\pureentities\tile\Spawner;
 use magicode\pureentities\task\AutoSpawnMonsterTask;
+use magicode\pureentities\task\AutoSpawnAnimalTask;
 use magicode\pureentities\task\AutoDespawnTask;
 use pocketmine\block\Air;
 use pocketmine\entity\Entity;
@@ -117,6 +118,7 @@ class PureEntities extends PluginBase implements Listener{
         
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), 100);
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), 20);
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), 100);
     }
 
     public function onDisable(){
