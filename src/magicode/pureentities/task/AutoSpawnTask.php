@@ -30,7 +30,7 @@ class AutoSpawnTask extends PluginTask {
             
                 $entities[] = $entity;
         
-                if($valid && count($entities) <= 30) {
+                if($valid && count($entities) <= 5) {
                     $x = $player->x + mt_rand(-20, 20);
                     $z = $player->z + mt_rand(-20, 20);
                     $pos = new Position(
