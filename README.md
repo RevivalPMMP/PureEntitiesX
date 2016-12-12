@@ -8,7 +8,7 @@ This is a Fork of the original PureEntities, which went inactive about half a ye
 >
 > Compatibility can be found with some, but do not complain if it happens not to be.
 
-# Features:
+## Features:
 
 -All mobs Implemented (Besides Bosses) From Pig to Magma Cubes, we've got them all! 
 
@@ -18,17 +18,17 @@ This is a Fork of the original PureEntities, which went inactive about half a ye
 
 -More Configuration Coming Soon! We are adding a config with complete custimizability. Stay Tuned!
 
-# How to Install
+## How to Install
 
 There is no Official release yet, because we want to give you the best as possible plugin. You can build it yourself if you want, or download it from Poggit.
 
 It still has some bugs, but it is still very usable, and we will work to get them resolved ASAP. 
 
-# Pocketmine Mob AI
+## Pocketmine Mob AI
 
 Once Pocketmine comes out with a Mob AI, we plan to migrate our config and custmizability to support it. Once Pocketmine Mob AI comes out, you can be confident that you can keep using PureEntitiesX!
 
-# Plugin Help
+## Plugin Help
 
 Protect an Area from Mob Spawns:
 
