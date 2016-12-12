@@ -24,3 +24,11 @@ It still has some bugs, but it is still very usable, and we will work to get the
 
 Once Pocketmine comes out with a Mob AI, we plan to migrate our config and custmizability to support it. Once Pocketmine Mob AI comes out, you can be confident that you can keep using PureEntitiesX!
 
+# Plugin Help
+
+Protect an Area from Mob Spawns:
+
+There is no way to do it currentty, but mobs spawn on the highest block in the world, so you can build a big glass layer over your spawn or anywhere lese you want to protect. 
+
+
+
