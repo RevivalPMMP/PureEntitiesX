@@ -17,13 +17,12 @@ class AutoSpawnAnimalTask extends PluginTask {
     }
     
     public function onRun($currentTick){
-        
-        $entities = [];
+                $entities = [];
         $valid = false;
         foreach($this->plugin->getServer()->getLevels() as $level) {
             foreach($level->getPlayers() as $player){
                 foreach($level->getEntities() as $entity) {
-                    if($player->distance($entity) <= 30) {
+                    if($player->distance($entity) <= 50) {
                         $valid = true;
                     }
                 }
@@ -61,7 +60,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                     } elseif($probability <= 40) {
                         $type = 11; // Cow
                     } elseif($probability <= 45) {
-                        $type = 17; // Horse
+                        $type = 23; // Horse
                     } elseif($probability <= 65) {
                         $type = 12; // Pig
                     } elseif($probability <= 85) {
