@@ -29,7 +29,7 @@ class AutoSpawnAnimalTask extends PluginTask {
             
                 $entities[] = $entity;
         
-                if($valid && count($entities) <= 3) {
+                if($valid && count($entities) <= 2) {
                     $x = $player->x + mt_rand(-20, 20);
                     $z = $player->z + mt_rand(-20, 20);
                     $pos = new Position(
