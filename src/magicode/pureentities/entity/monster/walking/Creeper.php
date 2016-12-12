@@ -63,6 +63,7 @@ class Creeper extends WalkingMonster implements Explosive{
 
         if(!$ev->isCancelled()){
             $explosion = new Explosion($this, $ev->getForce(), $this);
+            $ev->setBlockBreaking(false); // This should be removed later. There should be a configurable option for this. 
             if($ev->isBlockBreaking()){
                 $explosion->explodeA();
             }

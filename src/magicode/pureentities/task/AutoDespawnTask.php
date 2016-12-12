@@ -5,6 +5,7 @@ namespace magicode\pureentities\task;
 use pocketmine\scheduler\PluginTask;
 use magicode\pureentities\PureEntities;
 use pocketmine\entity\Entity;
+use pocketmine\entity\Creature;
 use pocketmine\level\Level;
 use pocketmine\Player;
 use magicode\pureentities\entity\monster\Monster;
@@ -32,13 +33,13 @@ class AutoDespawnTask extends PluginTask {
                 if($despawnable[$entity->getId()] === 2) {
                     $probability = mt_rand(1, 100);
                     if($probability === 1) {
-                        if(!$entity instanceof Player && $entity instanceof Monster) {
+                        if($entity instanceof Monster) {
                             $entity->close();
                         }
                     }
                     
                 } elseif($despawnable[$entity->getId()] === 3) {
-                    if(!$entity instanceof Player && $entity instanceof Monster) {
+                    if($entity instanceof Creature) {
                         $entity->close();
                     }
                 }
