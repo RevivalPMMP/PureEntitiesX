@@ -8,6 +8,7 @@ use pocketmine\entity\Entity;
 use pocketmine\level\Position;
 use pocketmine\level\Level;
 use pocketmine\level\generator\biome\Biome;
+use pocketmine\block\Grass;
 
 class AutoSpawnAnimalTask extends PluginTask {
 
@@ -17,7 +18,7 @@ class AutoSpawnAnimalTask extends PluginTask {
     }
     
     public function onRun($currentTick){
-                $entities = [];
+        $entities = [];
         $valid = false;
         foreach($this->plugin->getServer()->getLevels() as $level) {
             foreach($level->getPlayers() as $player){
@@ -43,6 +44,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                 $type = 11; // If $type is NOT set, it won't dump errors.
                 $biome = $level->getBiomeId($x, $z);
                 $probability = mt_rand(1, 100);
+                $block = $level->getBlock($x, $y - 1, $z);
                 
                 /*
                  * Plains Biome Animal Generator
@@ -136,7 +138,8 @@ class AutoSpawnAnimalTask extends PluginTask {
                 if(
                     !$player->distance($pos) <= 8 &&
                     ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) &&
-                    PureEntities::create($type, $pos) !== null
+                    PureEntities::create($type, $pos) !== null &&
+                    $block instanceof Grass
                 ) {
                     $entity = PureEntities::create($type, $pos);
                     $entity->spawnToAll();
