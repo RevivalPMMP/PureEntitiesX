@@ -10,8 +10,8 @@ use pocketmine\entity\Creature;
 class Rabbit extends WalkingAnimal{
     const NETWORK_ID = 18;
 
-    public $width = 0.4;
-    public $height = 0.75;
+    public $width = 0.5;
+    public $height = 0.5;
 
     public function getSpeed() : float{
         return 1.2;
