@@ -2,6 +2,10 @@
 
 namespace magicode\pureentities\task;
 
+use pocketmine\entity\Entity;
+use pocketmine\level\Position;
+use pocketmine\math\Vector3;
+use scheduler\PluginTask;
 use magicode\pureentities\PureEntities;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
