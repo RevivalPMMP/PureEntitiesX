@@ -2,12 +2,10 @@
 
 namespace magicode\pureentities\task;
 
-use pocketmine\scheduler\PluginTask;
 use magicode\pureentities\PureEntities;
-use pocketmine\entity\Entity;
-use pocketmine\level\Position;
 use pocketmine\level\Level;
-use pocketmine\math\Vector3;
+use pocketmine\level\Position;
+use pocketmine\scheduler\PluginTask;
 
 class AutoSpawnTask extends PluginTask {
 
@@ -67,6 +65,23 @@ class AutoSpawnTask extends PluginTask {
                 ) {
                     $entity = PureEntities::create($type, $pos);
                     $entity->spawnToAll();
+                } else {
+                    switch(mt_rand(1, 4)) {
+                    case 1:
+                        $entype = 11;
+                        break;
+                    case 2:
+                        $entype = 12;
+                        break;
+                    case 3:
+                        $entype = 10;
+                        break;
+                    case 4:
+                        $entype = 13;
+                        break;
+                    }                   
+                    $entity = PureEntities::create($entype, $pos);
+                    $entity->spawnToAll();      
                 }
             }
         }
