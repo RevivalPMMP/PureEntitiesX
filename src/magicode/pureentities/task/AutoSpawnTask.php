@@ -59,13 +59,13 @@ class AutoSpawnTask extends PluginTask {
                         break;
                 }
             
-                $entity = PureEntities::create($type, $pos);
                 $time = $level->getTime() % Level::TIME_FULL;
                 
                 if(
-                    !$player->distance($entity) <= 8 &&
+                    !$player->distance($pos) <= 8 &&
                     $time >= 10900 && $time < 17800
                 ) {
+                    $entity = PureEntities::create($type, $pos);
                     $entity->spawnToAll();
                 }
             }
