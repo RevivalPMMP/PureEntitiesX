@@ -141,7 +141,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                     PureEntities::create($type, $pos) !== null &&
                     $block instanceof Grass
                 ) {
-                    PureEntities::scheduleCreatureSpawn($pos, $type, $level, "Animal");
+                    $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Animal");
                 }
             }
         }
