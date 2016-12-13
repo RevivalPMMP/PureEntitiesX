@@ -41,7 +41,11 @@ class AutoSpawnMonsterTask extends PluginTask {
                 }
                 
                 $type = 32; // If $type is NOT set, it won't dump errors.
-                $biome = $level->getBiomeId($x, $z);
+                if($level->getBiomeId($x, $z) === null) {
+                    $biome = 1;
+                } else {
+                    $biome = $level->getBiomeId($x, $z);
+                }
                 $probability = mt_rand(1, 100);
                 
                 /*
@@ -195,8 +199,7 @@ class AutoSpawnMonsterTask extends PluginTask {
                     $time >= 10900 && $time <= 17800 &&
                     PureEntities::create($type, $pos) !== null
                 ) {
-                    $entity = PureEntities::create($type, $pos);
-                    $entity->spawnToAll();
+                    $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Monster");
                 }
             }
         }

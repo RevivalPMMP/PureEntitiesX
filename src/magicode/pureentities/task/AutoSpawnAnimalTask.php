@@ -42,7 +42,11 @@ class AutoSpawnAnimalTask extends PluginTask {
                 }
                 
                 $type = 11; // If $type is NOT set, it won't dump errors.
-                $biome = $level->getBiomeId($x, $z);
+                if($level->getBiomeId($x, $z) === null) {
+                    $biome = 1;
+                } else {
+                    $biome = $level->getBiomeId($x, $z);
+                }
                 $probability = mt_rand(1, 100);
                 $block = $level->getBlock(new Vector3($x, $y - 1, $z));
                 
@@ -141,8 +145,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                     PureEntities::create($type, $pos) !== null &&
                     $block instanceof Grass
                 ) {
-                    $entity = PureEntities::create($type, $pos);
-                    $entity->spawnToAll();
+                    $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Animal");
                 }
             }
         }
