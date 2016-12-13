@@ -38,7 +38,7 @@ class Chicken extends WalkingAnimal{
                 case 0:
                     return [Item::get(Item::RAW_CHICKEN, 0, 1)];
                 case 1:
-                    return [Item::get(Item::EGG, 0, 1)];
+                    return [Item::get(Item::RAW_CHICKEN, 0, 1)];
                 case 2:
                     return [Item::get(Item::FEATHER, 0, 1)];
             }
