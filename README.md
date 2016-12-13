@@ -36,7 +36,7 @@ Once Pocketmine comes out with a Mob AI, we plan to migrate our config and custm
 
 Protect an Area from Mob Spawns:
 
-There is no way to do it currentty, but mobs spawn on the highest block in the world, so you can build a big glass layer over your spawn or anywhere else you want to protect. 
+The PureEntitiesX API allows you to disable/enable Mob spawning in certain areas. See our example plugin for more information
 
 
 
