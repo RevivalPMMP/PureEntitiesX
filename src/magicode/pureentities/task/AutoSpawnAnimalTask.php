@@ -43,6 +43,9 @@ class AutoSpawnAnimalTask extends PluginTask {
                 
                 $type = 11; // If $type is NOT set, it won't dump errors.
                 $biome = $level->getBiomeId($x, $z);
+                if($biome === null) {
+                    $biome = 1;
+                }
                 $probability = mt_rand(1, 100);
                 $block = $level->getBlock(new Vector3($x, $y - 1, $z));
                 
