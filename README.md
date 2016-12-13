@@ -22,7 +22,7 @@ This is a Fork of the original PureEntities, which went inactive about half a ye
 
 ## How to Install
 
-There is no Official release yet, because we want to give you the best as possible plugin. You can build it yourself if you want, or download it from Poggit.
+Download the Zip folder under the Releases tab for V#.0-beta and extract the Phar. Alternatively, you can download the scource code, or new development builds from Poggit.
 
 It still has some bugs, but it is still very usable, and we will work to get them resolved ASAP. 
 
