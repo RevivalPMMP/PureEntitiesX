@@ -2,6 +2,7 @@
 
 namespace magicode\pureentities;
 
+use magicode\pureentities\event\CreatureSpawnEvent;
 use magicode\pureentities\entity\animal\swimming\Squid;
 use magicode\pureentities\entity\monster\swimming\Guardian;
 use magicode\pureentities\entity\monster\swimming\ElderGuardian;
@@ -47,6 +48,7 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
+use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
@@ -133,6 +135,13 @@ class PureEntities extends PluginBase implements Listener{
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been disabled");
     }
 
+    /**
+     * @param type $type
+     * @param Position $source
+     * @param type $args
+     * 
+     * @return type
+     */
     public static function create($type, Position $source, ...$args){
         $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);
         if(!$chunk->isGenerated()){
@@ -246,6 +255,25 @@ class PureEntities extends PluginBase implements Listener{
                     $ev->setCancelled();
                 }
             }
+        }
+    }
+    
+    /**
+     * @param Position $pos
+     * @param int $entityid
+     * @param Level $level
+     * @param string $type
+     * 
+     * @return boolean
+     */
+    public static function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type) {
+        $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
+        if($event->isCancelled()) {
+            return false;
+        } else {
+            $entity = self::create($entityid, $pos);
+            $entity->spawnToAll();
+            return true;
         }
     }
 }
