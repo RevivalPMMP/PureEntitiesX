@@ -266,7 +266,7 @@ class PureEntities extends PluginBase implements Listener{
      * 
      * @return boolean
      */
-    public static function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type) {
+    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type) {
         $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
         if($event->isCancelled()) {
             return false;
