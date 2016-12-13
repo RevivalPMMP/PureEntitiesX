@@ -41,9 +41,10 @@ class AutoSpawnMonsterTask extends PluginTask {
                 }
                 
                 $type = 32; // If $type is NOT set, it won't dump errors.
-                $biome = $level->getBiomeId($x, $z);
-                if($biome === null) {
+                if($level->getBiomeId($x, $z) === null) {
                     $biome = 1;
+                } else {
+                    $biome = $level->getBiomeId($x, $z);
                 }
                 $probability = mt_rand(1, 100);
                 
