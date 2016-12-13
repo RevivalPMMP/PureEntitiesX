@@ -195,7 +195,7 @@ class AutoSpawnMonsterTask extends PluginTask {
                     $time >= 10900 && $time <= 17800 &&
                     PureEntities::create($type, $pos) !== null
                 ) {
-                    PureEntities::scheduleCreatureSpawn($pos, $type, $level, "Monster");
+                    $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Monster");
                 }
             }
         }
