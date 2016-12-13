@@ -39,6 +39,8 @@ class AutoSpawnAnimalTask extends PluginTask {
                         $z,
                         $level
                     );
+                } else {
+                    return;
                 }
                 
                 $type = 11; // If $type is NOT set, it won't dump errors.
