@@ -199,8 +199,7 @@ class AutoSpawnMonsterTask extends PluginTask {
                 
                 if(
                     !$player->distance($pos) <= 8 &&
-                    $time >= 10900 && $time <= 17800 &&
-                    PureEntities::create($type, $pos) !== null
+                    $time >= 10900 && $time <= 17800
                 ) {
                     $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Monster");
                 }
