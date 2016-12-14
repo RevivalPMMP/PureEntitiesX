@@ -36,7 +36,7 @@ Once Pocketmine comes out with a Mob AI, we plan to migrate our config and custm
 
 Protect an Area from Mob Spawns:
 
-The PureEntitiesX API allows you to disable/enable Mob spawning in certain areas. See our example plugin for more information
+The PureEntitiesX API allows you to disable/enable Mob spawning in certain areas. See and download our monster protection addon plugin over here: https://github.com/RevivalPMMP/PEXProtection
 
 
 
