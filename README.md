@@ -1,4 +1,8 @@
+<img src="https://github.com/RevivalPMMP/PureEntitiesX/blob/master/PureEntitiesXlogo.png?raw=true" alt="PureEntitiesXlogo.png"/>
+
 [![Join the chat at https://gitter.im/RevivalPMMP/PureEntitiesX](https://badges.gitter.im/RevivalPMMP/PureEntitiesX.svg)](https://gitter.im/RevivalPMMP/PureEntitiesX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[![Poggit-CI](https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX)](https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX/PureEntitiesX)
 
 # PureEntitiesX
 
@@ -20,7 +24,7 @@ This is a Fork of the original PureEntities, which went inactive about half a ye
 
 ## How to Install
 
-There is no Official release yet, because we want to give you the best as possible plugin. You can build it yourself if you want, or download it from Poggit.
+Download the Zip folder under the Releases tab for V#.0-beta and extract the Phar. Alternatively, you can download the scource code, or new development builds from Poggit.
 
 It still has some bugs, but it is still very usable, and we will work to get them resolved ASAP. 
 
@@ -32,7 +36,7 @@ Once Pocketmine comes out with a Mob AI, we plan to migrate our config and custm
 
 Protect an Area from Mob Spawns:
 
-There is no way to do it currentty, but mobs spawn on the highest block in the world, so you can build a big glass layer over your spawn or anywhere else you want to protect. 
+The PureEntitiesX API allows you to disable/enable Mob spawning in certain areas. See and download our monster protection addon plugin over here: https://github.com/RevivalPMMP/PEXProtection
 
 
 

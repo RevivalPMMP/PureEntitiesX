@@ -2,6 +2,7 @@
 
 namespace revivalpmmp\pureentities\task;
 
+use magicode\pureentities\event\CreatureSpawnEvent;
 use pocketmine\scheduler\PluginTask;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\entity\Entity;
@@ -38,10 +39,16 @@ class AutoSpawnMonsterTask extends PluginTask {
                         $z,
                         $level
                     );
+                } else {
+                    return;
                 }
                 
                 $type = 32; // If $type is NOT set, it won't dump errors.
-                $biome = $level->getBiomeId($x, $z);
+                if($level->getBiomeId($x, $z) === null) {
+                    $biome = 1;
+                } else {
+                    $biome = $level->getBiomeId($x, $z);
+                }
                 $probability = mt_rand(1, 100);
                 
                 /*
@@ -192,11 +199,9 @@ class AutoSpawnMonsterTask extends PluginTask {
                 
                 if(
                     !$player->distance($pos) <= 8 &&
-                    $time >= 10900 && $time <= 17800 &&
-                    PureEntities::create($type, $pos) !== null
+                    $time >= 10900 && $time <= 17800
                 ) {
-                    $entity = PureEntities::create($type, $pos);
-                    $entity->spawnToAll();
+                    $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Monster");
                 }
             }
         }
