@@ -145,7 +145,6 @@ class AutoSpawnAnimalTask extends PluginTask {
                 if(
                     !$player->distance($pos) <= 8 &&
                     ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) &&
-                    PureEntities::create($type, $pos) !== null &&
                     $block instanceof Grass
                 ) {
                     $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Animal");
