@@ -1,6 +1,6 @@
 <?php
 
-namespace magicode\pureentities\entity\monster;
+namespace revivalpmmp\pureentities\entity\monster;
 
 use pocketmine\entity\Entity;
 

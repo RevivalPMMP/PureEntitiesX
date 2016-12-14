@@ -1,8 +1,8 @@
 <?php
 
-namespace magicode\pureentities\entity\animal\swimming;
+namespace revivalpmmp\pureentities\entity\animal\swimming;
 
-use magicode\pureentities\entity\animal\SwimmingAnimal;
+use revivalpmmp\pureentities\entity\animal\SwimmingAnimal;
 
 class Squid extends SwimmingAnimal {
 

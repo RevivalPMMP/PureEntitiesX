@@ -1,12 +1,12 @@
 <?php
 
-namespace magicode\pureentities\entity\monster\flying;
+namespace revivalpmmp\pureentities\entity\monster\flying;
 
-use magicode\pureentities\entity\animal\Animal;
-use magicode\pureentities\entity\BaseEntity;
-use magicode\pureentities\entity\monster\FlyingMonster;
-use magicode\pureentities\entity\projectile\FireBall;
-use magicode\pureentities\PureEntities;
+use revivalpmmp\pureentities\entity\animal\Animal;
+use revivalpmmp\pureentities\entity\BaseEntity;
+use revivalpmmp\pureentities\entity\monster\FlyingMonster;
+use revivalpmmp\pureentities\entity\projectile\FireBall;
+use revivalpmmp\pureentities\PureEntities;
 use pocketmine\block\Liquid;
 use pocketmine\block\Slab;
 use pocketmine\block\Stair;

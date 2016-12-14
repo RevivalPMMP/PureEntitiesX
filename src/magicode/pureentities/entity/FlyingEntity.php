@@ -1,9 +1,9 @@
 <?php
 
-namespace magicode\pureentities\entity;
+namespace revivalpmmp\pureentities\entity;
 
-use magicode\pureentities\entity\animal\Animal;
-use magicode\pureentities\entity\monster\flying\Blaze;
+use revivalpmmp\pureentities\entity\animal\Animal;
+use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;

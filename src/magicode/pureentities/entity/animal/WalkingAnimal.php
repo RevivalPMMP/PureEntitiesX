@@ -1,8 +1,8 @@
 <?php
 
-namespace magicode\pureentities\entity\animal;
+namespace revivalpmmp\pureentities\entity\animal;
 
-use magicode\pureentities\entity\WalkingEntity;
+use revivalpmmp\pureentities\entity\WalkingEntity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;

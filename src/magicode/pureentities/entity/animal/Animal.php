@@ -1,6 +1,6 @@
 <?php
 
-namespace magicode\pureentities\entity\animal;
+namespace revivalpmmp\pureentities\entity\animal;
 
 use pocketmine\entity\Ageable;
 

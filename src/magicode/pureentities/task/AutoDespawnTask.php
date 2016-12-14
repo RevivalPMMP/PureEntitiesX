@@ -1,14 +1,14 @@
 <?php
 
-namespace magicode\pureentities\task;
+namespace revivalpmmp\pureentities\task;
 
 use pocketmine\scheduler\PluginTask;
-use magicode\pureentities\PureEntities;
+use revivalpmmp\pureentities\PureEntities;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Creature;
 use pocketmine\level\Level;
 use pocketmine\Player;
-use magicode\pureentities\entity\monster\Monster;
+use revivalpmmp\pureentities\entity\monster\Monster;
 
 class AutoDespawnTask extends PluginTask {
 

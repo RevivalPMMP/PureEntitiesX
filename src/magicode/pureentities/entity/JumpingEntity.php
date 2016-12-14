@@ -1,6 +1,6 @@
 <?php
 
-namespace magicode\pureentities\entity;
+namespace revivalpmmp\pureentities\entity;
 
 abstract class JumpingEntity extends BaseEntity{
 

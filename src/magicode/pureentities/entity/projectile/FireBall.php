@@ -19,7 +19,7 @@
  *
 */
 
-namespace magicode\pureentities\entity\projectile;
+namespace revivalpmmp\pureentities\entity\projectile;
 
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\particle\CriticalParticle;

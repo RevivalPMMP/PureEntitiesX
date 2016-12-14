@@ -1,9 +1,9 @@
 <?php
 
-namespace magicode\pureentities\entity\monster;
+namespace revivalpmmp\pureentities\entity\monster;
 
-use magicode\pureentities\entity\monster\walking\Enderman;
-use magicode\pureentities\entity\WalkingEntity;
+use revivalpmmp\pureentities\entity\monster\walking\Enderman;
+use revivalpmmp\pureentities\entity\WalkingEntity;
 use pocketmine\block\Water;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;

@@ -1,10 +1,10 @@
 <?php
 
-namespace magicode\pureentities\entity\monster\flying;
+namespace revivalpmmp\pureentities\entity\monster\flying;
 
-use magicode\pureentities\entity\monster\FlyingMonster;
-use magicode\pureentities\entity\projectile\FireBall;
-use magicode\pureentities\PureEntities;
+use revivalpmmp\pureentities\entity\monster\FlyingMonster;
+use revivalpmmp\pureentities\entity\projectile\FireBall;
+use revivalpmmp\pureentities\PureEntities;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\ProjectileLaunchEvent;

@@ -1,8 +1,8 @@
 <?php
 
-namespace magicode\pureentities\entity\animal\walking;
+namespace revivalpmmp\pureentities\entity\animal\walking;
 
-use magicode\pureentities\entity\animal\FlyingAnimal;
+use revivalpmmp\pureentities\entity\animal\FlyingAnimal;
 use pocketmine\entity\Creature;
 
 class Bat extends FlyingAnimal{

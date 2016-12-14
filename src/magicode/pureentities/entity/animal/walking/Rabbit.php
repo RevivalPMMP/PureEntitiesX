@@ -1,8 +1,8 @@
 <?php
 
-namespace magicode\pureentities\entity\animal\walking;
+namespace revivalpmmp\pureentities\entity\animal\walking;
 
-use magicode\pureentities\entity\animal\WalkingAnimal;
+use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\entity\Creature;

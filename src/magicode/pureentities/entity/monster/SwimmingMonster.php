@@ -1,8 +1,8 @@
 <?php
 
-namespace magicode\pureentities\entity\monster;
+namespace revivalpmmp\pureentities\entity\monster;
 
-use magicode\pureentities\entity\SwimmingEntity;
+use revivalpmmp\pureentities\entity\SwimmingEntity;
 use pocketmine\block\Water;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;

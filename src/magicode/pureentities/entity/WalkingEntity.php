@@ -1,9 +1,9 @@
 <?php
 
-namespace magicode\pureentities\entity;
+namespace revivalpmmp\pureentities\entity;
 
-use magicode\pureentities\entity\animal\Animal;
-use magicode\pureentities\entity\monster\walking\PigZombie;
+use revivalpmmp\pureentities\entity\animal\Animal;
+use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use pocketmine\block\Liquid;
 use pocketmine\block\Fence;
 use pocketmine\block\FenceGate;

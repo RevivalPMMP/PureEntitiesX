@@ -1,8 +1,8 @@
 <?php
 
-namespace magicode\pureentities\entity\monster;
+namespace revivalpmmp\pureentities\entity\monster;
 
-use magicode\pureentities\entity\FlyingEntity;
+use revivalpmmp\pureentities\entity\FlyingEntity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;

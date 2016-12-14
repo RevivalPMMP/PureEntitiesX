@@ -1,9 +1,9 @@
 <?php
 
-namespace magicode\pureentities\entity;
+namespace revivalpmmp\pureentities\entity;
 
-use magicode\pureentities\entity\monster\flying\Blaze;
-use magicode\pureentities\entity\monster\Monster;
+use revivalpmmp\pureentities\entity\monster\flying\Blaze;
+use revivalpmmp\pureentities\entity\monster\Monster;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;

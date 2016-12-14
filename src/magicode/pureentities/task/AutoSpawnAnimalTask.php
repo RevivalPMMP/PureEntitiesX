@@ -1,9 +1,9 @@
 <?php
 
-namespace magicode\pureentities\task;
+namespace revivalpmmp\pureentities\task;
 
 use pocketmine\scheduler\PluginTask;
-use magicode\pureentities\PureEntities;
+use revivalpmmp\pureentities\PureEntities;
 use pocketmine\entity\Entity;
 use pocketmine\level\Position;
 use pocketmine\level\Level;
