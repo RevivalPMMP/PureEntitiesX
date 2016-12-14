@@ -18,7 +18,10 @@ class Horse extends WalkingAnimal implements Rideable{
     public function getName(){
         return "Horse";
     }
-
+    
+    	if($entity !== null && $target instanceof Rideable){
+   if($packet->action === InteractPacket::ACTION_RIGHT_CLICK && !$this->isSneaking()){
+                      }
     public function initEntity(){
         parent::initEntity();
 
