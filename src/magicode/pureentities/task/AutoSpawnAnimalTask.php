@@ -2,6 +2,7 @@
 
 namespace magicode\pureentities\task;
 
+use magicode\pureentities\event\CreatureSpawnEvent;
 use pocketmine\scheduler\PluginTask;
 use magicode\pureentities\PureEntities;
 use pocketmine\entity\Entity;
