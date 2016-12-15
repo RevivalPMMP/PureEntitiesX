@@ -9,6 +9,7 @@ use pocketmine\entity\Creature;
 use pocketmine\level\Level;
 use pocketmine\Player;
 use magicode\pureentities\entity\monster\Monster;
+use magicode\pureentities\entity\animal\Animal;
 
 class AutoDespawnTask extends PluginTask {
 
@@ -39,7 +40,7 @@ class AutoDespawnTask extends PluginTask {
                     }
                     
                 } elseif($despawnable[$entity->getId()] === 3) {
-                    if($entity instanceof Creature) {
+                    if($entity instanceof Animal || $entity instanceof Monster) {
                         $entity->close();
                     }
                 }
