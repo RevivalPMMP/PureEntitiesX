@@ -76,7 +76,7 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
 
-namespace magicode\pureentities;
+namespace revivalpmmp\pureentities;
 
 class PureEntities extends PluginBase implements Listener{
 
