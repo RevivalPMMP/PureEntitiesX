@@ -1,6 +1,6 @@
 <?php
 
-namespace magicode\pureentities\event;
+namespace revivalpmmp\pureentities\event;
 
 use pocketmine\event\plugin\PluginEvent;
 use revivalpmmp\pureentities\PureEntities;
