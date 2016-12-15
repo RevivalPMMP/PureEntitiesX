@@ -137,7 +137,7 @@ abstract class WalkingEntity extends BaseEntity{
 
         $dx = $this->motionX * $tickDiff;
         $dz = $this->motionZ * $tickDiff;
-        $isJump = $this->checkJump($dx, $dz);
+        $isJump = $this->isCollidedHorizontally;
         if($this->stayTime > 0){
             $this->stayTime -= $tickDiff;
             $this->move(0, $this->motionY * $tickDiff, 0);
@@ -154,11 +154,13 @@ abstract class WalkingEntity extends BaseEntity{
         if(!$isJump){
             if($this->onGround){
                 $this->motionY = 0;
-            }elseif($this->motionY > -$this->gravity * 4){
+            }else if($this->motionY > -$this->gravity * 4){
                 $this->motionY = -$this->gravity * 4;
             }else{
-                $this->motionY -= $this->gravity * $tickDiff;
+                $this->motionY -= $this->gravity;
             }
+        } else {
+            $this->motionY = 0.7;
         }
         $this->updateMovement();
         return $this->baseTarget;
