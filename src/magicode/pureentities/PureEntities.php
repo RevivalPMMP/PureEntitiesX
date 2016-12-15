@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-<<<<<<< HEAD
+
 namespace revivalpmmp\pureentities;
 
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
@@ -55,7 +55,6 @@ use revivalpmmp\pureentities\tile\Spawner;
 use revivalpmmp\pureentities\task\AutoSpawnMonsterTask;
 use revivalpmmp\pureentities\task\AutoSpawnAnimalTask;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
-=======
 namespace magicode\pureentities;
 
 use magicode\pureentities\event\CreatureSpawnEvent;
@@ -96,7 +95,6 @@ use magicode\pureentities\tile\Spawner;
 use magicode\pureentities\task\AutoSpawnMonsterTask;
 use magicode\pureentities\task\AutoSpawnAnimalTask;
 use magicode\pureentities\task\AutoDespawnTask;
->>>>>>> master
 use pocketmine\block\Air;
 use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockPlaceEvent;
