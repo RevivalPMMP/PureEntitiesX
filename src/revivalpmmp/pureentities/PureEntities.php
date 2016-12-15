@@ -1,4 +1,5 @@
 <?php
+
 /*  PureEntitiesX: Mob AI Plugin for PMMP
     Copyright (C) 2016 RevivalPMMP
 
@@ -55,46 +56,6 @@ use revivalpmmp\pureentities\tile\Spawner;
 use revivalpmmp\pureentities\task\AutoSpawnMonsterTask;
 use revivalpmmp\pureentities\task\AutoSpawnAnimalTask;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
-namespace magicode\pureentities;
-
-use magicode\pureentities\event\CreatureSpawnEvent;
-use magicode\pureentities\entity\animal\swimming\Squid;
-use magicode\pureentities\entity\monster\swimming\Guardian;
-use magicode\pureentities\entity\monster\swimming\ElderGuardian;
-use magicode\pureentities\entity\monster\jumping\MagmaCube;
-use magicode\pureentities\entity\monster\jumping\Slime;
-use magicode\pureentities\entity\animal\walking\Villager;
-use magicode\pureentities\entity\animal\walking\Horse;
-use magicode\pureentities\entity\animal\walking\Mule;
-use magicode\pureentities\entity\animal\walking\Donkey;
-use magicode\pureentities\entity\animal\walking\Chicken;
-use magicode\pureentities\entity\animal\walking\Cow;
-use magicode\pureentities\entity\animal\walking\Mooshroom;
-use magicode\pureentities\entity\animal\walking\Ocelot;
-use magicode\pureentities\entity\animal\walking\Pig;
-use magicode\pureentities\entity\animal\walking\Rabbit;
-use magicode\pureentities\entity\animal\walking\Sheep;
-use magicode\pureentities\entity\monster\flying\Blaze;
-use magicode\pureentities\entity\monster\flying\Ghast;
-use magicode\pureentities\entity\monster\walking\CaveSpider;
-use magicode\pureentities\entity\monster\walking\Creeper;
-use magicode\pureentities\entity\monster\walking\Enderman;
-use magicode\pureentities\entity\monster\walking\IronGolem;
-use magicode\pureentities\entity\monster\walking\PigZombie;
-use magicode\pureentities\entity\monster\walking\Silverfish;
-use magicode\pureentities\entity\monster\walking\Skeleton;
-use magicode\pureentities\entity\monster\walking\SnowGolem;
-use magicode\pureentities\entity\monster\walking\Spider;
-use magicode\pureentities\entity\monster\walking\Wolf;
-use magicode\pureentities\entity\monster\walking\Zombie;
-use magicode\pureentities\entity\monster\walking\ZombieVillager;
-use magicode\pureentities\entity\monster\walking\Husk;
-use magicode\pureentities\entity\monster\walking\Stray;
-use magicode\pureentities\entity\projectile\FireBall;
-use magicode\pureentities\tile\Spawner;
-use magicode\pureentities\task\AutoSpawnMonsterTask;
-use magicode\pureentities\task\AutoSpawnAnimalTask;
-use magicode\pureentities\task\AutoDespawnTask;
 use pocketmine\block\Air;
 use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockPlaceEvent;
@@ -114,6 +75,8 @@ use pocketmine\nbt\tag\StringTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+
+namespace magicode\pureentities;
 
 class PureEntities extends PluginBase implements Listener{
 

@@ -2,7 +2,7 @@
 
 namespace revivalpmmp\pureentities\task;
 
-use magicode\pureentities\event\CreatureSpawnEvent;
+use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 use pocketmine\scheduler\PluginTask;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\entity\Entity;

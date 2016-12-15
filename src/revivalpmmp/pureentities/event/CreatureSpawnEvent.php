@@ -3,7 +3,7 @@
 namespace magicode\pureentities\event;
 
 use pocketmine\event\plugin\PluginEvent;
-use magicode\pureentities\PureEntities;
+use revivalpmmp\pureentities\PureEntities;
 use pocketmine\event\Cancellable;
 use pocketmine\level\Position;
 use pocketmine\level\Level;
