@@ -51,7 +51,9 @@ class AutoSpawnAnimalTask extends PluginTask {
                     $biome = $level->getBiomeId($x, $z);
                 }
                 $probability = mt_rand(1, 100);
+                
                 $block = $level->getBlock(new Vector3($x, $y - 1, $z));
+                $backupblock = $level->getBlock(new Vector3($x, $y - 2, $z));
                 
                 /*
                  * Plains Biome Animal Generator
@@ -145,7 +147,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                 if(
                     !$player->distance($pos) <= 8 &&
                     ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) &&
-                    $block instanceof Grass
+                    ($block instanceof Grass || $backupblock instanceof Grass)
                 ) {
                     $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Animal");
                 }
