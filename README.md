@@ -12,6 +12,14 @@ This is a Fork of the original PureEntities, which went inactive about half a ye
 >
 > Compatibility can be found with some, but do not complain if it happens not to be.
 
+## Contributing/Issues:
+
+We are pretty relaxed about our issues. As long as they are descriptive, contain readable english, and are actualy a problem. For Pull Requests, please make sure that they are meaningful and that you _*TEST THEM FIRST,*_ before you PR to minimize time we have to spend debugging (If your PR is super buggy, we will close it/requests changes). Please use our Gitter for setup questions, feature requests, and anything that isn't an Issue. _*Please note that issues that don't comply with our rules will be closed*_ 
+
+## Usage:
+
+You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item Drops), but please don't copy our AI and claim it as your own. We give full credit to @milk0417 to starting the AI, but we have made numerous changes since then, so we ask you kindly _*Not to Copy our code*_
+
 ## Features:
 
 -All mobs Implemented (Besides Bosses) From Pig to Magma Cubes, we've got them all! 
