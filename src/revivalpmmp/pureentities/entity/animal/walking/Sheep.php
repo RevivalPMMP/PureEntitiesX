@@ -1,4 +1,4 @@
- <?php
+<?php
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
