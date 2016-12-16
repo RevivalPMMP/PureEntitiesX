@@ -225,6 +225,7 @@ class PureEntities extends PluginBase implements Listener{
     public function shearSheep(DataPacketReceiveEvent $event) {
         $packet = $event->getPacket();
         $player = $event->getPlayer();
+        var_dump($packet->pid());
         if($packet->pid() === InteractPacket::ACTION_RIGHT_CLICK) {
             foreach($player->level->getEntities() as $entity) {
                 if($entity instanceof Sheep && $entity->distance($player) <= 4) {
