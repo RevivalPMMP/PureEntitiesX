@@ -8,6 +8,7 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 
 class Sheep extends WalkingAnimal implements Colorable{
     const NETWORK_ID = 13;
@@ -27,9 +28,9 @@ class Sheep extends WalkingAnimal implements Colorable{
 
     public function targetOption(Creature $creature, float $distance) : bool{
         if($creature instanceof Player){
-            if($creature->getInventory()->getItemInHand()->getId() === Item::SEEDS) {
+            if($creature->getInventory()->getItemInHand()->getId() === Item::WHEAT) {
                 return $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 49;
-            } elseif($creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && $this->getName() === "Sheep") {
+            } elseif($creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && $this instanceof Sheep) {
                 $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "Shear");
             }
         }
