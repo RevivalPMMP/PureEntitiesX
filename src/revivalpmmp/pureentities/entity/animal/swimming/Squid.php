@@ -2,12 +2,8 @@
 
 namespace revivalpmmp\pureentities\entity\animal\swimming;
 
-use revivalpmmp\pureentities\entity\animal\SwimmingAnimal;
+use revivalpmmp\pureentities\entity\animal\Animal;
 
-class Squid extends SwimmingAnimal {
+class Squid extends \pocketmine\entity\Squid implements Animal {
 
-    /*
-     * TODO:
-     * Isn't this already implemented in PocketMine?
-     */
 }

@@ -16,7 +16,6 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-
 namespace revivalpmmp\pureentities;
 
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
@@ -88,7 +87,7 @@ class PureEntities extends PluginBase implements Listener{
             Mule::class,
             //ElderGuardian::class,
             //Guardian::class,
-            //Squid::class,
+            Squid::class,
             Villager::class,
             Blaze::class,
             CaveSpider::class,
@@ -153,11 +152,11 @@ class PureEntities extends PluginBase implements Listener{
     }
 
     /**
-     * @param type $type
+     * @param int|string $type
      * @param Position $source
-     * @param type $args
+     * @param $args
      * 
-     * @return type
+     * @return Entity
      */
     public static function create($type, Position $source, ...$args){
         $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);

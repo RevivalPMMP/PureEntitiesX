@@ -2,10 +2,8 @@
 
 namespace revivalpmmp\pureentities\task;
 
-use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 use pocketmine\scheduler\PluginTask;
 use revivalpmmp\pureentities\PureEntities;
-use pocketmine\entity\Entity;
 use pocketmine\level\Position;
 use pocketmine\level\Level;
 use pocketmine\level\generator\biome\Biome;
@@ -13,6 +11,8 @@ use pocketmine\block\Grass;
 use pocketmine\math\Vector3;
 
 class AutoSpawnAnimalTask extends PluginTask {
+
+	private $plugin;
 
     public function __construct(PureEntities $plugin) {
         parent::__construct($plugin);
@@ -46,7 +46,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                 
                 $type = 11; // If $type is NOT set, it won't dump errors.
                 if($level->getBiomeId($x, $z) === null) {
-                    $biome = 1;
+                    $biome = Biome::PLAINS;
                 } else {
                     $biome = $level->getBiomeId($x, $z);
                 }
@@ -65,7 +65,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                  * - Sheep              20%
                  * - Rabbit             15%
                  */
-                if($biome === Biome::PLAINS || $biome) {
+                if($biome === Biome::PLAINS) {
                     if($probability <= 20) {
                         $type = 10; // Chicken
                     } elseif($probability <= 40) {
