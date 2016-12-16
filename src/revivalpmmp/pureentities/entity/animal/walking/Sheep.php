@@ -27,42 +27,13 @@ class Sheep extends WalkingAnimal implements Colorable{
 
     public function targetOption(Creature $creature, float $distance) : bool{
         if($creature instanceof Player){
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::SEEDS && $distance <= 49;
+            if($creature->getInventory()->getItemInHand()->getId() === Item::SEEDS) {
+                return $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 49;
+            } elseif($creature->getInventory()->getItemInHand()->getId() === Item::SHEARS) {
+                $this->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "Shear");
+            }
         }
         return false;
-    }
-    
-    public function onUpdate($currentTick) {
-        if(!$this->isAlive()){
-            if(++$this->deadTicks >= 23){
-                $this->close();
-                return false;
-            }
-            return true;
-        }
-
-        $tickDiff = $currentTick - $this->lastUpdate;
-        $this->lastUpdate = $currentTick;
-        $this->entityBaseTick($tickDiff);
-
-        $target = $this->updateMove($tickDiff);
-        if($target instanceof Player){
-            if($this->distance($target) <= 2){
-                $this->pitch = 22;
-                $this->x = $this->lastX;
-                $this->y = $this->lastY;
-                $this->z = $this->lastZ;
-                if($target->getItemInHand()->getId() === Item::SHEARS) {
-                    $this->setDataProperty(self::DATA_INTERACTIVE_FLAG, self::DATA_TYPE_STRING, "Shear");
-                }
-            }
-        }elseif(
-            $target instanceof Vector3
-            && $this->distance($target) <= 1
-        ){
-            $this->moveTime = 0;
-        }
-        return true;
     }
 
     public function getDrops(){
