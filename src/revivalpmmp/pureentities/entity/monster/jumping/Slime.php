@@ -2,6 +2,8 @@
 
 namespace revivalpmmp\pureentities\entity\monster\jumping;
 
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\JumpingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;

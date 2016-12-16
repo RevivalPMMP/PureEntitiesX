@@ -2,13 +2,13 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\entity\Effect;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Ageable;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
-use pocketmine\level\Level;
 
 class Husk extends WalkingMonster implements Ageable{
     const NETWORK_ID = 47;
@@ -23,7 +23,7 @@ class Husk extends WalkingMonster implements Ageable{
     public function initEntity(){
         parent::initEntity();
 
-        if($this->getDataFlag(self::DATA_FLAG_BABY , "" ) === null){
+        if($this->getDataFlag(self::DATA_FLAG_BABY , 0) === null){
             $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
         }
         $this->setDamage([0, 3, 4, 6]);
@@ -34,7 +34,7 @@ class Husk extends WalkingMonster implements Ageable{
     }
 
     public function isBaby(){
-        return $this->getDataFlag(self::DATA_FLAG_BABY);
+        return $this->getDataFlag(self::DATA_FLAG_BABY,0);
     }
 
     public function setHealth($amount){

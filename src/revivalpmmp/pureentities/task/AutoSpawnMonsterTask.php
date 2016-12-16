@@ -2,15 +2,15 @@
 
 namespace revivalpmmp\pureentities\task;
 
-use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 use pocketmine\scheduler\PluginTask;
 use revivalpmmp\pureentities\PureEntities;
-use pocketmine\entity\Entity;
 use pocketmine\level\Position;
 use pocketmine\level\Level;
 use pocketmine\level\generator\biome\Biome;
 
 class AutoSpawnMonsterTask extends PluginTask {
+
+	private $plugin;
 
     public function __construct(PureEntities $plugin) {
         parent::__construct($plugin);
@@ -62,7 +62,7 @@ class AutoSpawnMonsterTask extends PluginTask {
                  * - Witch              5%
                  * - Creeper            15%
                  */
-                if($biome === Biome::PLAINS || $biome === Biome::FOREST || Biome::BIRCH_FOREST || Biome::MOUNTAINS || Biome::SMALL_MOUNTAIN) {
+                if($biome === Biome::PLAINS || $biome === Biome::FOREST || Biome::BIRCH_FOREST || Biome::MOUNTAINS || Biome::SMALL_MOUNTAINS) {
                     if($probability <= 10) {
                         $type = 38; // Enderman
                     } elseif($probability <= 25) {

@@ -19,13 +19,13 @@ abstract class SwimmingAnimal extends SwimmingEntity implements Animal{
     public function initEntity(){
         parent::initEntity();
 
-        if($this->getDataFlag(self::DATA_FLAG_BABY , "" ) === null){
+        if($this->getDataFlag(self::DATA_FLAG_BABY , 0) === null){
             $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
         }
     }
 
     public function isBaby() : bool{
-        return $this->getDataFlag(self::DATA_FLAG_BABY);
+        return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
     }
 
     public function entityBaseTick($tickDiff = 1){

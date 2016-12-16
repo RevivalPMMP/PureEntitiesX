@@ -1,4 +1,5 @@
 <?php
+
 namespace revivalpmmp\pureentities\data;
 
 interface Data{

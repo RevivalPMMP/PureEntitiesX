@@ -57,7 +57,7 @@ class IronGolem extends WalkingMonster{
                 case 0:
                     return [Item::get(Item::IRON_INGOT, 0, 1)];
                 case 1:
-                    return [Item::get(Item::FLOWER, 0, 1)];
+                    return [Item::get(Item::RED_FLOWER, 0, 1)];
                 case 2:
                     return [Item::get(Item::IRON_INGOT, 0, 1)];
             }

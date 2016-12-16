@@ -2,10 +2,7 @@
 
 namespace revivalpmmp\pureentities\entity;
 
-use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\animal\Animal;
-use pocketmine\block\Liquid;
-use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;

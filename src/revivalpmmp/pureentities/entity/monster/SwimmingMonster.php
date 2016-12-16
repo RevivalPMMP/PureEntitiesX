@@ -3,12 +3,10 @@
 namespace revivalpmmp\pureentities\entity\monster;
 
 use revivalpmmp\pureentities\entity\SwimmingEntity;
-use pocketmine\block\Water;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Timings;
-use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;

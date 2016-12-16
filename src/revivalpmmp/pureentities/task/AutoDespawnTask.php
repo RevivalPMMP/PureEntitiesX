@@ -4,13 +4,12 @@ namespace revivalpmmp\pureentities\task;
 
 use pocketmine\scheduler\PluginTask;
 use revivalpmmp\pureentities\PureEntities;
-use pocketmine\entity\Entity;
-use pocketmine\level\Level;
-use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use revivalpmmp\pureentities\entity\animal\Animal;
 
 class AutoDespawnTask extends PluginTask {
+
+	private $plugin;
 
     public function __construct(PureEntities $plugin) {
         parent::__construct($plugin);

@@ -2,8 +2,8 @@
 
 namespace revivalpmmp\pureentities\tile;
 
+use pocketmine\Player;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\randomjoin\Player;
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\Position;
 use pocketmine\nbt\tag\CompoundTag;
