@@ -56,6 +56,7 @@ use revivalpmmp\pureentities\tile\Spawner;
 use revivalpmmp\pureentities\task\AutoSpawnMonsterTask;
 use revivalpmmp\pureentities\task\AutoSpawnAnimalTask;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
+use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 use pocketmine\block\Air;
 use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockPlaceEvent;
