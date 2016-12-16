@@ -4,6 +4,7 @@ namespace revivalpmmp\pureentities\entity;
 
 use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
+use revivalpmmp\pureentities\entity\monster\walking\Spider;
 use pocketmine\block\Liquid;
 use pocketmine\block\Fence;
 use pocketmine\block\FenceGate;
@@ -159,6 +160,8 @@ abstract class WalkingEntity extends BaseEntity{
             }else{
                 $this->motionY -= $this->gravity;
             }
+        } elseif(!$this instanceof Spider && !$this->level->getBlock(new Vector3($this->x, $this->y - 1, $this->z))->isSolid()) {
+            $this->motionY += 0;
         } else {
             $this->motionY = 0.7;
         }
