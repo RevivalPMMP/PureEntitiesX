@@ -64,6 +64,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\protocol\InteractPacket;
+use pocketmine\network\protocol\Info;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
@@ -225,12 +226,15 @@ class PureEntities extends PluginBase implements Listener{
     public function shearSheep(DataPacketReceiveEvent $event) {
         $packet = $event->getPacket();
         $player = $event->getPlayer();
-        var_dump($packet->pid());
-        if($packet->pid() === InteractPacket::ACTION_RIGHT_CLICK) {
-            foreach($player->level->getEntities() as $entity) {
-                if($entity instanceof Sheep && $entity->distance($player) <= 4) {
-                    $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
-                    return true;
+        if($packet->pid() === Info::INTERACT_PACKET) {
+            $this->getServer()->getLogger()->info("Interact packet found");
+            if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
+                $this->getServer()->getLogger()->info("Right click action found");
+                foreach($player->level->getEntities() as $entity) {
+                    if($entity instanceof Sheep && $entity->distance($player) <= 4) {
+                        $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
+                        return true;
+                    }
                 }
             }
         }
