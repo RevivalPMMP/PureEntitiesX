@@ -227,13 +227,16 @@ class PureEntities extends PluginBase implements Listener{
         $packet = $event->getPacket();
         $player = $event->getPlayer();
         if($packet->pid() === Info::INTERACT_PACKET) {
-            $this->getServer()->getLogger()->info("Interact packet found");
             if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
-                $this->getServer()->getLogger()->info("Right click action found");
                 foreach($player->level->getEntities() as $entity) {
                     if($entity instanceof Sheep && $entity->distance($player) <= 4) {
-                        $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
-                        return true;
+                        if($entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED) === true) {
+                            return false;
+                        } else {
+                            $player->getLevel()->dropItem($entity, Item::get(Item::WOOL, 0, mt_rand(1, 3)));
+                            $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
+                            return true;
+                        }
                     }
                 }
             }
