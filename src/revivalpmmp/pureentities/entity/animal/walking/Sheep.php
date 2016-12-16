@@ -53,7 +53,7 @@ class Sheep extends WalkingAnimal implements Colorable{
                 $this->y = $this->lastY;
                 $this->z = $this->lastZ;
                 if($target->getItemInHand()->getId() === Item::SHEARS) {
-                    $this->setDataFlags(self::DATA_FLAGS, self::DATA_FLAG_SHEARED, true);
+                    $this->setDataProperty(self::DATA_INTERACTIVE_FLAG, self::DATA_TYPE_STRING, "Shear");
                 }
             }
         }elseif(
