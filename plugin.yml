@@ -1,10 +1,9 @@
 name: PureEntitiesX
 main: revivalpmmp\pureentities\PureEntities
-version: "1.1"
+version: 0.1.1_dev
 api: ["2.1.0"]
 
 load: STARTUP
-author: milk0417, now RevivalPMMP
-description: Implement all MCPE entities
+authors: ["milk0417", "RevivalPMMP"]
+description: Implement all MCPE entities into your worlds
 website: https://github.com/RevivalPMMP/PureEntitiesX
-commands: []
