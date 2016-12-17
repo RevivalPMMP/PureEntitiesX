@@ -11,6 +11,7 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\tile\Spawnable;
+use pocketmine\tile\Tile;
 
 class Spawner extends Spawnable{
 
