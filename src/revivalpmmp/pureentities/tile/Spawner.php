@@ -65,11 +65,15 @@ class Spawner extends Spawnable{
     public function onUpdate(){
 		if($this->closed === true){
 			return false;
+			
 		}
+	    
 		$this->timings->startTiming();
 		if(!($this->chunk instanceof FullChunk)){
 			return false;
+			
 		}
+	    
 		if($this->canUpdate()){
 			if($this->getDelay() <= 0){
 				$success = 0;
@@ -86,17 +90,16 @@ class Spawner extends Spawnable{
 									new DoubleTag("", $pos->x),
 									new DoubleTag("", $pos->y),
 									new DoubleTag("", $pos->z)
-								]),
+								
 								"Motion" => new ListTag("Motion", [
 									new DoubleTag("", 0),
 									new DoubleTag("", 0),
 									new DoubleTag("", 0)
-								]),
+								
 								"Rotation" => new ListTag("Rotation", [
 									new FloatTag("", mt_rand() / mt_getrandmax() * 360),
 									new FloatTag("", 0)
-								]),
-							]);
+						
         }
 
         if($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)){
