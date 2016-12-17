@@ -1,6 +1,6 @@
 <?php
 
-namespace milk\pureentities\tile;
+namespace revivalpmmp\pureentities\tile;
 
 use revivalpmmp\pureentitiesx\PureEntitiesX;
 use milk\randomjoin\Player;
