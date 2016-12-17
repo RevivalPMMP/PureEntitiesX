@@ -40,15 +40,15 @@ class Spawner extends Spawnable{
         }
 
         if(!isset($this->namedtag->MaxSpawnDelay)){
-            $this->namedtag->MaxSpawnDelay = new ShortTag("MaxSpawnDelay", 8000);
+            $this->namedtag->MaxSpawnDelay = new ShortTag("MaxSpawnDelay", 800);
         }
 
         if(!isset($this->namedtag->MaxNearbyEntities)){
-            $this->namedtag->MaxNearbyEntities = new ShortTag("MaxNearbyEntities", 25);
+            $this->namedtag->MaxNearbyEntities = new ShortTag("MaxNearbyEntities", 10);
         }
 
         if(!isset($this->namedtag->RequiredPlayerRange)){
-            $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", 20);
+            $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", 200000000000000000000000000000000000000000000000);
         }
 
         $this->spawnRange = $this->namedtag["SpawnRange"];
