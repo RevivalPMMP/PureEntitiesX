@@ -19,7 +19,7 @@ use pocketmine\tile\Tile;
 
 class Spawner extends Spawnable{
 
-	ppublic function __construct(FullChunk $chunk, CompoundTag $nbt){
+	public function __construct(FullChunk $chunk, CompoundTag $nbt){
         parent::__construct($chunk, $nbt);
         if(isset($this->namedtag->EntityId)){
             $this->entityId = $this->namedtag["EntityId"];
