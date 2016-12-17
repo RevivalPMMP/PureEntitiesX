@@ -30,6 +30,9 @@ You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item
 
 -More Configuration Coming Soon! We are adding a config with complete custimizability. Stay Tuned!
 
+
+-and more coming soon
+
 ## How to Install
 
 Download the Zip folder under the Releases tab for V#.0-beta and extract the Phar. Alternatively, you can download the scource code, or new development builds from Poggit.
