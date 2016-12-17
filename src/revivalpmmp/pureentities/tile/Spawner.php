@@ -1,18 +1,16 @@
 <?php
-namespace revivalpmmp\pureentities\tile;
 
-use pocketmine\Player;
+namespace milk\pureentities\tile;
+
+use milk\pureentities\PureEntities;
+use milk\randomjoin\Player;
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\Position;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\ListTag;
-use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\tile\Spawnable;
-
-use revivalpmmp\pureentities\PureEntities;
 
 class Spawner extends Spawnable{
 
@@ -26,10 +24,8 @@ class Spawner extends Spawnable{
     protected $minSpawnDelay;
     protected $maxSpawnDelay;
 
-	public function __construct(FullChunk $chunk, CompoundTag $nbt){
-		parent::__construct($chunk, $nbt);
-		if(!isset($nbt->EntityId)){
-			$nbt->EntityId = new IntTag("EntityId", 0);
+    public function __construct(FullChunk $chunk, CompoundTag $nbt){
+        parent::__construct($chunk, $nbt);
 
         if(isset($this->namedtag->EntityId)){
             $this->entityId = $this->namedtag["EntityId"];
@@ -64,44 +60,9 @@ class Spawner extends Spawnable{
         $this->scheduleUpdate();
     }
 
-   // public function onUpdate(){
-		//if($this->closed === true){
-			//return false;
-			
-		//}
-	    
-		$this->timings->startTiming();
-		if(!($this->chunk instanceof FullChunk)){
-			return false;
-			
-		}
-	    
-		if($this->canUpdate()){
-			if($this->getDelay() <= 0){
-				$success = 0;
-				for($i = 0; $i < $this->getSpawnCount(); $i++){
-					$pos = $this->add(mt_rand() / mt_getrandmax() * $this->getSpawnRange(), mt_rand(-1, 1), mt_rand() / mt_getrandmax() * $this->getSpawnRange());
-					$target = $this->getLevel()->getBlock($pos);
-					$ground = $target->getSide(Vector3::SIDE_DOWN);
-					if($target->getId() == Item::AIR && $ground->isTopFacingSurfaceSolid()){
-						$success++;
-						$this->getLevel()->getServer()->getPluginManager()->callEvent($ev = new EntityGenerateEvent($pos, $this->getEntityId(), EntityGenerateEvent::CAUSE_MOB_SPAWNER));
-						if(!$ev->isCancelled()){
-							$nbt = new CompoundTag("", [
-								"Pos" => new ListTag("Pos", [
-									new DoubleTag("", $pos->x),
-									new DoubleTag("", $pos->y),
-									new DoubleTag("", $pos->z)
-								
-								/"Motion" => new ListTag("Motion", [
-									new DoubleTag("", 0),
-									new DoubleTag("", 0),
-									new DoubleTag("", 0)
-								
-								"Rotation" => new ListTag("Rotation", [
-									new FloatTag("", mt_rand() / mt_getrandmax() * 360),
-									new FloatTag("", 0)
-						
+    public function onUpdate(){
+        if($this->closed){
+            return false;
         }
 
         if($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)){
@@ -115,6 +76,7 @@ class Spawner extends Spawnable{
                         $isValid = true;
                     }
                     $list[] = $entity;
+                    break;
                 }
             }
 
