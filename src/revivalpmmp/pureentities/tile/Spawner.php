@@ -103,16 +103,22 @@ class Spawner extends Spawnable{
 		return "Monster Spawner";
 	}
 
-	public function canUpdate() : bool{
-		if($this->getEntityId() === 0) return false;
-		$hasPlayer = false;
-		$count = 0;
-		foreach($this->getLevel()->getEntities() as $e){
-			if($e instanceof Player){
-				if($e->distance($this->getBlock()) <= 15) $hasPlayer = true;
-			}
-			if($e::NETWORK_ID == $this->getEntityId()){
-				$count++;
+	 public function onUpdate(){
+        if($this->closed){
+            return false;
+        }
+        if($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)){
+            $this->delay = 0;
+            $list = [];
+            $isValid = false;
+            foreach($this->level->getEntities() as $entity){
+                if($entity->distance($this) <= $this->requiredPlayerRange){
+                    if($entity instanceof Player){
+                        $isValid = true;
+                    }
+                    $list[] = $entity;
+                }
+            }
 			}
 		}
 		if($hasPlayer and $count < 15){ // Spawn limit = 15
