@@ -41,7 +41,7 @@ It still has some bugs, but it is still very usable, and we will work to get the
 
 ## Pocketmine Mob AI
 
-Once Pocketmine comes out with a Mob AI, we plan to migrate our config and custmizability to support it. Once Pocketmine Mob AI comes out, you can be confident that you can keep using PureEntitiesX!
+Once Pocketmine comes out with a Mob AI, we plan to shift our focus to adding more customization to the Pocketmine Mob AI (Item Drop COntrol, Damage Control, Mob type Spawn control, etc.) Once Pocketmine Mob AI comes out, you can be confident that you can keep using PureEntitiesX!
 
 ## Plugin Help
 
