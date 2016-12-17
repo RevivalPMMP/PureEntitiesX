@@ -2,8 +2,6 @@
 branches:
 - master
 - NewMobs
-- Sea-Creatures
-- SheepShearing
 projects:
   PureEntitiesX:
     path: ""
