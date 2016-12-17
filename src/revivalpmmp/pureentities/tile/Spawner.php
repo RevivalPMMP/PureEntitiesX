@@ -2,7 +2,7 @@
 
 namespace revivalpmmp\pureentities\tile;
 
-use pocketmine\entity\Entity;
+use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
