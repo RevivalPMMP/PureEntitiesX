@@ -24,7 +24,6 @@ use revivalpmmp\pureentities\entity\monster\swimming\ElderGuardian;
 use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
 use revivalpmmp\pureentities\entity\monster\jumping\Slime;
 use revivalpmmp\pureentities\entity\animal\walking\Villager;
-
 use revivalpmmp\pureentities\entity\animal\walking\Horse;
 use revivalpmmp\pureentities\entity\animal\walking\Mule;
 use revivalpmmp\pureentities\entity\animal\walking\Donkey;
@@ -63,6 +62,8 @@ use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\network\protocol\Info;
+use pocketmine\network\protocol\InteractPacket;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
