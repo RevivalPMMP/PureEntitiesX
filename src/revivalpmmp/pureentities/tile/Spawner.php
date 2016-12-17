@@ -16,7 +16,7 @@ use pocketmine\level\format\FullChunk;
 use pocketmine\Player;
 use pocketmine\tile\Spawnable;
 
-class MobSpawner extends Spawnable{
+class Spawner extends Spawnable{
 
 	public function __construct(FullChunk $chunk, CompoundTag $nbt){
 		parent::__construct($chunk, $nbt);
