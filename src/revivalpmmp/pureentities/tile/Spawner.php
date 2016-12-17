@@ -62,11 +62,11 @@ class Spawner extends Spawnable{
         $this->scheduleUpdate();
     }
 
-    public function onUpdate(){
-		if($this->closed === true){
-			return false;
+   // public function onUpdate(){
+		//if($this->closed === true){
+			//return false;
 			
-		}
+		//}
 	    
 		$this->timings->startTiming();
 		if(!($this->chunk instanceof FullChunk)){
