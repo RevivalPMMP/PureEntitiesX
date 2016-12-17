@@ -41,7 +41,7 @@ class Sheep extends WalkingAnimal implements Colorable{
 
     public function getDrops(){
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [Item::get(Item::WHITE_WOOL, 1)];
+            return [Item::get(Item::WOOL, 0, mt_rand(0, 2)];
         }
         return [];
     }
