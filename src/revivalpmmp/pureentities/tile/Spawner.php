@@ -2,7 +2,7 @@
 
 namespace milk\pureentities\tile;
 
-use milk\pureentities\PureEntities;
+use revivalpmmp\pureentitiesx\PureEntitiesX;
 use milk\randomjoin\Player;
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\Position;
