@@ -66,9 +66,9 @@ class Spawner extends Spawnable{
     }
 	}
 
-	public function getEntityId(){
-		return $this->namedtag["EntityId"];
-	}
+///	public function getEntityId(){
+		//return $this->namedtag["EntityId"];
+	//}
 
 	public function setEntityId(int $id){
 		$this->namedtag->EntityId->setValue($id);
