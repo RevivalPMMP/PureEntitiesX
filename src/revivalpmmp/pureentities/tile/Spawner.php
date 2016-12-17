@@ -61,9 +61,16 @@ class Spawner extends Spawnable{
         $this->scheduleUpdate();
     }
 
-    public function onUpdate(){
-        if($this->closed){
-            return false;
+   public function onUpdate(){
+		if($this->closed === true){
+			return false;
+            
+		}
+       
+		$this->timings->startTiming();
+		if(!($this->chunk instanceof FullChunk)){
+			return false;
+		
         }
 
         if($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)){
@@ -97,8 +104,8 @@ class Spawner extends Spawnable{
         return true;
     }
 
-    public function saveNBT(){
-        parent::saveNBT();
+   // public function saveNBT(){
+      //  parent::saveNBT();
 
         $this->namedtag->EntityId = new ShortTag("EntityId", $this->entityId);
         $this->namedtag->SpawnRange = new ShortTag("SpawnRange", $this->spawnRange);
