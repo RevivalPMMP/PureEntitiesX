@@ -14,6 +14,7 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\level\format\FullChunk;
 use pocketmine\Player;
+use pocketmine\tile\Spawnable;
 
 class MobSpawner extends Spawnable{
 
