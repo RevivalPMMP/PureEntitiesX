@@ -15,6 +15,7 @@ use pocketmine\nbt\tag\StringTag;
 use pocketmine\level\format\FullChunk;
 use pocketmine\Player;
 use pocketmine\tile\Spawnable;
+use pocketmine\tile\Tile;
 
 class Spawner extends Spawnable{
 
