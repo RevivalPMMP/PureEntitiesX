@@ -17,7 +17,7 @@ class WitherSkeleton extends WalkingMonster{
     const NETWORK_ID = 48;
     public $width = 0.65;
     public $height = 1.8;
-    
+
     public function getName(){
         return "Wither Skeleton";
     }
@@ -62,21 +62,14 @@ class WitherSkeleton extends WalkingMonster{
     public function getDrops(){
         $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            switch(mt_rand(0, 2)){
-                case 0:
-                    $drops[] = Item::get(Item::WITHER_SKELETON_SKULL, 0, 1);
-                    break;
-                case 1:
-                    $drops[] = Item::get(Item::BONE, 0, 1);
-                    break;
-                case 2:
-                    $drops[] = Item::get(Item::STONE_SWORD, 0, 1);
-                    break;
+            array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));
+            array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
+            switch (mt_rand(0, 8)) {
+              case 1:
+                array_push($drops, Item::get(Item::WITHER_SKELETON_SKULL, 0, mt_rand(0, 2)));
+                break;
             }
         }
         return $drops;
     }
 }
-    
-
-
