@@ -147,7 +147,7 @@ class Spider extends WalkingMonster{
           array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
           switch (mt_rand(0, 2)) {
             case 0:
-              array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1))
+              array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
               break;
           }
       }
