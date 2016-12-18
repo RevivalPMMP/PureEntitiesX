@@ -106,10 +106,8 @@ class Stray extends WalkingMonster implements ProjectileSource{
 
     public function getDrops(){
         $drops = [];
-        if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-          array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));
-          array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
-        }
+        array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));
+        array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
         return $drops;
     }
 

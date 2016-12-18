@@ -88,10 +88,8 @@ class PigZombie extends WalkingMonster{
 
     public function getDrops(){
         $drops = [];
-        if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 1)));
-            array_push($drops, Item::get(Item::GOLD_INGOT, 0, mt_rand(0, 1)));
-        }
+        array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 1)));
+        array_push($drops, Item::get(Item::GOLD_INGOT, 0, mt_rand(0, 1)));
         return $drops;
     }
 

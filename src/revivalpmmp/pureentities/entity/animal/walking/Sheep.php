@@ -17,9 +17,9 @@ use revivalpmmp\pureentities\data\Data;
 
 class Sheep extends WalkingAnimal implements Colorable{
     const NETWORK_ID = Data::SHEEP;
-    
+
     const DATA_COLOR_INFO = 16;
-    
+
     const WHITE = 0;
 	const ORANGE = 1;
 	const MAGENTA = 2;
@@ -44,7 +44,7 @@ class Sheep extends WalkingAnimal implements Colorable{
     public function getName(){
         return "Sheep";
     }
-    
+
     public function __construct(FullChunk $chunk, CompoundTag $nbt){
 		if(!isset($nbt->Color)){
 			$nbt->Color = new ByteTag("Color", self::getRandomColor());
@@ -52,7 +52,7 @@ class Sheep extends WalkingAnimal implements Colorable{
 		parent::__construct($chunk, $nbt);
 		$this->setDataProperty(self::DATA_COLOR_INFO, self::DATA_TYPE_BYTE, self::getColor());
 	}
-    
+
     public static function getRandomColor() : int {
 		$rand = "";
 		$rand .= str_repeat(self::WHITE . " ", 20);
@@ -72,11 +72,11 @@ class Sheep extends WalkingAnimal implements Colorable{
 		$arr = explode(" ", $rand);
 		return intval($arr[mt_rand(0, count($arr) - 1)]);
 	}
-    
+
 	public function getColor() : int {
 		return (int) $this->namedtag["Color"];
 	}
-    
+
 	public function setColor(int $color){
 		$this->namedtag->Color = new ByteTag("Color", $color);
 	}
@@ -100,10 +100,7 @@ class Sheep extends WalkingAnimal implements Colorable{
     }
 
     public function getDrops(){
-        if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [Item::get(Item::WOOL, self::getColor(), mt_rand(0, 2))];
-        }
-        return [];
+        return [Item::get(Item::WOOL, self::getColor(), mt_rand(0, 2))];
     }
 
 }

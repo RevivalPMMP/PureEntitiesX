@@ -34,13 +34,11 @@ class Chicken extends WalkingAnimal{
 
     public function getDrops(){
         $drops = [];
-        if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            array_push($drops, Item::get(Item::FEATHER, 0, mt_rand(0, 2)));
-            if ($this->isOnFire()) {
-              array_push($drops, Item::get(Item::COOKED_CHICKEN, 0, 1));
-            } else {
-              array_push($drops, Item::get(Item::RAW_CHICKEN, 0, 1));
-            }
+        array_push($drops, Item::get(Item::FEATHER, 0, mt_rand(0, 2)));
+        if ($this->isOnFire()) {
+          array_push($drops, Item::get(Item::COOKED_CHICKEN, 0, 1));
+        } else {
+          array_push($drops, Item::get(Item::RAW_CHICKEN, 0, 1));
         }
         return $drops;
     }

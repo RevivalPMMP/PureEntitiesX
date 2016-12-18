@@ -173,10 +173,7 @@ class Creeper extends WalkingMonster implements Explosive{
     }
 
     public function getDrops(){
-        if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
-        }
-        return [];
+        return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
     }
 
 }
