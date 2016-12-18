@@ -68,12 +68,15 @@ class Husk extends WalkingMonster implements Ageable{
         $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
-            switch(mt_rand(0, 2)){
+            switch(mt_rand(0, 5)){
                 case 1:
                     array_push($drops, Item::get(Item::CARROT, 0, 1));
                     break;
                 case 2:
                     array_push($drops, Item::get(Item::POTATO, 0, 1));
+                    break;
+                case 3:
+                    array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
                     break;
             }
         }
