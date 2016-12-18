@@ -45,7 +45,7 @@ class Ghast extends FlyingMonster implements ProjectileSource{
     public function attackEntity(Entity $player){
         if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distance($player) <= 100){
             $this->attackDelay = 0;
-        
+
             $f = 2;
             $yaw = $this->yaw + mt_rand(-220, 220) / 10;
             $pitch = $this->pitch + mt_rand(-120, 120) / 10;
@@ -80,10 +80,7 @@ class Ghast extends FlyingMonster implements ProjectileSource{
     }
 
     public function getDrops(){
-        if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
-        }
-        return [];
+        return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
     }
 
 }
