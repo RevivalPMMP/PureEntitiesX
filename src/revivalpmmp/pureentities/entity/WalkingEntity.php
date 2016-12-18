@@ -43,6 +43,11 @@ abstract class WalkingEntity extends BaseEntity{
                 if($distance > $near or !$this->targetOption($creature, $distance)){
                     continue;
                 }
+                
+                if(!($this instanceof Sheep) && $creature instanceof Player) {
+                    $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "");
+                }
+                
                 $near = $distance;
 
                 $this->moveTime = 0;

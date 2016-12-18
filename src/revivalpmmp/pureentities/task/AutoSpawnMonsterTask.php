@@ -179,15 +179,18 @@ class AutoSpawnMonsterTask extends PluginTask {
                 /*
                  * Hell Biome Monster Generator
                  * Entities:
-                 * - Zombie Pigman      75%
+                 * - Zombie Pigman      65%
                  * - Ghast              10%            
                  * - Magma Cube         10%
                  * - Blaze              5%
+                 * - Wither Skeleton    10%
                  */
                 elseif($biome === Biome::HELL) {
-                    if($probability <= 75) {
+                    if($probability <= 65) {
                         $type = 36; // Zombie Pigman
-                    } elseif($probability <= 85) {
+                    }elseif($probability <= 75) {
+                        $type = 48; //Wither Skeleton
+                    }elseif($probability <= 85) {
                         $type = 41; // Ghast
                     } elseif($probability <= 90) {
                         $type = 43; // Blaze

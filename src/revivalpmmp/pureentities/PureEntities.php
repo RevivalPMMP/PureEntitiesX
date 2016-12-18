@@ -43,6 +43,7 @@ use revivalpmmp\pureentities\entity\monster\walking\IronGolem;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use revivalpmmp\pureentities\entity\monster\walking\Silverfish;
 use revivalpmmp\pureentities\entity\monster\walking\Skeleton;
+use revivalpmmp\pureentities\entity\monster\walking\WitherSkeleton;
 use revivalpmmp\pureentities\entity\monster\walking\SnowGolem;
 use revivalpmmp\pureentities\entity\monster\walking\Spider;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
@@ -61,6 +62,9 @@ use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\network\protocol\Info;
+use pocketmine\network\protocol\InteractPacket;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
@@ -106,6 +110,7 @@ class PureEntities extends PluginBase implements Listener{
             Sheep::class,
             Silverfish::class,
             Skeleton::class,
+            WitherSkeleton::class,
             Slime::class,
             SnowGolem::class,
             Spider::class,
@@ -215,6 +220,32 @@ class PureEntities extends PluginBase implements Listener{
         }
     }
 
+    /**
+     * @param DataPacketReceiveEvent $event
+     * @return boolean
+     */
+    public function shearSheep(DataPacketReceiveEvent $event) {
+        $packet = $event->getPacket();
+        $player = $event->getPlayer();
+        if($packet->pid() === Info::INTERACT_PACKET) {
+            if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
+                foreach($player->level->getEntities() as $entity) {
+                    if($entity instanceof Sheep && $entity->distance($player) <= 4) {
+                        if($entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED) === true) {
+                            return false;
+                        } else {
+                            $player->getLevel()->dropItem($entity, Item::get(Item::WOOL, 0, mt_rand(1, 3)));
+                            $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
+                            $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
     public function BlockPlaceEvent(BlockPlaceEvent $ev){
         if($ev->isCancelled()){
             return;

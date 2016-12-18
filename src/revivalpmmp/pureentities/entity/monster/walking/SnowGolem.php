@@ -40,7 +40,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource{
     public function attackEntity(Entity $player){
         if($this->attackDelay > 23  && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55){
             $this->attackDelay = 0;
-        
+
             $f = 1.2;
             $yaw = $this->yaw + mt_rand(-220, 220) / 10;
             $pitch = $this->pitch + mt_rand(-120, 120) / 10;
@@ -76,21 +76,10 @@ class SnowGolem extends WalkingMonster implements ProjectileSource{
     }
 
     public function getDrops(){
-        $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            switch(mt_rand(0, 2)){
-                case 0:
-                    $drops[] = Item::get(Item::SNOWBALL, 0, 1);
-                    break;
-                case 1:
-                    $drops[] = Item::get(Item::SNOWBALL, 0, 1);
-                    break;
-                case 2:
-                    $drops[] = Item::get(Item::PUMPKIN, 0, 1);
-                    break;
-            }
+            return [Item::get(Item::SNOWBALL, 0, mt_rand(0, 15))];
         }
-        return $drops;
+        return [];
     }
 
 }

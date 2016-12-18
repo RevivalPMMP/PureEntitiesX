@@ -2,41 +2,30 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\entity\Effect;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
-use pocketmine\entity\Ageable;
 use pocketmine\entity\Entity;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\item\StoneSword;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
+use pocketmine\entity\Creature;
+use pocketmine\network\protocol\MobEquipmentPacket;
+use pocketmine\Player;
 
-class Husk extends WalkingMonster implements Ageable{
-    const NETWORK_ID = 47;
+class WitherSkeleton extends WalkingMonster{
+    const NETWORK_ID = 48;
+    public $width = 0.65;
+    public $height = 1.8;
 
-    public $width = 1.031;
-    public $height = 2;
-
-    public function getSpeed() : float{
-        return 1.1;
+    public function getName(){
+        return "Wither Skeleton";
     }
-
     public function initEntity(){
         parent::initEntity();
 
-        if($this->getDataFlag(self::DATA_FLAG_BABY , 0) === null){
-            $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
-        }
         $this->setDamage([0, 3, 4, 6]);
     }
-
-    public function getName(){
-        return "Husk";
-    }
-
-    public function isBaby(){
-        return $this->getDataFlag(self::DATA_FLAG_BABY,0);
-    }
-
     public function setHealth($amount){
         parent::setHealth($amount);
 
@@ -52,32 +41,33 @@ class Husk extends WalkingMonster implements Ageable{
             }
         }
     }
+    public function spawnTo(Player $player){
+        parent::spawnTo($player);
 
+        $pk = new MobEquipmentPacket();
+        $pk->eid = $this->getId();
+        $pk->item = new StoneSword();
+        $pk->slot = 10;
+        $pk->selectedSlot = 10;
+        $player->dataPacket($pk);
+    }
     public function attackEntity(Entity $player){
         if($this->attackDelay > 10 && $this->distanceSquared($player) < 2){
             $this->attackDelay = 0;
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
-            $effect = Effect::getEffect(17)->setDuration(1800)->setAmplifier(1)->setVisible(true);
-            $player->addEffect($effect);
         }
     }
-
     public function getDrops(){
         $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
-            switch(mt_rand(0, 5)){
-                case 1:
-                    array_push($drops, Item::get(Item::CARROT, 0, 1));
-                    break;
-                case 2:
-                    array_push($drops, Item::get(Item::POTATO, 0, 1));
-                    break;
-                case 3:
-                    array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
-                    break;
+            array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));
+            array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
+            switch (mt_rand(0, 8)) {
+              case 1:
+                array_push($drops, Item::get(Item::WITHER_SKELETON_SKULL, 0, mt_rand(0, 2)));
+                break;
             }
         }
         return $drops;
