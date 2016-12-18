@@ -63,7 +63,7 @@ class Creeper extends WalkingMonster implements Explosive{
 
         if(!$ev->isCancelled()){
             $explosion = new Explosion($this, $ev->getForce(), $this);
-            $ev->setBlockBreaking(false); // This should be removed later. There should be a configurable option for this. 
+            $ev->setBlockBreaking(false); // This should be removed later. There should be a configurable option for this.
             if($ev->isBlockBreaking()){
                 $explosion->explodeA();
             }
@@ -174,7 +174,7 @@ class Creeper extends WalkingMonster implements Explosive{
 
     public function getDrops(){
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [Item::get(Item::GUNPOWDER, 0, 1)];
+            return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
         }
         return [];
     }

@@ -34,7 +34,7 @@ class Donkey extends WalkingAnimal implements Rideable{
 
     public function getDrops(){
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            return [Item::get(Item::LEATHER, 0, 2)];
+            return [Item::get(Item::LEATHER, 0, mt_rand(0,2))];
         }
         return [];
     }

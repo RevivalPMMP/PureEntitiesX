@@ -52,17 +52,12 @@ class IronGolem extends WalkingMonster{
     }
 
     public function getDrops(){
+        $drops = [];
         if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            switch(mt_rand(0, 2)){
-                case 0:
-                    return [Item::get(Item::IRON_INGOT, 0, 1)];
-                case 1:
-                    return [Item::get(Item::RED_FLOWER, 0, 1)];
-                case 2:
-                    return [Item::get(Item::IRON_INGOT, 0, 1)];
-            }
+            array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));
+            array_push($drops, Item::get(Item::POPPY, 0, mt_rand(0, 2)));
         }
-        return [];
+        return $drops;
     }
 
 }
