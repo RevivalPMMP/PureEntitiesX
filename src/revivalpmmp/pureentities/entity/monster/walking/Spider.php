@@ -142,21 +142,16 @@ class Spider extends WalkingMonster{
     }
 
     public function getDrops(){
-        $drops = [];
-        if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
-            switch(mt_rand(0, 2)){
-                case 0:
-                    $drops[] = Item::get(Item::STRING, 0, 1);
-                    break;
-                case 1:
-                    $drops[] = Item::get(Item::SPIDER_EYE, 0, 1);
-                    break;
-                case 2:
-                    $drops[] = Item::get(Item::STRING, 0, 1);
-                    break;
-            }
-        }
-        return $drops;
+      $drops = [];
+      if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
+          array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
+          switch (mt_rand(0, 2)) {
+            case 0:
+              array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1))
+              break;
+          }
+      }
+      return $drops;
     }
 
 }
