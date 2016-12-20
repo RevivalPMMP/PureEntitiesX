@@ -4,7 +4,7 @@ namespace revivalpmmp\pureentities\tile;
 
 use pocketmine\Player;
 use revivalpmmp\pureentities\PureEntities;
-use pocketmine\level\format\Chunk;
+use pocketmine\level\format\Chunk as FullChunk;
 use pocketmine\level\Position;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
@@ -24,7 +24,7 @@ class Spawner extends Spawnable{
     protected $minSpawnDelay;
     protected $maxSpawnDelay;
 
-    public function __construct(Chunk $chunk, CompoundTag $nbt){
+    public function __construct(FullChunk $chunk, CompoundTag $nbt){
         parent::__construct($chunk, $nbt);
 
         if(isset($this->namedtag->EntityId)){
