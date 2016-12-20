@@ -146,7 +146,8 @@ class PureEntities extends PluginBase implements Listener{
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been enabled");
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're running PureEntitiesX Dev!");
-        
+        $this->saveDefaultConfig();
+        $this->reloadConfig();
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), 100);
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), 100);
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), 20);
