@@ -4,7 +4,7 @@ namespace revivalpmmp\pureentities\tile;
 
 use pocketmine\Player;
 use revivalpmmp\pureentities\PureEntities;
-use pocketmine\level\format\FullChunk;
+use pocketmine\level\format\Chunk;
 use pocketmine\level\Position;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
