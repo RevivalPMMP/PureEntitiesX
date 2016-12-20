@@ -11,7 +11,6 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\tile\Spawnable;
-use pocketmine\level\format\FullChunk;
 
 class Spawner extends Spawnable{
 
@@ -25,7 +24,7 @@ class Spawner extends Spawnable{
     protected $minSpawnDelay;
     protected $maxSpawnDelay;
 
-    public function __construct(FullChunk $chunk, CompoundTag $nbt){
+    public function __construct(Chunk $chunk, CompoundTag $nbt){
         parent::__construct($chunk, $nbt);
 
         if(isset($this->namedtag->EntityId)){
