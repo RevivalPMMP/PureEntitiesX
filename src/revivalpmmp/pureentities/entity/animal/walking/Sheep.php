@@ -9,7 +9,7 @@ use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
-use pocketmine\level\format\FullChunk;
+use pocketmine\level\format\Chunk as FullChunk;
 use pocketmine\nbt\tag\CompoundTag;
 use revivalpmmp\pureentities\block\Wool;
 use pocketmine\nbt\tag\ByteTag;
