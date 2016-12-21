@@ -3,6 +3,7 @@
 namespace revivalpmmp\pureentities\task;
 
 use pocketmine\scheduler\PluginTask;
+use pocketmine\utils\Config;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use revivalpmmp\pureentities\entity\animal\Animal;
