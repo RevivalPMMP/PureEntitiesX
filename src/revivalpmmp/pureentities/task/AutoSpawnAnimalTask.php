@@ -22,6 +22,7 @@ class AutoSpawnAnimalTask extends PluginTask {
     public function onRun($currentTick){
         $entities = [];
         $valid = false;
+        $water = false;
         foreach($this->plugin->getServer()->getLevels() as $level) {
             foreach($level->getPlayers() as $player){
                 foreach($level->getEntities() as $entity) {
@@ -140,6 +141,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                  */
                 elseif($biome === Biome::RIVER || $biome === Biome::OCEAN) {
                     //$type = 17; // Squid (Yet to be implemented)
+	                $water = true;
                 }
                 
                 $time = $level->getTime() % Level::TIME_FULL;
@@ -149,7 +151,11 @@ class AutoSpawnAnimalTask extends PluginTask {
                     ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) &&
                     ($block instanceof Grass || $backupblock instanceof Grass)
                 ) {
-                    $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Animal");
+                	if($this->plugin->checkEntityCount("Animal",$water)) {
+		                $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Animal");
+	                }else{
+                		$this->plugin->getLogger()->debug("The animals mob cap has been reached!");
+	                }
                 }
             }
         }

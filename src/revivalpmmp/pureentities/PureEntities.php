@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities;
 
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\monster\swimming\Guardian;
 use revivalpmmp\pureentities\entity\monster\swimming\ElderGuardian;
@@ -323,5 +324,32 @@ class PureEntities extends PluginBase implements Listener{
             $entity->spawnToAll();
             return true;
         }
+    }
+
+    public function checkEntityCount(string $type, $water = false) : bool {
+    	$i = 0;
+    	foreach ($this->getServer()->getLevels() as $level) {
+    		foreach ($level->getEntities() as $entity) {
+    			if(!$entity instanceof Player) {
+    				$i++;
+			    }
+		    }
+	    }
+	    if(strpos(strtolower($type),"animal")) {
+    		if($water == true) {
+			    if($i < $this->getServer()->getProperty("water-animals",5)) {
+				    return true;
+			    }
+		    }else{
+			    if($i < $this->getServer()->getProperty("animals",70)) {
+				    return true;
+			    }
+		    }
+	    }else{
+		    if($i < $this->getServer()->getProperty("monsters",70)) {
+			    return true;
+		    }
+	    }
+	    return false;
     }
 }

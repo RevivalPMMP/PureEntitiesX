@@ -204,7 +204,11 @@ class AutoSpawnMonsterTask extends PluginTask {
                     !$player->distance($pos) <= 8 &&
                     $time >= 10900 && $time <= 17800
                 ) {
-                    $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Monster");
+                	if($this->plugin->checkEntityCount("Monster")) {
+		                $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Monster");
+	                }else{
+                		$this->plugin->getLogger()->debug("The monster mob cap has been reached!");
+	                }
                 }
             }
         }
