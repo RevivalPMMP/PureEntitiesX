@@ -3,6 +3,7 @@
 namespace revivalpmmp\pureentities\task;
 
 use pocketmine\scheduler\PluginTask;
+use pocketmine\utils\Config;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\level\Position;
 use pocketmine\level\Level;
