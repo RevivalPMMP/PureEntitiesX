@@ -145,11 +145,11 @@ class PureEntities extends PluginBase implements Listener{
     public function onEnable(){
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been enabled");
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're running PureEntitiesX Dev!");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're running PureEntitiesX Development build ".$this->getDescription()->getVersion()."!");
         $this->saveDefaultConfig();
         $this->reloadConfig();
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), 100);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), 100);
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), $this->getServer()->getProperty("animal-spawns",100));
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), $this->getServer()->getProperty("monster-spawns",100));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), 20);
     }
 
