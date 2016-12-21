@@ -22,7 +22,7 @@ class AutoDespawnTask extends PluginTask {
             foreach($level->getEntities() as $entity) {
                 $despawnable[$entity->getId()] = 2; 
                 foreach($level->getPlayers() as $player) {
-                    if($player->distance($entity) <= 32 && $this->getConfig()->get("auto-despawn") == true) {
+                    if($player->distance($entity) <= 32 && $this->getConfig()->get("auto-despawn") === true) {
                         $despawnable[$entity->getId()] = 1;
                     } elseif($player->distance($entity) >= 128) {
                         $despawnable[$entity->getId()] = 3;
