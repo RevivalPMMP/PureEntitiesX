@@ -39,15 +39,12 @@ class MagmaCube extends JumpingMonster{
 
     public function getDrops(){
         $drops = [];
-        switch(mt_rand(0, 2)){
+        switch(mt_rand(0, 1)){
             case 0:
                 $drops[] = Item::get(Item::NETHERRACK, 0, 1);
                 break;
             case 1:
-                $drops[] = Item::get(Item::BLAZE_ROD, 0, 1);
-                break;
-            case 2:
-                $drops[] = Item::get(Item::GUNPOWDER, 0, 1);
+                $drops[] = Item::get(Item::MAGMA_CREAM, 0, 1);
                 break;
         }
         return $drops;
