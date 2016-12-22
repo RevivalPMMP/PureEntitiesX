@@ -30,7 +30,7 @@ class AutoSpawnMonsterTask extends PluginTask {
                     }
                 }
         
-                if($valid && count($entities) <= 20) {
+                if($valid && count($entities) <= 20 && $this->getConfig()->get("spawnmonsters") == true) {
                     $x = $player->x + mt_rand(-20, 20);
                     $z = $player->z + mt_rand(-20, 20);
                     $pos = new Position(
