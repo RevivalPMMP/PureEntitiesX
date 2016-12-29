@@ -20,6 +20,7 @@ class Bat extends FlyingAnimal{
         parent::initEntity();
 
         $this->setMaxHealth(6);
+        $this->setHealth(6);
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{

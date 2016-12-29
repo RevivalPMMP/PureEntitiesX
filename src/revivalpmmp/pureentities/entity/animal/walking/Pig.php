@@ -23,6 +23,7 @@ class Pig extends WalkingAnimal implements Rideable{
         parent::initEntity();
 
         $this->setMaxHealth(10);
+        $this->setHealth(10);
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{

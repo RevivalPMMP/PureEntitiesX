@@ -76,7 +76,7 @@ class Zombie extends WalkingMonster implements Ageable{
             $this->setOnFire(100);
         }
 
-        Timings::$timerEntityBaseTick->startTiming();
+        Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
 

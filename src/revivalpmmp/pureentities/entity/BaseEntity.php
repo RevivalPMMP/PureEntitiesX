@@ -180,7 +180,7 @@ abstract class BaseEntity extends Creature{
             $this->attackTime -= $tickDiff;
         }
 
-        Timings::$timerEntityBaseTick->startTiming();
+        Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
 
