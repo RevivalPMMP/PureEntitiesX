@@ -1,6 +1,4 @@
 # Default Config File for PureEntitiesX
-spawnmonsters: true
-spawnanimals: true
-# Disabling auto despawning can have a HUGE effect on server performance, and overrun your server with mobs.
-auto-despawn: true 
-
+# most of them ar at pocketmine.yml
+# only explodeBlocks can by contolt
+explodeBlocks: false
