@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities;
 
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\monster\swimming\Guardian;
 use revivalpmmp\pureentities\entity\monster\swimming\ElderGuardian;
@@ -82,6 +83,16 @@ use pocketmine\utils\TextFormat;
 
 class PureEntities extends PluginBase implements Listener{
 
+    private static $instance;
+
+    /**
+     * Returns the plugin instance to get access to config e.g.
+     * @return PureEntities the current instance of the plugin main class
+     */
+    public static function getInstance() : PureEntities {
+        return PureEntities::$instance;
+    }
+
     public function onLoad(){
         $classes = [
             Stray::class,
@@ -140,16 +151,18 @@ class PureEntities extends PluginBase implements Listener{
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're Running PureEntitiesX v".$this->getDescription()->getVersion());
         
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
+
+        PureEntities::$instance = $this;
     }
 
     public function onEnable(){
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been enabled");
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're running PureEntitiesX Dev!");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're running PureEntitiesX Development build ".$this->getDescription()->getVersion()."!");
         $this->saveDefaultConfig();
         $this->reloadConfig();
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), 100);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), 100);
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), $this->getServer()->getProperty("animal-spawns",100));
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), $this->getServer()->getProperty("monster-spawns",100));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), 20);
     }
 
@@ -324,4 +337,57 @@ class PureEntities extends PluginBase implements Listener{
             return true;
         }
     }
+
+    public function checkEntityCount(string $type, $water = false) : bool {
+    	$i = 0;
+    	foreach ($this->getServer()->getLevels() as $level) {
+    		foreach ($level->getEntities() as $entity) {
+    			if(!$entity instanceof Player) {
+    				$i++;
+			    }
+		    }
+	    }
+	    if(strpos(strtolower($type),"animal")) {
+    		if($water == true) {
+			    if($i < $this->getServer()->getProperty("water-animals",5)) {
+				    return true;
+			    }
+		    }else{
+			    if($i < $this->getServer()->getProperty("animals",70)) {
+				    return true;
+			    }
+		    }
+	    }else{
+		    if($i < $this->getServer()->getProperty("monsters",70)) {
+			    return true;
+		    }
+	    }
+	    return false;
+    }
+    
+    /**
+     * Logs a logline to the plugin's logfile ...
+     * @param string $logline	the logline to be appended
+     */
+    public static function logDebug (string $logline) {
+    	file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[32m".(date("j.n.Y G:i:s")." [DEBUG] ".$logline."\033[0m\r\n"), FILE_APPEND);
+    }
+    
+    /**
+     * Logs a logline to the plugin's logfile ...
+     * @param string $logline	the logline to be appended
+     */
+    public static function logNormal (string $logline) {
+    	file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[37m".(date("j.n.Y G:i:s")." [INFO]  ".$logline."\033[0m\r\n"), FILE_APPEND);
+    }
+    
+    
+    /**
+     * Logs a logline to the plugin's logfile ...
+     * @param string $logline	the logline to be appended
+     */
+    public static function logWarn (string $logline) {
+    	file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[31m".(date("j.n.Y G:i:s")." [WARN]  ".$logline."\033[0m\r\n"), FILE_APPEND);
+    }
+    
 }
