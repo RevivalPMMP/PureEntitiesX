@@ -23,6 +23,7 @@ class Donkey extends WalkingAnimal implements Rideable{
         parent::initEntity();
 
         $this->setMaxHealth(20);
+        $this->setHealth(20);
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{

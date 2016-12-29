@@ -28,6 +28,7 @@ class Slime extends JumpingMonster{
         parent::initEntity();
 
         $this->setMaxHealth(4);
+        $this->setHealth(4);
         $this->setDamage([0, 2, 2, 3]);
     }
 

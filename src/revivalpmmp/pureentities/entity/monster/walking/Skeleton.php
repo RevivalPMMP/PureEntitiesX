@@ -100,7 +100,7 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
             $this->setOnFire(100);
         }
 
-        Timings::$timerEntityBaseTick->startTiming();
+        Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
 

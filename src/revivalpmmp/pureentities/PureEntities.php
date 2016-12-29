@@ -152,6 +152,8 @@ class PureEntities extends PluginBase implements Listener{
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), $this->getServer()->getProperty("animal-spawns",100));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), $this->getServer()->getProperty("monster-spawns",100));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), 20);
+        
+        PureEntities::logWarn ("Testtest");
     }
 
     public function onDisable(){
@@ -352,4 +354,30 @@ class PureEntities extends PluginBase implements Listener{
 	    }
 	    return false;
     }
+    
+    /**
+     * Logs a logline to the plugin's logfile ...
+     * @param string $logline	the logline to be appended
+     */
+    public static function logDebug (string $logline) {
+    	file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[32m".(date("j.n.Y G:i:s")." [DEBUG] ".$logline."\033[0m\r\n"), FILE_APPEND);
+    }
+    
+    /**
+     * Logs a logline to the plugin's logfile ...
+     * @param string $logline	the logline to be appended
+     */
+    public static function logNormal (string $logline) {
+    	file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[37m".(date("j.n.Y G:i:s")." [INFO]  ".$logline."\033[0m\r\n"), FILE_APPEND);
+    }
+    
+    
+    /**
+     * Logs a logline to the plugin's logfile ...
+     * @param string $logline	the logline to be appended
+     */
+    public static function logWarn (string $logline) {
+    	file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[31m".(date("j.n.Y G:i:s")." [WARN]  ".$logline."\033[0m\r\n"), FILE_APPEND);
+    }
+    
 }
