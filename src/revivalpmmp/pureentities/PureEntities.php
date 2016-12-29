@@ -152,8 +152,6 @@ class PureEntities extends PluginBase implements Listener{
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), $this->getServer()->getProperty("animal-spawns",100));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), $this->getServer()->getProperty("monster-spawns",100));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), 20);
-        
-        PureEntities::logWarn ("Testtest");
     }
 
     public function onDisable(){
