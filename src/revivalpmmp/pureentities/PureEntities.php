@@ -83,6 +83,16 @@ use pocketmine\utils\TextFormat;
 
 class PureEntities extends PluginBase implements Listener{
 
+    private static $instance;
+
+    /**
+     * Returns the plugin instance to get access to config e.g.
+     * @return PureEntities the current instance of the plugin main class
+     */
+    public static function getInstance() : PureEntities {
+        return PureEntities::$instance;
+    }
+
     public function onLoad(){
         $classes = [
             Stray::class,
@@ -141,6 +151,8 @@ class PureEntities extends PluginBase implements Listener{
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're Running PureEntitiesX v".$this->getDescription()->getVersion());
         
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
+
+        PureEntities::$instance = $this;
     }
 
     public function onEnable(){

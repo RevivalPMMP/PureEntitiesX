@@ -12,6 +12,7 @@ use pocketmine\math\Vector2;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
+use revivalpmmp\pureentities\PureEntities;
 
 class Creeper extends WalkingMonster implements Explosive{
     const NETWORK_ID = 33;
@@ -21,6 +22,8 @@ class Creeper extends WalkingMonster implements Explosive{
     public $height = 1.8;
 
     private $bombTime = 0;
+
+    private $explodeBlocks = false;
 
     public function getSpeed() : float{
         return 0.9;
@@ -38,6 +41,8 @@ class Creeper extends WalkingMonster implements Explosive{
         if(isset($this->namedtag->BombTime)){
             $this->bombTime = (int) $this->namedtag["BombTime"];
         }
+
+        $this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) == 0 ? false : true);
     }
 
     public function isPowered(){
@@ -63,7 +68,7 @@ class Creeper extends WalkingMonster implements Explosive{
 
         if(!$ev->isCancelled()){
             $explosion = new Explosion($this, $ev->getForce(), $this);
-            $ev->setBlockBreaking(false); // This should be removed later. There should be a configurable option for this.
+            $ev->setBlockBreaking($this->explodeBlocks); // this is configuration!
             if($ev->isBlockBreaking()){
                 $explosion->explodeA();
             }
