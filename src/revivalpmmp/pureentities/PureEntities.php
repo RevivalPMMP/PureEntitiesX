@@ -85,6 +85,8 @@ class PureEntities extends PluginBase implements Listener{
 
     private static $instance;
 
+    private static $loglevel;
+
     /**
      * Returns the plugin instance to get access to config e.g.
      * @return PureEntities the current instance of the plugin main class
@@ -151,6 +153,9 @@ class PureEntities extends PluginBase implements Listener{
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're Running PureEntitiesX v".$this->getDescription()->getVersion());
         
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
+
+        PureEntities::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", "info"));
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . PureEntities::$loglevel);
 
         PureEntities::$instance = $this;
     }
@@ -350,18 +355,22 @@ class PureEntities extends PluginBase implements Listener{
 	    if(strpos(strtolower($type),"animal")) {
     		if($water == true) {
 			    if($i < $this->getServer()->getProperty("water-animals",5)) {
+			        PureEntities::logDebug("checkEntityCount for water returns true");
 				    return true;
 			    }
 		    }else{
 			    if($i < $this->getServer()->getProperty("animals",70)) {
+                    PureEntities::logDebug("checkEntityCount for animals returns true");
 				    return true;
 			    }
 		    }
 	    }else{
 		    if($i < $this->getServer()->getProperty("monsters",70)) {
+                PureEntities::logDebug("checkEntityCount for monsters returns true");
 			    return true;
 		    }
 	    }
+        PureEntities::logDebug("checkEntityCount returns false");
 	    return false;
     }
     
@@ -370,7 +379,9 @@ class PureEntities extends PluginBase implements Listener{
      * @param string $logline	the logline to be appended
      */
     public static function logDebug (string $logline) {
-    	file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[32m".(date("j.n.Y G:i:s")." [DEBUG] ".$logline."\033[0m\r\n"), FILE_APPEND);
+        if (strcmp(PureEntities::$loglevel, "debug") === 0) {
+            file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+        }
     }
     
     /**
@@ -378,7 +389,9 @@ class PureEntities extends PluginBase implements Listener{
      * @param string $logline	the logline to be appended
      */
     public static function logNormal (string $logline) {
-    	file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[37m".(date("j.n.Y G:i:s")." [INFO]  ".$logline."\033[0m\r\n"), FILE_APPEND);
+        if (strcmp(PureEntities::$loglevel, "info") === 0 or strcmp(PureEntities::$loglevel, "debug") === 0) {
+            file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+        }
     }
     
     
@@ -389,5 +402,33 @@ class PureEntities extends PluginBase implements Listener{
     public static function logWarn (string $logline) {
     	file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[31m".(date("j.n.Y G:i:s")." [WARN]  ".$logline."\033[0m\r\n"), FILE_APPEND);
     }
-    
+
+    /**
+     * Returns the first position of block of AIR found at above the given coordinates.
+     *
+     * Sometimes it seems that getHighestBlockAt is not working properly. So i introduced this additional
+     * method.
+     *
+     * @param $x    the x coordinate
+     * @param $y    the y coordinate (which is used in +1 until an AIR block is found)
+     * @param $z    the z coordinate
+     * @param Level $level the level to search in
+     * @return Position the Position of the first AIR block found above given coordinates
+     */
+    public static function getFirstAirAbovePosition ($x, $y, $z, Level $level) : Position {
+        $air = false;
+        $newPosition = null;
+        while (!$air) {
+            $id = $level->getBlockIdAt($x, $y, $z);
+            if ($id == 0) { // this is an air block ...
+                $newPosition = new Position($x, $y, $z, $level);
+                $air = true;
+            } else {
+                $y = $y + 1;
+            }
+        }
+        return $newPosition;
+    }
+
+
 }

@@ -1,4 +1,7 @@
 # Default Config File for PureEntitiesX
-# most of them ar at pocketmine.yml
-# only explodeBlocks can by contolt
-explodeBlocks: false
+creeper:
+  block-breaking-explosion: false # when set to true the creeper will explode and also burst blocks
+
+# control logfile logging
+logfile:
+  loglevel: info # possible: debug, info, warn

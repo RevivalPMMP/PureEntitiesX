@@ -2,6 +2,7 @@
 
 namespace revivalpmmp\pureentities\task;
 
+use pocketmine\block\Solid;
 use pocketmine\scheduler\PluginTask;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\level\Position;
@@ -20,6 +21,8 @@ class AutoSpawnAnimalTask extends PluginTask {
     }
     
     public function onRun($currentTick){
+        PureEntities::logDebug("AutoSpawnAnimalTask: onRun ($currentTick)");
+
         $entities = [];
         $valid = false;
         $water = false;
@@ -32,16 +35,12 @@ class AutoSpawnAnimalTask extends PluginTask {
                     }
                 }
         
-                if($valid && count($entities) <= 10) {
+                if($valid) {
                     $x = $player->x + mt_rand(-20, 20);
                     $z = $player->z + mt_rand(-20, 20);
-                    $pos = new Position(
-                        $x,
-                        ($y = $level->getHighestBlockAt($x, $z) + 1),
-                        $z,
-                        $level
-                    );
+                    $y = $level->getHighestBlockAt($x, $z);
                 } else {
+                    PureEntities::logDebug("AutoSpawnAnimalTask: invalid");
                     return;
                 }
                 
@@ -53,8 +52,10 @@ class AutoSpawnAnimalTask extends PluginTask {
                 }
                 $probability = mt_rand(1, 100);
                 
-                $block = $level->getBlock(new Vector3($x, $y - 1, $z));
-                $backupblock = $level->getBlock(new Vector3($x, $y - 2, $z));
+                $correctedPosition = PureEntities::getFirstAirAbovePosition($x, $y, $z, $level); // returns the AIR block found upwards (it seems, highest block is not working :()
+                $block = $level->getBlock(new Vector3($correctedPosition->x, ($correctedPosition->y - 1), $correctedPosition->z));
+
+                PureEntities::logDebug("AutoSpawnAnimalTask: [block:" . $block->getName() . "] [pos:" . $correctedPosition->x . "," . $correctedPosition->y . "," . $correctedPosition->z . "]");
                 
                 /*
                  * Plains Biome Animal Generator
@@ -147,17 +148,21 @@ class AutoSpawnAnimalTask extends PluginTask {
                 $time = $level->getTime() % Level::TIME_FULL;
                 
                 if(
-                    !$player->distance($pos) <= 8 &&
+                    !$player->distance($correctedPosition) <= 8 &&
                     ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) &&
-                    ($block instanceof Grass || $backupblock instanceof Grass)
+                    $block instanceof Grass
                 ) {
                 	if($this->plugin->checkEntityCount("Animal",$water)) {
-		                $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Animal");
+                        PureEntities::logNormal("AutoSpawnAnimalTask: scheduleCreatureSpawn (pos: $correctedPosition, type: $type)");
+		                $this->plugin->scheduleCreatureSpawn($correctedPosition, $type, $level, "Animal");
 	                }else{
                 		$this->plugin->getLogger()->debug("The animals mob cap has been reached!");
 	                }
+                } else {
+                    PureEntities::logDebug("AutoSpawnAnimalTask: spawns nothing [player.distance.to.entity:" . $player->distance($correctedPosition) . "], [spawnTime:" . ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) . "] [block/backupBlock.instance-of-grass:" . ($block instanceof Grass) . "]");
                 }
             }
         }
     }
+
 }
