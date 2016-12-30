@@ -18,6 +18,7 @@ class AutoSpawnMonsterTask extends PluginTask {
     }
     
     public function onRun($currentTick){
+        PureEntities::logDebug("AutoSpawnMonsterTask: onRun ($currentTick)");
         
         $entities = [];
         $valid = false;
@@ -30,19 +31,17 @@ class AutoSpawnMonsterTask extends PluginTask {
                     }
                 }
         
-                if($valid && count($entities) <= 20) {
+                if($valid) {
                     $x = $player->x + mt_rand(-20, 20);
                     $z = $player->z + mt_rand(-20, 20);
-                    $pos = new Position(
-                        $x,
-                        ($y = $level->getHighestBlockAt($x, $z) + 1),
-                        $z,
-                        $level
-                    );
+                    $y = $level->getHighestBlockAt($x, $z);
                 } else {
+                    PureEntities::logDebug("AutoSpawnMonsterTask: invalid");
                     return;
                 }
-                
+
+                $correctedPosition = PureEntities::getFirstAirAbovePosition($x, $y, $z, $level); // returns the AIR block found upwards (it seems, highest block is not working :()
+
                 $type = 32; // If $type is NOT set, it won't dump errors.
                 if($level->getBiomeId($x, $z) === null) {
                     $biome = 1;
@@ -201,11 +200,12 @@ class AutoSpawnMonsterTask extends PluginTask {
                 $time = $level->getTime() % Level::TIME_FULL;
                 
                 if(
-                    !$player->distance($pos) <= 8 &&
+                    !$player->distance($correctedPosition) <= 8 &&
                     $time >= 10900 && $time <= 17800
                 ) {
                 	if($this->plugin->checkEntityCount("Monster")) {
-		                $this->plugin->scheduleCreatureSpawn($pos, $type, $level, "Monster");
+                        PureEntities::logNormal("AutoSpawnMonsterTask: scheduleCreatureSpawn (pos: $correctedPosition, type: $type)");
+		                $this->plugin->scheduleCreatureSpawn($correctedPosition, $type, $level, "Monster");
 	                }else{
                 		$this->plugin->getLogger()->debug("The monster mob cap has been reached!");
 	                }
