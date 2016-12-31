@@ -92,9 +92,9 @@ class Sheep extends WalkingAnimal implements Colorable{
             if($creature->getInventory()->getItemInHand()->getId() === Item::WHEAT) {
                 return $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 49;
             } elseif($creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && $this instanceof Sheep && $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SHEARED) === false) {
-                $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "Shear");
-            } else {
-                $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "");
+          //      $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "Shear");
+         //   } else {
+            //    $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "");
             }
         }
         return false;
