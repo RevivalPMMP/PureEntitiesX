@@ -30,9 +30,10 @@ use pocketmine\entity\Projectile;
 use pocketmine\entity\Entity;
 use pocketmine\level\Explosion;
 use pocketmine\event\entity\ExplosionPrimeEvent;
+use revivalpmmp\pureentities\data\Data;
 
 class FireBall extends Projectile{
-    const NETWORK_ID = 85;
+    const NETWORK_ID = Data::FIRE_BALL;
 
     public $width = 0.5;
     public $height = 0.5;
