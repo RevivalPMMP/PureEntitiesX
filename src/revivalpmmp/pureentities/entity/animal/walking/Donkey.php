@@ -8,9 +8,10 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\data\Data;
 
 class Donkey extends WalkingAnimal implements Rideable{
-    const NETWORK_ID = 24;
+    const NETWORK_ID = Data::DONKEY;
 
     public $width = 1.4;
     public $height = 1.6;
