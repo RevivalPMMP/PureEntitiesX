@@ -12,9 +12,10 @@ use pocketmine\math\Vector2;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
+use revivalpmmp\pureentities\data\Data;
 
 class Creeper extends WalkingMonster implements Explosive{
-    const NETWORK_ID = 33;
+    const NETWORK_ID = Data::CREEPER;
     const DATA_POWERED = 19;
 
     public $width = 0.72;
