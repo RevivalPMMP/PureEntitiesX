@@ -3,9 +3,10 @@
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
+use revivalpmmp\pureentities\data\Data;
 
 class Villager extends WalkingAnimal{
-    const NETWORK_ID = 15;
+    const NETWORK_ID = Data::VILLAGER;
 
     public $width = 0.72;
     public $height = 1.8;
