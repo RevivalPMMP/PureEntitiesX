@@ -15,9 +15,10 @@ use pocketmine\level\Location;
 use pocketmine\level\sound\LaunchSound;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 
 class Ghast extends FlyingMonster implements ProjectileSource{
-    const NETWORK_ID = 41;
+    const NETWORK_ID = Data::GHAST;
 
     public $width = 4;
     public $height = 4;
