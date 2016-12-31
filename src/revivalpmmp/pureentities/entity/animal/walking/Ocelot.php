@@ -6,9 +6,10 @@ use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\Player;
 use pocketmine\item\Item;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\data\Data;
 
 class Ocelot extends WalkingAnimal{
-    const NETWORK_ID = 22;
+    const NETWORK_ID = Data::OCELOT;
 
     public $width = 0.72;
     public $height = 0.9;
