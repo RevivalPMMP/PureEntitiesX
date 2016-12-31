@@ -7,9 +7,10 @@ use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
+use revivalpmmp\pureentities\data\Data;
 
 class CaveSpider extends WalkingMonster{
-    const NETWORK_ID = 40;
+    const NETWORK_ID = Data::CAVE_SPIDER;
 
     public $width = 0.9;
     public $height = 0.8;
