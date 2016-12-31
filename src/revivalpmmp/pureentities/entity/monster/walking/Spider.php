@@ -10,9 +10,10 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\math\Vector2;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 
 class Spider extends WalkingMonster{
-    const NETWORK_ID = 35;
+    const NETWORK_ID = Data::SPIDER;
 
     public $width = 1.3;
     public $height = 1.12;
