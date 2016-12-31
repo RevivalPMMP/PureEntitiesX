@@ -20,9 +20,10 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 
 class Stray extends WalkingMonster implements ProjectileSource{
-    const NETWORK_ID = 46;
+    const NETWORK_ID = Data::STRAY;
 
     public $width = 0.781;
     public $height = 2;
