@@ -22,9 +22,10 @@ use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 
 class Blaze extends FlyingMonster implements ProjectileSource{
-    const NETWORK_ID = 43;
+    const NETWORK_ID = Data::BLAZE;
 
     public $width = 0.72;
     public $height = 1.8;
