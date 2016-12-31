@@ -12,9 +12,10 @@ use pocketmine\item\Item;
 use pocketmine\entity\Creature;
 use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 
 class WitherSkeleton extends WalkingMonster{
-    const NETWORK_ID = 48;
+    const NETWORK_ID = Data::WITHER_SKELETON;
     public $width = 0.65;
     public $height = 1.8;
 
