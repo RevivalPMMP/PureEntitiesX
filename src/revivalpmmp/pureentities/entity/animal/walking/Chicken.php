@@ -7,9 +7,10 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\data\Data;
 
 class Chicken extends WalkingAnimal{
-    const NETWORK_ID = 10;
+    const NETWORK_ID = Data::CHICKEN;
 
     public $width = 0.4;
     public $height = 0.7;
