@@ -9,9 +9,10 @@ use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
+use revivalpmmp\pureentities\data\Data;
 
 class Husk extends WalkingMonster implements Ageable{
-    const NETWORK_ID = 47;
+    const NETWORK_ID = Data::HUSK;
 
     public $width = 1.031;
     public $height = 2;
