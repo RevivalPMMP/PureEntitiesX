@@ -9,9 +9,10 @@ use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\data\Data;
 
 class Slime extends JumpingMonster{
-    const NETWORK_ID = 37;
+    const NETWORK_ID = Data::SLIME;
 
     public $width = 1.2;
     public $height = 1.2;
