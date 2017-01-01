@@ -5,7 +5,6 @@ namespace revivalpmmp\pureentities\entity\animal\walking;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use pocketmine\Player;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
 
 class Mooshroom extends WalkingAnimal{

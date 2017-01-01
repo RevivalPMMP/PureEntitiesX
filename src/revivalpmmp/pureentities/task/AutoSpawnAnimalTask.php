@@ -2,10 +2,8 @@
 
 namespace revivalpmmp\pureentities\task;
 
-use pocketmine\block\Solid;
 use pocketmine\scheduler\PluginTask;
 use revivalpmmp\pureentities\PureEntities;
-use pocketmine\level\Position;
 use pocketmine\level\Level;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\block\Grass;
@@ -21,7 +19,7 @@ class AutoSpawnAnimalTask extends PluginTask {
     }
     
     public function onRun($currentTick){
-        PureEntities::logDebug("AutoSpawnAnimalTask: onRun ($currentTick)");
+        PureEntities::logOutput("AutoSpawnAnimalTask: onRun ($currentTick)",PureEntities::DEBUG);
 
         $entities = [];
         $valid = false;
@@ -40,11 +38,11 @@ class AutoSpawnAnimalTask extends PluginTask {
                     $z = $player->z + mt_rand(-20, 20);
                     $y = $level->getHighestBlockAt($x, $z);
                 } else {
-                    PureEntities::logDebug("AutoSpawnAnimalTask: invalid");
+                    PureEntities::logOutput("AutoSpawnAnimalTask: invalid",PureEntities::DEBUG);
                     return;
                 }
                 
-                $type = 11; // If $type is NOT set, it won't dump errors.
+                $type = null;
                 if($level->getBiomeId($x, $z) === null) {
                     $biome = Biome::PLAINS;
                 } else {
@@ -55,7 +53,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                 $correctedPosition = PureEntities::getFirstAirAbovePosition($x, $y, $z, $level); // returns the AIR block found upwards (it seems, highest block is not working :()
                 $block = $level->getBlock(new Vector3($correctedPosition->x, ($correctedPosition->y - 1), $correctedPosition->z));
 
-                PureEntities::logDebug("AutoSpawnAnimalTask: [block:" . $block->getName() . "] [pos:" . $correctedPosition->x . "," . $correctedPosition->y . "," . $correctedPosition->z . "]");
+                PureEntities::logOutput("AutoSpawnAnimalTask: [block:" . $block->getName() . "] [pos:" . $correctedPosition->x . "," . $correctedPosition->y . "," . $correctedPosition->z . "]",PureEntities::DEBUG);
                 
                 /*
                  * Plains Biome Animal Generator
@@ -145,21 +143,21 @@ class AutoSpawnAnimalTask extends PluginTask {
 	                $water = true;
                 }
                 
-                $time = $level->getTime() % Level::TIME_FULL;
+                $time = $level->getTime() % Level::TIME_FULL; //why not subtract current from total?
                 
                 if(
                     !$player->distance($correctedPosition) <= 8 &&
                     ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) &&
-                    $block instanceof Grass
+                    $block instanceof Grass && $type !== null  // If $type is NOT set, it won't dump errors.
                 ) {
                 	if($this->plugin->checkEntityCount("Animal",$water)) {
-                        PureEntities::logNormal("AutoSpawnAnimalTask: scheduleCreatureSpawn (pos: $correctedPosition, type: $type)");
+                        PureEntities::logOutput("AutoSpawnAnimalTask: scheduleCreatureSpawn (pos: $correctedPosition, type: $type)",PureEntities::DEBUG);
 		                $this->plugin->scheduleCreatureSpawn($correctedPosition, $type, $level, "Animal");
 	                }else{
                 		$this->plugin->getLogger()->debug("The animals mob cap has been reached!");
 	                }
                 } else {
-                    PureEntities::logDebug("AutoSpawnAnimalTask: spawns nothing [player.distance.to.entity:" . $player->distance($correctedPosition) . "], [spawnTime:" . ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) . "] [block/backupBlock.instance-of-grass:" . ($block instanceof Grass) . "]");
+                    PureEntities::logOutput("AutoSpawnAnimalTask: spawns nothing [player.distance.to.entity:" . $player->distance($correctedPosition) . "], [spawnTime:" . ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) . "] [block/backupBlock.instance-of-grass:" . ($block instanceof Grass) . "]",PureEntities::DEBUG);
                 }
             }
         }

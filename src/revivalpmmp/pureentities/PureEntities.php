@@ -53,39 +53,36 @@ use revivalpmmp\pureentities\entity\monster\walking\ZombieVillager;
 use revivalpmmp\pureentities\entity\monster\walking\Husk;
 use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
+use revivalpmmp\pureentities\event\EventListener;
 use revivalpmmp\pureentities\tile\Spawner;
 use revivalpmmp\pureentities\task\AutoSpawnMonsterTask;
 use revivalpmmp\pureentities\task\AutoSpawnAnimalTask;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
-use pocketmine\block\Air;
+
 use pocketmine\entity\Entity;
-use pocketmine\event\block\BlockPlaceEvent;
-use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\network\protocol\Info;
-use pocketmine\network\protocol\InteractPacket;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
 use pocketmine\level\Level;
-use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
-use pocketmine\nbt\tag\StringTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
 
-class PureEntities extends PluginBase implements Listener{
+class PureEntities extends PluginBase {
 
     private static $instance;
 
+    /** @var int|string $loglevel */
     private static $loglevel;
+
+    const NORM = 0;
+    const WARN = 1;
+	const DEBUG = 2;
 
     /**
      * Returns the plugin instance to get access to config e.g.
@@ -150,29 +147,27 @@ class PureEntities extends PluginBase implements Listener{
 
         Tile::registerTile(Spawner::class);
         
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're Running PureEntitiesX v".$this->getDescription()->getVersion());
-        
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
 
-        PureEntities::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", "info"));
+        PureEntities::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", 0));
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . PureEntities::$loglevel);
 
         PureEntities::$instance = $this;
     }
 
     public function onEnable(){
-        $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been enabled");
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're running PureEntitiesX Development build ".$this->getDescription()->getVersion()."!");
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
         $this->saveDefaultConfig();
         $this->reloadConfig();
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), $this->getServer()->getProperty("animal-spawns",100));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), $this->getServer()->getProperty("monster-spawns",100));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), 20);
+	    $this->getServer()->getLogger()->notice("Enabled!");
+	    $this->getServer()->getLogger()->notice("You're Running ".$this->getDescription()->getFullName());
     }
 
     public function onDisable(){
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been disabled");
+        $this->getServer()->getLogger()->notice("Disabled!");
     }
 
     /**
@@ -209,120 +204,6 @@ class PureEntities extends PluginBase implements Listener{
         ]);
         return Entity::createEntity($type, $chunk, $nbt, ...$args);
     }
-
-    public function PlayerInteractEvent(PlayerInteractEvent $ev){
-        if($ev->getFace() == 255 || $ev->getAction() != PlayerInteractEvent::RIGHT_CLICK_BLOCK){
-            return;
-        }
-
-        $item = $ev->getItem();
-        $block = $ev->getBlock();
-        if($item->getId() === Item::SPAWN_EGG && $block->getId() == Item::MONSTER_SPAWNER){
-            $ev->setCancelled();
-
-            $tile = $block->level->getTile($block);
-            if($tile != null && $tile instanceof Spawner){
-                $tile->setSpawnEntityType($item->getDamage());
-            }else{
-                if($tile != null){
-                    $tile->close();
-                }
-                $nbt = new CompoundTag("", [
-                    new StringTag("id", Tile::MOB_SPAWNER),
-                    new IntTag("EntityId", $item->getId()),
-                    new IntTag("x", $block->x),
-                    new IntTag("y", $block->y),
-                    new IntTag("z", $block->z),
-                ]);
-                new Spawner($block->getLevel()->getChunk((int) $block->x >> 4, (int) $block->z >> 4), $nbt);
-            }
-        }
-    }
-
-    /**
-     * @param DataPacketReceiveEvent $event
-     * @return boolean
-     */
-    public function shearSheep(DataPacketReceiveEvent $event) {
-        $packet = $event->getPacket();
-        $player = $event->getPlayer();
-        if($packet->pid() === Info::INTERACT_PACKET) {
-            if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
-                foreach($player->level->getEntities() as $entity) {
-                    if($entity instanceof Sheep && $entity->distance($player) <= 4) {
-                        if($entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED) === true) {
-                            return false;
-                        } else {
-                            $player->getLevel()->dropItem($entity, Item::get(Item::WOOL, 0, mt_rand(1, 3)));
-                            $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
-                            $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
-    
-    public function BlockPlaceEvent(BlockPlaceEvent $ev){
-        if($ev->isCancelled()){
-            return;
-        }
-
-        $block = $ev->getBlock();
-        if($block->getId() == Item::JACK_O_LANTERN || $block->getId() == Item::PUMPKIN){
-            if(
-                $block->getSide(Vector3::SIDE_DOWN)->getId() == Item::SNOW_BLOCK
-                && $block->getSide(Vector3::SIDE_DOWN, 2)->getId() == Item::SNOW_BLOCK
-            ){
-                for($y = 1; $y < 3; $y++){
-                    $block->getLevel()->setBlock($block->add(0, -$y, 0), new Air());
-                }
-                $entity = PureEntities::create("SnowGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
-                if($entity != null){
-                    $entity->spawnToAll();
-                }
-                $ev->setCancelled();
-            }elseif(
-                $block->getSide(Vector3::SIDE_DOWN)->getId() == Item::IRON_BLOCK
-                && $block->getSide(Vector3::SIDE_DOWN, 2)->getId() == Item::IRON_BLOCK
-            ){
-                $first = $block->getSide(Vector3::SIDE_EAST);
-                $second = $block->getSide(Vector3::SIDE_EAST);
-                if(
-                    $first->getId() == Item::IRON_BLOCK
-                    && $second->getId() == Item::IRON_BLOCK
-                ){
-                    $block->getLevel()->setBlock($first, new Air());
-                    $block->getLevel()->setBlock($second, new Air());
-                }else{
-                    $first = $block->getSide(Vector3::SIDE_NORTH);
-                    $second = $block->getSide(Vector3::SIDE_SOUTH);
-                    if(
-                        $first->getId() == Item::IRON_BLOCK
-                        && $second->getId() == Item::IRON_BLOCK
-                    ){
-                        $block->getLevel()->setBlock($first, new Air());
-                        $block->getLevel()->setBlock($second, new Air());
-                    }else{
-                        return;
-                    }
-                }
-
-                if($second != null){
-                    $entity = PureEntities::create("IronGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
-                    if($entity != null){
-                        $entity->spawnToAll();
-                    }
-
-                    $block->getLevel()->setBlock($entity, new Air());
-                    $block->getLevel()->setBlock($block->add(0, -1, 0), new Air());
-                    $ev->setCancelled();
-                }
-            }
-        }
-    }
     
     /**
      * @param Position $pos
@@ -355,53 +236,53 @@ class PureEntities extends PluginBase implements Listener{
 	    if(strpos(strtolower($type),"animal")) {
     		if($water == true) {
 			    if($i < $this->getServer()->getProperty("water-animals",5)) {
-			        PureEntities::logDebug("checkEntityCount for water returns true");
+			        self::logOutput("checkEntityCount for water returns true",self::DEBUG);
 				    return true;
 			    }
 		    }else{
 			    if($i < $this->getServer()->getProperty("animals",70)) {
-                    PureEntities::logDebug("checkEntityCount for animals returns true");
+				    self::logOutput("checkEntityCount for animals returns true",self::DEBUG);
 				    return true;
 			    }
 		    }
 	    }else{
 		    if($i < $this->getServer()->getProperty("monsters",70)) {
-                PureEntities::logDebug("checkEntityCount for monsters returns true");
+			    self::logOutput("checkEntityCount for monsters returns true",self::DEBUG);
 			    return true;
 		    }
 	    }
-        PureEntities::logDebug("checkEntityCount returns false");
+	    self::logOutput("checkEntityCount returns false",self::DEBUG);
 	    return false;
     }
-    
-    /**
-     * Logs a logline to the plugin's logfile ...
-     * @param string $logline	the logline to be appended
-     */
-    public static function logDebug (string $logline) {
-        if (strcmp(PureEntities::$loglevel, "debug") === 0) {
-            file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
-        }
-    }
-    
-    /**
-     * Logs a logline to the plugin's logfile ...
-     * @param string $logline	the logline to be appended
-     */
-    public static function logNormal (string $logline) {
-        if (strcmp(PureEntities::$loglevel, "info") === 0 or strcmp(PureEntities::$loglevel, "debug") === 0) {
-            file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-        }
-    }
-    
-    
-    /**
-     * Logs a logline to the plugin's logfile ...
-     * @param string $logline	the logline to be appended
-     */
-    public static function logWarn (string $logline) {
-    	file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[31m".(date("j.n.Y G:i:s")." [WARN]  ".$logline."\033[0m\r\n"), FILE_APPEND);
-    }
+
+
+	/**
+	 * Logs an output to the plugin's logfile ...
+	 * @param string $logline   the output to be appended
+	 * @param int $type         the type of output to log
+	 * @return int|bool         returns false on failure
+	 */
+	public static function logOutput(string $logline, int $type) {
+		switch($type) {
+			case self::DEBUG:
+				return file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+				break;
+			case self::WARN:
+				return file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[31m".(date("j.n.Y G:i:s")." [WARN]  ".$logline."\033[0m\r\n"), FILE_APPEND);
+				break;
+			case self::NORM:
+				return file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+				break;
+			default:
+				if(self::$loglevel == 2) {
+					return file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+				}elseif(self::$loglevel == 1) {
+					return file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[31m".(date("j.n.Y G:i:s")." [WARN]  ".$logline."\033[0m\r\n"), FILE_APPEND);
+				}else{
+					return file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+				}
+		}
+	}
 
     /**
      * Returns the first position of block of AIR found at above the given coordinates.
@@ -409,11 +290,11 @@ class PureEntities extends PluginBase implements Listener{
      * Sometimes it seems that getHighestBlockAt is not working properly. So i introduced this additional
      * method.
      *
-     * @param $x    the x coordinate
-     * @param $y    the y coordinate (which is used in +1 until an AIR block is found)
-     * @param $z    the z coordinate
-     * @param Level $level the level to search in
-     * @return Position the Position of the first AIR block found above given coordinates
+     * @param int $x        the x coordinate
+     * @param int $y        the y coordinate (which is used in +1 until an AIR block is found)
+     * @param int $z        the z coordinate
+     * @param Level $level  the level to search in
+     * @return Position     the Position of the first AIR block found above given coordinates
      */
     public static function getFirstAirAbovePosition ($x, $y, $z, Level $level) : Position {
         $air = false;
@@ -429,6 +310,4 @@ class PureEntities extends PluginBase implements Listener{
         }
         return $newPosition;
     }
-
-
 }
