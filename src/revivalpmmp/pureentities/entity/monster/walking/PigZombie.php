@@ -12,9 +12,10 @@ use pocketmine\item\Item;
 use pocketmine\entity\Creature;
 use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 
 class PigZombie extends WalkingMonster{
-    const NETWORK_ID = 36;
+    const NETWORK_ID = Data::PIG_ZOMBIE;
 
     private $angry = 0;
 

@@ -20,9 +20,10 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 
 class Skeleton extends WalkingMonster implements ProjectileSource{
-    const NETWORK_ID = 34;
+    const NETWORK_ID = Data::SKELETON;
 
     public $width = 0.65;
     public $height = 1.8;

@@ -10,9 +10,10 @@ use pocketmine\item\Item;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 
 class IronGolem extends WalkingMonster{
-    const NETWORK_ID = 20;
+    const NETWORK_ID = Data::IRON_GOLEM;
 
     public $width = 1.9;
     public $height = 2.1;

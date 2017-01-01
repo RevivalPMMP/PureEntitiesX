@@ -7,9 +7,10 @@ use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
+use revivalpmmp\pureentities\data\Data;
 
 class Enderman extends WalkingMonster{
-    const NETWORK_ID = 38;
+    const NETWORK_ID = Data::ENDERMAN;
 
     public $width = 0.72;
     public $height = 2.8;

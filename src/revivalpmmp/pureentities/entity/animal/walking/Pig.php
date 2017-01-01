@@ -8,9 +8,10 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\data\Data;
 
 class Pig extends WalkingAnimal implements Rideable{
-    const NETWORK_ID = 12;
+    const NETWORK_ID = Data::PIG;
 
     public $width = 1.45;
     public $height = 1.12;

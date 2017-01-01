@@ -8,9 +8,10 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\data\Data;
 
 class Mule extends WalkingAnimal implements Rideable{
-    const NETWORK_ID = 25;
+    const NETWORK_ID = Data::MULE;
 
     public $width = 1.3;
     public $height = 1.4;

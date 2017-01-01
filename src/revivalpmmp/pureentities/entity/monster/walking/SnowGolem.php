@@ -16,9 +16,10 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\Player;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\data\Data;
 
 class SnowGolem extends WalkingMonster implements ProjectileSource{
-    const NETWORK_ID = 21;
+    const NETWORK_ID = Data::SNOW_GOLEM;
 
     public $width = 0.6;
     public $height = 1.8;

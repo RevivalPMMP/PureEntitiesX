@@ -7,9 +7,10 @@ use revivalpmmp\pureentities\entity\monster\JumpingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use revivalpmmp\pureentities\data\Data;
 
 class MagmaCube extends JumpingMonster{
-    const NETWORK_ID = 42;
+    const NETWORK_ID = Data::MAGMA_CUBE;
 
     public $width = 1.2;
     public $height = 1.2;

@@ -8,9 +8,10 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\data\Data;
 
 class Wolf extends WalkingMonster{
-    const NETWORK_ID = 14;
+    const NETWORK_ID = Data::WOLF;
 
     private $angry = 0;
 

@@ -8,9 +8,10 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\data\Data;
 
 class Horse extends WalkingAnimal implements Rideable{
-    const NETWORK_ID = 23;
+    const NETWORK_ID = Data::HORSE;
 
     public $width = 1.4;
     public $height = 1.6;

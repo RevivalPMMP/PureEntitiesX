@@ -10,9 +10,10 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Timings;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
+use revivalpmmp\pureentities\data\Data;
 
 class Zombie extends WalkingMonster implements Ageable{
-    const NETWORK_ID = 32;
+    const NETWORK_ID = Data::ZOMBIE;
 
     public $width = 0.72;
     public $height = 1.8;

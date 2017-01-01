@@ -9,9 +9,10 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\Timings;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
+use revivalpmmp\pureentities\data\Data;
 
 class ZombieVillager extends WalkingMonster{
-    const NETWORK_ID = 44;
+    const NETWORK_ID = Data::ZOMBIE_VILLAGER;
 
     public $width = 0.72;
     public $height = 1.8;
