@@ -21,6 +21,7 @@ class AutoSpawnMonsterTask extends PluginTask {
 
         $entities = [];
         $valid = false;
+        $entityTypeAsString = "none";
         foreach($this->plugin->getServer()->getLevels() as $level) {
             foreach($level->getPlayers() as $player){
                 foreach($level->getEntities() as $entity) {
@@ -59,16 +60,22 @@ class AutoSpawnMonsterTask extends PluginTask {
                 if($biome === Biome::PLAINS || $biome === Biome::FOREST || Biome::BIRCH_FOREST || Biome::MOUNTAINS || Biome::SMALL_MOUNTAINS) {
                     if($probability <= 10) {
                         $type = 38; // Enderman
+                        $entityTypeAsString = "Enderman";
                     } elseif($probability <= 25) {
                         $type = 35; // Spider
+                        $entityTypeAsString = "Spider";
                     } elseif($probability <= 30) {
                         $type = 44; // Villager Zombie
+                        $entityTypeAsString = "Zombie Villager";
                     } elseif($probability <= 55) {
                         $type = 32; // Zombie
+                        $entityTypeAsString = "Zombie";
                     } elseif($probability <= 80) {
                         $type = 34; // Skeleton
+                        $entityTypeAsString = "Skeleton";
                     } elseif($probability <= 95) {
                         $type = 33; // Creeper
+                        $entityTypeAsString = "Creeper";
                     } else {
                         //$type = 45; // Witch (Yet to be implemented)
                     }
@@ -87,14 +94,19 @@ class AutoSpawnMonsterTask extends PluginTask {
                 elseif($biome === Biome::DESERT) {
                     if($probability <= 10) {
                         $type = 38; // Enderman
+                        $entityTypeAsString = "Enderman";
                     } elseif($probability <= 25) {
                         $type = 35; // Spider
+                        $entityTypeAsString = "Spider";
                     } elseif($probability <= 55) {
-                        $type = 47; // Husk 
+                        $type = 47; // Husk
+                        $entityTypeAsString = "Husk";
                     } elseif($probability <= 80) {
                         $type = 34; // Skeleton
+                        $entityTypeAsString = "Skeleton";
                     } elseif($probability <= 95) {
                         $type = 33; // Creeper
+                        $entityTypeAsString = "Creeper";
                     } else {
                         //$type = 45; // Witch (Yet to be implemented)
                     }
@@ -115,16 +127,22 @@ class AutoSpawnMonsterTask extends PluginTask {
                 elseif($biome === Biome::SWAMP) {
                     if($probability <= 10) {
                         $type = 38; // Enderman
+                        $entityTypeAsString = "Enderman";
                     } elseif($probability <= 25) {
                         $type = 35; // Spider
+                        $entityTypeAsString = "Spider";
                     } elseif($probability <= 30) {
                         $type = 44; // Villager Zombie
+                        $entityTypeAsString = "Zombie Villager";
                     } elseif($probability <= 50) {
                         $type = 32; // Zombie
+                        $entityTypeAsString = "Zombie";
                     } elseif($probability <= 70) {
                         $type = 34; // Skeleton
+                        $entityTypeAsString = "Skeleton";
                     } elseif($probability <= 85) {
                         $type = 33; // Creeper
+                        $entityTypeAsString = "Creeper";
                     } elseif($probability <= 95) {
                         //$type = 37; // Slime (Improvements needed)
                     } else {
@@ -146,16 +164,22 @@ class AutoSpawnMonsterTask extends PluginTask {
                 elseif($biome === Biome::TAIGA || $biome === Biome::ICE_PLAINS) {
                     if($probability <= 10) {
                         $type = 38; // Enderman
+                        $entityTypeAsString = "Enderman";
                     } elseif($probability <= 25) {
                         $type = 35; // Spider
+                        $entityTypeAsString = "Spider";
                     } elseif($probability <= 30) {
                         $type = 44; // Villager Zombie
+                        $entityTypeAsString = "Zombie Villager";
                     } elseif($probability <= 55) {
                         $type = 32; // Zombie
+                        $entityTypeAsString = "Zombie";
                     } elseif($probability <= 80) {
                         $type = 46; // Stray
+                        $entityTypeAsString = "Stray";
                     } elseif($probability <= 95) {
                         $type = 33; // Creeper
+                        $entityTypeAsString = "Creeper";
                     } else {
                         //$type = 45; // Witch (Yet to be implemented)
                     }
@@ -182,12 +206,16 @@ class AutoSpawnMonsterTask extends PluginTask {
                 elseif($biome === Biome::HELL) {
                     if($probability <= 65) {
                         $type = 36; // Zombie Pigman
+                        $entityTypeAsString = "Zombie Pigman";
                     }elseif($probability <= 75) {
                         $type = 48; //Wither Skeleton
+                        $entityTypeAsString = "Wither Skeleton";
                     }elseif($probability <= 85) {
                         $type = 41; // Ghast
+                        $entityTypeAsString = "Ghast";
                     } elseif($probability <= 90) {
                         $type = 43; // Blaze
+                        $entityTypeAsString = "Blaze";
                     } else {
                         //$type = 42; // Magma Cube (Has to be improved)
                     }
@@ -199,7 +227,7 @@ class AutoSpawnMonsterTask extends PluginTask {
                     $time >= 10900 && $time <= 17800
                 ) {
                 	if($this->plugin->checkEntityCount("Monster")) {
-                        PureEntities::logOutput("AutoSpawnMonsterTask: scheduleCreatureSpawn (pos: $correctedPosition, type: $type)",PureEntities::NORM);
+                        PureEntities::logOutput("AutoSpawnMonsterTask: scheduleCreatureSpawn (pos: $correctedPosition, type: $type, name: $entityTypeAsString)", PureEntities::NORM);
 		                $this->plugin->scheduleCreatureSpawn($correctedPosition, $type, $level, "Monster");
 	                }else{
                 		$this->plugin->getLogger()->debug("The monster mob cap has been reached!");

@@ -24,6 +24,7 @@ class AutoSpawnAnimalTask extends PluginTask {
         $entities = [];
         $valid = false;
         $water = false;
+        $entityTypeAsString = "none";
         foreach($this->plugin->getServer()->getLevels() as $level) {
             foreach($level->getPlayers() as $player){
                 foreach($level->getEntities() as $entity) {
@@ -68,16 +69,22 @@ class AutoSpawnAnimalTask extends PluginTask {
                 if($biome === Biome::PLAINS) {
                     if($probability <= 20) {
                         $type = 10; // Chicken
+                        $entityTypeAsString = "Chicken";
                     } elseif($probability <= 40) {
                         $type = 11; // Cow
+                        $entityTypeAsString = "Cow";
                     } elseif($probability <= 45) {
                         $type = 23; // Horse
+                        $entityTypeAsString = "Horse";
                     } elseif($probability <= 65) {
                         $type = 12; // Pig
+                        $entityTypeAsString = "Pig";
                     } elseif($probability <= 85) {
                         $type = 13; // Sheep
+                        $entityTypeAsString = "Sheep";
                     } else {
                         $type = 18; // Rabbit
+                        $entityTypeAsString = "Rabbit";
                     }
                 }
                 
@@ -93,14 +100,19 @@ class AutoSpawnAnimalTask extends PluginTask {
                 elseif($biome === Biome::FOREST || $biome === Biome::SWAMP || $biome === Biome::BIRCH_FOREST || $biome === Biome::SMALL_MOUNTAINS || $biome === Biome::MOUNTAINS) {
                     if($probability <= 20) {
                         $type = 10; // Chicken
+                        $entityTypeAsString = "Chicken";
                     } elseif($probability <= 40) {
                         $type = 11; // Cow
+                        $entityTypeAsString = "Cow";
                     } elseif($probability <= 60) {
                         $type = 12; // Pig
+                        $entityTypeAsString = "Pig";
                     } elseif($probability <= 80) {
                         $type = 13; // Sheep
+                        $entityTypeAsString = "Sheep";
                     } else {
                         $type = 18; // Rabbit
+                        $entityTypeAsString = "Rabbit";
                     }
                 }
                 
@@ -111,6 +123,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                  */
                 elseif($biome === Biome::DESERT) {
                     $type = 18; // Rabbit
+                    $entityTypeAsString = "Rabbit";
                 }
                 
                 /*
@@ -124,12 +137,16 @@ class AutoSpawnAnimalTask extends PluginTask {
                 elseif($biome === Biome::TAIGA || $biome === Biome::ICE_PLAINS) {
                     if($probability <= 20) {
                         $type = 14; // Wolf
+                        $entityTypeAsString = "Wolf";
                     } elseif($probability <= 50) {
                         $type = 11; // Cow
+                        $entityTypeAsString = "Cow";
                     } elseif($probability <= 75) {
                         $type = 12; // Pig
+                        $entityTypeAsString = "Pig";
                     } else {
                         $type = 10; // Zombie
+                        $entityTypeAsString = "Zombie";
                     } 
                 }
                 
@@ -151,13 +168,13 @@ class AutoSpawnAnimalTask extends PluginTask {
                     $block instanceof Grass && $type !== null  // If $type is NOT set, it won't dump errors.
                 ) {
                 	if($this->plugin->checkEntityCount("Animal",$water)) {
-                        PureEntities::logOutput("AutoSpawnAnimalTask: scheduleCreatureSpawn (pos: $correctedPosition, type: $type)",PureEntities::DEBUG);
+                        PureEntities::logOutput("AutoSpawnAnimalTask: scheduleCreatureSpawn (pos: $correctedPosition, type: $type, name: $entityTypeAsString)", PureEntities::NORM);
 		                $this->plugin->scheduleCreatureSpawn($correctedPosition, $type, $level, "Animal");
 	                }else{
                 		$this->plugin->getLogger()->debug("The animals mob cap has been reached!");
 	                }
                 } else {
-                    PureEntities::logOutput("AutoSpawnAnimalTask: spawns nothing [player.distance.to.entity:" . $player->distance($correctedPosition) . "], [spawnTime:" . ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) . "] [block/backupBlock.instance-of-grass:" . ($block instanceof Grass) . "]",PureEntities::DEBUG);
+                    PureEntities::logOutput("AutoSpawnAnimalTask: spawns nothing [player.distance.to.entity:" . $player->distance($correctedPosition) . "], [spawnTime:" . ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE) . "] [block/backupBlock.instance-of-grass:" . ($block instanceof Grass) . "]", PureEntities::DEBUG);
                 }
             }
         }
