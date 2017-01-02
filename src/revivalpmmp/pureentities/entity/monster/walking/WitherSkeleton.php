@@ -5,11 +5,9 @@ namespace revivalpmmp\pureentities\entity\monster\walking;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\item\StoneSword;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
-use pocketmine\entity\Creature;
 use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
 
@@ -65,7 +63,7 @@ class WitherSkeleton extends WalkingMonster{
         array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
         switch (mt_rand(0, 8)) {
           case 1:
-            array_push($drops, Item::get(Item::WITHER_SKELETON_SKULL, 0, mt_rand(0, 2)));
+            array_push($drops, Item::get(Item::MOB_HEAD, 1, mt_rand(0, 2)));
             break;
         }
         return $drops;

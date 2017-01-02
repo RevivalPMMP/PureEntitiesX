@@ -6,7 +6,6 @@ use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
 use pocketmine\Player;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
 
 class Donkey extends WalkingAnimal implements Rideable{

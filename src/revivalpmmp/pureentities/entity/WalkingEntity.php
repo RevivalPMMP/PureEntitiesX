@@ -2,7 +2,9 @@
 
 namespace revivalpmmp\pureentities\entity;
 
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\Animal;
+use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use pocketmine\block\Liquid;
 use pocketmine\block\Fence;

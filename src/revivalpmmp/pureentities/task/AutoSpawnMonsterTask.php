@@ -4,7 +4,6 @@ namespace revivalpmmp\pureentities\task;
 
 use pocketmine\scheduler\PluginTask;
 use revivalpmmp\pureentities\PureEntities;
-use pocketmine\level\Position;
 use pocketmine\level\Level;
 use pocketmine\level\generator\biome\Biome;
 
@@ -18,8 +17,8 @@ class AutoSpawnMonsterTask extends PluginTask {
     }
     
     public function onRun($currentTick){
-        PureEntities::logDebug("AutoSpawnMonsterTask: onRun ($currentTick)");
-        
+        PureEntities::logOutput("AutoSpawnMonsterTask: onRun ($currentTick)",PureEntities::DEBUG);
+
         $entities = [];
         $valid = false;
         foreach($this->plugin->getServer()->getLevels() as $level) {
@@ -30,24 +29,20 @@ class AutoSpawnMonsterTask extends PluginTask {
                         $entities[] = $entity;
                     }
                 }
-        
+
                 if($valid) {
                     $x = $player->x + mt_rand(-20, 20);
                     $z = $player->z + mt_rand(-20, 20);
                     $y = $level->getHighestBlockAt($x, $z);
                 } else {
-                    PureEntities::logDebug("AutoSpawnMonsterTask: invalid");
+                    PureEntities::logOutput("AutoSpawnMonsterTask: invalid",PureEntities::DEBUG);
                     return;
                 }
 
                 $correctedPosition = PureEntities::getFirstAirAbovePosition($x, $y, $z, $level); // returns the AIR block found upwards (it seems, highest block is not working :()
 
                 $type = 32; // If $type is NOT set, it won't dump errors.
-                if($level->getBiomeId($x, $z) === null) {
-                    $biome = 1;
-                } else {
-                    $biome = $level->getBiomeId($x, $z);
-                }
+	            $biome = $level->getBiomeId($x, $z);
                 $probability = mt_rand(1, 100);
                 
                 /*
@@ -197,14 +192,14 @@ class AutoSpawnMonsterTask extends PluginTask {
                         //$type = 42; // Magma Cube (Has to be improved)
                     }
                 }
-                $time = $level->getTime() % Level::TIME_FULL;
+                $time = $level->getTime() % Level::TIME_FULL; //why not subtract current from total?
                 
                 if(
                     !$player->distance($correctedPosition) <= 8 &&
                     $time >= 10900 && $time <= 17800
                 ) {
                 	if($this->plugin->checkEntityCount("Monster")) {
-                        PureEntities::logNormal("AutoSpawnMonsterTask: scheduleCreatureSpawn (pos: $correctedPosition, type: $type)");
+                        PureEntities::logOutput("AutoSpawnMonsterTask: scheduleCreatureSpawn (pos: $correctedPosition, type: $type)",PureEntities::NORM);
 		                $this->plugin->scheduleCreatureSpawn($correctedPosition, $type, $level, "Monster");
 	                }else{
                 		$this->plugin->getLogger()->debug("The monster mob cap has been reached!");

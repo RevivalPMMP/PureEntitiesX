@@ -12,7 +12,6 @@ use pocketmine\block\Slab;
 use pocketmine\block\Stair;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\entity\ProjectileSource;
 use pocketmine\item\Item;

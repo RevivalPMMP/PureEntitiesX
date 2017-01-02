@@ -6,12 +6,9 @@ use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Colorable;
 use pocketmine\item\Item;
 use pocketmine\Player;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
-use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use pocketmine\level\format\Chunk as FullChunk;
 use pocketmine\nbt\tag\CompoundTag;
-use revivalpmmp\pureentities\block\Wool;
 use pocketmine\nbt\tag\ByteTag;
 use revivalpmmp\pureentities\data\Data;
 

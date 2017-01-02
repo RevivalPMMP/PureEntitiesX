@@ -10,7 +10,6 @@ use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\level\Explosion;
 use pocketmine\math\Vector2;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\PureEntities;
 
