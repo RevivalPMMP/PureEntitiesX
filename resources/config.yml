@@ -5,7 +5,7 @@ creeper:
   block-breaking-explosion: false
 
 # control logfile logging
-# possible: info = 0, warn = 1, debug = 2
+# possible: debug, warn, info
 logfile:
-  loglevel: 0
+  loglevel: info
 ...

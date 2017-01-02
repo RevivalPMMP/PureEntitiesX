@@ -75,11 +75,13 @@ use pocketmine\utils\TextFormat;
 
 class PureEntities extends PluginBase {
 
+    /** @var  PureEntities $instance */
     private static $instance;
 
-    /** @var int|string $loglevel */
-    private static $loglevel;
+    /** @var string $loglevel */
+    private static $loglevel; // please don't change back to int - makes no sense - string is more human readable
 
+    // logging constants for method call 'logOutput'
     const NORM = 0;
     const WARN = 1;
 	const DEBUG = 2;
