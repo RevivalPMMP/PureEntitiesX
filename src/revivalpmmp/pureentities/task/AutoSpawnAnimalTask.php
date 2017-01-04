@@ -31,7 +31,7 @@ class AutoSpawnAnimalTask extends PluginTask {
                     }
                 }
         
-                if($valid && count($entities) <= 10 && $this->getConfig()->get("spawnanimals") == true) {
+                if($valid && count($entities) <= 10 && $this->plugin->getConfig()->get("spawnanimals") == true) {
                     $x = $player->x + mt_rand(-20, 20);
                     $z = $player->z + mt_rand(-20, 20);
                     $pos = new Position(
