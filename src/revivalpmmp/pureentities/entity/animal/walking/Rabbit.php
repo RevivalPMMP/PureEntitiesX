@@ -2,16 +2,20 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\entity\Ageable;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\entity\Creature;
 
-class Rabbit extends WalkingAnimal{
+class Rabbit extends WalkingAnimal {
     const NETWORK_ID = 18;
 
     public $width = 0.5;
     public $height = 0.5;
+
+    /** @var  bool $isBaby */
+    private $isBaby;
 
     public function getSpeed() : float{
         return 1.2;

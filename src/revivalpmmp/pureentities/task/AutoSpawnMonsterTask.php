@@ -7,6 +7,11 @@ use revivalpmmp\pureentities\PureEntities;
 use pocketmine\level\Level;
 use pocketmine\level\generator\biome\Biome;
 
+/**
+ * Class AutoSpawnMonsterTask
+ * @package revivalpmmp\pureentities\task
+ * @deprecated this shouldn't be used anymore, instead AutoSpawnTask should be used
+ */
 class AutoSpawnMonsterTask extends PluginTask {
 
 	private $plugin;
