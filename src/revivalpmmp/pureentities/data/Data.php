@@ -29,7 +29,9 @@ interface Data {
   const MULE = 25;
   const STRAY = 46;
   const BAT = 19;
+  const PIG_ZOMBIE = 36;
   const SILVERFISH = 39;
+  const CAVE_SPIDER = 40;
   const GHAST = 41;
   const BLAZE = 43;
   const MAGMA_CUBE = 42;
