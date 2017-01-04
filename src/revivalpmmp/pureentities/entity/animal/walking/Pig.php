@@ -2,13 +2,14 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\entity\Ageable;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\entity\Creature;
 
-class Pig extends WalkingAnimal implements Rideable{
+class Pig extends WalkingAnimal implements Rideable {
     const NETWORK_ID = 12;
 
     public $width = 1.45;

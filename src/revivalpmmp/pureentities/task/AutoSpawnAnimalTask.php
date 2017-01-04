@@ -9,6 +9,11 @@ use pocketmine\level\generator\biome\Biome;
 use pocketmine\block\Grass;
 use pocketmine\math\Vector3;
 
+/**
+ * Class AutoSpawnAnimalTask
+ * @package revivalpmmp\pureentities\task
+ * @deprecated this shouldn't be used anymore, instead AutoSpawnTask should be used
+ */
 class AutoSpawnAnimalTask extends PluginTask {
 
 	private $plugin;

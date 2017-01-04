@@ -18,7 +18,9 @@
 
 namespace revivalpmmp\pureentities;
 
+use pocketmine\entity\Ageable;
 use pocketmine\Player;
+use revivalpmmp\pureentities\entity\animal\flying\Bat;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\monster\swimming\Guardian;
 use revivalpmmp\pureentities\entity\monster\swimming\ElderGuardian;
@@ -58,6 +60,7 @@ use revivalpmmp\pureentities\tile\Spawner;
 use revivalpmmp\pureentities\task\AutoSpawnMonsterTask;
 use revivalpmmp\pureentities\task\AutoSpawnAnimalTask;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
+use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 
 use pocketmine\entity\Entity;
@@ -101,6 +104,7 @@ class PureEntities extends PluginBase {
             Horse::class,
             Donkey::class,
             Mule::class,
+            // Bat::class,
             //ElderGuardian::class,
             //Guardian::class,
             Squid::class,
@@ -161,9 +165,8 @@ class PureEntities extends PluginBase {
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
         $this->saveDefaultConfig();
         $this->reloadConfig();
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), $this->getServer()->getProperty("animal-spawns",100));
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), $this->getServer()->getProperty("monster-spawns",100));
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), 20);
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
 	    $this->getServer()->getLogger()->notice("Enabled!");
 	    $this->getServer()->getLogger()->notice("You're Running ".$this->getDescription()->getFullName());
     }
@@ -275,9 +278,7 @@ class PureEntities extends PluginBase {
                 file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
 				break;
 			case self::NORM:
-			    if (strcmp(self::$loglevel, "info") == 0 or strcmp(self::$loglevel, "warn") == 0) {
-                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                }
+                file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
 				break;
 			default:
 				if(strcmp(self::$loglevel, "debug") == 0) {

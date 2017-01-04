@@ -1,13 +1,13 @@
 <?php
 
-namespace revivalpmmp\pureentities\entity\animal\walking;
+namespace revivalpmmp\pureentities\entity\animal\flying;
 
 use revivalpmmp\pureentities\entity\animal\FlyingAnimal;
 use pocketmine\entity\Creature;
 
 class Bat extends FlyingAnimal{
-    //TODO: This isn't implemented yet
-    const NETWORK_ID = 13;
+
+    const NETWORK_ID = 19;
 
     public $width = 0.3;
     public $height = 0.3;

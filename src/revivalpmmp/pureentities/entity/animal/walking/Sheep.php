@@ -12,7 +12,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ByteTag;
 use revivalpmmp\pureentities\data\Data;
 
-class Sheep extends WalkingAnimal implements Colorable{
+class Sheep extends WalkingAnimal {
     const NETWORK_ID = Data::SHEEP;
 
     const DATA_COLOR_INFO = 16;
