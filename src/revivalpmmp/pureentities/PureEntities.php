@@ -135,6 +135,9 @@ class PureEntities extends PluginBase {
             ZombieVillager::class,
             FireBall::class
         ];
+	    
+      $this->registerTiles();
+	    
         foreach($classes as $name){
             Entity::registerEntity($name);
             if(
@@ -151,8 +154,12 @@ class PureEntities extends PluginBase {
             }
         }
 
- 		self::registerTile(Spawner::class);
-        
+ 	private function registerTiles(){
+ 		Tile::registerTile(Spawner::class);
+		
+		
+        $this->registerTiles();
+				
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
 
         PureEntities::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", 0));
