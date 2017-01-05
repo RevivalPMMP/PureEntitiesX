@@ -25,7 +25,7 @@ class Spider extends WalkingMonster{
     public function initEntity(){
         parent::initEntity();
 
-        $this->setMaxHealth(16);
+        $this->setMaxHealth(20);
         $this->setDamage([0, 2, 2, 3]);
     }
 
