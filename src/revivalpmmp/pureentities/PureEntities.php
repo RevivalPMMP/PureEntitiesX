@@ -135,7 +135,7 @@ class PureEntities extends PluginBase implements Listener{
             }
         }
         
-		self::registerTile(Spawner::class);
+		//self::registerTile(Spawner::class);
         
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're Running PureEntitiesX v".$this->getDescription()->getVersion());
         
