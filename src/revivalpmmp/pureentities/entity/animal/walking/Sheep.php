@@ -84,7 +84,7 @@ class Sheep extends WalkingAnimal implements Colorable{
     public function initEntity(){
         parent::initEntity();
         $this->setMaxHealth(8);
-	$this->setHealth(8);
+        $this->setHealth(8);
     }
 
     public function targetOption(Creature $creature, float $distance) : bool {
