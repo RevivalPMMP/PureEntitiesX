@@ -1,5 +1,4 @@
 # Default Config File for PureEntitiesX
----
 
 # set how often the spawn and despawn task will be trigered
 spawn-task:
