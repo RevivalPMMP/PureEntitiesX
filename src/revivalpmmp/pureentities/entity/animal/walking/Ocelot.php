@@ -21,7 +21,7 @@ class Ocelot extends WalkingAnimal{
     public function initEntity(){
         parent::initEntity();
 
-        $this->setMaxHealth(10);
+        $this->setMaxHealth(20);
     }
 
     public function getName(){
