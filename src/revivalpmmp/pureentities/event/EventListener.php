@@ -58,7 +58,7 @@ class EventListener implements Listener {
 		}
 	}
 
-	public function shearSheep(DataPacketReceiveEvent $event) {
+	public function dataPacketReceiveEvent (DataPacketReceiveEvent $event) {
 		$packet = $event->getPacket();
 		$player = $event->getPlayer();
 		if($packet->pid() === Info::INTERACT_PACKET) {

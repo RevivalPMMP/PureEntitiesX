@@ -47,7 +47,7 @@ class Sheep extends WalkingAnimal {
 			$nbt->Color = new ByteTag("Color", self::getRandomColor());
 		}
 		parent::__construct($chunk, $nbt);
-		$this->setDataProperty(self::DATA_COLOR_INFO, self::DATA_TYPE_BYTE, self::getColor());
+		$this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, self::getColor());
 	}
 
     public static function getRandomColor() : int {
