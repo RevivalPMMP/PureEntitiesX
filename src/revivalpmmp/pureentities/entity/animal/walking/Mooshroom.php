@@ -22,7 +22,8 @@ class Mooshroom extends WalkingAnimal{
     public function initEntity(){
         parent::initEntity();
 
-        $this->setMaxHealth(20);
+        $this->setMaxHealth(10);
+        $this->setHealth(10);
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{
