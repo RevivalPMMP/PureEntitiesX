@@ -49,7 +49,7 @@ class EventListener implements Listener {
 				}
 				$nbt = new CompoundTag("", [
 					new StringTag("id", Tile::MOB_SPAWNER),
-					new IntTag("EntityId", $item->getId()),
+					new IntTag("EntityId", $item->getDamage()),
 					new IntTag("x", $block->x),
 					new IntTag("y", $block->y),
 					new IntTag("z", $block->z),
