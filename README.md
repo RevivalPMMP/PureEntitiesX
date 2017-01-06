@@ -11,6 +11,7 @@ This is a Fork of the original PureEntities, which went inactive about half a ye
 > PureEntitiesX does not officially provide compatibility with _Third Party PocketMine_ server softwares.
 >
 > Compatibility can be found with some, but do not complain if it happens not to be.
+>
 > or ask @caspervanneck to fix
 
 ## Contributing/Issues:
