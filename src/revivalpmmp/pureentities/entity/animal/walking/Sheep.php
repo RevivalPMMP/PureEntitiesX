@@ -2,6 +2,7 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\Server;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Colorable;
 use pocketmine\item\Item;
@@ -88,7 +89,7 @@ class Sheep extends WalkingAnimal {
         if($creature instanceof Player){
             if($creature->getInventory()->getItemInHand()->getId() === Item::WHEAT) {
                 return $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 49;
-            } elseif($creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && $this instanceof Sheep && $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SHEARED) === false) {
+            } elseif($distance <= 4 and $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS and self::NETWORK_ID === Data::SHEEP and $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SHEARED) === false) {
                 $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "Shear");
             } else {
                 $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "");
@@ -98,7 +99,11 @@ class Sheep extends WalkingAnimal {
     }
 
     public function getDrops(){
-        return [Item::get(Item::WOOL, self::getColor(), mt_rand(0, 2))];
+        $drops = [];
+        if ($this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SHEARED) === false) {
+            $drops = [Item::get(Item::WOOL, self::getColor(), mt_rand(0, 2))];
+        }
+        return $drops;
     }
 
 }

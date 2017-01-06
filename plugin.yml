@@ -7,3 +7,22 @@ load: STARTUP
 authors: ["milk0417", "RevivalPMMP"]
 description: Implement all MCPE entities into your worlds
 website: https://github.com/RevivalPMMP/PureEntitiesX
+
+commands:
+  summon:
+    description: Summons a creature
+    usage: "/summon <mob>"
+    permission: pureentities.command.summon
+
+permissions:
+ pureentities:
+  default: op
+  description: "Allows using all the PureEntities commands"
+  children:
+    pureentities.command:
+    default: op
+    description: "Allows using all the PureEntities commands"
+    children:
+      pureentities.command.summon:
+      default: op
+      description: "Allows spawning mobs"

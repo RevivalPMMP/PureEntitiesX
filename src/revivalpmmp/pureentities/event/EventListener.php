@@ -16,6 +16,7 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\Info;
 use pocketmine\network\protocol\InteractPacket;
+use pocketmine\Player;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\PureEntities;
@@ -64,15 +65,8 @@ class EventListener implements Listener {
 		if($packet->pid() === Info::INTERACT_PACKET) {
 			if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
 				foreach($player->level->getEntities() as $entity) {
-					if($entity instanceof Sheep && $entity->distance($player) <= 4) {
-						if($entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED) === true) {
-							return false;
-						} else {
-							$player->getLevel()->dropItem($entity, Item::get(Item::WOOL, 0, mt_rand(1, 3)));
-							$entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
-							$player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
-							return true;
-						}
+					if($entity instanceof Sheep and $entity->distance($player) <= 4) {
+                        return $this->shearSheep($entity, $player);
 					}
 				}
 			}
@@ -138,5 +132,27 @@ class EventListener implements Listener {
 			}
 		}
 	}
+
+    /**
+     * Only a small helper method
+     *
+     * @param Entity $entity
+     * @param Player $player
+     * @return bool
+     */
+	private function shearSheep (Entity $entity, Player $player) : bool {
+        if($entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED) === true) { // already sheared
+            return false;
+        } else { // not sheared yet
+            // drop correct wool color
+            foreach ($entity->getDrops() as $drop) {
+                $player->getLevel()->dropItem($entity, $drop);
+            }
+            // set the sheep sheared and reset button text to empty string
+            $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
+            $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
+            return true;
+        }
+    }
 
 }

@@ -18,12 +18,11 @@
 
 namespace revivalpmmp\pureentities;
 
-use pocketmine\entity\Ageable;
+use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
+use pocketmine\command\CommandSender;
 use pocketmine\Player;
-use revivalpmmp\pureentities\entity\animal\flying\Bat;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
-use revivalpmmp\pureentities\entity\monster\swimming\Guardian;
-use revivalpmmp\pureentities\entity\monster\swimming\ElderGuardian;
 use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
 use revivalpmmp\pureentities\entity\monster\jumping\Slime;
 use revivalpmmp\pureentities\entity\animal\walking\Villager;
@@ -56,9 +55,6 @@ use revivalpmmp\pureentities\entity\monster\walking\Husk;
 use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
 use revivalpmmp\pureentities\event\EventListener;
-use revivalpmmp\pureentities\tile\Spawner;
-use revivalpmmp\pureentities\task\AutoSpawnMonsterTask;
-use revivalpmmp\pureentities\task\AutoSpawnAnimalTask;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
@@ -75,8 +71,9 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+use revivalpmmp\pureentities\tile\Spawner;
 
-class PureEntities extends PluginBase {
+class PureEntities extends PluginBase implements CommandExecutor {
 
     /** @var  PureEntities $instance */
     private static $instance;
@@ -89,6 +86,8 @@ class PureEntities extends PluginBase {
     const WARN = 1;
 	const DEBUG = 2;
 
+    private static $registeredClasses = [];
+
     /**
      * Returns the plugin instance to get access to config e.g.
      * @return PureEntities the current instance of the plugin main class
@@ -98,7 +97,7 @@ class PureEntities extends PluginBase {
     }
 
     public function onLoad(){
-        $classes = [
+        self::$registeredClasses = [
             Stray::class,
             Husk::class,
             Horse::class,
@@ -135,9 +134,9 @@ class PureEntities extends PluginBase {
             ZombieVillager::class,
             FireBall::class
         ];
-	   
+
 	    
-        foreach($classes as $name){
+        foreach (self::$registeredClasses as $name) {
             Entity::registerEntity($name);
             if(
                 $name == IronGolem::class
@@ -154,7 +153,7 @@ class PureEntities extends PluginBase {
         }
 
  		Tile::registerTile(Spawner::class);
-				
+
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
 
         PureEntities::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", 0));
@@ -226,8 +225,12 @@ class PureEntities extends PluginBase {
             return false;
         } else {
             $entity = self::create($entityid, $pos);
-            $entity->spawnToAll();
-            return true;
+            if ($entity !== null) {
+                $entity->spawnToAll();
+                return true;
+            }
+            self::logOutput("Cannot create entity [entityId:$entityid]", self::WARN);
+            return false;
         }
     }
 
@@ -319,4 +322,59 @@ class PureEntities extends PluginBase {
         }
         return $newPosition;
     }
+
+    /**
+     * @param CommandSender $sender
+     * @param Command $cmd
+     * @param string $label
+     * @param array $args
+     * @return bool
+     */
+    public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
+        switch($command->getName()){
+            case "summon":
+                if (count($args) == 1) {
+                    $playerName = $sender->getName();
+                    foreach ($this->getServer()->getOnlinePlayers() as $player) {
+                        if (strcmp($player->getName(), $playerName) == 0) {
+                            // find a mob with the name issued
+                            $mobName = strtolower($args[0]);
+                            foreach (self::$registeredClasses as $registeredClass) {
+                                if (strcmp($mobName, strtolower($this->getShortClassName($registeredClass))) == 0) {
+                                    self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster");
+                                    $sender->sendMessage("Spawned $mobName");
+                                    return true;
+                                }
+                            }
+                            $sender->sendMessage("Entity not found: $mobName");
+                            return true;
+                        }
+                    }
+                } else {
+                    $sender->sendMessage("Need a mob name!");
+                    return true;
+                }
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the "short" name of a class without namespace ...
+     *
+     * @param string $longClassName
+     * @return string
+     */
+    private function getShortClassName (string $longClassName) : string {
+        $longClassName = strtok ($longClassName , "\\");
+        while ($longClassName !== false) {
+            $short = $longClassName;
+            $longClassName = strtok("\\");
+        }
+        return $short;
+    }
 }
+
+
