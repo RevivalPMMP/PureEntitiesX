@@ -23,8 +23,6 @@ use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
-use revivalpmmp\pureentities\entity\monster\swimming\Guardian;
-use revivalpmmp\pureentities\entity\monster\swimming\ElderGuardian;
 use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
 use revivalpmmp\pureentities\entity\monster\jumping\Slime;
 use revivalpmmp\pureentities\entity\animal\walking\Villager;
@@ -73,6 +71,7 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+use revivalpmmp\pureentities\tile\Spawner;
 
 class PureEntities extends PluginBase implements CommandExecutor {
 
@@ -98,7 +97,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
     }
 
     public function onLoad(){
-        $classes = [
+        self::$registeredClasses = [
             Stray::class,
             Husk::class,
             Horse::class,
@@ -226,8 +225,12 @@ class PureEntities extends PluginBase implements CommandExecutor {
             return false;
         } else {
             $entity = self::create($entityid, $pos);
-            $entity->spawnToAll();
-            return true;
+            if ($entity !== null) {
+                $entity->spawnToAll();
+                return true;
+            }
+            self::logOutput("Cannot create entity [entityId:$entityid]", self::WARN);
+            return false;
         }
     }
 
