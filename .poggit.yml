@@ -1,6 +1,7 @@
 --- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX
 branches:
 - master
+- 1.0.0-bug-fixes
 projects:
   PureEntitiesX:
     path: ""
