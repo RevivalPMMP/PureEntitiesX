@@ -24,6 +24,7 @@ class Chicken extends WalkingAnimal{
         parent::initEntity();
 
         $this->setMaxHealth(4);
+        $this->setHealth(4);
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{

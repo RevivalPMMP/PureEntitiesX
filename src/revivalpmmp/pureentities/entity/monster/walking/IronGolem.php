@@ -23,8 +23,9 @@ class IronGolem extends WalkingMonster{
     }
 
     public function initEntity(){
-        $this->setMaxHealth(100);
         parent::initEntity();
+        $this->setMaxHealth(100);
+        $this->setHealth(100);
 
         $this->setFriendly(true);
         $this->setDamage([0, 21, 21, 21]);

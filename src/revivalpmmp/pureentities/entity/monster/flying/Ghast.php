@@ -32,6 +32,7 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 
         $this->fireProof = true;
         $this->setMaxHealth(10);
+        $this->setHealth(10);
         $this->setDamage([0, 0, 0, 0]);
     }
 

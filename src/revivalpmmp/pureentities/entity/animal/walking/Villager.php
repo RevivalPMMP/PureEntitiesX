@@ -23,6 +23,7 @@ class Villager extends WalkingAnimal{
         parent::initEntity();
 
         $this->setMaxHealth(10);
+        $this->setHealth(10);
     }
     
     public function getDrops(){

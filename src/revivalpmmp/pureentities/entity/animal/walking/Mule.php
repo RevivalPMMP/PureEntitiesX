@@ -24,6 +24,7 @@ class Mule extends WalkingAnimal implements Rideable{
         parent::initEntity();
 
         $this->setMaxHealth(15);
+        $this->setHealth(15);
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{
