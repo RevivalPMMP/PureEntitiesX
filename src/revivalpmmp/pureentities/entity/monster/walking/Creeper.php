@@ -6,7 +6,7 @@ use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Explosive;
-use pocketmine\event\entity\ExplosionPrimeEvent;
+use revivalpmmp\pureentities\entity\monster\walking\ExplosionPrimeEvent;
 use pocketmine\level\Explosion;
 use pocketmine\math\Vector2;
 use pocketmine\nbt\tag\IntTag;
