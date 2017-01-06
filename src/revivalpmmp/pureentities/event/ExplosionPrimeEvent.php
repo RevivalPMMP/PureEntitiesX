@@ -4,11 +4,13 @@ namespace revivalpmmp\pureentities\event;
 
 use pocketmine\entity\Entity;
 use pocketmine\event\Cancellable;
+use pocketmine\event\entity\EntityEvent;
+
 
 /**
  * Called when a entity decides to explode
  */
-class ExplosionPrimeEvent extends Cancellable{
+class ExplosionPrimeEvent extends EntityEvent implements Cancellable{
 	public static $handlerList = null;
 
 	protected $force;
