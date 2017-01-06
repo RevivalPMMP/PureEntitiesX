@@ -12,7 +12,7 @@ This is a Fork of the original PureEntities, which went inactive about half a ye
 >
 > Compatibility can be found with some, but do not complain if it happens not to be.
 ->
--> or ask @caspervanneck to fix. but i cant fix them all so just wait
+-> or ask @caspervanneck to fix. but i cant fix them all so just wait (i mean no forks i will fix it here)
 
 ### Primary Test Server:
 ##### Ip: insanenetwork.ml
