@@ -161,7 +161,7 @@ abstract class BaseEntity extends Creature{
 
     }
 
-    public function entityBaseTick($tickDiff = 1){
+    public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = Entity::entityBaseTick($tickDiff);
