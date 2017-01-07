@@ -88,7 +88,7 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
         $player->dataPacket($pk);
     }
 
-    public function entityBaseTick($tickDiff = 1){
+    public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);

@@ -118,7 +118,7 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
         return true;
     }
 
-    public function entityBaseTick($tickDiff = 1){
+    public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
