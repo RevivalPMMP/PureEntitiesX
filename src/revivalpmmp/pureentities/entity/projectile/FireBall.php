@@ -29,7 +29,6 @@ use pocketmine\Player;
 use pocketmine\entity\Projectile;
 use pocketmine\entity\Entity;
 use pocketmine\level\Explosion;
-use pocketmine\level\format\Chunk;
 use revivalpmmp\pureentities\entity\monster\walking\ExplosionPrimeEvent;
 
 class FireBall extends Projectile{
