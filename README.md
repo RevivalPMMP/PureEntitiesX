@@ -11,13 +11,6 @@ This is a Fork of the original PureEntities, which went inactive about half a ye
 > PureEntitiesX does not officially provide compatibility with _Third Party PocketMine_ server softwares.
 >
 > Compatibility can be found with some, but do not complain if it happens not to be.
-> Caspervanneck may be able to add some support, but not all.
-> 
-
-### Primary Test Server:
-##### Ip: insanenetwork.ml
-##### Port: 19132
-###### NOTE: not always active, but most of the day
 
 ## Contributing/Issues:
 
