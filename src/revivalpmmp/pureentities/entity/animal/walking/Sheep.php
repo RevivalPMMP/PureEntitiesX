@@ -10,6 +10,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use pocketmine\level\format\FullChunk;
+use pocketmine\level\format\Chunk;
 use pocketmine\nbt\tag\CompoundTag;
 use revivalpmmp\pureentities\block\Wool;
 use pocketmine\nbt\tag\ByteTag;
@@ -45,7 +46,7 @@ class Sheep extends WalkingAnimal implements Colorable{
         return "Sheep";
     }
 
-    public function __construct(FullChunk $chunk, CompoundTag $nbt){
+    public function __construct(Chunk $chunk, CompoundTag $nbt){
 		if(!isset($nbt->Color)){
 			$nbt->Color = new ByteTag("Color", self::getRandomColor());
 		}
