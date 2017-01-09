@@ -2,14 +2,12 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
-use pocketmine\Server;
+use pocketmine\entity\Entity;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Colorable;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\entity\Creature;
-use pocketmine\level\format\Chunk as FullChunk;
-use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ByteTag;
 use revivalpmmp\pureentities\data\Data;
 
@@ -35,6 +33,9 @@ class Sheep extends WalkingAnimal {
 	const RED = 14;
 	const BLACK = 15;
 
+	const NBT_KEY_COLOR = "Color";
+	const NBT_KEY_SHEARED = "Sheared";
+
     public $width = 0.625;
 	public $length = 1.4375;
 	public $height = 1.8;
@@ -42,14 +43,6 @@ class Sheep extends WalkingAnimal {
     public function getName(){
         return "Sheep";
     }
-
-    public function __construct(FullChunk $chunk, CompoundTag $nbt){
-		if(!isset($nbt->Color)){
-			$nbt->Color = new ByteTag("Color", self::getRandomColor());
-		}
-		parent::__construct($chunk, $nbt);
-		$this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, self::getColor());
-	}
 
     public static function getRandomColor() : int {
 		$rand = "";
@@ -71,18 +64,11 @@ class Sheep extends WalkingAnimal {
 		return intval($arr[mt_rand(0, count($arr) - 1)]);
 	}
 
-	public function getColor() : int {
-		return (int) $this->namedtag["Color"];
-	}
-
-	public function setColor(int $color){
-		$this->namedtag->Color = new ByteTag("Color", $color);
-	}
-
     public function initEntity(){
         parent::initEntity();
-        $this->setMaxHealth(8);
-        $this->setHealth(8);
+
+        $this->setColor($this->getColor());
+        $this->setSheared ($this->isSheared());
     }
 
     public function targetOption(Creature $creature, float $distance) : bool {
@@ -104,6 +90,62 @@ class Sheep extends WalkingAnimal {
             $drops = [Item::get(Item::WOOL, self::getColor(), mt_rand(0, 2))];
         }
         return $drops;
+    }
+
+    /**
+     * The initEntity method of parent uses this function to get the max healthand set in NBT
+     *
+     * @return int
+     */
+    public function getMaxHealth(){
+        return 8;
+    }
+
+
+    // ------------------------------------------------------------
+    // very sheep specific functions
+    // ------------------------------------------------------------
+    /**
+     * Checks if this entity is sheared
+     * @return bool
+     */
+    public function isSheared () : bool {
+        if (!isset($this->namedtag->Sheared)) {
+            $this->namedtag->Sheared = new ByteTag(self::NBT_KEY_SHEARED, 0); // set not sheared
+        }
+        return (bool) $this->namedtag[self::NBT_KEY_SHEARED];
+    }
+
+    /**
+     * Sets this entity sheared or not
+     *
+     * @param bool $sheared
+     */
+    public function setSheared (bool $sheared) {
+        $this->namedtag->Sheared = new ByteTag(self::NBT_KEY_SHEARED, $sheared); // update NBT
+        $this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, $sheared); // send client data
+    }
+
+    /**
+     * Gets the color of the sheep
+     *
+     * @return int
+     */
+    public function getColor() : int {
+        if(!isset($this->namedtag->Color)){
+            $this->namedtag->Color = new ByteTag(self::NBT_KEY_COLOR, self::getRandomColor());
+        }
+        return (int) $this->namedtag[self::NBT_KEY_COLOR];
+    }
+
+    /**
+     * Set the color of the sheep
+     *
+     * @param int $color
+     */
+    public function setColor(int $color){
+        $this->namedtag->Color = new ByteTag(self::NBT_KEY_COLOR, $color);
+        $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $color);
     }
 
 }

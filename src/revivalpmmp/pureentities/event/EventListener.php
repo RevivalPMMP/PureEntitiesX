@@ -141,15 +141,16 @@ class EventListener implements Listener {
      * @return bool
      */
 	private function shearSheep (Entity $entity, Player $player) : bool {
-        if($entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED) === true) { // already sheared
+        if($entity->isSheared()) { // already sheared
             return false;
         } else { // not sheared yet
-            // drop correct wool color
+            // drop correct wool color by calling getDrops of the entity (the entity knows what to drop!)
             foreach ($entity->getDrops() as $drop) {
                 $player->getLevel()->dropItem($entity, $drop);
             }
-            // set the sheep sheared and reset button text to empty string
-            $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
+            // set the sheep sheared
+            $entity->setSheared(true);
+            // reset button text to empty string
             $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
             return true;
         }
