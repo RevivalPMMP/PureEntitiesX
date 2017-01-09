@@ -16,19 +16,16 @@ class Bat extends FlyingAnimal{
         return "Bat";
     }
 
-    public function initEntity(){
-        parent::initEntity();
-
-        $this->setMaxHealth(6);
-        $this->setHealth(6);
-    }
-
     public function targetOption(Creature $creature, float $distance) : bool{
         return false;
     }
 
     public function getDrops(){
         return [];
+    }
+
+    public function getMaxHealth() {
+        return 6;
     }
 
 }

@@ -22,8 +22,6 @@ class IronGolem extends WalkingMonster{
     }
 
     public function initEntity(){
-        $this->setMaxHealth(100);
-        $this->setHealth(100);
         parent::initEntity();
 
         $this->setFriendly(true);
@@ -57,6 +55,10 @@ class IronGolem extends WalkingMonster{
         array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));
         array_push($drops, Item::get(Item::POPPY, 0, mt_rand(0, 2)));
         return $drops;
+    }
+
+    public function getMaxHealth() {
+        return 100;
     }
 
 }

@@ -180,4 +180,8 @@ class Creeper extends WalkingMonster implements Explosive{
         return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
     }
 
+    public function getMaxHealth() {
+        return 20;
+    }
+
 }

@@ -110,4 +110,8 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
         return $drops;
     }
 
+    public function getMaxHealth() {
+        return 20;
+    }
+
 }

@@ -80,4 +80,8 @@ class Husk extends WalkingMonster implements Ageable{
         }
         return $drops;
     }
+
+    public function getMaxHealth() {
+        return 20;
+    }
 }
