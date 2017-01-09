@@ -28,8 +28,6 @@ class Wolf extends WalkingMonster{
             $this->angry = (int) $this->namedtag["Angry"];
         }
 
-        $this->setMaxHealth(8);
-        $this->setHealth(8);
         $this->fireProof = false;
         $this->setDamage([0, 3, 4, 6]);
     }
@@ -74,6 +72,10 @@ class Wolf extends WalkingMonster{
 
     public function getDrops(){
         return [];
+    }
+
+    public function getMaxHealth() {
+        return 8; // but only for wild ones, tamed ones: 20
     }
 
 }

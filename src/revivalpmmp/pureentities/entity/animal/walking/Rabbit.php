@@ -25,13 +25,6 @@ class Rabbit extends WalkingAnimal {
         return "Rabbit";
     }
 
-    public function initEntity(){
-        parent::initEntity();
-
-        $this->setMaxHealth(3);
-        $this->setHealth(3);
-    }
-
     public function targetOption(Creature $creature, float $distance) : bool{
         if($creature instanceof Player){
             return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::SEEDS && $distance <= 49;
@@ -41,6 +34,10 @@ class Rabbit extends WalkingAnimal {
 
     public function getDrops(){
         return [];
+    }
+
+    public function getMaxHealth() {
+        return 3;
     }
 
 }

@@ -18,13 +18,6 @@ class Chicken extends WalkingAnimal{
         return "Chicken";
     }
 
-    public function initEntity(){
-        parent::initEntity();
-
-        $this->setMaxHealth(4);
-        $this->setHealth(4);
-    }
-
     public function targetOption(Creature $creature, float $distance) : bool{
         if($creature instanceof Player){
             return $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::SEEDS && $distance <= 49;
@@ -41,6 +34,10 @@ class Chicken extends WalkingAnimal{
           array_push($drops, Item::get(Item::RAW_CHICKEN, 0, 1));
         }
         return $drops;
+    }
+
+    public function getMaxHealth() {
+        return 4;
     }
 
 }

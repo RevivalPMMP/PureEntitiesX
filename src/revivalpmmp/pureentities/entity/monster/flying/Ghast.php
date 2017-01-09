@@ -29,8 +29,6 @@ class Ghast extends FlyingMonster implements ProjectileSource{
         parent::initEntity();
 
         $this->fireProof = true;
-        $this->setMaxHealth(10);
-        $this->setHealth(10);
         $this->setDamage([0, 0, 0, 0]);
     }
 
@@ -81,6 +79,10 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 
     public function getDrops(){
         return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
+    }
+
+    public function getMaxHealth() {
+        return 10;
     }
 
 }

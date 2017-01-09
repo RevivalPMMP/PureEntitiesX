@@ -93,4 +93,8 @@ class PigZombie extends WalkingMonster{
         return $drops;
     }
 
+    public function getMaxHealth() {
+        return 20;
+    }
+
 }

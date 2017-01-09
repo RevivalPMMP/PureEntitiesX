@@ -19,13 +19,6 @@ class Pig extends WalkingAnimal implements Rideable {
         return "Pig";
     }
 
-    public function initEntity(){
-        parent::initEntity();
-
-        $this->setMaxHealth(10);
-        $this->setHealth(10);
-    }
-
     public function targetOption(Creature $creature, float $distance) : bool{
         if($creature instanceof Player){
             return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::CARROT && $distance <= 49;
@@ -39,6 +32,10 @@ class Pig extends WalkingAnimal implements Rideable {
         } else {
           return [Item::get(Item::RAW_PORKCHOP, 0, mt_rand(1, 3))];
         }
+    }
+
+    public function getMaxHealth() {
+        return 10;
     }
 
 }

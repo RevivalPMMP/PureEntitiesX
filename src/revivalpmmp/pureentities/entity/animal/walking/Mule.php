@@ -18,13 +18,6 @@ class Mule extends WalkingAnimal implements Rideable{
         return "Mule";
     }
 
-    public function initEntity(){
-        parent::initEntity();
-
-        $this->setMaxHealth(15);
-        $this->setHealth(15);
-    }
-
     public function targetOption(Creature $creature, float $distance) : bool{
         if($creature instanceof Player){
             return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
@@ -34,6 +27,10 @@ class Mule extends WalkingAnimal implements Rideable{
 
     public function getDrops(){
         return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
+    }
+
+    public function getMaxHealth() {
+        return 15;
     }
 
 }

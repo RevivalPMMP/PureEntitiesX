@@ -27,8 +27,6 @@ class Slime extends JumpingMonster{
     public function initEntity(){
         parent::initEntity();
 
-        $this->setMaxHealth(4);
-        $this->setHealth(4);
         $this->setDamage([0, 2, 2, 3]);
     }
 
@@ -50,5 +48,9 @@ class Slime extends JumpingMonster{
 
     public function getDrops(){
         return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
+    }
+
+    public function getMaxHealth() {
+        return 4;
     }
 }
