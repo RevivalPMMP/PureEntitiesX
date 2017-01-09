@@ -2,7 +2,12 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\block\Air;
+use pocketmine\block\Grass;
+use pocketmine\block\TallGrass;
 use pocketmine\entity\Entity;
+use pocketmine\network\protocol\EntityEventPacket;
+use pocketmine\Server;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Colorable;
 use pocketmine\item\Item;
@@ -10,6 +15,7 @@ use pocketmine\Player;
 use pocketmine\entity\Creature;
 use pocketmine\nbt\tag\ByteTag;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\PureEntities;
 
 class Sheep extends WalkingAnimal {
     const NETWORK_ID = Data::SHEEP;
@@ -146,6 +152,48 @@ class Sheep extends WalkingAnimal {
     public function setColor(int $color){
         $this->namedtag->Color = new ByteTag(self::NBT_KEY_COLOR, $color);
         $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $color);
+    }
+
+    /**
+     * We need this function when sheep may be interested in gras floating around
+     *
+     * @param array $blocksAround
+     * @return bool|mixed
+     */
+    public function isAnyBlockOfInterest (array $blocksAround) {
+        if ($this->isSheared()) { // sheep has only interest in gras blocks around if sheared
+            foreach ($blocksAround as $block) { // check all the given blocks
+                if ($block instanceof Grass or $block instanceof TallGrass or strcmp($block->getName(), "Double Tallgrass") == 0) { // only grass blocks are eatable by sheeps
+                    return $block;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * When a sheep is sheared, it tries to eat gras. This method signalizes, that the entity reached
+     * a gras block or something that can be eaten.
+     *
+     * @param Block $block
+     */
+    protected function blockOfInterestReached ($block) {
+        $this->stayTime = 1000; // let this entity stay still
+        // play eat grass animation but only when there are players near ...
+        foreach (Server::getInstance()->getOnlinePlayers() as $player) { // don't know if this is the correct one :/
+            if ($player->distance($this) <= 49) {
+                $pk = new EntityEventPacket();
+                $pk->eid = $this->getId();
+                $pk->event = EntityEventPacket::EAT_GRASS_ANIMATION;
+                $player->dataPacket($pk);
+            }
+        }
+        // after the eat gras has been played, we reset the block through air
+        $this->getLevel()->setBlock($block, new Air());
+        // this sheep is not sheared anymore ... ;)
+        $this->setSheared(false);
+        // reset base target. otherwise the entity will not move anymore :D
+        $this->baseTarget = null;
     }
 
 }
