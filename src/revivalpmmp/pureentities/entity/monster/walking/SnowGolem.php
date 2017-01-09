@@ -78,4 +78,8 @@ class SnowGolem extends WalkingMonster implements ProjectileSource{
         return [Item::get(Item::SNOWBALL, 0, mt_rand(0, 15))];
     }
 
+    public function getMaxHealth() {
+        return 4;
+    }
+
 }

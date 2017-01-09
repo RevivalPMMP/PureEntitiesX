@@ -17,13 +17,6 @@ class Ocelot extends WalkingAnimal{
         return 1.4;
     }
 
-    public function initEntity(){
-        parent::initEntity();
-
-        $this->setMaxHealth(10);
-        $this->setHealth(10);
-    }
-
     public function getName(){
         return "Ocelot";
     }
@@ -37,5 +30,9 @@ class Ocelot extends WalkingAnimal{
 
     public function getDrops(){
         return [];
+    }
+
+    public function getMaxHealth() {
+        return 10;
     }
 }

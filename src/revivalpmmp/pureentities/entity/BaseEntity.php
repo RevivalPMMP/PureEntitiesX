@@ -2,6 +2,7 @@
 
 namespace revivalpmmp\pureentities\entity;
 
+use pocketmine\block\Block;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use pocketmine\entity\Creature;
@@ -220,6 +221,18 @@ abstract class BaseEntity extends Creature{
 
     public function targetOption(Creature $creature, float $distance) : bool{
         return $this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 81;
+    }
+
+    /**
+     * This is called while moving around. This is specially important for entities like sheep etc. pp
+     * which eat grass to grow their wool. They should return the block which is of interest to move
+     * the entity there.
+     *
+     * @param array $blocksAround
+     * @return Block or bool
+     */
+    public function isAnyBlockOfInterest (array $blocksAround) {
+        return false;
     }
 
 }

@@ -68,4 +68,8 @@ class WitherSkeleton extends WalkingMonster{
         }
         return $drops;
     }
+
+    public function getMaxHealth() {
+        return 20;
+    }
 }
