@@ -18,7 +18,7 @@ We are pretty relaxed about our issues. As long as they are descriptive, contain
 
 ## Usage:
 
-You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item Drops), but please don't copy our AI and claim it as your own. We give full credit to @milk0417 to starting the AI, but we have made numerous changes since then, so we ask you kindly _*Not to Copy our code*_
+You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item Drops), but please don't copy our AI and claim it as your own. We give full credit to @milk0417 to starting the AI, but we have made numerous changes since then, so we ask you kindly _*Not to Copy our code (Unless you are forking and PR-ing, of course)*_
 
 ## Features:
 
