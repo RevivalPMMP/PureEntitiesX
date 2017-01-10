@@ -14,6 +14,7 @@ branches:
 
 before_script:
  - git clone --recursive --branch=mcpe-1.0 https://github.com/pmmp/PocketMine-MP.git
+ - sudo apt-get install unzip
  - pecl install channel://pecl.php.net/pthreads-3.1.6
  - pecl install channel://pecl.php.net/weakref-0.3.3
  - echo | pecl install channel://pecl.php.net/yaml-2.0.0
@@ -21,8 +22,9 @@ before_script:
  - mkdir plugins
  - cd plugins
  - wget -O DevTools.phar https://jenkins.pmmp.io/job/PocketMine-MP%20DevTools/lastSuccessfulBuild/artifact/DevTools_v1.11.1-4e484d28.phar
+ - wget -O https://github.com/RevivalPMMP/PureEntitiesX/archive/master.zip
+ - unzip master.zip -d plugins 
  - cd /home/travis/build/RevivalPMMP/PureEntitiesX/
- - cp -R /home/travis/build/RevivalPMMP/PureEntitiesX/ plugins
  - cp -rf Travis.php PocketMine-MP/
  - cd PocketMine-MP
  
