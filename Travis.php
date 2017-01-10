@@ -4,7 +4,7 @@ $server = proc_open(PHP_BINARY . " src/pocketmine/PocketMine.php --no-wizard --d
 	1 => ["pipe", "w"],
 	2 => ["pipe", "w"]
 ], $pipes);
-fwrite($pipes[0], "version\nmakeplugin PureEntities");
+fwrite($pipes[0], "version\nmakeplugin PureEntities.php\nstop\n\n");
 while(!feof($pipes[1])){
 	echo fgets($pipes[1]);
 }
