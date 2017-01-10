@@ -1,0 +1,33 @@
+#Travis CI
+
+language: php
+
+dist: trusty
+sudo: false
+
+php:
+ - 7.0
+
+branches:
+ - master
+ - 2.0.0
+
+before_script:
+ - git clone --recursive --branch=mcpe-1.0 https://github.com/pmmp/PocketMine-MP.git
+ - pecl install channel://pecl.php.net/pthreads-3.1.6
+ - pecl install channel://pecl.php.net/weakref-0.3.3
+ - echo | pecl install channel://pecl.php.net/yaml-2.0.0
+ - cd PocketMine-MP
+ - mkdir plugins
+ - cd plugins
+ - wget -O DevTools.phar https://jenkins.pmmp.io/job/PocketMine-MP%20DevTools/lastSuccessfulBuild/artifact/DevTools_v1.11.1-4e484d28.phar
+ - cd /home/travis/build/RevivalPMMP/PureEntitiesX/
+ - cp -rf Travis.php PocketMine-MP/
+ - cp -rf English/ PocketMine-MP/plugins/
+ - cd PocketMine-MP
+
+script:
+ - php Travis.php
+ 
+notifications:
+ email: false
