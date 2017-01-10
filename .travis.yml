@@ -14,7 +14,7 @@ branches:
 
 before_script:
  - git clone --recursive --branch=mcpe-1.0 https://github.com/pmmp/PocketMine-MP.git
- - sudo apt-get install unzip
+ - apt-get install unzip
  - pecl install channel://pecl.php.net/pthreads-3.1.6
  - pecl install channel://pecl.php.net/weakref-0.3.3
  - echo | pecl install channel://pecl.php.net/yaml-2.0.0
