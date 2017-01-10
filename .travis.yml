@@ -22,6 +22,7 @@ before_script:
  - cd plugins
  - wget -O DevTools.phar https://jenkins.pmmp.io/job/PocketMine-MP%20DevTools/lastSuccessfulBuild/artifact/DevTools_v1.11.1-4e484d28.phar
  - cd /home/travis/build/RevivalPMMP/PureEntitiesX/
+ - cp -rf Travis.php PocketMine-MP/
  - cp -rf English/ PocketMine-MP/plugins/
  - cd PocketMine-MP
  
