@@ -3,7 +3,7 @@
 language: php
 
 dist: trusty
-sudo: false
+sudo: true
 
 php:
  - 7.0
