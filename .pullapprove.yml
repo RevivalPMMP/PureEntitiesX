@@ -1,0 +1,14 @@
+approve_by_comment: true
+approve_regex: '^(A|a)pproved|\+1'
+reject_regex: '^(R|r)ejected|-1'
+reject_value: -1
+reset_on_push: false
+author_approval: default
+reviewers:
+  name: Developers
+  required: 2
+  members:
+  - Magicode1
+  - archie426
+  - sandertv
+  - jasonwynn10
