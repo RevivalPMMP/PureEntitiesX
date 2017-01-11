@@ -3,7 +3,8 @@
 [![Join the chat at https://gitter.im/RevivalPMMP/PureEntitiesX](https://badges.gitter.im/RevivalPMMP/PureEntitiesX.svg)](https://gitter.im/RevivalPMMP/PureEntitiesX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 [![Poggit-CI](https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX)](https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX/PureEntitiesX)
-<img src="https://travis-ci.org/RevivalPMMP/PureEntitiesX.svg?branch=master" alt="build:passed"/>
+[![Travis-CI](https://api.travis-ci.org/RevivalPMMP/PureEntitiesX.svg?branch=master)](https://travis-ci.org/RevivalPMMP/PureEntitiesX)
+
 # PureEntitiesX
 
 This is a Fork of the original PureEntities, which went inactive about half a year back. RevivalPMMP is now maintaining it and updating it, so now you can have mobs on your server with this plugin! (At least until Pocketmine implements it)
