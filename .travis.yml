@@ -6,26 +6,26 @@ dist: trusty
 sudo: false
 
 php:
- - 7.0
+ - 7.0.14
 
 branches:
  - master
- - 2.0.0
-
+ - 1.0.0-bug-fixes
 before_script:
- - git clone --recursive --branch=mcpe-1.0 https://github.com/pmmp/PocketMine-MP.git
+ - cd /home/travis/build/
  - pecl install channel://pecl.php.net/pthreads-3.1.6
- - pecl install channel://pecl.php.net/weakref-0.3.3
+ - pecl install channel://pecl.php.net/weakref-0.3.2
  - echo | pecl install channel://pecl.php.net/yaml-2.0.0
- - cd PocketMine-MP
- - mkdir plugins
- - cd plugins
+ - git clone --recursive --branch=master https://github.com/pmmp/PocketMine-MP.git
+ - mkdir -p PocketMine-MP/plugins/PureEntitiesX
+ - cp -rf RevivalPMMP/PureEntitiesX/src PocketMine-MP/plugins/PureEntitiesX
+ - cp -rf RevivalPMMP/PureEntitiesX/resources PocketMine-MP/plugins/PureEntitiesX
+ - cp -rf RevivalPMMP/PureEntitiesX/plugin.yml PocketMine-MP/plugins/PureEntitiesX
+ - cp -rf RevivalPMMP/PureEntitiesX/LICENSE PocketMine-MP/plugins/PureEntitiesX
+ - cp -rf RevivalPMMP/PureEntitiesX/build.php PocketMine-MP/
+ - cd PocketMine-MP/plugins/
  - wget -O DevTools.phar https://jenkins.pmmp.io/job/PocketMine-MP%20DevTools/lastSuccessfulBuild/artifact/DevTools_v1.11.1-4e484d28.phar
- - wget --no-check-certificate https://github.com/RevivalPMMP/PureEntitiesX/archive/master.zip
- - unzip master.zip -d plugins 
- - cd /home/travis/build/RevivalPMMP/PureEntitiesX/
- - cp -rf Travis.php PocketMine-MP/
- - cd PocketMine-MP
+ - cd /home/travis/build/PocketMine-MP
  
 script:
  - php Travis.php
