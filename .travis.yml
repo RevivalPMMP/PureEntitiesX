@@ -22,7 +22,7 @@ before_script:
  - cp -rf RevivalPMMP/PureEntitiesX/resources PocketMine-MP/plugins/PureEntitiesX
  - cp -rf RevivalPMMP/PureEntitiesX/plugin.yml PocketMine-MP/plugins/PureEntitiesX
  - cp -rf RevivalPMMP/PureEntitiesX/LICENSE PocketMine-MP/plugins/PureEntitiesX
- - cp -rf RevivalPMMP/PureEntitiesX/build.php PocketMine-MP/
+ - cp -rf RevivalPMMP/PureEntitiesX/Travis.php PocketMine-MP/
  - cd PocketMine-MP/plugins/
  - wget -O DevTools.phar https://jenkins.pmmp.io/job/PocketMine-MP%20DevTools/lastSuccessfulBuild/artifact/DevTools_v1.11.1-4e484d28.phar
  - cd /home/travis/build/PocketMine-MP
