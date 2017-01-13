@@ -1,35 +1,41 @@
 version: 2
-approve_by_comment: true
-approve_regex: '^(A|a)pproved|\+1'
-reject_regex: '^(R|r)ejected|-1'
-reject_value: -1
-reset_on_push: false
-author_approval:
-      required: true
-reset_on_reopened:
-      enabled: true
+requirements:
+	signed_off_by:
+		required: true
 always_pending:
-      title_regex: 'WIP'
+	title_regex: 'WIP'
 
-security:
-    required: 2
-    teams:
-      - plugin-devs
-      - rescuers
-    reset_on_push:
-      enabled: true
-    reset_on_reopened:
-      enabled: true
-    author_approval:
-      ignored: true
-    reject_value: -1
+group_defaults:
+	approve_by_comment:
+		enabled: true
+		approve_regex: '^(A|a)pproved|\+1'
+	reset_on_push:
+		enabled: true
 
-reviewers:
-  name: Developers
-  required: 2
-  members:
-  - Magicode1
-  - archie426
-  - sandertv
-  - jasonwynn10
-  - Skull3x
+groups:
+	Developers:
+		required: 2
+		teams:
+		 - plugin-devs
+		conditions:
+			branches:
+			 - master
+			 - 1.0.0-bug-fixes
+			 - NewMobs
+			files:
+				include:
+				 - '*.php'
+			labels:
+			 - PR: Bug fixes
+		author_approval:
+			required: false
+		reset-on-push:
+		 	enabled: true
+		reset_on_reopened:
+			enabled: true
+		reject-value: -2
+	Rescuers:
+		required: 1
+		teams:
+		 - rescuers
+		 reject_value: -2
