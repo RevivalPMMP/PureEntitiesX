@@ -86,6 +86,10 @@ class PureEntities extends PluginBase implements CommandExecutor {
     const WARN = 1;
 	const DEBUG = 2;
 
+	// button texts ...
+    const BUTTON_TEXT_SHEAR = "Shear";
+    const BUTTON_TEXT_FEED  = "Feed";
+
     private static $registeredClasses = [];
 
     /**
@@ -216,16 +220,25 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param int $entityid
      * @param Level $level
      * @param string $type
+     * @param bool $baby
+     * @param Entity $parentEntity
      * 
      * @return boolean
      */
-    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type) {
+    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null) {
         $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
         if($event->isCancelled()) {
             return false;
         } else {
             $entity = self::create($entityid, $pos);
             if ($entity !== null) {
+                if ($baby) {
+                    $entity->getBreedingExtension()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
+                    if ($parentEntity != null) {
+                        $entity->getBreedingExtension()->setParent($parentEntity);
+                    }
+                }
+                PureEntities::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", PureEntities::DEBUG);
                 $entity->spawnToAll();
                 return true;
             }
@@ -333,10 +346,10 @@ class PureEntities extends PluginBase implements CommandExecutor {
     public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
         switch($command->getName()){
             case "summon":
-                if (count($args) == 1) {
-                    $playerName = $sender->getName();
+                if (count($args) == 1 or count($args) == 2) {
+                    $playerName = count($args) == 1 ? $sender->getName() : $args[1];
                     foreach ($this->getServer()->getOnlinePlayers() as $player) {
-                        if (strcmp($player->getName(), $playerName) == 0) {
+                        if (strcasecmp($player->getName(), $playerName) == 0) {
                             // find a mob with the name issued
                             $mobName = strtolower($args[0]);
                             foreach (self::$registeredClasses as $registeredClass) {

@@ -59,19 +59,40 @@ class EventListener implements Listener {
 		}
 	}
 
+    /**
+     * We receive a DataPacketReceiveEvent - which we need for interaction with entities
+     *
+     * @param DataPacketReceiveEvent $event
+     * @return bool
+     */
 	public function dataPacketReceiveEvent (DataPacketReceiveEvent $event) {
 		$packet = $event->getPacket();
 		$player = $event->getPlayer();
+		$return = false;
 		if($packet->pid() === Info::INTERACT_PACKET) {
 			if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
-				foreach($player->level->getEntities() as $entity) {
-					if($entity instanceof Sheep and $entity->distance($player) <= 4) {
-                        return $this->shearSheep($entity, $player);
-					}
-				}
+                $entity = $player->level->getEntity($packet->target);
+			    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity]", PureEntities::DEBUG);
+			    if ($entity instanceof Sheep) {
+			        switch ((string)$player->getDataProperty(Entity::DATA_INTERACTIVE_TAG)) {
+                        case PureEntities::BUTTON_TEXT_SHEAR:
+                            $return = $entity->shear($player);
+                            break;
+                        case PureEntities::BUTTON_TEXT_FEED:
+                            $return = $entity->getBreedingExtension()->feed($player); // feed the sheep
+                            // decrease wheat in players hand
+                            $itemInHand = $player->getInventory()->getItemInHand();
+                            if ($itemInHand != null) {
+                                $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
 			}
 		}
-		return false;
+		return $return;
 	}
 
 	public function BlockPlaceEvent(BlockPlaceEvent $ev){
@@ -133,27 +154,5 @@ class EventListener implements Listener {
 		}
 	}
 
-    /**
-     * Only a small helper method
-     *
-     * @param Entity $entity
-     * @param Player $player
-     * @return bool
-     */
-	private function shearSheep (Entity $entity, Player $player) : bool {
-        if($entity->isSheared()) { // already sheared
-            return false;
-        } else { // not sheared yet
-            // drop correct wool color by calling getDrops of the entity (the entity knows what to drop!)
-            foreach ($entity->getDrops() as $drop) {
-                $player->getLevel()->dropItem($entity, $drop);
-            }
-            // set the sheep sheared
-            $entity->setSheared(true);
-            // reset button text to empty string
-            $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
-            return true;
-        }
-    }
 
 }

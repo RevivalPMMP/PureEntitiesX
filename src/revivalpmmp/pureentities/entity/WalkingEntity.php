@@ -18,6 +18,7 @@ use revivalpmmp\pureentities\PureEntities;
 
 abstract class WalkingEntity extends BaseEntity{
 
+    // for eating grass etc. pp
     protected $blockInterestTime   = 0;
     const     BLOCK_INTEREST_TICKS = 300;
 
@@ -62,9 +63,6 @@ abstract class WalkingEntity extends BaseEntity{
             }
         }
 
-        // we should also check for any blocks of interest for the entity
-        $this->checkBlockOfInterest();
-
         if($this->baseTarget instanceof Creature && $this->baseTarget->isAlive()){
             return;
         }
@@ -80,7 +78,7 @@ abstract class WalkingEntity extends BaseEntity{
     /**
      * Does the check for interesting blocks and sets the baseTarget if an interesting block is found
      */
-    private function checkBlockOfInterest () {
+    protected function checkBlockOfInterest () {
         // no creature is the target, so we can check if there's any interesting block for the entity
         if ($this->blockInterestTime > 0) { // we take a look at interesting blocks only each 300 ticks!
             $this->blockInterestTime --;
@@ -173,7 +171,9 @@ abstract class WalkingEntity extends BaseEntity{
                     $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                     $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
                 }
-                $this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
+                if ($diff > 0) {
+                    $this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
+                }
                 $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
             }
         }
@@ -210,6 +210,17 @@ abstract class WalkingEntity extends BaseEntity{
     }
 
     /**
+     * Checks if this entity is following a player
+     *
+     * @param Creature $creature    the possible player
+     * @return bool
+     */
+    protected function isFollowingPlayer (Creature $creature) : bool {
+        return $this->baseTarget != null and $this->baseTarget instanceof Player and $this->baseTarget->getId() === $creature->getId();
+    }
+
+
+    /**
      * Returns all blocks around in a flat way - meaning, there is no search in y axis, only what the entity provides
      * with it's y property.
      *
@@ -244,4 +255,6 @@ abstract class WalkingEntity extends BaseEntity{
     protected function blockOfInterestReached ($block) {
         // nothing important here. look e.g. Sheep.class
     }
+
+
 }

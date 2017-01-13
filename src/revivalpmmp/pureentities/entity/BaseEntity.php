@@ -19,11 +19,11 @@ use pocketmine\Player;
 
 abstract class BaseEntity extends Creature{
 
-    protected $stayTime = 0;
+    public $stayTime = 0;
     protected $moveTime = 0;
 
     /** @var Vector3|Entity */
-    protected $baseTarget = null;
+    public $baseTarget = null;
 
     private $movement = true;
     private $friendly = false;
