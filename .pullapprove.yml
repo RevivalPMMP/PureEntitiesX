@@ -1,9 +1,29 @@
+version: 2
 approve_by_comment: true
 approve_regex: '^(A|a)pproved|\+1'
 reject_regex: '^(R|r)ejected|-1'
 reject_value: -1
 reset_on_push: false
-author_approval: default
+author_approval:
+      required: true
+reset_on_reopened:
+      enabled: true
+always_pending:
+      title_regex: 'WIP'
+
+security:
+    required: 2
+    teams:
+      - plugin-devs
+      - rescuers
+    reset_on_push:
+      enabled: true
+    reset_on_reopened:
+      enabled: true
+    author_approval:
+      ignored: true
+    reject_value: -1
+
 reviewers:
   name: Developers
   required: 2
