@@ -1,41 +1,55 @@
 version: 2
+
 requirements:
-    signed_off_by:
-        required: true
+  signed_off_by:
+    required: true
+
 always_pending:
-    title_regex: 'WIP'
+  title_regex: 'WIP'
 
 group_defaults:
-    approve_by_comment:
-        enabled: true
-        approve_regex: '^(A|a)pproved|\+1'
-    reset_on_push:
-        enabled: true
+  approve_by_comment:
+    enabled: true
+    approve_regex: '^(A|a)pproved|\+1'
+  reset_on_push:
+    enabled: true
 
 groups:
-    Developers:
-        required: 2
-        teams:
-         - plugin-devs
-        conditions:
-            branches:
-             - master
-             - 1.0.0-bug-fixes
-             - NewMobs
-            files:
-                include:
-                 - '*.php'
-            labels:
-             - PR: Bug fixes
-        author_approval:
-            required: false
-        reset-on-push:
-            enabled: true
-        reset_on_reopened:
-            enabled: true
-        reject-value: -2
-    Rescuers:
-        required: 1
-        teams:
-         - rescuers
-         reject_value: -2
+  Developers:
+    required: 2
+
+    teams:
+      - plugin-devs
+    conditions:
+      branches:
+        - master
+        - 1.0.0-bug-fixes
+        - NewMobs
+      files:
+        include:
+          - '*.php'
+      labels:
+        - 'PR: Bug Fixes'
+
+    approve_by_comment:
+      enabled: true
+
+    author_approval:
+      required: false
+
+    reset_on_reopened:
+      enabled: true
+
+    reject_value: -1
+
+  Rescuers:
+    required: 2
+    teams:
+      - rescuers
+    reset_on_push:
+      enabled: true
+    reset_on_reopened:
+      enabled: true
+    author_approval:
+      ignored: false
+    reject_value: -2
