@@ -1,6 +1,6 @@
 [![PureEntitiesX](https://github.com/RevivalPMMP/PureEntitiesX/blob/master/PureEntitiesXlogo.png?raw=true)](http://revivalpmmp.gq/plugins/pureentitiesx.html)
 
-[![Join the chat at https://gitter.im/RevivalPMMP/PureEntitiesX](https://badges.gitter.im/RevivalPMMP/PureEntitiesX.svg)](https://gitter.im/RevivalPMMP/PureEntitiesX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join our Gitter!](https://badges.gitter.im/RevivalPMMP/PureEntitiesX.svg)](https://gitter.im/RevivalPMMP/PureEntitiesX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Poggit-CI](https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX)](https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX/PureEntitiesX)
 [![Travis-CI](https://api.travis-ci.org/RevivalPMMP/PureEntitiesX.svg?branch=master)](https://travis-ci.org/RevivalPMMP/PureEntitiesX)
 
@@ -23,7 +23,7 @@ You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item
 - Mobs have proper AI and tracking
 - Mobs naturally spawn within the proper areas
 - Mobs now drop their proper items with their proper rates
-- Server setting implimentations
+- Server setting implementations
 - Others Coming soon!
 
 ## How to Install
