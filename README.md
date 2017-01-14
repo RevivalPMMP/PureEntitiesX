@@ -1,9 +1,9 @@
-<img src="https://github.com/RevivalPMMP/PureEntitiesX/blob/master/PureEntitiesXlogo.png?raw=true" alt="PureEntitiesXlogo.png"/>
+[![PureEntitiesX](https://github.com/RevivalPMMP/PureEntitiesX/blob/master/PureEntitiesXlogo.png?raw=true)](http://revivalpmmp.gq/plugins/pureentitiesx.html)
 
 [![Join the chat at https://gitter.im/RevivalPMMP/PureEntitiesX](https://badges.gitter.im/RevivalPMMP/PureEntitiesX.svg)](https://gitter.im/RevivalPMMP/PureEntitiesX?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Poggit-CI](https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX)](https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX/PureEntitiesX)
 [![Travis-CI](https://api.travis-ci.org/RevivalPMMP/PureEntitiesX.svg?branch=master)](https://travis-ci.org/RevivalPMMP/PureEntitiesX)
+
 ====
 This is a Fork of the original PureEntities plugin which has become inactive; RevivalPMMP is now updating and maintaining it, so  you can have smart mobs on your server! (At least until Pocketmine implements them)
 
