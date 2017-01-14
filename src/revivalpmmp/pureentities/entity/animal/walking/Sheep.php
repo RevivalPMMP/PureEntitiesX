@@ -3,21 +3,23 @@
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
 use pocketmine\block\Air;
+use pocketmine\block\Block;
+use pocketmine\block\Dirt;
 use pocketmine\block\Grass;
 use pocketmine\block\TallGrass;
 use pocketmine\entity\Entity;
 use pocketmine\network\protocol\EntityEventPacket;
-use pocketmine\Server;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use pocketmine\entity\Colorable;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\entity\Creature;
 use pocketmine\nbt\tag\ByteTag;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\features\BreedingExtension;
+use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\PureEntities;
 
-class Sheep extends WalkingAnimal {
+class Sheep extends WalkingAnimal implements IntfCanBreed {
     const NETWORK_ID = Data::SHEEP;
 
     const DATA_COLOR_INFO = 16;
@@ -39,12 +41,20 @@ class Sheep extends WalkingAnimal {
 	const RED = 14;
 	const BLACK = 15;
 
-	const NBT_KEY_COLOR = "Color";
-	const NBT_KEY_SHEARED = "Sheared";
+	const NBT_KEY_COLOR         = "Color";
+	const NBT_KEY_SHEARED       = "Sheared";
+
 
     public $width = 0.625;
 	public $length = 1.4375;
 	public $height = 1.8;
+
+    /**
+     * Is needed for breeding functionality
+     *
+     * @var BreedingExtension
+     */
+	private $breedableClass;
 
     public function getName(){
         return "Sheep";
@@ -73,21 +83,78 @@ class Sheep extends WalkingAnimal {
     public function initEntity(){
         parent::initEntity();
 
+        $this->breedableClass = new BreedingExtension($this);
+        $this->breedableClass->init();
+
         $this->setColor($this->getColor());
         $this->setSheared ($this->isSheared());
     }
 
+    /**
+     * Returns the breedable class or NULL if not configured
+     *
+     * @return BreedingExtension
+     */
+    public function getBreedingExtension () {
+        return $this->breedableClass;
+    }
+
+    /**
+     * Returns the appropiate NetworkID associated with this entity
+     * @return int
+     */
+    public function getNetworkId() {
+        return self::NETWORK_ID;
+    }
+
+    /**
+     * @param Creature $creature
+     * @param float $distance
+     * @return bool
+     */
     public function targetOption(Creature $creature, float $distance) : bool {
-        if($creature instanceof Player){
-            if($creature->getInventory()->getItemInHand()->getId() === Item::WHEAT) {
-                return $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 49;
-            } elseif($distance <= 4 and $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS and self::NETWORK_ID === Data::SHEEP and $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SHEARED) === false) {
-                $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "Shear");
-            } else {
-                $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "");
+        if($creature instanceof Player) { // is the player a target option?
+            if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+                if ($creature->getInventory()->getItemInHand()->getId() === Item::WHEAT) {
+                    if ($distance <= 4) { // we can feed a sheep! and it makes no difference if it's an adult or a baby ...
+                        $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, PureEntities::BUTTON_TEXT_FEED);
+                    }
+                    // check if the sheep is able to follow - but only on a distance of 5 blocks
+                    $follow = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 5;
+                    // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
+                    if (!$follow and $this->isFollowingPlayer($creature)) {
+                        $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
+                    }
+                    return $follow;
+                } elseif ($distance <= 4 and $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS and !$this->isSheared()) {
+                    $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, PureEntities::BUTTON_TEXT_SHEAR);
+                } else {
+                    $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "");
+                    // reset base target when it was player before (follow by holding wheat)
+                    if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
+                        // reset base target!
+                        $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
+                    }
+                }
             }
         }
         return false;
+    }
+
+
+    protected function checkTarget(){
+        // we should also check for any blocks of interest for the entity
+        if (!$this->getBreedingExtension()->checkInLove()) {
+            if ($this->isSheared()) {
+                $this->checkBlockOfInterest();
+            }
+        }
+
+        // tick the breedable class embedded
+        $this->getBreedingExtension()->tick();
+
+        // and of course, we should call the parent check target method
+        parent::checkTarget();
     }
 
     public function getDrops(){
@@ -107,10 +174,33 @@ class Sheep extends WalkingAnimal {
         return 8;
     }
 
+    /**
+     * Is called by EventListener. This function shears a sheep.
+     *
+     * @param Player $player
+     * @return bool
+     */
+    public function shear (Player $player) : bool {
+        if($this->isSheared()) { // already sheared
+            return false;
+        } else { // not sheared yet
+            // drop correct wool color by calling getDrops of the entity (the entity knows what to drop!)
+            foreach ($this->getDrops() as $drop) {
+                $player->getLevel()->dropItem($this, $drop);
+            }
+            // set the sheep sheared
+            $this->setSheared(true);
+            // reset button text to empty string
+            $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
+            return true;
+        }
+    }
 
     // ------------------------------------------------------------
     // very sheep specific functions
     // ------------------------------------------------------------
+
+
     /**
      * Checks if this entity is sheared
      * @return bool
@@ -180,7 +270,7 @@ class Sheep extends WalkingAnimal {
     protected function blockOfInterestReached ($block) {
         $this->stayTime = 1000; // let this entity stay still
         // play eat grass animation but only when there are players near ...
-        foreach (Server::getInstance()->getOnlinePlayers() as $player) { // don't know if this is the correct one :/
+        foreach ($this->getLevel()->getPlayers() as $player) { // don't know if this is the correct one :/
             if ($player->distance($this) <= 49) {
                 $pk = new EntityEventPacket();
                 $pk->eid = $this->getId();
@@ -189,7 +279,11 @@ class Sheep extends WalkingAnimal {
             }
         }
         // after the eat gras has been played, we reset the block through air
-        $this->getLevel()->setBlock($block, new Air());
+        if ($block->getId() == Block::GRASS or $block->getId() == Block::TALL_GRASS) { // grass blocks are replaced by dirt blocks ...
+            $this->getLevel()->setBlock($block, new Dirt());
+        } else {
+            $this->getLevel()->setBlock($block, new Air());
+        }
         // this sheep is not sheared anymore ... ;)
         $this->setSheared(false);
         // reset base target. otherwise the entity will not move anymore :D
