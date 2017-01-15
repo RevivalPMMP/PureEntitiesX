@@ -92,12 +92,31 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
     private static $registeredClasses = [];
 
+    private $maxInteractDistance = 4; // this is standard (may be overridden by config!)
+    private $maxFindPartnerDistance = 49; // this is standard (may be overridden by config!)
+
     /**
      * Returns the plugin instance to get access to config e.g.
      * @return PureEntities the current instance of the plugin main class
      */
     public static function getInstance() : PureEntities {
         return PureEntities::$instance;
+    }
+
+    /**
+     * Returns the configured maximum distance for interaction with entities
+     * @return int
+     */
+    public function getMaxInteractDistance () : int {
+        return $this->maxInteractDistance;
+    }
+
+    /**
+     * Returns the configured maximum distance for finding a partner (max search distance!)
+     * @return int
+     */
+    public function getMaxFindPartnerDistance () : int {
+        return $this->maxInteractDistance;
     }
 
     public function onLoad(){
@@ -174,6 +193,12 @@ class PureEntities extends PluginBase implements CommandExecutor {
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
 	    $this->getServer()->getLogger()->notice("Enabled!");
 	    $this->getServer()->getLogger()->notice("You're Running ".$this->getDescription()->getFullName());
+
+	    // read some more config which we need internally (read once, give access to them via this class!)
+        $this->maxFindPartnerDistance = $this->getConfig()->getNested("distances.find-partner", 49);
+        $this->maxInteractDistance    = $this->getConfig()->getNested("distances.interact", 4);
+        // print effective configuration!
+        $this->getServer()->getLogger()->notice("Distances configured: [findPartner:" . $this->maxFindPartnerDistance . "] [interact:" . $this->maxInteractDistance . "]");
     }
 
     public function onDisable(){
@@ -232,7 +257,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
         } else {
             $entity = self::create($entityid, $pos);
             if ($entity !== null) {
-                if ($baby) {
+                if ($baby and $entity->getBreedingExtension() !== false) {
                     $entity->getBreedingExtension()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
                     if ($parentEntity != null) {
                         $entity->getBreedingExtension()->setParent($parentEntity);
@@ -307,6 +332,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
 					file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
 				}
 		}
+		return true;
 	}
 
     /**

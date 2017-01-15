@@ -58,11 +58,11 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed {
                 $itemId = $creature->getInventory()->getItemInHand()->getId();
 
                 if ($itemId === Item::CARROT or $itemId === Item::BEETROOT) { // TODO: implement patatoe (because pigs can also be fed with patatoes)
-                    if ($distance <= 4) { // we can feed a pig! and it makes no difference if it's an adult or a baby ...
+                    if ($distance <= $this->maxInteractDistance) { // we can feed a pig! and it makes no difference if it's an adult or a baby ...
                         $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, PureEntities::BUTTON_TEXT_FEED);
                     }
-                    // check if the cow is able to follow - but only on a distance of 5 blocks
-                    $follow = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 5;
+                    // check if the cow is able to follow - but only on a distance of 6 blocks
+                    $follow = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 6;
                     // cows only follow when <= 5 blocks away. otherwise, forget the player as target!
                     if (!$follow and $this->isFollowingPlayer($creature)) {
                         $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
