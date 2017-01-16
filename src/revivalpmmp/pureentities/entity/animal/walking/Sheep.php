@@ -88,6 +88,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
 
         $this->setColor($this->getColor());
         $this->setSheared ($this->isSheared());
+
     }
 
     /**
@@ -116,17 +117,17 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
         if($creature instanceof Player) { // is the player a target option?
             if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
                 if ($creature->getInventory()->getItemInHand()->getId() === Item::WHEAT) {
-                    if ($distance <= 4) { // we can feed a sheep! and it makes no difference if it's an adult or a baby ...
+                    if ($distance <= $this->maxInteractDistance) { // we can feed a sheep! and it makes no difference if it's an adult or a baby ...
                         $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, PureEntities::BUTTON_TEXT_FEED);
                     }
-                    // check if the sheep is able to follow - but only on a distance of 5 blocks
-                    $follow = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 5;
+                    // check if the sheep is able to follow - but only on a distance of 6 blocks
+                    $follow = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 6;
                     // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
                     if (!$follow and $this->isFollowingPlayer($creature)) {
                         $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
                     }
                     return $follow;
-                } elseif ($distance <= 4 and $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS and !$this->isSheared()) {
+                } elseif ($distance <= $this->maxInteractDistance && $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && !$this->isSheared()) {
                     $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, PureEntities::BUTTON_TEXT_SHEAR);
                 } else {
                     $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "");

@@ -16,9 +16,9 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\Info;
 use pocketmine\network\protocol\InteractPacket;
-use pocketmine\Player;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
+use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\tile\Spawner;
 
@@ -73,21 +73,16 @@ class EventListener implements Listener {
 			if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
                 $entity = $player->level->getEntity($packet->target);
 			    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity]", PureEntities::DEBUG);
-			    if ($entity instanceof Sheep) {
-			        switch ((string)$player->getDataProperty(Entity::DATA_INTERACTIVE_TAG)) {
-                        case PureEntities::BUTTON_TEXT_SHEAR:
-                            $return = $entity->shear($player);
-                            break;
-                        case PureEntities::BUTTON_TEXT_FEED:
-                            $return = $entity->getBreedingExtension()->feed($player); // feed the sheep
-                            // decrease wheat in players hand
-                            $itemInHand = $player->getInventory()->getItemInHand();
-                            if ($itemInHand != null) {
-                                $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
-                            }
-                            break;
-                        default:
-                            break;
+			    if ($entity instanceof Sheep and strcmp($player->getDataProperty(Entity::DATA_INTERACTIVE_TAG), PureEntities::BUTTON_TEXT_SHEAR) == 0) {
+                    $return = $entity->shear($player);
+                } else if ($entity instanceof IntfCanBreed and
+                    strcmp($player->getDataProperty(Entity::DATA_INTERACTIVE_TAG), PureEntities::BUTTON_TEXT_FEED) == 0 and
+                    $entity->getBreedingExtension() !== false) { // normally, this shouldn't be needed (because IntfCanBreed needs this method! - that's why i don't like php that much!)
+                    $return = $entity->getBreedingExtension()->feed($player); // feed the sheep
+                    // decrease wheat in players hand
+                    $itemInHand = $player->getInventory()->getItemInHand();
+                    if ($itemInHand != null) {
+                        $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
                     }
                 }
 			}
