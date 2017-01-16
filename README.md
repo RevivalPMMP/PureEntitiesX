@@ -4,7 +4,12 @@
 
 [![Poggit-CI](https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX)](https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX/PureEntitiesX)
 [![Travis-CI](https://api.travis-ci.org/RevivalPMMP/PureEntitiesX.svg?branch=master)](https://travis-ci.org/RevivalPMMP/PureEntitiesX)
+
+Forums: http://revivalpmmpforums.gq/
+
 ====
+
+
 This is a Fork of the original PureEntities plugin which has become inactive; RevivalPMMP is now updating and maintaining it, so  you can have smart mobs on your server! (At least until Pocketmine implements them)
 
 PureEntitiesX does not officially provide compatibility with PocketMine-MP _Third Party_ builds.
