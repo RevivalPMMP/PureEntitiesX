@@ -10,22 +10,10 @@ use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
-abstract class WalkingAnimal extends WalkingEntity implements Animal{
+abstract class WalkingAnimal extends WalkingEntity {
 
     public function getSpeed() : float{
         return 0.7;
-    }
-
-    public function initEntity(){
-        parent::initEntity();
-
-        if($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null){
-            $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
-        }
-    }
-
-    public function isBaby() : bool{
-        return $this->getDataFlag(self::DATA_FLAG_BABY,0);
     }
 
     public function entityBaseTick($tickDiff = 1){

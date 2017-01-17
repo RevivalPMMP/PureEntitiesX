@@ -6,7 +6,7 @@ namespace revivalpmmp\pureentities\features;
  * Interface IntfCanBreed
  * @package revivalpmmp\pureentities\features
  */
-interface IntfCanBreed {
+interface IntfCanBreed extends IntfFeedable {
 
     /**
      * Has to return the Breedable class initiated within entity

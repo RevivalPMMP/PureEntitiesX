@@ -14,9 +14,6 @@ class Rabbit extends WalkingAnimal {
     public $width = 0.5;
     public $height = 0.5;
 
-    /** @var  bool $isBaby */
-    private $isBaby;
-
     public function getSpeed() : float{
         return 1.2;
     }

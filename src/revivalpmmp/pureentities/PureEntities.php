@@ -401,6 +401,26 @@ class PureEntities extends PluginBase implements CommandExecutor {
     }
 
     /**
+     * Just a helper function (for better finding where a button text is displayed to player)
+     *
+     * @param string $text      the text to be displayed in the button (we should translate that!)
+     * @param Player $player    the player to display the text
+     */
+    public static function displayButtonText (string $text, Player $player) {
+        $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, $text);
+    }
+
+    /**
+     * Returns the button text which is currently displayed to the player
+     *
+     * @param Player $player    the player to get the button text for
+     * @return string           the button text, may be empty or NULL
+     */
+    public static function getButtonText (Player $player) : string {
+        return $player->getDataProperty(Entity::DATA_INTERACTIVE_TAG);
+    }
+
+    /**
      * Returns the "short" name of a class without namespace ...
      *
      * @param string $longClassName

@@ -49,6 +49,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
 	public $length = 1.4375;
 	public $height = 1.8;
 
+    private $feedableItems = array (Item::WHEAT);
+
     /**
      * Is needed for breeding functionality
      *
@@ -109,52 +111,39 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
     }
 
     /**
-     * @param Creature $creature
-     * @param float $distance
-     * @return bool
+     * Returns the items that can be fed to the entity
+     *
+     * @return array
+     */
+    public function getFeedableItems() {
+        return $this->feedableItems;
+    }
+
+    /**
+     * @param Creature $creature the creature itself, can be any creature (from player to entity)
+     * @param float $distance the distance to the creature
+     * @return bool true if the entity has interest in the creature, false if not
      */
     public function targetOption(Creature $creature, float $distance) : bool {
-        if($creature instanceof Player) { // is the player a target option?
-            if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
-                if ($creature->getInventory()->getItemInHand()->getId() === Item::WHEAT) {
-                    if ($distance <= $this->maxInteractDistance) { // we can feed a sheep! and it makes no difference if it's an adult or a baby ...
-                        $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, PureEntities::BUTTON_TEXT_FEED);
-                    }
-                    // check if the sheep is able to follow - but only on a distance of 6 blocks
-                    $follow = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 6;
-                    // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
-                    if (!$follow and $this->isFollowingPlayer($creature)) {
-                        $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
-                    }
-                    return $follow;
-                } elseif ($distance <= $this->maxInteractDistance && $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && !$this->isSheared()) {
-                    $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, PureEntities::BUTTON_TEXT_SHEAR);
-                } else {
-                    $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "");
-                    // reset base target when it was player before (follow by holding wheat)
-                    if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
-                        // reset base target!
-                        $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
+        $targetOption = parent::targetOption($creature, $distance);
+        if (!$targetOption) {
+            if ($creature instanceof Player) { // is the player a target option?
+                if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+                    if ($distance <= $this->maxInteractDistance && $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && !$this->isSheared()) {
+                        PureEntities::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $creature);
                     }
                 }
             }
         }
-        return false;
+        return $targetOption;
     }
 
 
     protected function checkTarget(){
-        // we should also check for any blocks of interest for the entity
-        if (!$this->getBreedingExtension()->checkInLove()) {
-            if ($this->isSheared()) {
-                $this->checkBlockOfInterest();
-            }
+        if ($this->isSheared()) {
+            $this->checkBlockOfInterest();
         }
-
-        // tick the breedable class embedded
-        $this->getBreedingExtension()->tick();
-
-        // and of course, we should call the parent check target method
+        // and of course, we should call the parent check target method (which has to call breeding methods)
         parent::checkTarget();
     }
 

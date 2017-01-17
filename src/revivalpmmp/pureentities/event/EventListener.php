@@ -73,10 +73,10 @@ class EventListener implements Listener {
 			if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
                 $entity = $player->level->getEntity($packet->target);
 			    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity]", PureEntities::DEBUG);
-			    if ($entity instanceof Sheep and strcmp($player->getDataProperty(Entity::DATA_INTERACTIVE_TAG), PureEntities::BUTTON_TEXT_SHEAR) == 0) {
+			    if ($entity instanceof Sheep and strcmp(PureEntities::getButtonText($player), PureEntities::BUTTON_TEXT_SHEAR) == 0) {
                     $return = $entity->shear($player);
                 } else if ($entity instanceof IntfCanBreed and
-                    strcmp($player->getDataProperty(Entity::DATA_INTERACTIVE_TAG), PureEntities::BUTTON_TEXT_FEED) == 0 and
+                    strcmp(PureEntities::getButtonText($player), PureEntities::BUTTON_TEXT_FEED) == 0 and
                     $entity->getBreedingExtension() !== false) { // normally, this shouldn't be needed (because IntfCanBreed needs this method! - that's why i don't like php that much!)
                     $return = $entity->getBreedingExtension()->feed($player); // feed the sheep
                     // decrease wheat in players hand

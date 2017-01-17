@@ -72,8 +72,23 @@ class BreedingExtension {
      */
     private $parent = null;
 
+    /**
+     * Is initialized from entity, when it's constructed
+     *
+     * @var int
+     */
+    private $adultHeight = -1;
+
+    /**
+     * Is initialized from entity, when it's constructed
+     * @var int
+     */
+    private $adultWidth = -1;
+
     public function __construct(Entity $belongsTo) {
         $this->entity = $belongsTo;
+        $this->adultHeight = $belongsTo->height;
+        $this->adultWidth = $belongsTo->width;
     }
 
     /**
@@ -156,11 +171,23 @@ class BreedingExtension {
         $this->entity->namedtag->Age = new IntTag(self::NBT_KEY_AGE, $age); // set baby (all under zero is baby) - this is only for testing!
         if ($age < 0) {
             $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 0.5); // this is a workaround?!
+            if (!$this->entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY)) {
+                $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY, true); // set baby
+            }
+            // we also need to adjust the height and width of the entity
+            $this->entity->height = $this->adultHeight / 2; // because we scale 0.5
+            $this->entity->width = $this->adultWidth / 2; // because we scale 0.5
         } else {
             $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 1.0); // set as an adult entity
+            if ($this->entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY)) {
+                $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY, false); // set adult
+            }
             // forget the parent and reset baseTarget immediately
             $this->setParent(null);
             $this->entity->baseTarget = null;
+            // reset entity sizes
+            $this->entity->height = $this->adultHeight;
+            $this->entity->width = $this->adultWidth;
         }
     }
 
