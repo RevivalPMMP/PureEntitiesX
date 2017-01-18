@@ -17,6 +17,7 @@ use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\Info;
 use pocketmine\network\protocol\InteractPacket;
 use pocketmine\tile\Tile;
+use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\PureEntities;
@@ -74,10 +75,15 @@ class EventListener implements Listener {
                 $entity = $player->level->getEntity($packet->target);
 			    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity]", PureEntities::DEBUG);
 			    if ($entity instanceof Sheep and strcmp(PureEntities::getButtonText($player), PureEntities::BUTTON_TEXT_SHEAR) == 0) {
+                    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] shearing ...", PureEntities::DEBUG);
                     $return = $entity->shear($player);
+                } else if ($entity instanceof Cow and strcmp(PureEntities::getButtonText($player), PureEntities::BUTTON_TEXT_MILK) == 0) {
+                    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] milking ...", PureEntities::DEBUG);
+                    $return = $entity->milk($player);
                 } else if ($entity instanceof IntfCanBreed and
                     strcmp(PureEntities::getButtonText($player), PureEntities::BUTTON_TEXT_FEED) == 0 and
                     $entity->getBreedingExtension() !== false) { // normally, this shouldn't be needed (because IntfCanBreed needs this method! - that's why i don't like php that much!)
+                    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] feeding ...", PureEntities::DEBUG);
                     $return = $entity->getBreedingExtension()->feed($player); // feed the sheep
                     // decrease wheat in players hand
                     $itemInHand = $player->getInventory()->getItemInHand();

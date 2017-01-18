@@ -173,21 +173,21 @@ class BreedingExtension {
             $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 0.5); // this is a workaround?!
             if (!$this->entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY)) {
                 $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY, true); // set baby
+                // we also need to adjust the height and width of the entity
+                $this->entity->height = $this->adultHeight / 2; // because we scale 0.5
+                $this->entity->width = $this->adultWidth / 2; // because we scale 0.5
             }
-            // we also need to adjust the height and width of the entity
-            $this->entity->height = $this->adultHeight / 2; // because we scale 0.5
-            $this->entity->width = $this->adultWidth / 2; // because we scale 0.5
         } else {
             $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 1.0); // set as an adult entity
             if ($this->entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY)) {
                 $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY, false); // set adult
+                // reset entity sizes
+                $this->entity->height = $this->adultHeight;
+                $this->entity->width = $this->adultWidth;
             }
             // forget the parent and reset baseTarget immediately
             $this->setParent(null);
             $this->entity->baseTarget = null;
-            // reset entity sizes
-            $this->entity->height = $this->adultHeight;
-            $this->entity->width = $this->adultWidth;
         }
     }
 
@@ -399,9 +399,10 @@ class BreedingExtension {
 
         // for a baby force to set the baseTarget to the parent (if it's available)
         if ($this->isBaby() and
-            $this->getParent() != null and
+            $this->getParent() !== null and
             $this->getParent()->isAlive() and
-            !$this->getParent()->closed) {
+            !$this->getParent()->closed and
+            ($this->entity->baseTarget === null or !$this->entity->baseTarget instanceof Player)) {
             PureEntities::logOutput("Breedable(" . $this->entity . "): isBaby, setting parent to " . $this->getParent(), PureEntities::DEBUG);
             $this->entity->baseTarget = $this->getParent();
             if ($this->getParent()->distance($this->entity) <= 4) {

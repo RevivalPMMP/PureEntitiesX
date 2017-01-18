@@ -2,10 +2,13 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\entity\Creature;
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\PureEntities;
 
 class Cow extends WalkingAnimal implements IntfCanBreed {
     const NETWORK_ID = 11;
@@ -60,6 +63,26 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
         return $this->feedableItems;
     }
 
+    /**
+     * @param Creature $creature the creature itself, can be any creature (from player to entity)
+     * @param float $distance the distance to the creature
+     * @return bool true if the entity has interest in the creature, false if not
+     */
+    public function targetOption(Creature $creature, float $distance) : bool {
+        $targetOption = parent::targetOption($creature, $distance);
+        if (!$targetOption) {
+            if ($creature instanceof Player) { // is the player a target option?
+                if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+                    $item = $creature->getInventory()->getItemInHand();
+                    if ($distance <= $this->maxInteractDistance && $item->getId() === Item::BUCKET && $item->getDamage() === 0) { // empty bucket
+                        PureEntities::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $creature);
+                    }
+                }
+            }
+        }
+        return $targetOption;
+    }
+
     public function getDrops(){
         $drops = [];
         array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
@@ -73,5 +96,25 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
 
     public function getMaxHealth() {
         return 10;
+    }
+
+    /**
+     * Simple method that milks this cow
+     *
+     * @param Player $player
+     */
+    public function milk (Player $player) : bool{
+        PureEntities::logOutput("Cow ($this): milk by $player", PureEntities::DEBUG);
+        $item = $player->getInventory()->getItemInHand();
+        if ($item !== null && $item->getId() === Item::BUCKET) {
+            PureEntities::logOutput("Cow ($this): producing milk in a bucket ...", PureEntities::DEBUG);
+            --$item->count;
+            $player->getInventory()->setItemInHand($item);
+            $bucketWithMilk = Item::get(Item::BUCKET, 0, 1);
+            $bucketWithMilk->setDamage(1);
+            $player->getInventory()->addItem($bucketWithMilk);
+            return true;
+        }
+        return false;
     }
 }

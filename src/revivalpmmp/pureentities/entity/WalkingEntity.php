@@ -284,10 +284,10 @@ abstract class WalkingEntity extends BaseEntity{
                         // check if the sheep is able to follow - but only on a distance of 6 blocks
                         $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 6;
                         // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
-                        if (!$targetOption and $this->isFollowingPlayer($creature)) {
+                        if (!$targetOption and $this->isFollowingPlayer($creature) and !$this->getBreedingExtension()->isBaby()) {
                             $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
                         }
-                        PureEntities::logOutput("WalkingEntity: targetOption is $targetOption", PureEntities::DEBUG);
+                        PureEntities::logOutput("WalkingEntity: targetOption is $targetOption and distance is $distance", PureEntities::DEBUG);
                     } else {
                         $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "");
                         // reset base target when it was player before (follow by holding wheat)

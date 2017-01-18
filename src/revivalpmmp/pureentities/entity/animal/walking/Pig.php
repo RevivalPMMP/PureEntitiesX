@@ -14,7 +14,9 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed {
     public $width = 1.45;
     public $height = 1.12;
 
-    private $feedableItems = array (Item::CARROT, Item::BEETROOT);
+    private $feedableItems = array (
+        Item::CARROT,
+        Item::BEETROOT);
 
     /**
      * Is needed for breeding functionality

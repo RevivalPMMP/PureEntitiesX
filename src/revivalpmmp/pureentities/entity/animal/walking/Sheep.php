@@ -149,7 +149,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
 
     public function getDrops(){
         $drops = [];
-        if ($this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SHEARED) === false) {
+        if (!$this->isSheared() && !$this->getBreedingExtension()->isBaby()) {
             $drops = [Item::get(Item::WOOL, self::getColor(), mt_rand(0, 2))];
         }
         return $drops;
