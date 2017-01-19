@@ -2,8 +2,8 @@
 
 namespace revivalpmmp\pureentities\tile;
 
-use pocketmine\Player;
-use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentitiesx\PureEntitiesX;
+use milk\randomjoin\Player;
 use pocketmine\level\format\FullChunk;
 use pocketmine\level\Position;
 use pocketmine\nbt\tag\CompoundTag;
@@ -11,6 +11,7 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\tile\Spawnable;
+use pocketmine\tile\Tile;
 
 class Spawner extends Spawnable{
 
@@ -40,15 +41,15 @@ class Spawner extends Spawnable{
         }
 
         if(!isset($this->namedtag->MaxSpawnDelay)){
-            $this->namedtag->MaxSpawnDelay = new ShortTag("MaxSpawnDelay", 8000);
+            $this->namedtag->MaxSpawnDelay = new ShortTag("MaxSpawnDelay", 800);
         }
 
         if(!isset($this->namedtag->MaxNearbyEntities)){
-            $this->namedtag->MaxNearbyEntities = new ShortTag("MaxNearbyEntities", 25);
+            $this->namedtag->MaxNearbyEntities = new ShortTag("MaxNearbyEntities", 10);
         }
 
         if(!isset($this->namedtag->RequiredPlayerRange)){
-            $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", 20);
+            $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", 200000000000000000000000000000000000000000000000);
         }
 
         $this->spawnRange = $this->namedtag["SpawnRange"];
@@ -60,9 +61,16 @@ class Spawner extends Spawnable{
         $this->scheduleUpdate();
     }
 
-    public function onUpdate(){
-        if($this->closed){
-            return false;
+   public function onUpdate(){
+		if($this->closed === true){
+			return false;
+            
+		}
+       
+		$this->timings->startTiming();
+		if(!($this->chunk instanceof FullChunk)){
+			return false;
+		
         }
 
         if($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)){
@@ -96,8 +104,8 @@ class Spawner extends Spawnable{
         return true;
     }
 
-    public function saveNBT(){
-        parent::saveNBT();
+   // public function saveNBT(){
+      //  parent::saveNBT();
 
         $this->namedtag->EntityId = new ShortTag("EntityId", $this->entityId);
         $this->namedtag->SpawnRange = new ShortTag("SpawnRange", $this->spawnRange);
