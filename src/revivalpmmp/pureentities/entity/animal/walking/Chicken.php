@@ -74,7 +74,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed {
         $drops = [];
 
         // only adult chicken drop something ...
-        if (!$this->breedableClass->isBaby()) {
+        if ($this->breedableClass != null && $this->breedableClass->isBaby()) {
             array_push($drops, Item::get(Item::FEATHER, 0, mt_rand(0, 2)));
             if ($this->isOnFire()) {
                 array_push($drops, Item::get(Item::COOKED_CHICKEN, 0, 1));

@@ -303,11 +303,6 @@ class BreedingExtension {
         PureEntities::logOutput("Breedable(" . $this->entity . "): findAnotherEntityInLove -> entering", PureEntities::DEBUG);
         $entityFound = false;
         foreach ($this->entity->getLevel()->getEntities() as $otherEntity) {
-            PureEntities::logOutput("Breedable(" . $this->entity . "): findAnotherEntityInLove, checking " .
-                "[sameClass:" . (strcmp(get_class($otherEntity), get_class($this->entity)) == 0) . "] " .
-                "[inLove:" . (($otherEntity instanceof Player) ? 0 : ($otherEntity->getBreedingExtension()->getInLove() > 0)) . "] " .
-                "[idMatching:" . ($otherEntity->getId() != $this->entity->getId()) . "] " .
-                "[breedPartner:" . (($otherEntity instanceof Player) ? "null" : ($otherEntity->getBreedingExtension()->getBreedPartner() == null)) . "]", PureEntities::DEBUG);
             if (strcmp(get_class($otherEntity), get_class($this->entity)) == 0 and // must be of the same species
                 $otherEntity->distance($this->entity) <= $range and // must be in range
                 $otherEntity->getBreedingExtension()->getInLove() > 0 and // must be in love
@@ -386,7 +381,7 @@ class BreedingExtension {
             // checkTarget method recognizes the "inlove" and tries to find a partner
         }
         // reset player's button text
-        $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
+        PureEntities::displayButtonText("", $player);
         return true;
     }
 

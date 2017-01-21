@@ -95,6 +95,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
     private $maxInteractDistance = 4; // this is standard (may be overridden by config!)
     private $maxFindPartnerDistance = 49; // this is standard (may be overridden by config!)
+    private $interactStayTime = 50; // ticks the entity stands still when in interaction with player
 
     /**
      * Returns the plugin instance to get access to config e.g.
@@ -110,6 +111,14 @@ class PureEntities extends PluginBase implements CommandExecutor {
      */
     public function getMaxInteractDistance () : int {
         return $this->maxInteractDistance;
+    }
+
+    /**
+     * Returns the configured interact stay time of an entity
+     * @return int
+     */
+    public function getInteractStayTime () : int {
+        return $this->interactStayTime;
     }
 
     /**
@@ -198,6 +207,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
 	    // read some more config which we need internally (read once, give access to them via this class!)
         $this->maxFindPartnerDistance = $this->getConfig()->getNested("distances.find-partner", 49);
         $this->maxInteractDistance    = $this->getConfig()->getNested("distances.interact", 4);
+        $this->interactStayTime       = $this->getConfig()->getNested("interaction.stay-time", 20); // ~ 2 seconds default?
         // print effective configuration!
         $this->getServer()->getLogger()->notice("Distances configured: [findPartner:" . $this->maxFindPartnerDistance . "] [interact:" . $this->maxInteractDistance . "]");
     }

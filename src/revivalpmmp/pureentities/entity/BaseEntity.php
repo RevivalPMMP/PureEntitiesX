@@ -31,6 +31,7 @@ abstract class BaseEntity extends Creature{
     private $wallcheck = true;
 
     protected $maxInteractDistance = 4;
+    protected $interactStayTime = 50;
 
     public function __destruct(){}
 
@@ -86,6 +87,7 @@ abstract class BaseEntity extends Creature{
         $this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
 
         $this->maxInteractDistance = PureEntities::getInstance()->getMaxInteractDistance();
+        $this->interactStayTime    = PureEntities::getInstance()->getInteractStayTime();
     }
 
     public function saveNBT(){

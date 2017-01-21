@@ -68,19 +68,17 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
      * @param float $distance the distance to the creature
      * @return bool true if the entity has interest in the creature, false if not
      */
-    public function targetOption(Creature $creature, float $distance) : bool {
-        $targetOption = parent::targetOption($creature, $distance);
-        if (!$targetOption) {
-            if ($creature instanceof Player) { // is the player a target option?
-                if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
-                    $item = $creature->getInventory()->getItemInHand();
-                    if ($distance <= $this->maxInteractDistance && $item->getId() === Item::BUCKET && $item->getDamage() === 0) { // empty bucket
-                        PureEntities::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $creature);
-                    }
+    public function checkDisplayInteractiveButton(Creature $creature, float $distance) : bool {
+        if ($creature instanceof Player) { // is the player a target option?
+            if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+                $item = $creature->getInventory()->getItemInHand();
+                if ($distance <= $this->maxInteractDistance && $item->getId() === Item::BUCKET && $item->getDamage() === 0) { // empty bucket
+                    PureEntities::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $creature);
+                    return true;
                 }
             }
         }
-        return $targetOption;
+        return false;
     }
 
     public function getDrops(){

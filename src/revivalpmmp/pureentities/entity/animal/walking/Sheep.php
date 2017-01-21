@@ -120,26 +120,26 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
     }
 
     /**
+     * Checks if an interactive button is displayed to the creature.
+     *
      * @param Creature $creature the creature itself, can be any creature (from player to entity)
      * @param float $distance the distance to the creature
      * @return bool true if the entity has interest in the creature, false if not
      */
-    public function targetOption(Creature $creature, float $distance) : bool {
-        $targetOption = parent::targetOption($creature, $distance);
-        if (!$targetOption) {
-            if ($creature instanceof Player) { // is the player a target option?
-                if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
-                    if ($distance <= $this->maxInteractDistance && $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && !$this->isSheared()) {
-                        PureEntities::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $creature);
-                    }
+    public function checkDisplayInteractiveButton(Creature $creature, float $distance) : bool {
+        if ($creature instanceof Player) { // is the player a target option?
+            if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+                if ($distance <= $this->maxInteractDistance && $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && !$this->isSheared()) {
+                    PureEntities::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $creature);
+                    return true;
                 }
             }
         }
-        return $targetOption;
+        return false;
     }
 
 
-    protected function checkTarget(){
+    public function checkTarget(){
         if ($this->isSheared()) {
             $this->checkBlockOfInterest();
         }
@@ -181,7 +181,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
             // set the sheep sheared
             $this->setSheared(true);
             // reset button text to empty string
-            $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
+            PureEntities::displayButtonText("", $player);
             return true;
         }
     }
