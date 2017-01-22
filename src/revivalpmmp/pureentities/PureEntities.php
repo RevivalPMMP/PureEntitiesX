@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities;
 
+use revivalpmmp\pureentities\entity\animal\flying\Bat;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\monster\swimming\Guardian;
 use revivalpmmp\pureentities\entity\monster\swimming\ElderGuardian;
@@ -91,6 +92,7 @@ class PureEntities extends PluginBase implements Listener{
             Mule::class,
             //ElderGuardian::class,
             //Guardian::class,
+	        //Bat::class,
             Squid::class,
             Villager::class,
             Blaze::class,
