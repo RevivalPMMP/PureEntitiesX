@@ -1,7 +1,8 @@
 <?php
 
-namespace revivalpmmp\pureentities\entity\animal\walking;
+namespace revivalpmmp\pureentities\entity\animal\flying;
 
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\animal\FlyingAnimal;
 use pocketmine\entity\Creature;
 
