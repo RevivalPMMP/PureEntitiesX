@@ -11,6 +11,7 @@ php:
 branches:
  - master
  - 1.0.0-bug-fixes
+ - NewMobs
 before_script:
  - cd /home/travis/build/
  - pecl install channel://pecl.php.net/pthreads-3.1.6
