@@ -27,6 +27,7 @@ use pocketmine\math\Vector2;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\event\ExplosionPrimeEvent;
 
 class Creeper extends WalkingMonster implements Explosive{
     const NETWORK_ID = Data::CREEPER;

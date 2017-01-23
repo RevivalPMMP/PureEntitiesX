@@ -16,17 +16,16 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-namespace revivalpmmp\pureentities\entity\monster\walking;
+namespace revivalpmmp\pureentities\event;
 
 use pocketmine\entity\Entity;
 use pocketmine\event\Cancellable;
-use pocketmine\event\entity\EntityEvent;
 
 
 /**
  * Called when a entity decides to explode
  */
-class ExplosionPrimeEvent extends EntityEvent implements Cancellable{
+class ExplosionPrimeEvent extends \pocketmine\event\entity\ExplosionPrimeEvent implements Cancellable{
 	public static $handlerList = null;
 
 	protected $force;
@@ -40,6 +39,7 @@ class ExplosionPrimeEvent extends EntityEvent implements Cancellable{
 		$this->entity = $entity;
 		$this->force = $force;
 		$this->blockBreaking = true;
+		parent::__construct($entity, $force);
 	}
 
 	/**
