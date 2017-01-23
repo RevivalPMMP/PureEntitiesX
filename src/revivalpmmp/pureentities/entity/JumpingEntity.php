@@ -1,7 +1,7 @@
 <?php
 
 /*  PureEntitiesX: Mob AI Plugin for PMMP
-    Copyright (C) 2016 RevivalPMMP
+    Copyright (C) 2017  RevivalPMMP
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
