@@ -17,6 +17,8 @@ use pocketmine\nbt\tag\ByteTag;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class Sheep extends WalkingAnimal implements IntfCanBreed {
@@ -129,8 +131,9 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
     public function checkDisplayInteractiveButton(Creature $creature, float $distance) : bool {
         if ($creature instanceof Player) { // is the player a target option?
             if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
-                if ($distance <= $this->maxInteractDistance && $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && !$this->isSheared()) {
-                    PureEntities::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $creature);
+                if ($distance <= PluginConfiguration::getInstance()->getMaxInteractDistance() && $creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && !$this->isSheared()) {
+                    PureEntities::logOutput("Sheep($this): show 'shear' button ... ", PureEntities::DEBUG);
+                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $creature, $this);
                     return true;
                 }
             }
@@ -181,7 +184,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
             // set the sheep sheared
             $this->setSheared(true);
             // reset button text to empty string
-            PureEntities::displayButtonText("", $player);
+            InteractionHelper::displayButtonText("", $player, $this);
             return true;
         }
     }
@@ -243,6 +246,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
     public function isAnyBlockOfInterest (array $blocksAround) {
         if ($this->isSheared()) { // sheep has only interest in gras blocks around if sheared
             foreach ($blocksAround as $block) { // check all the given blocks
+                PureEntities::logOutput("Sheep($this): isAnyBlockOfInterest: $block", PureEntities::DEBUG);
                 if ($block instanceof Grass or $block instanceof TallGrass or strcmp($block->getName(), "Double Tallgrass") == 0) { // only grass blocks are eatable by sheeps
                     return $block;
                 }
@@ -258,6 +262,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
      * @param Block $block
      */
     protected function blockOfInterestReached ($block) {
+        PureEntities::logOutput("Sheep($this): blockOfInterestReached", PureEntities::DEBUG);
         $this->stayTime = 1000; // let this entity stay still
         // play eat grass animation but only when there are players near ...
         foreach ($this->getLevel()->getPlayers() as $player) { // don't know if this is the correct one :/
@@ -278,6 +283,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
         $this->setSheared(false);
         // reset base target. otherwise the entity will not move anymore :D
         $this->baseTarget = null;
+        $this->checkTarget(); // find a new target to move to ...
     }
 
 }

@@ -14,14 +14,14 @@ use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfFeedable;
+use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 abstract class WalkingAnimal extends WalkingEntity {
 
     // for eating grass etc. pp
     protected $blockInterestTime   = 0;
-    const     BLOCK_INTEREST_TICKS = 300;
-
 
     public function getSpeed() : float{
         return 0.7;
@@ -102,7 +102,7 @@ abstract class WalkingAnimal extends WalkingEntity {
             if ($this->baseTarget instanceof Block) { // check if we have a block target and the target is not closed. if so, we have our target!
                 return;
             }
-            $this->blockInterestTime = self::BLOCK_INTEREST_TICKS;
+            $this->blockInterestTime = PluginConfiguration::getInstance()->getBlockOfInterestTicks();
             $block = $this->isAnyBlockOfInterest($this->getBlocksFlatAround(4)); // check only 4 blocks - to spare computing time?!
             if ($block != false) {
                 // we found our target let's move to it!
@@ -137,7 +137,7 @@ abstract class WalkingAnimal extends WalkingEntity {
             $maxX = $this->x + $range;
             $minZ = $this->z - $range;
             $maxZ = $this->z + $range;
-            $temporalVector = new Vector3($this->x, $this->y, $this->z);
+            $temporalVector = new Vector3($this->x, $this->y - $this->height / 2, $this->z);
 
             for ($x = $minX; $x <= $maxX; $x++) {
                 for ($z = $minZ; $z <= $maxZ; $z++) {
@@ -148,14 +148,6 @@ abstract class WalkingAnimal extends WalkingEntity {
             return $blocksAround;
         }
         return [];
-    }
-
-    /**
-     * Implement this for entities who have interest in blocks
-     * @param Block $block  the block that has been reached
-     */
-    protected function blockOfInterestReached ($block) {
-        // nothing important here. look e.g. Sheep.class
     }
 
     /**
@@ -170,8 +162,8 @@ abstract class WalkingAnimal extends WalkingEntity {
                 if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
                     $feedableItems = $this->getFeedableItems();
                     if (in_array($creature->getInventory()->getItemInHand()->getId(), $feedableItems)) {
-                        if ($distance <= $this->maxInteractDistance) { // we can feed a sheep! and it makes no difference if it's an adult or a baby ...
-                            PureEntities::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $creature);
+                        if ($distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) { // we can feed a sheep! and it makes no difference if it's an adult or a baby ...
+                            InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $creature, $this);
                         }
                         // check if the sheep is able to follow - but only on a distance of 6 blocks
                         $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 6;
@@ -181,9 +173,9 @@ abstract class WalkingAnimal extends WalkingEntity {
                         }
                         PureEntities::logOutput("WalkingEntity: targetOption is $targetOption and distance is $distance", PureEntities::DEBUG);
                     } else if ($this->checkDisplayInteractiveButton($creature, $distance)) {
-                        $this->stayTime = $this->interactStayTime; // let the entity wait for a couple of ticks (it's easier for targetting!)
+                        $this->stayTime = PluginConfiguration::getInstance()->getInteractStayTime(); // let the entity wait for a couple of ticks (it's easier for targetting!)
                     } else {
-                        PureEntities::displayButtonText("", $creature);
+                        InteractionHelper::displayButtonText("", $creature, $this);
                         // reset base target when it was player before (follow by holding wheat)
                         if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
                             // reset base target!
@@ -205,23 +197,6 @@ abstract class WalkingAnimal extends WalkingEntity {
      */
     public function checkDisplayInteractiveButton (Creature $creature, float $distance) : bool {
         return false;
-    }
-
-    /**
-     * @param int $tickDiff
-     *
-     * @return null|Vector3
-     */
-    public function updateMove($tickDiff){
-        if ($this->baseTarget instanceof Block) {
-            // check if we reached our destination. if so, set stay time and call method to signalize that
-            // we reached our block target
-            $distance = sqrt(pow($this->x - $this->baseTarget->x, 2) + pow($this->z - $this->baseTarget->z, 2));
-            if ($distance <= 1.5) { // let's check if that is ok (1 block away ...)
-                $this->blockOfInterestReached($this->baseTarget);
-            }
-        }
-        return parent::updateMove($tickDiff);
     }
 
 

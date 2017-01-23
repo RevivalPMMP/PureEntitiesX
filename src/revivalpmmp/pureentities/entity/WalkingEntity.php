@@ -3,9 +3,7 @@
 namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
-use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\Animal;
-use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use pocketmine\block\Liquid;
 use pocketmine\block\Fence;
@@ -14,6 +12,7 @@ use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\PureEntities;
 
 abstract class WalkingEntity extends BaseEntity{
 
@@ -118,7 +117,7 @@ abstract class WalkingEntity extends BaseEntity{
             $this->updateMovement();
             return null;
         }
-        
+
         $before = $this->baseTarget;
         $this->checkTarget();
         if($this->baseTarget instanceof Creature or $this->baseTarget instanceof Block or $before !== $this->baseTarget){
@@ -126,20 +125,27 @@ abstract class WalkingEntity extends BaseEntity{
             $y = $this->baseTarget->y - $this->y;
             $z = $this->baseTarget->z - $this->z;
 
-            if (!$this->baseTarget instanceof Block) {
-                $diff = abs($x) + abs($z);
-                if ($x ** 2 + $z ** 2 < 0.7) {
-                    $this->motionX = 0;
-                    $this->motionZ = 0;
-                } else {
-                    $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
-                    $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
+            if ($this->baseTarget instanceof Block) {
+                // check if we reached our destination. if so, set stay time and call method to signalize that
+                // we reached our block target
+                $distance = sqrt(pow($this->x - $this->baseTarget->x, 2) + pow($this->z - $this->baseTarget->z, 2));
+                PureEntities::logOutput("WalkingEntity ($this): checkTarget (Block): isBlock and distance is $distance", PureEntities::DEBUG);
+                if ($distance <= 1.5) { // let's check if that is ok (1 block away ...)
+                    $this->blockOfInterestReached($this->baseTarget);
                 }
-                if ($diff > 0) {
-                    $this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
-                }
-                $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
             }
+            $diff = abs($x) + abs($z);
+            if ($x ** 2 + $z ** 2 < 0.7) {
+                $this->motionX = 0;
+                $this->motionZ = 0;
+            } else {
+                $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
+                $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
+            }
+            if ($diff > 0) {
+                $this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
+            }
+            $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
         }
 
         $dx = $this->motionX * $tickDiff;
@@ -171,6 +177,14 @@ abstract class WalkingEntity extends BaseEntity{
         }
         $this->updateMovement();
         return $this->baseTarget;
+    }
+
+    /**
+     * Implement this for entities who have interest in blocks
+     * @param Block $block  the block that has been reached
+     */
+    protected function blockOfInterestReached ($block) {
+        // nothing important here. look e.g. Sheep.class
     }
 
 

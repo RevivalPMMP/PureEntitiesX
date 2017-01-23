@@ -21,7 +21,9 @@ namespace revivalpmmp\pureentities;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
+use pocketmine\entity\Creature;
 use pocketmine\Player;
+use pocketmine\plugin\Plugin;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
 use revivalpmmp\pureentities\entity\monster\jumping\Slime;
@@ -93,10 +95,6 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
     private static $registeredClasses = [];
 
-    private $maxInteractDistance = 4; // this is standard (may be overridden by config!)
-    private $maxFindPartnerDistance = 49; // this is standard (may be overridden by config!)
-    private $interactStayTime = 50; // ticks the entity stands still when in interaction with player
-
     /**
      * Returns the plugin instance to get access to config e.g.
      * @return PureEntities the current instance of the plugin main class
@@ -105,29 +103,6 @@ class PureEntities extends PluginBase implements CommandExecutor {
         return PureEntities::$instance;
     }
 
-    /**
-     * Returns the configured maximum distance for interaction with entities
-     * @return int
-     */
-    public function getMaxInteractDistance () : int {
-        return $this->maxInteractDistance;
-    }
-
-    /**
-     * Returns the configured interact stay time of an entity
-     * @return int
-     */
-    public function getInteractStayTime () : int {
-        return $this->interactStayTime;
-    }
-
-    /**
-     * Returns the configured maximum distance for finding a partner (max search distance!)
-     * @return int
-     */
-    public function getMaxFindPartnerDistance () : int {
-        return $this->maxInteractDistance;
-    }
 
     public function onLoad(){
         self::$registeredClasses = [
@@ -204,12 +179,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
 	    $this->getServer()->getLogger()->notice("Enabled!");
 	    $this->getServer()->getLogger()->notice("You're Running ".$this->getDescription()->getFullName());
 
-	    // read some more config which we need internally (read once, give access to them via this class!)
-        $this->maxFindPartnerDistance = $this->getConfig()->getNested("distances.find-partner", 49);
-        $this->maxInteractDistance    = $this->getConfig()->getNested("distances.interact", 4);
-        $this->interactStayTime       = $this->getConfig()->getNested("interaction.stay-time", 20); // ~ 2 seconds default?
-        // print effective configuration!
-        $this->getServer()->getLogger()->notice("Distances configured: [findPartner:" . $this->maxFindPartnerDistance . "] [interact:" . $this->maxInteractDistance . "]");
+	    new PluginConfiguration (); // create plugin configuration
     }
 
     public function onDisable(){
@@ -409,26 +379,6 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 break;
         }
         return false;
-    }
-
-    /**
-     * Just a helper function (for better finding where a button text is displayed to player)
-     *
-     * @param string $text      the text to be displayed in the button (we should translate that!)
-     * @param Player $player    the player to display the text
-     */
-    public static function displayButtonText (string $text, Player $player) {
-        $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, $text);
-    }
-
-    /**
-     * Returns the button text which is currently displayed to the player
-     *
-     * @param Player $player    the player to get the button text for
-     * @return string           the button text, may be empty or NULL
-     */
-    public static function getButtonText (Player $player) : string {
-        return $player->getDataProperty(Entity::DATA_INTERACTIVE_TAG);
     }
 
     /**

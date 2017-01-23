@@ -20,6 +20,7 @@ use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\tile\Spawner;
 
@@ -74,14 +75,14 @@ class EventListener implements Listener {
 			if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
                 $entity = $player->level->getEntity($packet->target);
 			    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity]", PureEntities::DEBUG);
-			    if ($entity instanceof Sheep and strcmp(PureEntities::getButtonText($player), PureEntities::BUTTON_TEXT_SHEAR) == 0) {
+			    if ($entity instanceof Sheep and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SHEAR) == 0) {
                     PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] shearing ...", PureEntities::DEBUG);
                     $return = $entity->shear($player);
-                } else if ($entity instanceof Cow and strcmp(PureEntities::getButtonText($player), PureEntities::BUTTON_TEXT_MILK) == 0) {
+                } else if ($entity instanceof Cow and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_MILK) == 0) {
                     PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] milking ...", PureEntities::DEBUG);
                     $return = $entity->milk($player);
                 } else if ($entity instanceof IntfCanBreed and
-                    strcmp(PureEntities::getButtonText($player), PureEntities::BUTTON_TEXT_FEED) == 0 and
+                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_FEED) == 0 and
                     $entity->getBreedingExtension() !== false) { // normally, this shouldn't be needed (because IntfCanBreed needs this method! - that's why i don't like php that much!)
                     PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] feeding ...", PureEntities::DEBUG);
                     $return = $entity->getBreedingExtension()->feed($player); // feed the sheep

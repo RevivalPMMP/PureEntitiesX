@@ -10,6 +10,7 @@ use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class BreedingExtension {
@@ -279,7 +280,7 @@ class BreedingExtension {
             // search for partner
             if ($this->partnerSearchTimer >= self::SEARCH_FOR_PARTNER_DELAY and
                 $this->getBreedPartner() == null) {
-                $validTarget = $this->findAnotherEntityInLove(49); // find another target within 20 blocks
+                $validTarget = $this->findAnotherEntityInLove(PluginConfiguration::getInstance()->getMaxFindPartnerDistance()); // find another target within 20 blocks
                 if ($validTarget != false) {
                     $this->setBreedPartner($validTarget); // now my target is my "in love" partner - this entity will move to the other entity
                     $validTarget->getBreedingExtension()->setBreedPartner($this->entity); // set the other one's breed partner to ourselves
@@ -380,8 +381,6 @@ class BreedingExtension {
             $this->setInLove(self::DEFAULT_IN_LOVE_TICKS);
             // checkTarget method recognizes the "inlove" and tries to find a partner
         }
-        // reset player's button text
-        PureEntities::displayButtonText("", $player);
         return true;
     }
 

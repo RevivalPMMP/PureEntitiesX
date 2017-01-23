@@ -8,6 +8,8 @@ use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class Cow extends WalkingAnimal implements IntfCanBreed {
@@ -72,8 +74,8 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
         if ($creature instanceof Player) { // is the player a target option?
             if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
                 $item = $creature->getInventory()->getItemInHand();
-                if ($distance <= $this->maxInteractDistance && $item->getId() === Item::BUCKET && $item->getDamage() === 0) { // empty bucket
-                    PureEntities::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $creature);
+                if ($distance <= PluginConfiguration::getInstance()->getMaxInteractDistance() && $item->getId() === Item::BUCKET && $item->getDamage() === 0) { // empty bucket
+                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $creature, $this);
                     return true;
                 }
             }
@@ -111,6 +113,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
             $bucketWithMilk = Item::get(Item::BUCKET, 0, 1);
             $bucketWithMilk->setDamage(1);
             $player->getInventory()->addItem($bucketWithMilk);
+            InteractionHelper::displayButtonText("", $player, $this);
             return true;
         }
         return false;
