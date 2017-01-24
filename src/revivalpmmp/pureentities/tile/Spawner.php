@@ -106,6 +106,7 @@ class Spawner extends Spawnable {
                 $pos->y += BaseSpawner::HEIGHTS[$this->entityId];
                 $entity = PureEntities::create($this->entityId, $pos);
                 if($entity != null){
+                    PureEntities::logOutput("Spawner: spawn $entity to $pos", PureEntities::NORM);
                     $entity->spawnToAll();
                 }
             }

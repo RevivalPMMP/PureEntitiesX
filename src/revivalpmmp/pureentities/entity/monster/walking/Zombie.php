@@ -11,7 +11,7 @@ use pocketmine\event\Timings;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 
-class Zombie extends WalkingMonster implements Ageable{
+class Zombie extends WalkingMonster {
     const NETWORK_ID = 32;
 
     public $width = 0.72;
@@ -23,19 +23,11 @@ class Zombie extends WalkingMonster implements Ageable{
 
     public function initEntity(){
         parent::initEntity();
-
-        if($this->getDataFlag(self::DATA_FLAG_BABY , 0) === null){
-            $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
-        }
         $this->setDamage([0, 2, 3, 4]);
     }
 
     public function getName(){
         return "Zombie";
-    }
-
-    public function isBaby(){
-        return $this->getDataFlag(self::DATA_FLAG_BABY,0);
     }
 
     public function setHealth($amount){

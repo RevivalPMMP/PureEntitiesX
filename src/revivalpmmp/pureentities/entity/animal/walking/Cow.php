@@ -2,12 +2,14 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\entity\Creature;
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
-use pocketmine\Player;
-use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class Cow extends WalkingAnimal implements IntfCanBreed {
@@ -16,6 +18,8 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
     public $width = 0.9;
     public $height = 1.3;
     public $eyeHeight = 1.2;
+
+    private $feedableItems = array (Item::WHEAT);
 
     /**
      * Is needed for breeding functionality
@@ -53,47 +57,30 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
     }
 
     /**
-     * @param Creature $creature
-     * @param float $distance
-     * @return bool
+     * Returns the items that can be fed to the entity
+     *
+     * @return array
      */
-    public function targetOption(Creature $creature, float $distance) : bool {
-        if($creature instanceof Player) { // is the player a target option?
+    public function getFeedableItems() {
+        return $this->feedableItems;
+    }
+
+    /**
+     * @param Creature $creature the creature itself, can be any creature (from player to entity)
+     * @param float $distance the distance to the creature
+     * @return bool true if the entity has interest in the creature, false if not
+     */
+    public function checkDisplayInteractiveButton(Creature $creature, float $distance) : bool {
+        if ($creature instanceof Player) { // is the player a target option?
             if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
-                if ($creature->getInventory()->getItemInHand()->getId() === Item::WHEAT) {
-                    if ($distance <= $this->maxInteractDistance) { // we can feed a cow! and it makes no difference if it's an adult or a baby ...
-                        $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, PureEntities::BUTTON_TEXT_FEED);
-                    }
-                    // check if the cow is able to follow - but only on a distance of 6 blocks
-                    $follow = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 6;
-                    // cows only follow when <= 5 blocks away. otherwise, forget the player as target!
-                    if (!$follow and $this->isFollowingPlayer($creature)) {
-                        $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
-                    }
-                    return $follow;
-                } else {
-                    $creature->setDataProperty(self::DATA_INTERACTIVE_TAG, self::DATA_TYPE_STRING, "");
-                    // reset base target when it was player before (follow by holding wheat)
-                    if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
-                        // reset base target!
-                        $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
-                    }
+                $item = $creature->getInventory()->getItemInHand();
+                if ($distance <= PluginConfiguration::getInstance()->getMaxInteractDistance() && $item->getId() === Item::BUCKET && $item->getDamage() === 0) { // empty bucket
+                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $creature, $this);
+                    return true;
                 }
             }
         }
         return false;
-    }
-
-
-    protected function checkTarget(){
-        // we should also check for any blocks of interest for the entity
-        $this->getBreedingExtension()->checkInLove();
-
-        // tick the breedable class embedded
-        $this->getBreedingExtension()->tick();
-
-        // and of course, we should call the parent check target method
-        parent::checkTarget();
     }
 
     public function getDrops(){
@@ -109,5 +96,27 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
 
     public function getMaxHealth() {
         return 10;
+    }
+
+    /**
+     * Simple method that milks this cow
+     *
+     * @param Player $player
+     * @return bool true if milking was successful, false if not
+     */
+    public function milk (Player $player) : bool{
+        PureEntities::logOutput("Cow ($this): milk by $player", PureEntities::DEBUG);
+        $item = $player->getInventory()->getItemInHand();
+        if ($item !== null && $item->getId() === Item::BUCKET) {
+            PureEntities::logOutput("Cow ($this): producing milk in a bucket ...", PureEntities::DEBUG);
+            --$item->count;
+            $player->getInventory()->setItemInHand($item);
+            $bucketWithMilk = Item::get(Item::BUCKET, 0, 1);
+            $bucketWithMilk->setDamage(1);
+            $player->getInventory()->addItem($bucketWithMilk);
+            InteractionHelper::displayButtonText("", $player, $this);
+            return true;
+        }
+        return false;
     }
 }

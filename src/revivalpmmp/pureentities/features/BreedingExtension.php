@@ -10,6 +10,7 @@ use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class BreedingExtension {
@@ -72,8 +73,23 @@ class BreedingExtension {
      */
     private $parent = null;
 
+    /**
+     * Is initialized from entity, when it's constructed
+     *
+     * @var int
+     */
+    private $adultHeight = -1;
+
+    /**
+     * Is initialized from entity, when it's constructed
+     * @var int
+     */
+    private $adultWidth = -1;
+
     public function __construct(Entity $belongsTo) {
         $this->entity = $belongsTo;
+        $this->adultHeight = $belongsTo->height;
+        $this->adultWidth = $belongsTo->width;
     }
 
     /**
@@ -156,8 +172,20 @@ class BreedingExtension {
         $this->entity->namedtag->Age = new IntTag(self::NBT_KEY_AGE, $age); // set baby (all under zero is baby) - this is only for testing!
         if ($age < 0) {
             $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 0.5); // this is a workaround?!
+            if (!$this->entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY)) {
+                $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY, true); // set baby
+                // we also need to adjust the height and width of the entity
+                $this->entity->height = $this->adultHeight / 2; // because we scale 0.5
+                $this->entity->width = $this->adultWidth / 2; // because we scale 0.5
+            }
         } else {
             $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 1.0); // set as an adult entity
+            if ($this->entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY)) {
+                $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY, false); // set adult
+                // reset entity sizes
+                $this->entity->height = $this->adultHeight;
+                $this->entity->width = $this->adultWidth;
+            }
             // forget the parent and reset baseTarget immediately
             $this->setParent(null);
             $this->entity->baseTarget = null;
@@ -252,7 +280,7 @@ class BreedingExtension {
             // search for partner
             if ($this->partnerSearchTimer >= self::SEARCH_FOR_PARTNER_DELAY and
                 $this->getBreedPartner() == null) {
-                $validTarget = $this->findAnotherEntityInLove(49); // find another target within 20 blocks
+                $validTarget = $this->findAnotherEntityInLove(PluginConfiguration::getInstance()->getMaxFindPartnerDistance()); // find another target within 20 blocks
                 if ($validTarget != false) {
                     $this->setBreedPartner($validTarget); // now my target is my "in love" partner - this entity will move to the other entity
                     $validTarget->getBreedingExtension()->setBreedPartner($this->entity); // set the other one's breed partner to ourselves
@@ -276,11 +304,6 @@ class BreedingExtension {
         PureEntities::logOutput("Breedable(" . $this->entity . "): findAnotherEntityInLove -> entering", PureEntities::DEBUG);
         $entityFound = false;
         foreach ($this->entity->getLevel()->getEntities() as $otherEntity) {
-            PureEntities::logOutput("Breedable(" . $this->entity . "): findAnotherEntityInLove, checking " .
-                "[sameClass:" . (strcmp(get_class($otherEntity), get_class($this->entity)) == 0) . "] " .
-                "[inLove:" . (($otherEntity instanceof Player) ? 0 : ($otherEntity->getBreedingExtension()->getInLove() > 0)) . "] " .
-                "[idMatching:" . ($otherEntity->getId() != $this->entity->getId()) . "] " .
-                "[breedPartner:" . (($otherEntity instanceof Player) ? "null" : ($otherEntity->getBreedingExtension()->getBreedPartner() == null)) . "]", PureEntities::DEBUG);
             if (strcmp(get_class($otherEntity), get_class($this->entity)) == 0 and // must be of the same species
                 $otherEntity->distance($this->entity) <= $range and // must be in range
                 $otherEntity->getBreedingExtension()->getInLove() > 0 and // must be in love
@@ -358,8 +381,6 @@ class BreedingExtension {
             $this->setInLove(self::DEFAULT_IN_LOVE_TICKS);
             // checkTarget method recognizes the "inlove" and tries to find a partner
         }
-        // reset player's button text
-        $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
         return true;
     }
 
@@ -372,9 +393,10 @@ class BreedingExtension {
 
         // for a baby force to set the baseTarget to the parent (if it's available)
         if ($this->isBaby() and
-            $this->getParent() != null and
+            $this->getParent() !== null and
             $this->getParent()->isAlive() and
-            !$this->getParent()->closed) {
+            !$this->getParent()->closed and
+            ($this->entity->baseTarget === null or !$this->entity->baseTarget instanceof Player)) {
             PureEntities::logOutput("Breedable(" . $this->entity . "): isBaby, setting parent to " . $this->getParent(), PureEntities::DEBUG);
             $this->entity->baseTarget = $this->getParent();
             if ($this->getParent()->distance($this->entity) <= 4) {

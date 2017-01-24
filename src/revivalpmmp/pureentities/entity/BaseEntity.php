@@ -30,8 +30,6 @@ abstract class BaseEntity extends Creature{
     private $friendly = false;
     private $wallcheck = true;
 
-    protected $maxInteractDistance = 4;
-
     public function __destruct(){}
 
     public abstract function updateMove($tickDiff);
@@ -84,8 +82,6 @@ abstract class BaseEntity extends Creature{
             $this->setWallCheck($this->namedtag["WallCheck"]);
         }
         $this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
-
-        $this->maxInteractDistance = PureEntities::getInstance()->getMaxInteractDistance();
     }
 
     public function saveNBT(){
