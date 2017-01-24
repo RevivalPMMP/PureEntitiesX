@@ -6,6 +6,8 @@ requirements:
 
 always_pending:
   title_regex: 'WIP'
+  labels:
+    - "Status: Work in Progress"
 
 group_defaults:
   approve_by_comment:
