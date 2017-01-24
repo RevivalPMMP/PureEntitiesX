@@ -102,6 +102,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
      * Simple method that milks this cow
      *
      * @param Player $player
+     * @return bool true if milking was successful, false if not
      */
     public function milk (Player $player) : bool{
         PureEntities::logOutput("Cow ($this): milk by $player", PureEntities::DEBUG);

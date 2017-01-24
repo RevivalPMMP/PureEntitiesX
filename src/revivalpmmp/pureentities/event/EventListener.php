@@ -19,6 +19,7 @@ use pocketmine\network\protocol\InteractPacket;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
+use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PureEntities;
@@ -91,6 +92,10 @@ class EventListener implements Listener {
                     if ($itemInHand != null) {
                         $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
                     }
+                } else if ($entity instanceof Wolf and
+                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
+                    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] taming ...", PureEntities::DEBUG);
+                    $return = $entity->tame($player);
                 }
 			}
 		}

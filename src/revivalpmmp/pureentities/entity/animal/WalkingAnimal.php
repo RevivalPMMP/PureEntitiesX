@@ -81,7 +81,7 @@ abstract class WalkingAnimal extends WalkingEntity {
 
     public function checkTarget() {
         // breeding implementation (as only walking entities can breed atm)
-        if ($this instanceof IntfCanBreed) {
+        if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
             // we should also check for any blocks of interest for the entity
             $this->getBreedingExtension()->checkInLove();
             // tick the breedable class embedded
