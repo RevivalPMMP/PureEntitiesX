@@ -26,7 +26,6 @@ groups:
       branches:
         - master
         - 1.0.0-bug-fixes
-        - NewMobs
       files:
         include:
           - '*.php'
