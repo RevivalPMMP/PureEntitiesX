@@ -19,6 +19,7 @@ use pocketmine\network\protocol\InteractPacket;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
+use revivalpmmp\pureentities\entity\monster\walking\SnowGolem;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\InteractionHelper;
@@ -96,7 +97,13 @@ class EventListener implements Listener {
                     strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
                     PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] taming ...", PureEntities::DEBUG);
                     $return = $entity->tame($player);
+                } else if ($entity instanceof SnowGolem and
+                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SHEAR) == 0 and
+                    !$entity->isSheared()) {
+                    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] shearing snowgolem ...", PureEntities::DEBUG);
+                    $return = $entity->setSheared(true); // shear the entity!
                 }
+
 			}
 		}
 		return $return;

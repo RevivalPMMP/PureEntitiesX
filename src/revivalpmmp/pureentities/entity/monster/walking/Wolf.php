@@ -156,6 +156,7 @@ class Wolf extends WalkingMonster{
         // set data properties
         $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, self::RED);
         $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, true); // set sitting after tamed
+        $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED, true); // set tamed
     }
 
     public function isTamed () {
