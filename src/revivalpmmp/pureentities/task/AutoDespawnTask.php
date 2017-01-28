@@ -52,7 +52,6 @@ class AutoDespawnTask extends PluginTask {
                             $entity->close();
                         }
                     }
-                    
                 } elseif($despawnable[$entity->getId()] === 3) {
                     if($entity instanceof Animal || $entity instanceof Monster) {
                         $entity->close();

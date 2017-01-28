@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-namespace revivalpmmp\pureentities\entity\animal\walking;
+namespace revivalpmmp\pureentities\entity\animal\jumping;
 
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
@@ -24,7 +24,7 @@ use pocketmine\Player;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
-class Rabbit extends WalkingAnimal{
+class Rabbit extends WalkingAnimal{ //TODO create JumpingAnimal class
     const NETWORK_ID = Data::RABBIT;
 
     public $width = 0.5;

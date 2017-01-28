@@ -21,5 +21,5 @@ namespace revivalpmmp\pureentities\entity\animal\swimming;
 use revivalpmmp\pureentities\entity\animal\Animal;
 
 class Squid extends \pocketmine\entity\Squid implements Animal {
-	// TODO: refer to the NewMobs branch for this mobs data
+	//TODO implement
 }

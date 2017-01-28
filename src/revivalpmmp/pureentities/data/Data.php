@@ -19,7 +19,6 @@
 namespace revivalpmmp\pureentities\data;
 
 interface Data {
-  
   const CHICKEN = 10;
   const COW = 11;
   const PIG = 12;

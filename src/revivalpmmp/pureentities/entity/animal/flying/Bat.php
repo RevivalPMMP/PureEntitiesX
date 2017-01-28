@@ -23,7 +23,7 @@ use revivalpmmp\pureentities\entity\animal\FlyingAnimal;
 use pocketmine\entity\Creature;
 
 class Bat extends FlyingAnimal{
-	// TODO: refer to the NewMobs branch for this mobs data
+	//TODO implement
     const NETWORK_ID = Data::BAT;
 
     public $width = 0.3;
