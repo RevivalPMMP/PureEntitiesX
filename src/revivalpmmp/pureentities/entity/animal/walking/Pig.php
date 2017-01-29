@@ -2,19 +2,26 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\entity\Ageable;
+use pocketmine\entity\Creature;
+use pocketmine\inventory\InventoryHolder;
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PluginConfiguration;
+use revivalpmmp\pureentities\PureEntities;
 
-class Pig extends WalkingAnimal implements Rideable, IntfCanBreed {
+class Pig extends WalkingAnimal implements Rideable, Ageable, InventoryHolder, IntfCanBreed {
     const NETWORK_ID = 12;
 
     public $width = 1.45;
     public $height = 1.12;
 
-    private $feedableItems = array (
+    private $feedableItems = array(
         Item::CARROT,
         Item::BEETROOT);
 
@@ -35,7 +42,11 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed {
         return "Pig";
     }
 
-    /**
+    public function isBaby() {
+	    //
+    }
+
+	/**
      * Returns the breedable class or NULL if not configured
      *
      * @return BreedingExtension
@@ -61,7 +72,27 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed {
         return $this->feedableItems;
     }
 
-    public function getDrops(){
+	public function targetOption(Creature $creature, float $distance) : bool{
+		if ($creature instanceof Player) {
+			if ($creature != null and $creature->getInventory() != null) {
+				if ($this->getInventory()) {
+					if ($distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) {
+						InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_RIDE, $creature, $this);
+						return true;
+					}
+				} else {
+					InteractionHelper::displayButtonText("", $creature, $this);
+				}
+			}
+		}
+		return false;
+	}
+
+	public function getInventory() {
+		//
+	}
+
+	public function getDrops(){
         if ($this->isOnFire()) {
           return [Item::get(Item::COOKED_PORKCHOP, 0, mt_rand(1, 3))];
         } else {

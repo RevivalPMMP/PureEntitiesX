@@ -8,6 +8,7 @@ use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\task\spawners\animal\BatSpawner;
 use revivalpmmp\pureentities\task\spawners\animal\ChickenSpawner;
 use revivalpmmp\pureentities\task\spawners\animal\CowSpawner;
+use revivalpmmp\pureentities\task\spawners\BaseSpawner;
 use revivalpmmp\pureentities\task\spawners\monster\BlazeSpawner;
 use revivalpmmp\pureentities\task\spawners\monster\CaveSpiderSpawner;
 use revivalpmmp\pureentities\task\spawners\monster\CreeperSpawner;
@@ -31,7 +32,7 @@ class AutoSpawnTask extends PluginTask {
 
     private $plugin;
 
-    /** @var array $spawnerClasses */
+    /** @var BaseSpawner[] $spawnerClasses */
     private $spawnerClasses = [];
 
     public function __construct(PureEntities $plugin) {
@@ -50,9 +51,9 @@ class AutoSpawnTask extends PluginTask {
 
                         $x = $player->x + mt_rand(-20, 20);
                         $z = $player->z + mt_rand(-20, 20);
-                        $y = $level->getHighestBlockAt($x, $z);
+                        $y = $level->getHighestBlockAt($x, $z); //causes an error?
 
-                        $correctedPosition = PureEntities::getFirstAirAbovePosition($x, $y, $z, $level); // returns the AIR block found upwards (it seems, highest block is not working :()
+                        $correctedPosition = PureEntities::getFirstAirAbovePosition($x, $y, $z, $level); //Why is this starting at the top position?
                         $pos = new Position($correctedPosition->x, $correctedPosition->y - 1, $correctedPosition->z, $level);
                         $spawnerClass->spawn($pos, $player);
                     }

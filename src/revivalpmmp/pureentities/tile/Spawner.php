@@ -102,7 +102,7 @@ class Spawner extends Spawnable {
                 $y = $this->level->getHighestBlockAt($this->x, $this->z);
                 $x = $this->x + mt_rand(-$this->spawnRange, $this->spawnRange);
                 $z = $this->z + mt_rand(-$this->spawnRange, $this->spawnRange);
-                $pos = PureEntities::getFirstAirAbovePosition($x, $y, $z, $this->level);
+                $pos = PureEntities::getFirstAirAbovePosition($x, $y, $z, $this->level); //Why is this starting at the top position?
                 $pos->y += BaseSpawner::HEIGHTS[$this->entityId];
                 $entity = PureEntities::create($this->entityId, $pos);
                 if($entity != null){

@@ -51,7 +51,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
 	public $length = 1.4375;
 	public $height = 1.8;
 
-    private $feedableItems = array (Item::WHEAT);
+    private $feedableItems = array(Item::WHEAT);
 
     /**
      * Is needed for breeding functionality
@@ -105,7 +105,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
     }
 
     /**
-     * Returns the appropiate NetworkID associated with this entity
+     * Returns the appropriate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
