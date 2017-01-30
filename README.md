@@ -5,7 +5,7 @@
 [![Poggit-CI](https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX)](https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX/PureEntitiesX)
 [![Travis-CI](https://api.travis-ci.org/RevivalPMMP/PureEntitiesX.svg?branch=master)](https://travis-ci.org/RevivalPMMP/PureEntitiesX)
 
-Please ask questions/get support on our Forums: http://forums.revivalpmmp.gq/
+Please ask questions/get support on our Forums: http://revivalpmmpforums.gq/
 
 ====
 
