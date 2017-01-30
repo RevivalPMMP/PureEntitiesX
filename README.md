@@ -17,7 +17,7 @@ Compatibility may be found with some, but do not expect anything.
 
 ## Contributing/Issues:
 
-We are pretty relaxed about our issues. As long as they are descriptive and contain readable english, we may allow them to be referenced for bug fixes. For Pull Requests, please make sure that they actually fix or add something and that you ***test it*** before you PR. If the PR is buggy, we will request changes or close it. Please use our [Gitter](https://gitter.im/RevivalPMMP/PureEntitiesX) for setup questions, feature requests, and anything that isn't an Issue. ***Please note that issues that don't comply with our rules will be closed***
+We are pretty relaxed about our issues. As long as they are descriptive and contain readable english, we may allow them to be referenced for bug fixes. For Pull Requests, please make sure that they actually fix or add something and that you ***test it*** before you PR. If the PR is buggy, we will request changes or close it. Please use our [Forums](http://revivalpmmpforums.gq) for setup questions, feature requests, and anything that isn't an Issue. ***Please note that issues that don't comply with our rules will be closed***
 
 ## Usage:
 
