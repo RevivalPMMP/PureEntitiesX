@@ -46,6 +46,10 @@ groups:
     required: 2
     teams:
       - rescuers
+    conditions:
+      labels:
+        exclude:
+          - 'PR: Cosmetic'
     reset_on_push:
       enabled: true
     reset_on_reopened:
