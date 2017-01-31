@@ -7,7 +7,6 @@ use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Position;
@@ -20,7 +19,6 @@ use pocketmine\network\protocol\InteractPacket;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
-use revivalpmmp\pureentities\entity\monster\walking\SnowGolem;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\InteractionHelper;
@@ -65,23 +63,6 @@ class EventListener implements Listener {
 	}
 
     /**
-     * We need this method for tamed animals / monsters to bind them to the logged in entity if
-     * not done so.
-     * @param PlayerJoinEvent $event
-     */
-	public function playerJoin (PlayerJoinEvent $event) {
-        $player = $event->getPlayer();
-        foreach ($player->getLevel()->getEntities() as $entity) {
-            if ($entity instanceof Wolf) {
-                $owner = $entity->getOwner();
-                if ($entity->isTamed() &&  $owner !== null) {
-                    $entity->setOwner($owner);
-                }
-            }
-        }
-    }
-
-    /**
      * We receive a DataPacketReceiveEvent - which we need for interaction with entities
      *
      * @param DataPacketReceiveEvent $event
@@ -111,22 +92,11 @@ class EventListener implements Listener {
                     if ($itemInHand != null) {
                         $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
                     }
-                } else if ($entity instanceof Wolf) {
-			        if (strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
-                        PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] taming ...", PureEntities::DEBUG);
-                        $return = $entity->tame($player);
-                    } else if (strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SIT) == 0) {
-                        PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] switch sitting flag ...", PureEntities::DEBUG);
-                        $entity->setSitting(!$entity->isSitting());
-                        $return = true;
-                    }
-                } else if ($entity instanceof SnowGolem and
-                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SHEAR) == 0 and
-                    !$entity->isSheared()) {
-                    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] shearing snowgolem ...", PureEntities::DEBUG);
-                    $return = $entity->setSheared(true); // shear the entity!
+                } else if ($entity instanceof Wolf and
+                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
+                    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] taming ...", PureEntities::DEBUG);
+                    $return = $entity->tame($player);
                 }
-
 			}
 		}
 		return $return;

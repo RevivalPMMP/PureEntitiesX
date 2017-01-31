@@ -25,16 +25,15 @@ class PluginConfiguration {
      * @return PluginConfiguration the current instance of the plugin main class
      */
     public static function getInstance() : PluginConfiguration {
-        return PluginConfiguration::$instance;
+        return self::$instance;
     }
 
-    public function __construct() {
-        $pluginBase = PureEntities::getInstance();
+    public function __construct(PureEntities $pluginBase) {
 
         // read some more config which we need internally (read once, give access to them via this class!)
         $this->maxFindPartnerDistance = $pluginBase->getConfig()->getNested("distances.find-partner", 49);
         $this->maxInteractDistance    = $pluginBase->getConfig()->getNested("distances.interact", 4);
-        $this->interactStayTime       = $pluginBase->getConfig()->getNested("interaction.stay-time", 20); // ~ 2 seconds default?
+        $this->interactStayTime       = $pluginBase->getConfig()->getNested("interaction.stay-time", 20); // ~ 1 second default?
         $this->blockOfInterestTicks   = $pluginBase->getConfig()->getNested("ticks.block-interest", 300);
         // print effective configuration!
         $pluginBase->getServer()->getLogger()->notice("Distances configured: [findPartner:" . $this->maxFindPartnerDistance . "] [interact:" . $this->maxInteractDistance . "]" .

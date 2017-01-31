@@ -21,9 +21,7 @@ namespace revivalpmmp\pureentities;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
-use pocketmine\entity\Creature;
 use pocketmine\Player;
-use pocketmine\plugin\Plugin;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
 use revivalpmmp\pureentities\entity\monster\jumping\Slime;
@@ -57,6 +55,7 @@ use revivalpmmp\pureentities\entity\monster\walking\Husk;
 use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
 use revivalpmmp\pureentities\event\EventListener;
+use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
@@ -181,7 +180,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
 	    $this->getServer()->getLogger()->notice("Enabled!");
 	    $this->getServer()->getLogger()->notice("You're Running ".$this->getDescription()->getFullName());
 
-	    new PluginConfiguration (); // create plugin configuration
+	    new PluginConfiguration($this); // create plugin configuration
     }
 
     public function onDisable(){
@@ -239,7 +238,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
             return false;
         } else {
             $entity = self::create($entityid, $pos);
-            if ($entity !== null) {
+            if ($entity !== null and $entity instanceof IntfCanBreed) {
                 if ($baby and $entity->getBreedingExtension() !== false) {
                     $entity->getBreedingExtension()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
                     if ($parentEntity != null) {
@@ -347,7 +346,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
     /**
      * @param CommandSender $sender
-     * @param Command $cmd
+     * @param Command $command
      * @param string $label
      * @param array $args
      * @return bool
@@ -390,7 +389,8 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return string
      */
     private function getShortClassName (string $longClassName) : string {
-        $longClassName = strtok ($longClassName , "\\");
+        $short = "";
+    	$longClassName = strtok ($longClassName , "\\");
         while ($longClassName !== false) {
             $short = $longClassName;
             $longClassName = strtok("\\");
