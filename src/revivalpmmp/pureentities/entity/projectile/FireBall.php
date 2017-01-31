@@ -22,6 +22,8 @@
 namespace revivalpmmp\pureentities\entity\projectile;
 
 use pocketmine\level\format\FullChunk;
+use pocketmine\level\format\Chunk;
+use pocketmine\level\generic\GenericChunk; 
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
@@ -29,7 +31,7 @@ use pocketmine\Player;
 use pocketmine\entity\Projectile;
 use pocketmine\entity\Entity;
 use pocketmine\level\Explosion;
-use pocketmine\event\entity\ExplosionPrimeEvent;
+use revivalpmmp\pureentities\entity\monster\walking\ExplosionPrimeEvent;
 use revivalpmmp\pureentities\data\Data;
 
 class FireBall extends Projectile{
@@ -46,7 +48,7 @@ class FireBall extends Projectile{
     protected $isCritical;
     protected $canExplode = false;
 
-    public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
+    public function __construct(Chunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
         parent::__construct($chunk, $nbt, $shootingEntity);
 
         $this->isCritical = $critical;
