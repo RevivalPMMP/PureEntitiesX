@@ -5,7 +5,6 @@ namespace revivalpmmp\pureentities\task;
 use pocketmine\level\Position;
 use pocketmine\scheduler\PluginTask;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\task\spawners\animal\BatSpawner;
 use revivalpmmp\pureentities\task\spawners\animal\ChickenSpawner;
 use revivalpmmp\pureentities\task\spawners\animal\CowSpawner;
 use revivalpmmp\pureentities\task\spawners\monster\BlazeSpawner;
@@ -50,11 +49,27 @@ class AutoSpawnTask extends PluginTask {
 
                         $x = $player->x + mt_rand(-20, 20);
                         $z = $player->z + mt_rand(-20, 20);
-                        $y = $level->getHighestBlockAt($x, $z);
+                        $y = $player->y;
 
-                        $correctedPosition = PureEntities::getFirstAirAbovePosition($x, $y, $z, $level); // returns the AIR block found upwards (it seems, highest block is not working :()
-                        $pos = new Position($correctedPosition->x, $correctedPosition->y - 1, $correctedPosition->z, $level);
-                        $spawnerClass->spawn($pos, $player);
+                        // search up- and downwards the current player's y-coordinate to find a valid block!
+                        // now it's possible that upwards the highest AIR block cannot be found - so we also have to
+                        // search downwards - after that check if one of the found positions is not NULL and use
+                        // the position for spawning entities
+                        $correctedPositionUpwards = PureEntities::getFirstAirAbovePosition($x, $y, $z, $level); // returns the AIR block found upwards
+                        $correctedPositionDownwards = PureEntities::getFirstAirUnderPosition($x, $y, $z, $level); // returns the AIR block found downwards
+                        $correctedPosition = null;
+                        if ($correctedPositionUpwards !== null) {
+                            $correctedPosition = $correctedPositionUpwards;
+                        } else if ($correctedPositionDownwards !== null) {
+                            $correctedPosition = $correctedPositionDownwards;
+                        }
+
+                        if ($correctedPosition !== null) {
+                            $pos = new Position($correctedPosition->x, $correctedPosition->y - 1, $correctedPosition->z, $level);
+                            $spawnerClass->spawn($pos, $player);
+                        } else {
+                            PureEntities::logOutput("AutoSpawnTask: cannot find a suitable spawn coordinate [search.x:$x] [search.y:$y] [search.z:$z]" , PureEntities::WARN);
+                        }
                     }
                 }
             }
