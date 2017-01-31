@@ -3,7 +3,6 @@
 namespace revivalpmmp\pureentities\event;
 
 use pocketmine\block\Air;
-use pocketmine\entity\Entity;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
@@ -103,7 +102,6 @@ class EventListener implements Listener {
                     PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] shearing snowgolem ...", PureEntities::DEBUG);
                     $return = $entity->setSheared(true); // shear the entity!
                 }
-
 			}
 		}
 		return $return;

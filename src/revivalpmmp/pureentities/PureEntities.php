@@ -92,6 +92,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
     const BUTTON_TEXT_FEED  = "Feed";
     const BUTTON_TEXT_MILK  = "Milk";
     const BUTTON_TEXT_TAME  = "Tame";
+    const BUTTON_TEXT_SIT   = "Sit";
 
     private static $registeredClasses = [];
 
@@ -319,16 +320,14 @@ class PureEntities extends PluginBase implements CommandExecutor {
     /**
      * Returns the first position of block of AIR found at above the given coordinates.
      *
-     * Sometimes it seems that getHighestBlockAt is not working properly. So i introduced this additional
-     * method.
-     *
      * @param int $x        the x coordinate
      * @param int $y        the y coordinate (which is used in +1 until an AIR block is found)
      * @param int $z        the z coordinate
      * @param Level $level  the level to search in
-     * @return Position     the Position of the first AIR block found above given coordinates
+     *
+     * @return null|Position
      */
-    public static function getFirstAirAbovePosition ($x, $y, $z, Level $level) : Position {
+    public static function getFirstAirAbovePosition ($x, $y, $z, Level $level) {
         $air = false;
         $newPosition = null;
         while (!$air) {
@@ -338,6 +337,37 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 $air = true;
             } else {
                 $y = $y + 1;
+                if ($y > 255) {
+                    break;
+                }
+            }
+        }
+        return $newPosition;
+    }
+
+    /**
+     * Returns the first position of block of AIR found at under the given coordinates.
+     *
+     * @param int $x        the x coordinate
+     * @param int $y        the y coordinate (which is used in +1 until an AIR block is found)
+     * @param int $z        the z coordinate
+     * @param Level $level  the level to search in
+     *
+     * @return null|Position
+     */
+    public static function getFirstAirUnderPosition ($x, $y, $z, Level $level) : Position {
+        $air = false;
+        $newPosition = null;
+        while (!$air) {
+            $id = $level->getBlockIdAt($x, $y, $z);
+            if ($id == 0) { // this is an air block ...
+                $newPosition = new Position($x, $y, $z, $level);
+                $air = true;
+            } else {
+                $y = $y - 1;
+                if ($y < -255) {
+                    break;
+                }
             }
         }
         return $newPosition;
