@@ -5,5 +5,5 @@ branches:
 projects:
   PureEntitiesX:
     path: ""
-    icon: icon.png
+    icon: PureEntitiesX/icon.png
 ...
