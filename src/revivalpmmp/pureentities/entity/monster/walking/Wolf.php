@@ -147,7 +147,6 @@ class Wolf extends WalkingMonster{
             $pk->eid = $this->getId();
             $pk->event = EntityEventPacket::TAME_FAIL; // this "plays" fail animation on entity
             $player->dataPacket($pk);
-            // reduce bones in hand ...
         }
         return $tameSuccess;
     }
