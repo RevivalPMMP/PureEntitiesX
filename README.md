@@ -33,4 +33,5 @@ You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item
 
 ## How to Install
 
-You can download the latest version of the plugin phar from our releases [here](https://github.com/RevivalPMMP/PureEntitiesX/releases/latest). Just drop it into your pluginsfolder and run your server!
+You can download the latest version of the plugin phar from our releases [here](https://github.com/RevivalPMMP/PureEntitiesX/releases/latest). Just drop it into your plugins folder and run your server!
+You can also download our plugins form our forums resources section
