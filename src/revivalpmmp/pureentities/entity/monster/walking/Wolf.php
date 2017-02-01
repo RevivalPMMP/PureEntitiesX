@@ -210,6 +210,7 @@ class Wolf extends WalkingMonster{
     public function setSitting (bool $sit) {
         $this->namedtag->Sitting = new IntTag(self::NBT_KEY_SITTING, $sit ? 1 : 0);
         $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, $sit);
+        $this->setMovement(!$sit);
     }
 
     /**
