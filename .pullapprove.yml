@@ -6,6 +6,8 @@ requirements:
 
 always_pending:
   title_regex: 'WIP'
+  labels:
+    - "Status: Work in Progress"
 
 group_defaults:
   approve_by_comment:
@@ -24,7 +26,6 @@ groups:
       branches:
         - master
         - 1.0.0-bug-fixes
-        - NewMobs
       files:
         include:
           - '*.php'

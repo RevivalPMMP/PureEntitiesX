@@ -1,7 +1,7 @@
 <?php
 
 /*  PureEntitiesX: Mob AI Plugin for PMMP
-    Copyright (C) 2016 RevivalPMMP
+    Copyright (C) 2017 RevivalPMMP
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
 namespace revivalpmmp\pureentities;
 
 use revivalpmmp\pureentities\entity\animal\flying\Bat;
+use revivalpmmp\pureentities\entity\animal\jumping\Rabbit;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\monster\swimming\Guardian;
 use revivalpmmp\pureentities\entity\monster\swimming\ElderGuardian;
@@ -33,7 +34,6 @@ use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Mooshroom;
 use revivalpmmp\pureentities\entity\animal\walking\Ocelot;
 use revivalpmmp\pureentities\entity\animal\walking\Pig;
-use revivalpmmp\pureentities\entity\animal\walking\Rabbit;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\flying\Ghast;
@@ -121,17 +121,17 @@ class PureEntities extends PluginBase implements Listener{
             ZombieVillager::class,
             FireBall::class
         ];
-        foreach($classes as $name){
-            Entity::registerEntity($name);
+        foreach($classes as $class){
+            Entity::registerEntity($class);
             if(
-                $name == IronGolem::class
-                || $name == FireBall::class
-                || $name == SnowGolem::class
-                || $name == ZombieVillager::class
+                $class == IronGolem::class
+                || $class == FireBall::class
+                || $class == SnowGolem::class
+                || $class == ZombieVillager::class
             ){
                 continue;
             }
-            $item = Item::get(Item::SPAWN_EGG, $name::NETWORK_ID);
+            $item = Item::get(Item::SPAWN_EGG, $class::NETWORK_ID);
             if(!Item::isCreativeItem($item)){
                 Item::addCreativeItem($item);
             }
@@ -194,6 +194,9 @@ class PureEntities extends PluginBase implements Listener{
         return Entity::createEntity($type, $chunk, $nbt, ...$args);
     }
 
+	/**
+	 * @param PlayerInteractEvent $ev
+	 */
     public function PlayerInteractEvent(PlayerInteractEvent $ev){
         if($ev->getFace() == 255 || $ev->getAction() != PlayerInteractEvent::RIGHT_CLICK_BLOCK){
             return;
@@ -224,12 +227,12 @@ class PureEntities extends PluginBase implements Listener{
     }
 
     /**
-     * @param DataPacketReceiveEvent $event
+     * @param DataPacketReceiveEvent $ev
      * @return boolean
      */
-    public function shearSheep(DataPacketReceiveEvent $event) {
-        $packet = $event->getPacket();
-        $player = $event->getPlayer();
+    public function shearSheep(DataPacketReceiveEvent $ev){
+        $packet = $ev->getPacket();
+        $player = $ev->getPlayer();
         if($packet->pid() === Info::INTERACT_PACKET) {
             if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
                 foreach($player->level->getEntities() as $entity) {
@@ -310,18 +313,18 @@ class PureEntities extends PluginBase implements Listener{
     
     /**
      * @param Position $pos
-     * @param int $entityid
+     * @param int $entityId
      * @param Level $level
      * @param string $type
      * 
      * @return boolean
      */
-    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type) {
-        $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
-        if($event->isCancelled()) {
+    public function scheduleCreatureSpawn(Position $pos, int $entityId, Level $level, string $type){
+        $this->getServer()->getPluginManager()->callEvent($ev = new CreatureSpawnEvent($this, $pos, $entityId, $level, $type));
+        if($ev->isCancelled()) {
             return false;
         } else {
-            $entity = self::create($entityid, $pos);
+            $entity = self::create($entityId, $pos);
             $entity->spawnToAll();
             return true;
         }

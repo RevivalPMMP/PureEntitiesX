@@ -11,6 +11,7 @@ php:
 branches:
  - master
  - 1.0.0-bug-fixes
+ - NewMobs
 before_script:
  - cd /home/travis/build/
  - pecl install channel://pecl.php.net/pthreads-3.1.6
@@ -25,6 +26,7 @@ before_script:
  - cp -rf RevivalPMMP/PureEntitiesX/Travis.php PocketMine-MP/
  - cd PocketMine-MP/plugins/
  - wget -O DevTools.phar https://poggit.pmmp.io/r/1160/PocketMine-DevTools.phar
+
  
 script:
  - php Travis.php
