@@ -5,7 +5,7 @@
 [![Poggit-CI](https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX)](https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX/PureEntitiesX)
 [![Travis-CI](https://api.travis-ci.org/RevivalPMMP/PureEntitiesX.svg?branch=master)](https://travis-ci.org/RevivalPMMP/PureEntitiesX)
 
-Please ask questions/get support on our Forums: http://forums.revivalpmmp.gq/
+Please ask questions/get support on our Forums: http://revivalpmmpforums.gq/
 
 ====
 
@@ -17,7 +17,7 @@ Compatibility may be found with some, but do not expect anything.
 
 ## Contributing/Issues:
 
-We are pretty relaxed about our issues. As long as they are descriptive and contain readable english, we may allow them to be referenced for bug fixes. For Pull Requests, please make sure that they actually fix or add something and that you ***test it*** before you PR. If the PR is buggy, we will request changes or close it. Please use our [Gitter](https://gitter.im/RevivalPMMP/PureEntitiesX) for setup questions, feature requests, and anything that isn't an Issue. ***Please note that issues that don't comply with our rules will be closed***
+We are pretty relaxed about our issues. As long as they are descriptive and contain readable english, we may allow them to be referenced for bug fixes. For Pull Requests, please make sure that they actually fix or add something and that you ***test it*** before you PR. If the PR is buggy, we will request changes or close it. Please use our [Forums](http://revivalpmmpforums.gq) for setup questions, feature requests, and anything that isn't an Issue. ***Please note that issues that don't comply with our rules will be closed***
 
 ## Usage:
 
@@ -33,4 +33,5 @@ You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item
 
 ## How to Install
 
-You can download the latest version of the plugin phar from our releases [here](https://github.com/RevivalPMMP/PureEntitiesX/releases/latest). Just drop it into your pluginsfolder and run your server!
+You can download the latest version of the plugin phar from our releases [here](https://github.com/RevivalPMMP/PureEntitiesX/releases/latest). Just drop it into your plugins folder and run your server!
+You can also download our plugins form our forums resources section
