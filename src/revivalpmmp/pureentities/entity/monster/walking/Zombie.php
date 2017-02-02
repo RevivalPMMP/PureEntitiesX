@@ -28,7 +28,7 @@ use pocketmine\item\Item;
 use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
 
-class Zombie extends WalkingMonster implements Ageable{
+class Zombie extends WalkingMonster {
     const NETWORK_ID = Data::ZOMBIE;
 
     public $width = 0.72;
@@ -40,19 +40,11 @@ class Zombie extends WalkingMonster implements Ageable{
 
     public function initEntity(){
         parent::initEntity();
-
-        if($this->getDataFlag(self::DATA_FLAG_BABY , 0) === null){
-            $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
-        }
-        $this->setDamage([0, 3, 4, 6]);
+        $this->setDamage([0, 2, 3, 4]);
     }
 
     public function getName(){
         return "Zombie";
-    }
-
-    public function isBaby(){
-        return $this->getDataFlag(self::DATA_FLAG_BABY,0);
     }
 
     public function setHealth($amount){
@@ -93,7 +85,7 @@ class Zombie extends WalkingMonster implements Ageable{
             $this->setOnFire(100);
         }
 
-        Timings::$timerEntityBaseTick->startTiming();
+        Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
 
@@ -112,5 +104,9 @@ class Zombie extends WalkingMonster implements Ageable{
                 break;
         }
         return $drops;
+    }
+
+    public function getMaxHealth() {
+        return 20;
     }
 }

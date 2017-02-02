@@ -60,4 +60,8 @@ class Enderman extends WalkingMonster{
         return [];
     }
 
+//    public function getMaxHealth() {
+//        return 40;
+//    }
+
 }

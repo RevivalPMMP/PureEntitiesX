@@ -116,7 +116,7 @@ class Stray extends WalkingMonster implements ProjectileSource{
             $this->setOnFire(100);
         }
 
-        Timings::$timerEntityBaseTick->startTiming();
+        Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
 
@@ -125,6 +125,10 @@ class Stray extends WalkingMonster implements ProjectileSource{
         array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));
         array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
         return $drops;
+    }
+
+    public function getMaxHealth() {
+        return 20;
     }
 
 }

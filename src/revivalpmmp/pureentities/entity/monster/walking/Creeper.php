@@ -22,12 +22,13 @@ use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Explosive;
+use revivalpmmp\pureentities\entity\monster\walking\ExplosionPrimeEvent;
 use pocketmine\level\Explosion;
 use pocketmine\math\Vector2;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\event\ExplosionPrimeEvent;
+use revivalpmmp\pureentities\PureEntities;
 
 class Creeper extends WalkingMonster implements Explosive{
     const NETWORK_ID = Data::CREEPER;
@@ -37,6 +38,8 @@ class Creeper extends WalkingMonster implements Explosive{
     public $height = 1.8;
 
     private $bombTime = 0;
+
+    private $explodeBlocks = false;
 
     public function getSpeed() : float{
         return 0.9;
@@ -54,6 +57,8 @@ class Creeper extends WalkingMonster implements Explosive{
         if(isset($this->namedtag->BombTime)){
             $this->bombTime = (int) $this->namedtag["BombTime"];
         }
+
+        $this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) == 0 ? false : true);
     }
 
     public function isPowered(){
@@ -75,11 +80,11 @@ class Creeper extends WalkingMonster implements Explosive{
     }
 
     public function explode(){
-        $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8, false));
+        $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
 
         if(!$ev->isCancelled()){
             $explosion = new Explosion($this, $ev->getForce(), $this);
-            $ev->setBlockBreaking(false); // This should be removed later. There should be a configurable option for this.
+            $ev->setBlockBreaking($this->explodeBlocks); // this is configuration!
             if($ev->isBlockBreaking()){
                 $explosion->explodeA();
             }
@@ -147,7 +152,9 @@ class Creeper extends WalkingMonster implements Explosive{
                 $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                 $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
             }
-            $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
+            if ($diff > 0) {
+                $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
+            }
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
         }
 
@@ -190,6 +197,10 @@ class Creeper extends WalkingMonster implements Explosive{
 
     public function getDrops(){
         return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
+    }
+
+    public function getMaxHealth() {
+        return 20;
     }
 
 }

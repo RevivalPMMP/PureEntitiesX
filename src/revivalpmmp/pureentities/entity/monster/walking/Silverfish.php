@@ -37,7 +37,7 @@ class Silverfish extends WalkingMonster{
     public function initEntity(){
         parent::initEntity();
 
-        $this->setMaxDamage(8);
+        $this->setMaxDamage(1);
         $this->setDamage([0, 1, 1, 1]);
     }
 
@@ -56,6 +56,10 @@ class Silverfish extends WalkingMonster{
 
     public function getDrops(){
         return [];
+    }
+
+    public function getMaxHealth() {
+        return 8;
     }
 
 }

@@ -33,10 +33,11 @@ class AutoDespawnTask extends PluginTask {
     }
     
     public function onRun($currentTick){
+        PureEntities::logOutput("AutoDespawnTask: onRun ($currentTick)",PureEntities::DEBUG);
         $despawnable = [];
         foreach($this->plugin->getServer()->getLevels() as $level) {
             foreach($level->getEntities() as $entity) {
-                $despawnable[$entity->getId()] = 2; 
+                $despawnable[$entity->getId()] = 2;
                 foreach($level->getPlayers() as $player) {
                     if($player->distance($entity) <= 32 && $this->plugin->getConfig()->get("auto-despawn") == true) {
                         $despawnable[$entity->getId()] = 1;
@@ -49,11 +50,13 @@ class AutoDespawnTask extends PluginTask {
                     $probability = mt_rand(1, 100);
                     if($probability === 1) {
                         if($entity instanceof Monster) {
+                            PureEntities::logOutput("AutoDespawnTask: close monster entity (id: ". $entity->getId() . ", name:" . $entity->getNameTag() .")",PureEntities::DEBUG);
                             $entity->close();
                         }
                     }
                 } elseif($despawnable[$entity->getId()] === 3) {
                     if($entity instanceof Animal || $entity instanceof Monster) {
+                        PureEntities::logOutput("AutoDespawnTask: close animal/monster entity (id: ". $entity->getId() . ", name:" . $entity->getNameTag() .")",PureEntities::DEBUG);
                         $entity->close();
                     }
                 }

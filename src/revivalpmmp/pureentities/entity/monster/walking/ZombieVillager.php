@@ -68,7 +68,7 @@ class ZombieVillager extends WalkingMonster{
             $this->setOnFire(100);
         }
 
-        Timings::$timerEntityBaseTick->startTiming();
+        Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
 
@@ -87,6 +87,10 @@ class ZombieVillager extends WalkingMonster{
               break;
       }
       return $drops;
+    }
+
+    public function getMaxHealth() {
+        return 20;
     }
 
 }
