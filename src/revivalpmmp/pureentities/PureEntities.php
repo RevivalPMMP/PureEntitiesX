@@ -1,7 +1,7 @@
 <?php
 
 /*  PureEntitiesX: Mob AI Plugin for PMMP
-    Copyright (C) 2016 RevivalPMMP
+    Copyright (C) 2017 RevivalPMMP
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
+use revivalpmmp\pureentities\entity\animal\flying\Bat;
+use revivalpmmp\pureentities\entity\animal\jumping\Rabbit;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
 use revivalpmmp\pureentities\entity\monster\jumping\Slime;
@@ -144,7 +146,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
             FireBall::class
         ];
 
-	    
+
         foreach (self::$registeredClasses as $name) {
             Entity::registerEntity($name);
             if(
@@ -162,6 +164,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
         }
 
  		Tile::registerTile(Spawner::class);
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're Running PureEntitiesX v".$this->getDescription()->getVersion());
 
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
 
@@ -221,7 +224,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
         ]);
         return Entity::createEntity($type, $chunk, $nbt, ...$args);
     }
-    
+
     /**
      * @param Position $pos
      * @param int $entityid
@@ -229,7 +232,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param string $type
      * @param bool $baby
      * @param Entity $parentEntity
-     * 
+     *
      * @return boolean
      */
     public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null) {

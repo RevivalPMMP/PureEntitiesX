@@ -16,38 +16,44 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-namespace revivalpmmp\pureentities\entity\animal\walking;
+namespace revivalpmmp\pureentities\entity\animal\jumping;
 
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
-class Donkey extends WalkingAnimal implements Rideable{
-    const NETWORK_ID = Data::DONKEY;
+class Rabbit extends WalkingAnimal{ //TODO create JumpingAnimal class
+    const NETWORK_ID = Data::RABBIT;
 
-    public $width = 1.4;
-    public $height = 1.6;
+    public $width = 0.5;
+    public $height = 0.5;
 
+    public function getSpeed() : float{
+        return 1.2;
+    }
+    
     public function getName(){
-        return "Donkey";
+        return "Rabbit";
+    }
+
+    public function initEntity(){
+        parent::initEntity();
+
+        $this->setMaxHealth(3);
+        $this->setHealth(3);
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{
         if($creature instanceof Player){
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
+            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::SEEDS && $distance <= 49;
         }
         return false;
-}
-
-    public function getDrops(){
-        return [Item::get(Item::LEATHER, 0, mt_rand(0,2))];
     }
 
-    public function getMaxHealth() {
-        return 20;
+    public function getDrops(){
+        return [];
     }
 
 }
