@@ -18,11 +18,11 @@
 
 namespace revivalpmmp\pureentities;
 
-use revivalpmmp\pureentities\entity\animal\flying\Bat;
-use revivalpmmp\pureentities\entity\animal\jumping\Rabbit;
+use pocketmine\command\Command;
+use pocketmine\command\CommandExecutor;
+use pocketmine\command\CommandSender;
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
-use revivalpmmp\pureentities\entity\monster\swimming\Guardian;
-use revivalpmmp\pureentities\entity\monster\swimming\ElderGuardian;
 use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
 use revivalpmmp\pureentities\entity\monster\jumping\Slime;
 use revivalpmmp\pureentities\entity\animal\walking\Villager;
@@ -34,6 +34,7 @@ use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Mooshroom;
 use revivalpmmp\pureentities\entity\animal\walking\Ocelot;
 use revivalpmmp\pureentities\entity\animal\walking\Pig;
+use revivalpmmp\pureentities\entity\animal\walking\Rabbit;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\flying\Ghast;
@@ -53,38 +54,59 @@ use revivalpmmp\pureentities\entity\monster\walking\ZombieVillager;
 use revivalpmmp\pureentities\entity\monster\walking\Husk;
 use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
-use revivalpmmp\pureentities\tile\Spawner;
-use revivalpmmp\pureentities\task\AutoSpawnMonsterTask;
-use revivalpmmp\pureentities\task\AutoSpawnAnimalTask;
+use revivalpmmp\pureentities\event\EventListener;
+use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
+use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
-use pocketmine\block\Air;
+
 use pocketmine\entity\Entity;
-use pocketmine\event\block\BlockPlaceEvent;
-use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerInteractEvent;
-use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\network\protocol\Info;
-use pocketmine\network\protocol\InteractPacket;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
 use pocketmine\level\Level;
-use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
-use pocketmine\nbt\tag\StringTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+use revivalpmmp\pureentities\tile\Spawner;
 
-class PureEntities extends PluginBase implements Listener{
+class PureEntities extends PluginBase implements CommandExecutor {
+
+    /** @var  PureEntities $instance */
+    private static $instance;
+
+    /** @var string $loglevel */
+    private static $loglevel; // please don't change back to int - makes no sense - string is more human readable
+
+    // logging constants for method call 'logOutput'
+    const NORM = 0;
+    const WARN = 1;
+	const DEBUG = 2;
+
+	// button texts ...
+    const BUTTON_TEXT_SHEAR = "Shear";
+    const BUTTON_TEXT_FEED  = "Feed";
+    const BUTTON_TEXT_MILK  = "Milk";
+    const BUTTON_TEXT_TAME  = "Tame";
+    const BUTTON_TEXT_SIT   = "Sit";
+
+    private static $registeredClasses = [];
+
+    /**
+     * Returns the plugin instance to get access to config e.g.
+     * @return PureEntities the current instance of the plugin main class
+     */
+    public static function getInstance() : PureEntities {
+        return PureEntities::$instance;
+    }
+
 
     public function onLoad(){
-        $classes = [
+        self::$registeredClasses = [
             Stray::class,
             Husk::class,
             Horse::class,
@@ -121,42 +143,48 @@ class PureEntities extends PluginBase implements Listener{
             ZombieVillager::class,
             FireBall::class
         ];
-        foreach($classes as $class){
-            Entity::registerEntity($class);
+
+
+        foreach (self::$registeredClasses as $name) {
+            Entity::registerEntity($name);
             if(
-                $class == IronGolem::class
-                || $class == FireBall::class
-                || $class == SnowGolem::class
-                || $class == ZombieVillager::class
+                $name == IronGolem::class
+                || $name == FireBall::class
+                || $name == SnowGolem::class
+                || $name == ZombieVillager::class
             ){
                 continue;
             }
-            $item = Item::get(Item::SPAWN_EGG, $class::NETWORK_ID);
+            $item = Item::get(Item::SPAWN_EGG, $name::NETWORK_ID);
             if(!Item::isCreativeItem($item)){
                 Item::addCreativeItem($item);
             }
         }
-        
-		//self::registerTile(Spawner::class);
-        
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're Running PureEntitiesX v".$this->getDescription()->getVersion());
-        
+
+ 		Tile::registerTile(Spawner::class);
+
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
+
+        PureEntities::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", 0));
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . PureEntities::$loglevel);
+
+        PureEntities::$instance = $this;
     }
 
     public function onEnable(){
-        $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been enabled");
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] You're running PureEntitiesX Dev!");
+        $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
         $this->saveDefaultConfig();
         $this->reloadConfig();
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnMonsterTask($this), 100);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnAnimalTask($this), 100);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), 20);
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
+	    $this->getServer()->getLogger()->notice("Enabled!");
+	    $this->getServer()->getLogger()->notice("You're Running ".$this->getDescription()->getFullName());
+
+	    new PluginConfiguration($this); // create plugin configuration
     }
 
     public function onDisable(){
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Plugin has been disabled");
+        $this->getServer()->getLogger()->notice("Disabled!");
     }
 
     /**
@@ -194,139 +222,210 @@ class PureEntities extends PluginBase implements Listener{
         return Entity::createEntity($type, $chunk, $nbt, ...$args);
     }
 
-	/**
-	 * @param PlayerInteractEvent $ev
-	 */
-    public function PlayerInteractEvent(PlayerInteractEvent $ev){
-        if($ev->getFace() == 255 || $ev->getAction() != PlayerInteractEvent::RIGHT_CLICK_BLOCK){
-            return;
-        }
-
-        $item = $ev->getItem();
-        $block = $ev->getBlock();
-        if($item->getId() === Item::SPAWN_EGG && $block->getId() == Item::MONSTER_SPAWNER){
-            $ev->setCancelled();
-
-            $tile = $block->level->getTile($block);
-            if($tile != null && $tile instanceof Spawner){
-                $tile->setSpawnEntityType($item->getDamage());
-            }else{
-                if($tile != null){
-                    $tile->close();
+    /**
+     * @param Position $pos
+     * @param int $entityid
+     * @param Level $level
+     * @param string $type
+     * @param bool $baby
+     * @param Entity $parentEntity
+     *
+     * @return boolean
+     */
+    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null) {
+        $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
+        if($event->isCancelled()) {
+            return false;
+        } else {
+            $entity = self::create($entityid, $pos);
+            if ($entity !== null) {
+                if ($entity instanceof IntfCanBreed and $baby and $entity->getBreedingExtension() !== false) {
+                    $entity->getBreedingExtension()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
+                    if ($parentEntity != null) {
+                        $entity->getBreedingExtension()->setParent($parentEntity);
+                    }
                 }
-                $nbt = new CompoundTag("", [
-                    new StringTag("id", Tile::MOB_SPAWNER),
-                    new IntTag("EntityId", $item->getId()),
-                    new IntTag("x", $block->x),
-                    new IntTag("y", $block->y),
-                    new IntTag("z", $block->z),
-                ]);
-                new Spawner($block->getLevel()->getChunk((int) $block->x >> 4, (int) $block->z >> 4), $nbt);
+                PureEntities::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", PureEntities::DEBUG);
+                $entity->spawnToAll();
+                return true;
             }
+            self::logOutput("Cannot create entity [entityId:$entityid]", self::WARN);
+            return false;
         }
     }
 
+    public function checkEntityCount(string $type, $water = false) : bool {
+    	$i = 0;
+    	foreach ($this->getServer()->getLevels() as $level) {
+    		foreach ($level->getEntities() as $entity) {
+    			if(!$entity instanceof Player) {
+    				$i++;
+			    }
+		    }
+	    }
+	    if(strpos(strtolower($type),"animal")) {
+    		if($water == true) {
+			    if($i < $this->getServer()->getProperty("water-animals",5)) {
+			        self::logOutput("checkEntityCount for water returns true",self::DEBUG);
+				    return true;
+			    }
+		    }else{
+			    if($i < $this->getServer()->getProperty("animals",70)) {
+				    self::logOutput("checkEntityCount for animals returns true",self::DEBUG);
+				    return true;
+			    }
+		    }
+	    }else{
+		    if($i < $this->getServer()->getProperty("monsters",70)) {
+			    self::logOutput("checkEntityCount for monsters returns true",self::DEBUG);
+			    return true;
+		    }
+	    }
+	    self::logOutput("checkEntityCount returns false",self::DEBUG);
+	    return false;
+    }
+
+
+	/**
+	 * Logs an output to the plugin's logfile ...
+	 * @param string $logline   the output to be appended
+	 * @param int $type         the type of output to log
+	 * @return int|bool         returns false on failure
+	 */
+	public static function logOutput(string $logline, int $type) {
+		switch($type) {
+			case self::DEBUG:
+			    if (strcmp(self::$loglevel, "debug") == 0) {
+                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                }
+				break;
+			case self::WARN:
+                file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+				break;
+			case self::NORM:
+                file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+				break;
+			default:
+				if(strcmp(self::$loglevel, "debug") == 0) {
+					file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+				} elseif(strcmp(self::$loglevel, "warn") == 0) {
+					file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[31m".(date("j.n.Y G:i:s")." [WARN]  ".$logline."\033[0m\r\n"), FILE_APPEND);
+				}else{
+					file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+				}
+		}
+		return true;
+	}
+
     /**
-     * @param DataPacketReceiveEvent $ev
-     * @return boolean
+     * Returns the first position of block of AIR found at above the given coordinates.
+     *
+     * @param int $x        the x coordinate
+     * @param int $y        the y coordinate (which is used in +1 until an AIR block is found)
+     * @param int $z        the z coordinate
+     * @param Level $level  the level to search in
+     *
+     * @return null|Position
      */
-    public function shearSheep(DataPacketReceiveEvent $ev){
-        $packet = $ev->getPacket();
-        $player = $ev->getPlayer();
-        if($packet->pid() === Info::INTERACT_PACKET) {
-            if($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
-                foreach($player->level->getEntities() as $entity) {
-                    if($entity instanceof Sheep && $entity->distance($player) <= 4) {
-                        if($entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED) === true) {
-                            return false;
-                        } else {
-                            $player->getLevel()->dropItem($entity, Item::get(Item::WOOL, 0, mt_rand(1, 3)));
-                            $entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, true);
-                            $player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, "");
+    public static function getFirstAirAbovePosition ($x, $y, $z, Level $level) {
+        $air = false;
+        $newPosition = null;
+        while (!$air) {
+            $id = $level->getBlockIdAt($x, $y, $z);
+            if ($id == 0) { // this is an air block ...
+                $newPosition = new Position($x, $y, $z, $level);
+                $air = true;
+            } else {
+                $y = $y + 1;
+                if ($y > 255) {
+                    break;
+                }
+            }
+        }
+        return $newPosition;
+    }
+
+    /**
+     * Returns the first position of block of AIR found at under the given coordinates.
+     *
+     * @param int $x        the x coordinate
+     * @param int $y        the y coordinate (which is used in +1 until an AIR block is found)
+     * @param int $z        the z coordinate
+     * @param Level $level  the level to search in
+     *
+     * @return null|Position
+     */
+    public static function getFirstAirUnderPosition ($x, $y, $z, Level $level) : Position {
+        $air = false;
+        $newPosition = null;
+        while (!$air) {
+            $id = $level->getBlockIdAt($x, $y, $z);
+            if ($id == 0) { // this is an air block ...
+                $newPosition = new Position($x, $y, $z, $level);
+                $air = true;
+            } else {
+                $y = $y - 1;
+                if ($y < -255) {
+                    break;
+                }
+            }
+        }
+        return $newPosition;
+    }
+
+    /**
+     * @param CommandSender $sender
+     * @param Command $command
+     * @param string $label
+     * @param array $args
+     * @return bool
+     */
+    public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
+        switch($command->getName()){
+            case "summon":
+                if (count($args) == 1 or count($args) == 2) {
+                    $playerName = count($args) == 1 ? $sender->getName() : $args[1];
+                    foreach ($this->getServer()->getOnlinePlayers() as $player) {
+                        if (strcasecmp($player->getName(), $playerName) == 0) {
+                            // find a mob with the name issued
+                            $mobName = strtolower($args[0]);
+                            foreach (self::$registeredClasses as $registeredClass) {
+                                if (strcmp($mobName, strtolower($this->getShortClassName($registeredClass))) == 0) {
+                                    self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster");
+                                    $sender->sendMessage("Spawned $mobName");
+                                    return true;
+                                }
+                            }
+                            $sender->sendMessage("Entity not found: $mobName");
                             return true;
                         }
                     }
+                } else {
+                    $sender->sendMessage("Need a mob name!");
+                    return true;
                 }
-            }
+                break;
+            default:
+                break;
         }
         return false;
     }
-    
-    public function BlockPlaceEvent(BlockPlaceEvent $ev){
-        if($ev->isCancelled()){
-            return;
-        }
 
-        $block = $ev->getBlock();
-        if($block->getId() == Item::JACK_O_LANTERN || $block->getId() == Item::PUMPKIN){
-            if(
-                $block->getSide(Vector3::SIDE_DOWN)->getId() == Item::SNOW_BLOCK
-                && $block->getSide(Vector3::SIDE_DOWN, 2)->getId() == Item::SNOW_BLOCK
-            ){
-                for($y = 1; $y < 3; $y++){
-                    $block->getLevel()->setBlock($block->add(0, -$y, 0), new Air());
-                }
-                $entity = PureEntities::create("SnowGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
-                if($entity != null){
-                    $entity->spawnToAll();
-                }
-                $ev->setCancelled();
-            }elseif(
-                $block->getSide(Vector3::SIDE_DOWN)->getId() == Item::IRON_BLOCK
-                && $block->getSide(Vector3::SIDE_DOWN, 2)->getId() == Item::IRON_BLOCK
-            ){
-                $first = $block->getSide(Vector3::SIDE_EAST);
-                $second = $block->getSide(Vector3::SIDE_EAST);
-                if(
-                    $first->getId() == Item::IRON_BLOCK
-                    && $second->getId() == Item::IRON_BLOCK
-                ){
-                    $block->getLevel()->setBlock($first, new Air());
-                    $block->getLevel()->setBlock($second, new Air());
-                }else{
-                    $first = $block->getSide(Vector3::SIDE_NORTH);
-                    $second = $block->getSide(Vector3::SIDE_SOUTH);
-                    if(
-                        $first->getId() == Item::IRON_BLOCK
-                        && $second->getId() == Item::IRON_BLOCK
-                    ){
-                        $block->getLevel()->setBlock($first, new Air());
-                        $block->getLevel()->setBlock($second, new Air());
-                    }else{
-                        return;
-                    }
-                }
-
-                if($second != null){
-                    $entity = PureEntities::create("IronGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
-                    if($entity != null){
-                        $entity->spawnToAll();
-                    }
-
-                    $block->getLevel()->setBlock($entity, new Air());
-                    $block->getLevel()->setBlock($block->add(0, -1, 0), new Air());
-                    $ev->setCancelled();
-                }
-            }
-        }
-    }
-    
     /**
-     * @param Position $pos
-     * @param int $entityId
-     * @param Level $level
-     * @param string $type
-     * 
-     * @return boolean
+     * Returns the "short" name of a class without namespace ...
+     *
+     * @param string $longClassName
+     * @return string
      */
-    public function scheduleCreatureSpawn(Position $pos, int $entityId, Level $level, string $type){
-        $this->getServer()->getPluginManager()->callEvent($ev = new CreatureSpawnEvent($this, $pos, $entityId, $level, $type));
-        if($ev->isCancelled()) {
-            return false;
-        } else {
-            $entity = self::create($entityId, $pos);
-            $entity->spawnToAll();
-            return true;
+    private function getShortClassName (string $longClassName) : string {
+        $short = "";
+    	$longClassName = strtok ($longClassName , "\\");
+        while ($longClassName !== false) {
+            $short = $longClassName;
+            $longClassName = strtok("\\");
         }
+        return $short;
     }
 }
+
+

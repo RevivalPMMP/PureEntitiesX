@@ -21,32 +21,61 @@ namespace revivalpmmp\pureentities\entity\animal\walking;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
-use pocketmine\Player;
-use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\features\BreedingExtension;
+use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
 
-class Pig extends WalkingAnimal implements Rideable{
+class Pig extends WalkingAnimal implements Rideable, IntfCanBreed {
     const NETWORK_ID = Data::PIG;
 
     public $width = 1.45;
     public $height = 1.12;
 
+    private $feedableItems = array (
+        Item::CARROT,
+        Item::BEETROOT);
+
+    /**
+     * Is needed for breeding functionality
+     *
+     * @var BreedingExtension
+     */
+    private $breedableClass;
+
+    public function initEntity() {
+        parent::initEntity();
+        $this->breedableClass = new BreedingExtension($this);
+        $this->breedableClass->init();
+    }
+
     public function getName(){
         return "Pig";
     }
 
-    public function initEntity(){
-        parent::initEntity();
-
-        $this->setMaxHealth(10);
-        $this->setHealth(10);
+    /**
+     * Returns the breedable class or NULL if not configured
+     *
+     * @return BreedingExtension
+     */
+    public function getBreedingExtension () {
+        return $this->breedableClass;
     }
 
-    public function targetOption(Creature $creature, float $distance) : bool{
-        if($creature instanceof Player){
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::CARROT && $distance <= 49;
-        }
-        return false;
+    /**
+     * Returns the appropiate NetworkID associated with this entity
+     * @return int
+     */
+    public function getNetworkId() {
+        return self::NETWORK_ID;
+    }
+
+    /**
+     * Returns the items that can be fed to the entity
+     *
+     * @return array
+     */
+    public function getFeedableItems() {
+        return $this->feedableItems;
     }
 
     public function getDrops(){
@@ -55,6 +84,10 @@ class Pig extends WalkingAnimal implements Rideable{
         } else {
           return [Item::get(Item::RAW_PORKCHOP, 0, mt_rand(1, 3))];
         }
+    }
+
+    public function getMaxHealth() {
+        return 10;
     }
 
 }

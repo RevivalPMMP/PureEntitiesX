@@ -9,6 +9,11 @@ Please ask questions/get support on our Forums: http://revivalpmmpforums.gq/
 
 ====
 
+> PureEntitiesX does not officially provide compatibility with _Third Party PocketMine_ server softwares.
+>
+> Compatibility can be found with some, but do not complain if it happens not to be.
+>
+> or ask @caspervanneck to fix. but i cant fix them all so just wait
 
 This is a Fork of the original PureEntities plugin which has become inactive; RevivalPMMP is now updating and maintaining it, so  you can have smart mobs on your server! (At least until Pocketmine implements them)
 
@@ -33,5 +38,19 @@ You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item
 
 ## How to Install
 
-You can download the latest version of the plugin phar from our releases [here](https://github.com/RevivalPMMP/PureEntitiesX/releases/latest). Just drop it into your plugins folder and run your server!
-You can also download our plugins form our forums resources section
+Download the Zip folder under the Releases tab for V#.0-beta and extract the Phar. Alternatively, you can download the scource code, or new development builds from Poggit.
+
+It still has some bugs, but it is still very usable, and we will work to get them resolved ASAP. 
+
+## Pocketmine Mob AI
+
+Once Pocketmine comes out with a Mob AI, we plan to shift our focus to adding more customization to the Pocketmine Mob AI (Item Drop COntrol, Damage Control, Mob type Spawn control, etc.) Once Pocketmine Mob AI comes out, you can be confident that you can keep using PureEntitiesX!
+
+## Plugin Help
+
+Protect an Area from Mob Spawns:
+
+The PureEntitiesX API allows you to disable/enable Mob spawning in certain areas. See and download our monster protection addon plugin over here: https://github.com/RevivalPMMP/PEXProtection
+
+
+

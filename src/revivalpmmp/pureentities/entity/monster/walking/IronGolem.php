@@ -76,4 +76,8 @@ class IronGolem extends WalkingMonster{
         return $drops;
     }
 
+    public function getMaxHealth() {
+        return 100;
+    }
+
 }

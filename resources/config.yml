@@ -1,6 +1,79 @@
 # Default Config File for PureEntitiesX
-spawnmonsters: true
-spawnanimals: true
-# Disabling auto despawning can have a HUGE effect on server performance, and overrun your server with mobs.
-auto-despawn: true 
 
+# set how often the spawn and despawn task will be trigered
+spawn-task:
+  trigger-ticks: 300
+despawn-task:
+  trigger-ticks: 100
+
+# when set to true the creeper will explode and also destroy blocks
+creeper:
+  block-breaking-explosion: false
+
+# control logfile logging
+# possible: debug, warn, info
+logfile:
+  loglevel: info
+
+# describes the distances that are used for specific actions
+distances:
+  interact: 6 # defines until which distance an interaction with an entity is possible
+  find-partner: 49 # defines whe maximum distance when love mode is active and is searching for another partner
+
+interaction:
+  stay-time: 20 # ticks an entity waits for being sheared e.g.
+
+ticks:
+  block-interest: 100 # defines how many ticks pass by before the block of interest check kicks in
+
+# control max spawning values ...
+max-spawn:
+  bat: 2
+  chicken: 5
+  cow: 5
+  horse: 10 # also donkeys and so on ...
+  ocelot: 2
+  pig: 5
+  rabbit: 5
+  sheep: 5
+
+  blaze: 5
+  cavespider: 5
+  creeper: 5
+  enderman: 5
+  ghast: 5
+  irongolem: 2
+  magmacube: 5
+  pigzombie: 5
+  skeleton: 5
+  slime: 5
+  spider: 8
+  wolf: 5
+  zombie: 5
+
+
+# control spawn probability with each spawn run for each entity
+# probability is configured as percent (20 means 20% chance of spawning)
+probability:
+  bat: 20
+  chicken: 20
+  cow: 20
+  horse: 10
+  ocelot: 20
+  pig: 20
+  rabbit: 20
+  sheep: 20
+
+  blaze: 10
+  cavespider: 20
+  creeper: 20
+  enderman: 5
+  ghast: 10
+  irongolem: 1
+  magmacube: 10
+  pigzombie: 10
+  skeleton: 10
+  slime: 20
+  spider: 20
+  wolf: 20
+  zombie: 20

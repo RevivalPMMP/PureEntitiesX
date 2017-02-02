@@ -38,9 +38,6 @@ class CaveSpider extends WalkingMonster{
 
     public function initEntity(){
         parent::initEntity();
-
-        $this->setMaxHealth(12);
-        $this->setHealth(12);
         $this->setDamage([0, 2, 3, 3]);
     }
 
@@ -66,6 +63,10 @@ class CaveSpider extends WalkingMonster{
             break;
         }
         return $drops;
+    }
+
+    public function getMaxHealth() {
+        return 12;
     }
 
 }

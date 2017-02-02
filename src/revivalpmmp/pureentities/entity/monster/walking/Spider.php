@@ -41,8 +41,6 @@ class Spider extends WalkingMonster{
     public function initEntity(){
         parent::initEntity();
 
-        $this->setMaxHealth(16);
-        $this->setHealth(16);
         $this->setDamage([0, 2, 2, 3]);
     }
 
@@ -168,6 +166,10 @@ class Spider extends WalkingMonster{
           break;
       }
       return $drops;
+    }
+
+    public function getMaxHealth() {
+        return 16;
     }
 
 }

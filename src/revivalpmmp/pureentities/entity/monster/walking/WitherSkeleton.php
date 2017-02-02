@@ -80,9 +80,13 @@ class WitherSkeleton extends WalkingMonster{
         array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
         switch (mt_rand(0, 8)) {
           case 1:
-            array_push($drops, Item::get(Item::SKULL, 1, mt_rand(0, 2)));
+            array_push($drops, Item::get(Item::MOB_HEAD, 1, mt_rand(0, 2)));
             break;
         }
         return $drops;
+    }
+
+    public function getMaxHealth() {
+        return 20;
     }
 }
