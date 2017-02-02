@@ -43,7 +43,7 @@ abstract class WalkingAnimal extends WalkingEntity {
         return 0.7;
     }
 
-    public function entityBaseTick($tickDiff = 1){
+    public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);

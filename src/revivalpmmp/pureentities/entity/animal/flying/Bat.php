@@ -2,6 +2,9 @@
 
 namespace revivalpmmp\pureentities\entity\animal\flying;
 
+/*  PureEntitiesX: Mob AI Plugin for PMMP
+    Copyright (C) 2017 RevivalPMMP
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or

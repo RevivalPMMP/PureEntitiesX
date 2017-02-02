@@ -28,7 +28,7 @@ use pocketmine\item\Item;
 use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
 
-class Zombie extends WalkingMonster implements Ageable{
+class Zombie extends WalkingMonster {
     const NETWORK_ID = Data::ZOMBIE;
 
     public $width = 0.72;
@@ -72,7 +72,7 @@ class Zombie extends WalkingMonster implements Ageable{
         }
     }
 
-    public function entityBaseTick($tickDiff = 1){
+    public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);

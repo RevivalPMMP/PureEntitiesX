@@ -107,7 +107,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed {
 
 
     // ----- functionality to lay an eg ... -------------
-    public function entityBaseTick($tickDiff = 1) {
+    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
         if ($this->dropEggTime === 0) {
             $this->dropEggTime = mt_rand(self::DROP_EGG_DELAY_MIN, self::DROP_EGG_DELAY_MAX);
         }
