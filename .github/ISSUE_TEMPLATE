@@ -1,0 +1,22 @@
+<!-- replace the ' ' with 'x' in the brackets -->
+- [ ] This issue isn't duplicated - you can check if it is by using the search bar located at the top left hand corner and select "Issues" on the left.
+- [ ] This issue includes appropriate markdown for sections - e.g. code blocks for crash dumps.
+- [ ] This issue is understandable - feel free to use your native language to write issues if you are not comfortable with English.
+
+<!-- ISSUE DESCRIPTION - write a SHORT title about what problem you're having. -->
+## Issue description
+...
+
+<!-- REPRODUCE ISSUE STEPS - how can this issue be reproduced? -->
+## Reproducing the issue
+1. ...
+2. ...
+
+<!-- CLIENT INFORMATION - what is the plugin version, PHP version, and server build you're running? -->
+## Client information
+PocketMine-MP Version: 0.16/1.0 (delete as nescessary)
+Plugin Version: (insert commit label here)
+PHP version: 7.0.13 (default)
+<!-- OPTIONAL INFORMATION - use this section for posting crash dumps, backtraces or other files(please use code markdown!) -->
+## Optional information
+...
