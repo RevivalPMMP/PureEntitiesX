@@ -318,58 +318,55 @@ class PureEntities extends PluginBase implements CommandExecutor {
 	}
 
     /**
-     * Returns the first position of block of AIR found at above the given coordinates.
+     * Returns a suitable Y-position for spawning an entity, starting from the given coordinates.
      *
-     * @param int $x        the x coordinate
-     * @param int $y        the y coordinate (which is used in +1 until an AIR block is found)
-     * @param int $z        the z coordinate
-     * @param Level $level  the level to search in
+     * First, it's checked if the given position is AIR position. If so, we search down the y-coordinate
+     * to get a first non-air block. When a non-air block is found the position returned is the last found air
+     * position.
      *
-     * @return null|Position
+     * When the given coordinates are NOT an AIR block coordinate we search upwards until the first air block is found
+     * which is then returned to the caller.
+     *
+     * @param $x                int the x position to start search
+     * @param $y                int the y position to start search
+     * @param $z                int the z position to start searching
+     * @param Level $level      Level the level object to search in
+     * @return null|Position    either NULL if no valid position was found or the final AIR spawn position
      */
-    public static function getFirstAirAbovePosition ($x, $y, $z, Level $level) {
-        $air = false;
+	public static function getSuitableHeightPosition ($x, $y, $z, Level $level) {
         $newPosition = null;
-        while (!$air) {
-            $id = $level->getBlockIdAt($x, $y, $z);
-            if ($id == 0) { // this is an air block ...
-                $newPosition = new Position($x, $y, $z, $level);
-                $air = true;
-            } else {
-                $y = $y + 1;
-                if ($y > 255) {
-                    break;
+        $id = $level->getBlockIdAt($x, $y, $z);
+        if ($id == 0) { // we found an air block - we need to search down step by step to get the correct block which is not a "AIR" block
+            $air = true;
+            $y = $y - 1;
+            while ($air) {
+                $id = $level->getBlockIdAt($x, $y, $z);
+                if ($id != 0) { // this is an air block ...
+                    $newPosition = new Position($x, $y + 1, $z, $level);
+                    $air = false;
+                } else {
+                    $y = $y - 1;
+                    if ($y < -255) {
+                        break;
+                    }
+                }
+            }
+        } else { // something else than AIR block. search upwards for a valid air block
+            $air = false;
+            while (!$air) {
+                $id = $level->getBlockIdAt($x, $y, $z);
+                if ($id == 0) { // this is an air block ...
+                    $newPosition = new Position($x, $y, $z, $level);
+                    $air = true;
+                } else {
+                    $y = $y + 1;
+                    if ($y > 255) {
+                        break;
+                    }
                 }
             }
         }
-        return $newPosition;
-    }
 
-    /**
-     * Returns the first position of block of AIR found at under the given coordinates.
-     *
-     * @param int $x        the x coordinate
-     * @param int $y        the y coordinate (which is used in +1 until an AIR block is found)
-     * @param int $z        the z coordinate
-     * @param Level $level  the level to search in
-     *
-     * @return null|Position
-     */
-    public static function getFirstAirUnderPosition ($x, $y, $z, Level $level) : Position {
-        $air = false;
-        $newPosition = null;
-        while (!$air) {
-            $id = $level->getBlockIdAt($x, $y, $z);
-            if ($id == 0) { // this is an air block ...
-                $newPosition = new Position($x, $y, $z, $level);
-                $air = true;
-            } else {
-                $y = $y - 1;
-                if ($y < -255) {
-                    break;
-                }
-            }
-        }
         return $newPosition;
     }
 
