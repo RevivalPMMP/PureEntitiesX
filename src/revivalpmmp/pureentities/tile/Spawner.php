@@ -22,7 +22,6 @@ use pocketmine\Player;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\level\format\Chunk as FullChunk;
-use pocketmine\level\Position;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
@@ -115,10 +114,10 @@ class Spawner extends Spawnable {
             }
 
             if($isValid && count($list) <= $this->maxNearbyEntities){
-                $y = $this->level->getHighestBlockAt($this->x, $this->z);
+                $y = $this->y;
                 $x = $this->x + mt_rand(-$this->spawnRange, $this->spawnRange);
                 $z = $this->z + mt_rand(-$this->spawnRange, $this->spawnRange);
-                $pos = PureEntities::getFirstAirAbovePosition($x, $y, $z, $this->level);
+                $pos = PureEntities::getSuitableHeightPosition($x, $y, $z, $this->level);
                 $pos->y += BaseSpawner::HEIGHTS[$this->entityId];
                 $entity = PureEntities::create($this->entityId, $pos);
                 if($entity != null){

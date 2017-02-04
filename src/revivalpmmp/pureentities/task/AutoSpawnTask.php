@@ -52,18 +52,7 @@ class AutoSpawnTask extends PluginTask {
                         $y = $player->y;
 
                         // search up- and downwards the current player's y-coordinate to find a valid block!
-                        // now it's possible that upwards the highest AIR block cannot be found - so we also have to
-                        // search downwards - after that check if one of the found positions is not NULL and use
-                        // the position for spawning entities
-                        $correctedPositionUpwards = PureEntities::getFirstAirAbovePosition($x, $y, $z, $level); // returns the AIR block found upwards
-                        $correctedPositionDownwards = PureEntities::getFirstAirUnderPosition($x, $y, $z, $level); // returns the AIR block found downwards
-                        $correctedPosition = null;
-                        if ($correctedPositionUpwards !== null) {
-                            $correctedPosition = $correctedPositionUpwards;
-                        } else if ($correctedPositionDownwards !== null) {
-                            $correctedPosition = $correctedPositionDownwards;
-                        }
-
+                        $correctedPosition = PureEntities::getSuitableHeightPosition($x, $y, $z, $level);
                         if ($correctedPosition !== null) {
                             $pos = new Position($correctedPosition->x, $correctedPosition->y - 1, $correctedPosition->z, $level);
                             $spawnerClass->spawn($pos, $player);
