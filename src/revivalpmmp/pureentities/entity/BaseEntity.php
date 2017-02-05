@@ -32,7 +32,6 @@ use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
-use revivalpmmp\pureentities\PureEntities;
 
 abstract class BaseEntity extends Creature{
 
@@ -45,6 +44,7 @@ abstract class BaseEntity extends Creature{
     private $movement = true;
     private $friendly = false;
     private $wallcheck = true;
+    protected $fireProof = false;
 
     public function __destruct(){}
 
@@ -246,7 +246,7 @@ abstract class BaseEntity extends Creature{
      * the entity there.
      *
      * @param array $blocksAround
-     * @return Block or bool
+     * @return bool|Block
      */
     public function isAnyBlockOfInterest (array $blocksAround) {
         return false;

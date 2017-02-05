@@ -74,6 +74,19 @@ class Wolf extends WalkingMonster{
         return "Wolf";
     }
 
+    /**
+     * We've to override the method to have better control over the wolf (atm deciding if the
+     * wolf is tamed and has to teleport to the owner when more than 12 blocks away)
+     *
+     * @param int $tickDiff
+     * @param int $EnchantL
+     * @return bool
+     */
+    public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
+        $this->checkTeleport ();
+        return parent::entityBaseTick($tickDiff, $EnchantL);
+    }
+
     public function isAngry() : bool{
         if (!isset($this->namedtag->Angry)) {
             $this->namedtag->Angry = new IntTag(self::NBT_KEY_ANGRY, 0); // set not angry
@@ -249,6 +262,21 @@ class Wolf extends WalkingMonster{
      */
     public function isFriendly() : bool{
         return !$this->isAngry();
+    }
+
+    /**
+     * Checks if the wolf is tamed and not sitting and has a "physically" available owner.
+     * If so and the distance to the owner is more than 12 blocks: set position to the position
+     * of the owner.
+     */
+    private function checkTeleport () {
+        if ($this->isTamed() && $this->getOwner() !== null && !$this->isSitting()) {
+            if ($this->getOwner()->distanceSquared($this) > 12) {
+                $this->setAngry(0); // reset angry flag
+                $this->setPosition($this->getOwner());
+                PureEntities::logOutput("Wolf($this): teleport to owner " . $this->getOwner(), PureEntities::DEBUG);
+            }
+        }
     }
 
 }

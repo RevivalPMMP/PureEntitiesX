@@ -379,7 +379,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
      */
     public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
         switch($command->getName()){
-            case "summon":
+            case "pesummon":
                 if (count($args) == 1 or count($args) == 2) {
                     $playerName = count($args) == 1 ? $sender->getName() : $args[1];
                     foreach ($this->getServer()->getOnlinePlayers() as $player) {

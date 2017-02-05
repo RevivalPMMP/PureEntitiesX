@@ -37,6 +37,8 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
     private $minDamage = [0, 0, 0, 0];
     private $maxDamage = [0, 0, 0, 0];
 
+    protected $attackDistance = 2; // distance of blocks when attack can be started
+
     public abstract function attackEntity(Entity $player);
 
     public function getDamage(int $difficulty = null) : float{
@@ -129,7 +131,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
         $target = $this->updateMove($tickDiff);
         if($this->isFriendly()){
             if(!($target instanceof Player)){
-                if($target instanceof Entity){
+                if($target instanceof Entity && $target->distanceSquared($this) <= $this->attackDistance){
                     $this->attackEntity($target);
                 }elseif(
                     $target instanceof Vector3
@@ -139,7 +141,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
                 }
             }
         }else{
-            if($target instanceof Entity){
+            if($target instanceof Entity  && $target->distanceSquared($this) <= $this->attackDistance) {
                 $this->attackEntity($target);
             }elseif(
                 $target instanceof Vector3
