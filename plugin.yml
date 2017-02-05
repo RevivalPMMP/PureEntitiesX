@@ -9,10 +9,10 @@ description: Implement all MCPE entities into your worlds
 website: https://github.com/RevivalPMMP/PureEntitiesX
 
 commands:
-  summon:
+  pesummon:
     description: Summons a creature
-    usage: "/summon <mob-name> <optional:playername>"
-    permission: pureentities.command.summon
+    usage: "/pesummon <mob-name> <optional:playername>"
+    permission: pureentities.command.pesummon
 
 permissions:
  pureentities:
@@ -23,6 +23,6 @@ permissions:
     default: op
     description: "Allows using all the PureEntities commands"
     children:
-      pureentities.command.summon:
+      pureentities.command.pesummon:
       default: op
       description: "Allows spawning mobs"
