@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\monster;
 
+use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\entity\monster\walking\Enderman;
 use revivalpmmp\pureentities\entity\WalkingEntity;
 use pocketmine\block\Water;
@@ -29,6 +30,11 @@ use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
+use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PluginConfiguration;
+use revivalpmmp\pureentities\PureEntities;
 
 abstract class WalkingMonster extends WalkingEntity implements Monster{
 
@@ -40,6 +46,95 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
     protected $attackDistance = 2; // distance of blocks when attack can be started
 
     public abstract function attackEntity(Entity $player);
+
+    public function checkTarget() {
+        // breeding implementation (as only walking entities can breed atm)
+        if ($this instanceof IntfTameable) {
+            if ($this->isTamed()) { // breeding extension only applies to tamed monsters
+                if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
+                    if (!$this->getBreedingExtension()->checkInLove()) { // when the entity is NOT in love, but tamed, it should follow the player!!!
+                        // set target to owner ...
+                        $player = $this->getOwner();
+                        if ($player !== null and $player->isOnline()) {
+                            $this->baseTarget = $player;
+                        }
+                    }
+                    // tick the breedable class embedded
+                    $this->getBreedingExtension()->tick();
+                }
+            }
+        }
+
+        return parent::checkTarget();
+    }
+
+    /**
+     * @param Creature $creature
+     * @param float $distance
+     * @return bool
+     */
+    public function targetOption(Creature $creature, float $distance) : bool {
+        $targetOption = false;
+
+        if ($creature instanceof Player) { // a player requests the target option
+            if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+                $itemInHand = $creature->getInventory()->getItemInHand()->getId();
+                if ($this instanceof IntfTameable) {
+                    PureEntities::logOutput("WalkingMonster($this): targetOption(): is instanceof IntfTameable", PureEntities::DEBUG);
+                    $tameFood = $this->getTameFoods();
+                    if (!$this->isTamed() and in_array($itemInHand, $tameFood) and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) {
+                        PureEntities::logOutput("WalkingMonster($this): targetOption(): not tamed. Displaying 'tame' button", PureEntities::DEBUG);
+                        InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $creature, $this);
+                        $targetOption = true;
+                    } else if ($this instanceof IntfCanBreed) {
+                        PureEntities::logOutput("WalkingMonster($this): targetOption(): is instanceof IntfCanBreed. Continue with check.", PureEntities::DEBUG);
+                        if ($this->isTamed()) { // tamed - it can breed!!!
+                            PureEntities::logOutput("WalkingMonster($this): targetOption(): is tamed. Continue with check.", PureEntities::DEBUG);
+                            $feedableItems = $this->getFeedableItems();
+                            $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
+                            if ($hasFeedableItemsInHand) {
+                                PureEntities::logOutput("WalkingMonster($this): targetOption(): has feedable items in hand.", PureEntities::DEBUG);
+                                if ($distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) { // we can feed a sheep! and it makes no difference if it's an adult or a baby ...
+                                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $creature, $this);
+                                }
+                                // check if the entity is able to follow - but only on a distance of 6 blocks
+                                $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance();
+                                PureEntities::logOutput("WalkingMonster($this): targetOption is $targetOption and distance is $distance", PureEntities::DEBUG);
+                            } else if (!$hasFeedableItemsInHand) { // when no feedable things are in hand - we need to sit down the entity
+                                PureEntities::logOutput("WalkingMonster($this): targetOption(): has no feedable items in hand. Display sit (when distance is ok)", PureEntities::DEBUG);
+                                if ($distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) {
+                                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $creature, $this);
+                                    PureEntities::logOutput("WalkingMonster($this): has no feedable items in hand. Display sit", PureEntities::DEBUG);
+                                } else {
+                                    PureEntities::logOutput("WalkingMonster($this): targetOption(): Distance was not ok for sit command.", PureEntities::DEBUG);
+                                    InteractionHelper::displayButtonText("", $creature, $this);
+                                }
+                            } else {
+                                PureEntities::logOutput("WalkingMonster($this): targetOption(): Nothing applies. Display 'empty' button.", PureEntities::DEBUG);
+                                InteractionHelper::displayButtonText("", $creature, $this);
+                                // reset base target when it was player before (follow by holding wheat)
+                                if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
+                                    // reset base target!
+                                    $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
+                                }
+                            }
+                        } else { // not tamed - so feeding is not possible, also sit is not possible!
+                            PureEntities::logOutput("WalkingMonster($this): targetOption(): Not tamed. So cannot feed or sit.", PureEntities::DEBUG);
+                            InteractionHelper::displayButtonText("", $creature, $this);
+                        }
+                    } else {
+                        PureEntities::logOutput("WalkingMonster($this): targetOption(): Is not IntfCanBreed.", PureEntities::DEBUG);
+                        InteractionHelper::displayButtonText("", $creature, $this);
+                    }
+                } else {
+                    PureEntities::logOutput("WalkingMonster($this): targetOption(): Not tameable. Displaying nothing.", PureEntities::DEBUG);
+                    InteractionHelper::displayButtonText("", $creature, $this);
+                }
+
+            }
+        }
+        return $targetOption;
+    }
 
     public function getDamage(int $difficulty = null) : float{
         return mt_rand($this->getMinDamage($difficulty), $this->getMaxDamage($difficulty));

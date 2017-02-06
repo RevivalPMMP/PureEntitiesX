@@ -21,6 +21,7 @@ use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\entity\monster\walking\SnowGolem;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\tile\Spawner;
@@ -92,15 +93,13 @@ class EventListener implements Listener {
                     if ($itemInHand != null) {
                         $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
                     }
-                } else if ($entity instanceof Wolf) {
-                    if (strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
-                        PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] taming ...", PureEntities::DEBUG);
-                        $return = $entity->tame($player);
-                    } else if (strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SIT) == 0) {
-                        PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] sit ...", PureEntities::DEBUG);
-                        $entity->setSitting(!$entity->isSitting());
-                        $return = true;
-                    } // TODO: add feed for tamed wolves
+                } else if ($entity instanceof IntfTameable and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
+                    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] taming ...", PureEntities::DEBUG);
+                    $return = $entity->tame($player);
+                } else if ($entity instanceof Wolf and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SIT) == 0) {
+                    PureEntities::logOutput("EventListener: dataPacketReceiveEvent [player:$player] [target:$entity] sit ...", PureEntities::DEBUG);
+                    $entity->setSitting(!$entity->isSitting());
+                    $return = true;
                 } else if ($entity instanceof SnowGolem and
                     strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SHEAR) == 0 and
                     !$entity->isSheared()) {

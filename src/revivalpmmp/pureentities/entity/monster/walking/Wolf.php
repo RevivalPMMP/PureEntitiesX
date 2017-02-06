@@ -28,13 +28,13 @@ use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\entity\Creature;
-use revivalpmmp\pureentities\InteractionHelper;
-use revivalpmmp\pureentities\PluginConfiguration;
+use revivalpmmp\pureentities\features\BreedingExtension;
+use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 
-class Wolf extends WalkingMonster{
+class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed {
     const NETWORK_ID = Data::WOLF;
 
     public $width = 0.72;
@@ -46,6 +46,30 @@ class Wolf extends WalkingMonster{
     const NBT_KEY_OWNER_UUID    = "OwnerUUID"; // string
     const NBT_KEY_SITTING       = "Sitting"; // 1 or 0 (true/false)
     const NBT_KEY_ANGRY         = "Angry"; // 0 - not angry, > 0 angry
+
+    private $feedableItems = array (
+        Item::RAW_BEEF,
+        Item::RAW_CHICKEN,
+        Item::RAW_MUTTON,
+        Item::RAW_PORKCHOP,
+        Item::RAW_RABBIT,
+        Item::COOKED_BEEF,
+        Item::COOKED_CHICKEN,
+        Item::COOKED_MUTTON,
+        Item::COOKED_PORKCHOP,
+        Item::COOKED_RABBIT,
+    );
+
+    private $tameFoods = array (
+        Item::BONE
+    );
+
+    /**
+     * Is needed for breeding functionality
+     *
+     * @var BreedingExtension
+     */
+    private $breedableClass;
 
     public function getSpeed() : float{
         return 1.2;
@@ -68,7 +92,46 @@ class Wolf extends WalkingMonster{
                 PureEntities::logOutput("Wolf($this): is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", PureEntities::NORM);
             }
         }
+
+        $this->breedableClass = new BreedingExtension($this);
+        $this->breedableClass->init();
     }
+
+    /**
+     * Returns the breedable class or NULL if not configured
+     *
+     * @return BreedingExtension
+     */
+    public function getBreedingExtension () {
+        return $this->breedableClass;
+    }
+
+    /**
+     * Returns the appropiate NetworkID associated with this entity
+     * @return int
+     */
+    public function getNetworkId() {
+        return self::NETWORK_ID;
+    }
+
+    /**
+     * Returns the items that can be fed to the entity
+     *
+     * @return array
+     */
+    public function getFeedableItems() {
+        return $this->feedableItems;
+    }
+
+    /**
+     * Returns the items the entity can be tamed with (maybe multiple!)
+     *
+     * @return array
+     */
+    public function getTameFoods () {
+        return $this->tameFoods;
+    }
+
 
     public function getName(){
         return "Wolf";
@@ -106,29 +169,6 @@ class Wolf extends WalkingMonster{
         }
     }
 
-    public function targetOption(Creature $creature, float $distance) : bool {
-        if ($this->isAngry()) { // cannot be tamed
-            return parent::targetOption($creature, $distance);
-        } else { // not angry - can be tamed
-            if ($creature instanceof Player) {
-                if ($creature != null and $creature->getInventory() != null and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) { // sometimes, we get null on getInventory?! F**k
-                    $itemInHand = $creature->getInventory()->getItemInHand()->getId();
-                    if ($itemInHand === Item::BONE and !$this->isTamed()) { // when a wolf is already tamed, we don't display "tame" button
-                        InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $creature, $this);
-                        return true;
-                    } else if ($this->isTamed()) { // we can make the wolf sit (but only when it's tamed!)
-                        InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $creature, $this);
-                    } else {
-                        InteractionHelper::displayButtonText("", $creature, $this);
-                    }
-                } else {
-                    InteractionHelper::displayButtonText("", $creature, $this);
-                }
-            }
-        }
-        return false;
-    }
-
     public function attackEntity(Entity $player){
         if($this->attackDelay > 10 && $this->distanceSquared($player) < 1.6){
             $this->attackDelay = 0;
@@ -136,6 +176,21 @@ class Wolf extends WalkingMonster{
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
         }
+    }
+
+    /**
+     * We need to override this method. When wolf is sitting, the entity shouldn't move!
+     *
+     * @param int $tickDiff
+     * @return null|\pocketmine\math\Vector3
+     */
+    public function updateMove($tickDiff) {
+        if ($this->isSitting()) {
+            // we need to call checkTarget otherwise the targetOption method is not called :/
+            $this->checkTarget();
+            return null;
+        }
+        return parent::updateMove($tickDiff);
     }
 
     public function getDrops(){
@@ -240,7 +295,6 @@ class Wolf extends WalkingMonster{
     public function setSitting (bool $sit) {
         $this->namedtag->Sitting = new IntTag(self::NBT_KEY_SITTING, $sit ? 1 : 0);
         $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, $sit);
-        $this->setMovement(!$sit);
     }
 
     /**

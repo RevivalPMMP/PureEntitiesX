@@ -127,16 +127,6 @@ abstract class WalkingAnimal extends WalkingEntity {
         }
     }
 
-    /**
-     * Checks if this entity is following a player
-     *
-     * @param Creature $creature    the possible player
-     * @return bool
-     */
-    protected function isFollowingPlayer (Creature $creature) : bool {
-        return $this->baseTarget != null and $this->baseTarget instanceof Player and $this->baseTarget->getId() === $creature->getId();
-    }
-
 
     /**
      * Returns all blocks around in a flat way - meaning, there is no search in y axis, only what the entity provides
@@ -202,17 +192,6 @@ abstract class WalkingAnimal extends WalkingEntity {
             }
         }
         return $targetOption;
-    }
-
-    /**
-     * needs to be implemented by specific entity (e.g. sheep, that can be sheared)
-     *
-     * @param Creature $creature
-     * @param float $distance
-     * @return bool
-     */
-    public function checkDisplayInteractiveButton (Creature $creature, float $distance) : bool {
-        return false;
     }
 
 

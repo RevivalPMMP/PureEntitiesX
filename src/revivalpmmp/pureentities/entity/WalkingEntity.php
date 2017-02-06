@@ -19,6 +19,7 @@
 namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use pocketmine\block\Liquid;
@@ -201,6 +202,27 @@ abstract class WalkingEntity extends BaseEntity{
      */
     protected function blockOfInterestReached ($block) {
         // nothing important here. look e.g. Sheep.class
+    }
+
+    /**
+     * Checks if this entity is following a player
+     *
+     * @param Creature $creature    the possible player
+     * @return bool
+     */
+    protected function isFollowingPlayer (Creature $creature) : bool {
+        return $this->baseTarget != null and $this->baseTarget instanceof Player and $this->baseTarget->getId() === $creature->getId();
+    }
+
+    /**
+     * needs to be implemented by specific entity (e.g. sheep, that can be sheared)
+     *
+     * @param Creature $creature
+     * @param float $distance
+     * @return bool
+     */
+    public function checkDisplayInteractiveButton (Creature $creature, float $distance) : bool {
+        return false;
     }
 
 
