@@ -23,6 +23,7 @@ use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\entity\monster\Monster;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\IntTag;
@@ -46,6 +47,9 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed {
     const NBT_KEY_OWNER_UUID    = "OwnerUUID"; // string
     const NBT_KEY_SITTING       = "Sitting"; // 1 or 0 (true/false)
     const NBT_KEY_ANGRY         = "Angry"; // 0 - not angry, > 0 angry
+
+    // this is our own tag - only for server side ...
+    const NBT_SERVER_KEY_OWNER_NAME = "OwnerName";
 
     private $feedableItems = array (
         Item::RAW_BEEF,
@@ -150,34 +154,6 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed {
         return parent::entityBaseTick($tickDiff, $EnchantL);
     }
 
-    public function isAngry() : bool{
-        if (!isset($this->namedtag->Angry)) {
-            $this->namedtag->Angry = new IntTag(self::NBT_KEY_ANGRY, 0); // set not angry
-        }
-        return $this->namedtag[self::NBT_KEY_ANGRY] > 0;
-    }
-
-    public function setAngry(int $val){
-        $this->namedtag->Angry = new IntTag(self::NBT_KEY_ANGRY, $val);
-    }
-
-    public function attack($damage, EntityDamageEvent $source){
-        parent::attack($damage, $source);
-
-        if(!$source->isCancelled()){
-            $this->setAngry(1000);
-        }
-    }
-
-    public function attackEntity(Entity $player){
-        if($this->attackDelay > 10 && $this->distanceSquared($player) < 1.6){
-            $this->attackDelay = 0;
-
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
-            $player->attack($ev->getFinalDamage(), $ev);
-        }
-    }
-
     /**
      * We need to override this method. When wolf is sitting, the entity shouldn't move!
      *
@@ -191,6 +167,64 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed {
             return null;
         }
         return parent::updateMove($tickDiff);
+    }
+
+    public function isAngry() : bool{
+        if (!isset($this->namedtag->Angry)) {
+            $this->namedtag->Angry = new IntTag(self::NBT_KEY_ANGRY, 0); // set not angry
+        }
+        return $this->namedtag[self::NBT_KEY_ANGRY] > 0;
+    }
+
+    public function setAngry(int $val){
+        $this->namedtag->Angry = new IntTag(self::NBT_KEY_ANGRY, $val);
+    }
+
+    /**
+     * Wolf gets attacked ...
+     *
+     * @param float $damage
+     * @param EntityDamageEvent $source
+     * @return mixed
+     */
+    public function attack($damage, EntityDamageEvent $source){
+        parent::attack($damage, $source);
+
+        if(!$source->isCancelled()){
+            // when this is tamed and the owner attacks, the wolf doesn't get angry
+            if (!$this->isTamed()) {
+                $this->setAngry(1000);
+            } else {
+                // a tamed entity gets angry when attacked by another player (which is not owner)
+                // or by a monster
+                $attackedBy = $source->getEntity();
+                if ($attackedBy instanceof Monster or ($attackedBy instanceof Player and
+                    strcasecmp($attackedBy->getName(), $this->getOwner()->getName()) !== 0)) {
+
+                }
+            }
+        }
+    }
+
+    /**
+     * Wolf attacks entity
+     *
+     * @param Entity $player
+     */
+    public function attackEntity(Entity $player){
+        if ($this->isTamed()) {
+            if ($player instanceof Player and strcasecmp($player->getName(), $this->getOwner()->getName()) === 0) {
+                // a wolf doesn't attack it's owner!
+                return;
+            }
+        }
+
+        if($this->attackDelay > 10 && $this->distanceSquared($player) < 1.6){
+            $this->attackDelay = 0;
+
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
+            $player->attack($ev->getFinalDamage(), $ev);
+        }
     }
 
     public function getDrops(){
@@ -255,7 +289,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed {
      * @return bool
      */
     public function isTamed () : bool {
-        return isset($this->namedtag->OwnerUUID);
+        return isset($this->namedtag->OwnerName);
     }
 
     /**
@@ -266,9 +300,9 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed {
     public function getOwner () {
         /** @var Player $player */
         $player = null;
-        if (isset($this->namedtag->OwnerUUID)) {
+        if (isset($this->namedtag->OwnerName)) {
             foreach ($this->getLevel()->getPlayers() as $levelPlayer) {
-                if (strcmp($levelPlayer->getUniqueId()->toString(), $this->namedtag->OwnerUUID) == 0) {
+                if (strcasecmp($levelPlayer->getName(), $this->namedtag->OwnerName) == 0) {
                     $player = $levelPlayer;
                     break;
                 }
@@ -285,7 +319,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed {
     public function setOwner (Player $player) {
         $this->namedtag->OwnerUUID = new StringTag(self::NBT_KEY_OWNER_UUID, $player->getUniqueId()->toString()); // set owner UUID
         $this->setDataProperty(self::DATA_OWNER_EID, self::DATA_TYPE_LONG, $player->getId()); // set owner entity id
-        $this->baseTarget = $player;
+        $this->namedtag->OwnerName = new StringTag(self::NBT_SERVER_KEY_OWNER_NAME, $player->getName()); // only for our own (server side)
+        $this->setBaseTarget($player);
     }
 
     /**

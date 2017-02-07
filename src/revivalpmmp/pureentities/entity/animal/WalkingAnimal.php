@@ -115,14 +115,14 @@ abstract class WalkingAnimal extends WalkingEntity {
         if ($this->blockInterestTime > 0) { // we take a look at interesting blocks only each 300 ticks!
             $this->blockInterestTime --;
         } else { // it's time to check for any interesting block around ...
-            if ($this->baseTarget instanceof Block) { // check if we have a block target and the target is not closed. if so, we have our target!
+            if ($this->getBaseTarget() instanceof Block) { // check if we have a block target and the target is not closed. if so, we have our target!
                 return;
             }
             $this->blockInterestTime = PluginConfiguration::getInstance()->getBlockOfInterestTicks();
             $block = $this->isAnyBlockOfInterest($this->getBlocksFlatAround(4)); // check only 4 blocks - to spare computing time?!
             if ($block != false) {
                 // we found our target let's move to it!
-                $this->baseTarget = $block;
+                $this->setBaseTarget($block);
             }
         }
     }
@@ -175,7 +175,7 @@ abstract class WalkingAnimal extends WalkingEntity {
                         $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 6;
                         // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
                         if (!$targetOption and $this->isFollowingPlayer($creature) and !$this->getBreedingExtension()->isBaby()) {
-                            $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
+                            $this->setBaseTarget($this->getBreedingExtension()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
                         }
                         PureEntities::logOutput("WalkingEntity: targetOption is $targetOption and distance is $distance", PureEntities::DEBUG);
                     } else if ($this->checkDisplayInteractiveButton($creature, $distance)) {
@@ -185,7 +185,7 @@ abstract class WalkingAnimal extends WalkingEntity {
                         // reset base target when it was player before (follow by holding wheat)
                         if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
                             // reset base target!
-                            $this->baseTarget = $this->getBreedingExtension()->getBreedPartner(); // reset base target to breed partner (or NULL, if there's none)
+                            $this->setBaseTarget($this->getBreedingExtension()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
                         }
                     }
                 }

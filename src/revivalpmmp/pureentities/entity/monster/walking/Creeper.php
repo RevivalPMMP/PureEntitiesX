@@ -22,9 +22,7 @@ use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Explosive;
-use revivalpmmp\pureentities\entity\monster\walking\ExplosionPrimeEvent;
 use pocketmine\level\Explosion;
-use pocketmine\math\Vector2;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\data\Data;
@@ -96,14 +94,14 @@ class Creeper extends WalkingMonster implements Explosive{
     public function onUpdate($currentTick){
         $tickDiff = $currentTick - $this->lastUpdate;
 
-        if ($this->baseTarget !== null) {
-            $x = $this->baseTarget->x - $this->x;
-            $y = $this->baseTarget->y - $this->y;
-            $z = $this->baseTarget->z - $this->z;
+        if ($this->getBaseTarget() !== null) {
+            $x = $this->getBaseTarget()->x - $this->x;
+            $y = $this->getBaseTarget()->y - $this->y;
+            $z = $this->getBaseTarget()->z - $this->z;
 
             $diff = abs($x) + abs($z);
 
-            if ($this->baseTarget instanceof Creature && $this->baseTarget->distanceSquared($this) <= 4.5) {
+            if ($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->distanceSquared($this) <= 4.5) {
                 PureEntities::logOutput("Creeper($this): my target is a creature. I want to bomb now!", PureEntities::DEBUG);
                 $this->bombTime += $tickDiff;
                 if ($this->bombTime >= 64) {

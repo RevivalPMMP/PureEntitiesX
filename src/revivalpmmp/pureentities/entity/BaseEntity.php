@@ -39,7 +39,7 @@ abstract class BaseEntity extends Creature{
     protected $moveTime = 0;
 
     /** @var Vector3|Entity */
-    public $baseTarget = null;
+    private $baseTarget = null;
 
     private $movement = true;
     private $friendly = false;
@@ -81,6 +81,14 @@ abstract class BaseEntity extends Creature{
 
     public function setWallCheck(bool $value){
         $this->wallcheck = $value;
+    }
+
+    public function setBaseTarget ($baseTarget) {
+        $this->baseTarget = $baseTarget;
+    }
+
+    public function getBaseTarget () {
+        return $this->baseTarget;
     }
 
     public function getSpeed() : float{

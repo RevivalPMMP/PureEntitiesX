@@ -325,8 +325,13 @@ class BreedingExtension {
         // yeah we found ourselfes - now breed and reset target
         $this->resetBreedStatus();
         $partner->getBreedingExtension()->resetBreedStatus();
-        // spawn a baby entity!
-        PureEntities::getInstance()->scheduleCreatureSpawn($this->entity, $this->entity->getNetworkId(), $this->entity->getLevel(), "Animal", true, $this->entity);
+        // spawn a baby entity which may be owned by a player
+        $owner = null;
+        if ($this->entity instanceof IntfTameable) {
+            $owner = $this->entity->getOwner();
+        }
+        PureEntities::getInstance()->scheduleCreatureSpawn($this->entity, $this->entity->getNetworkId(), $this->entity->getLevel(),
+            "Animal", true, $this->entity, $owner);
     }
 
     /**

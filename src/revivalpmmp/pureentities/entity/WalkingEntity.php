@@ -29,16 +29,20 @@ use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PureEntities;
 
 abstract class WalkingEntity extends BaseEntity{
 
     protected function checkTarget(){
+        PureEntities::logOutput("$this: checkTarget(): entering", PureEntities::DEBUG);
         if($this->isKnockback()){
+            PureEntities::logOutput("$this: checkTarget(): knockback!", PureEntities::DEBUG);
             return;
         }
 
-        $target = $this->baseTarget;
+        $target = $this->getBaseTarget();
+        PureEntities::logOutput("$this: checkTarget(): baseTarget is " . $this->getBaseTarget(), PureEntities::DEBUG);
         if(!$target instanceof Creature or !$this->targetOption($target, $this->distanceSquared($target))){
             $near = PHP_INT_MAX;
             foreach ($this->getLevel()->getEntities() as $creature){
@@ -51,6 +55,7 @@ abstract class WalkingEntity extends BaseEntity{
                 }
 
                 $distance = $this->distanceSquared($creature);
+                PureEntities::logOutput("$this: checkTarget(): distance to $creature is $distance ", PureEntities::DEBUG);
                 if(
                     $distance <= 100
                     && $this instanceof PigZombie && $this->isAngry()
@@ -60,25 +65,27 @@ abstract class WalkingEntity extends BaseEntity{
                 }
 
                 if($distance > $near or !$this->targetOption($creature, $distance)){
+                    PureEntities::logOutput("$this: checkTarget(): distance too far with $creature", PureEntities::DEBUG);
                     continue;
                 }
 
                 $near = $distance;
 
                 $this->moveTime = 0;
-                $this->baseTarget = $creature;
+                $this->setBaseTarget($creature);
+                PureEntities::logOutput("$this: checkTarget(): setting baseTarget to $creature", PureEntities::DEBUG);
             }
         }
 
-        if($this->baseTarget instanceof Creature && $this->baseTarget->isAlive()){
+        if($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->isAlive()){
             return;
         }
 
-        if($this->moveTime <= 0 or !($this->baseTarget instanceof Vector3)){
+        if($this->moveTime <= 0 or !($this->getBaseTarget() instanceof Vector3)){
             $x = mt_rand(20, 100);
             $z = mt_rand(20, 100);
             $this->moveTime = mt_rand(300, 1200);
-            $this->baseTarget = $this->add(mt_rand(0, 1) ? $x : -$x, 0, mt_rand(0, 1) ? $z : -$z);
+            $this->setBaseTarget($this->add(mt_rand(0, 1) ? $x : -$x, 0, mt_rand(0, 1) ? $z : -$z));
         }
     }
 
@@ -135,21 +142,25 @@ abstract class WalkingEntity extends BaseEntity{
             return null;
         }
 
-        $before = $this->baseTarget;
+        $before = $this->getBaseTarget();
         $this->checkTarget();
-        if($this->baseTarget instanceof Creature or $this->baseTarget instanceof Block or $before !== $this->baseTarget){
-            $x = $this->baseTarget->x - $this->x;
-            $y = $this->baseTarget->y - $this->y;
-            $z = $this->baseTarget->z - $this->z;
+        if($this->getBaseTarget() instanceof Creature or $this->getBaseTarget() instanceof Block or $before !== $this->getBaseTarget()){
+            $x = $this->getBaseTarget()->x - $this->x;
+            $y = $this->getBaseTarget()->y - $this->y;
+            $z = $this->getBaseTarget()->z - $this->z;
 
-            if ($this->baseTarget instanceof Block) {
-                // check if we reached our destination. if so, set stay time and call method to signalize that
-                // we reached our block target
-                $distance = sqrt(pow($this->x - $this->baseTarget->x, 2) + pow($this->z - $this->baseTarget->z, 2));
+            $distance = sqrt(pow($this->x - $this->getBaseTarget()->x, 2) + pow($this->z - $this->getBaseTarget()->z, 2));
+
+            if ($this->getBaseTarget() instanceof Block and $distance <= 1.5) {
                 PureEntities::logOutput("WalkingEntity ($this): checkTarget (Block): isBlock and distance is $distance", PureEntities::DEBUG);
-                if ($distance <= 1.5) { // let's check if that is ok (1 block away ...)
-                    $this->blockOfInterestReached($this->baseTarget);
-                }
+                $this->blockOfInterestReached($this->getBaseTarget());
+            } else if ($this instanceof IntfTameable and
+                $this->getBaseTarget() instanceof Player
+                and $this->isFriendly()
+                and $this->isTamed()
+                and $distance <= 4) { // before moving nearer to the player, check if distance
+                // this entity is tamed and the target is the owner - hold distance 4 blocks
+                $this->stayTime = 50; // rest for 50 ticks before moving on ...
             }
             $diff = abs($x) + abs($z);
             if ($x ** 2 + $z ** 2 < 0.7) {
@@ -193,7 +204,7 @@ abstract class WalkingEntity extends BaseEntity{
             $this->motionY = 0.7;
         }
         $this->updateMovement();
-        return $this->baseTarget;
+        return $this->getBaseTarget();
     }
 
     /**
@@ -211,7 +222,7 @@ abstract class WalkingEntity extends BaseEntity{
      * @return bool
      */
     protected function isFollowingPlayer (Creature $creature) : bool {
-        return $this->baseTarget != null and $this->baseTarget instanceof Player and $this->baseTarget->getId() === $creature->getId();
+        return $this->getBaseTarget() !== null and $this->getBaseTarget() instanceof Player and $this->getBaseTarget()->getId() === $creature->getId();
     }
 
     /**

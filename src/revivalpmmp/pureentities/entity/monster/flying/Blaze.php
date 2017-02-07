@@ -62,7 +62,7 @@ class Blaze extends FlyingMonster implements ProjectileSource{
             return;
         }
 
-        $target = $this->baseTarget;
+        $target = $this->getBaseTarget();
         if(!($target instanceof Creature) or !$this->targetOption($target, $this->distanceSquared($target))){
             $near = PHP_INT_MAX;
             foreach ($this->getLevel()->getEntities() as $creature){
@@ -79,22 +79,19 @@ class Blaze extends FlyingMonster implements ProjectileSource{
                 }
 
                 $near = $distance;
-                $this->baseTarget = $creature;
+                $this->setBaseTarget($creature);
             }
         }
 
-        if(
-            $this->baseTarget instanceof Creature
-            && $this->baseTarget->isAlive()
-        ){
+        if($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->isAlive()) {
             return;
         }
 
-        if($this->moveTime <= 0 or !$this->baseTarget instanceof Vector3){
+        if($this->moveTime <= 0 or !$this->getBaseTarget() instanceof Vector3){
             $x = mt_rand(20, 100);
             $z = mt_rand(20, 100);
             $this->moveTime = mt_rand(300, 1200);
-            $this->baseTarget = $this->add(mt_rand(0, 1) ? $x : -$x, 0, mt_rand(0, 1) ? $z : -$z);
+            $this->setBaseTarget($this->add(mt_rand(0, 1) ? $x : -$x, 0, mt_rand(0, 1) ? $z : -$z));
         }
     }
 
@@ -139,22 +136,22 @@ class Blaze extends FlyingMonster implements ProjectileSource{
             return null;
         }
 
-        $before = $this->baseTarget;
+        $before = $this->getBaseTarget();
         $this->checkTarget();
-        if($this->baseTarget instanceof Player or $before !== $this->baseTarget){
-            $x = $this->baseTarget->x - $this->x;
-            $y = $this->baseTarget->y - $this->y;
-            $z = $this->baseTarget->z - $this->z;
+        if($this->getBaseTarget() instanceof Player or $before !== $this->getBaseTarget()){
+            $x = $this->getBaseTarget()->x - $this->x;
+            $y = $this->getBaseTarget()->y - $this->y;
+            $z = $this->getBaseTarget()->z - $this->z;
 
             $diff = abs($x) + abs($z);
             if($x ** 2 + $z ** 2 < 0.5){
                 $this->motionX = 0;
                 $this->motionZ = 0;
             }else{
-                if($this->baseTarget instanceof Creature){
+                if($this->getBaseTarget() instanceof Creature){
                     $this->motionX = 0;
                     $this->motionZ = 0;
-                    if($this->distance($this->baseTarget) > $this->y - $this->getLevel()->getHighestBlockAt((int) $this->x, (int) $this->z)){
+                    if($this->distance($this->getBaseTarget()) > $this->y - $this->getLevel()->getHighestBlockAt((int) $this->x, (int) $this->z)){
                         $this->motionY = $this->gravity;
                     }else{
                         $this->motionY = 0;
@@ -194,7 +191,7 @@ class Blaze extends FlyingMonster implements ProjectileSource{
             }
         }
         $this->updateMovement();
-        return $this->baseTarget;
+        return $this->getBaseTarget();
     }
 
     public function attackEntity(Entity $player){

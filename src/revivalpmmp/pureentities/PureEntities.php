@@ -56,6 +56,7 @@ use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
 use revivalpmmp\pureentities\event\EventListener;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
@@ -229,10 +230,12 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param string $type
      * @param bool $baby
      * @param Entity $parentEntity
+     * @param Player $owner
      *
      * @return boolean
      */
-    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null) {
+    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null,
+        Player $owner = null) {
         $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
         if($event->isCancelled()) {
             return false;
@@ -244,6 +247,11 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     if ($parentEntity != null) {
                         $entity->getBreedingExtension()->setParent($parentEntity);
                     }
+                }
+                // new: a baby's parent (like a wolf) may belong to a player - if so, the baby is also owned by the player!
+                if ($owner !== null && $entity instanceof IntfTameable) {
+                    $entity->setTamed(true);
+                    $entity->setOwner($owner);
                 }
                 PureEntities::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", PureEntities::DEBUG);
                 $entity->spawnToAll();

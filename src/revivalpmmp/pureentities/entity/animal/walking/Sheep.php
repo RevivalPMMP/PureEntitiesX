@@ -298,7 +298,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed {
         // this sheep is not sheared anymore ... ;)
         $this->setSheared(false);
         // reset base target. otherwise the entity will not move anymore :D
-        $this->baseTarget = null;
+        $this->setBaseTarget(null);
         $this->checkTarget(); // find a new target to move to ...
     }
 
