@@ -47,6 +47,11 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 
     public abstract function attackEntity(Entity $player);
 
+    public function checkAndAttackEntity (Entity $player) {
+        // TODO: check if this monster
+        $this->attackEntity($player);
+    }
+
     public function checkTarget() {
         // breeding implementation (as only walking entities can breed atm)
         if ($this instanceof IntfTameable) {
@@ -80,7 +85,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
         $targetOption = false;
 
         if ($this->isFriendly()) {
-            if ($creature instanceof Player) { // a player requests the target option
+            if (!$this->isTargetMonster() and $creature instanceof Player) { // a player requests the target option
                 if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
                     $itemInHand = $creature->getInventory()->getItemInHand()->getId();
                     if ($this instanceof IntfTameable) {
@@ -236,7 +241,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
             PureEntities::logOutput("$this: isFriendly", PureEntities::DEBUG);
             if(!($target instanceof Player)){
                 if($target instanceof Entity && $target->distanceSquared($this) <= $this->attackDistance){
-                    $this->attackEntity($target);
+                    $this->checkAndAttackEntity($target);
                 }elseif(
                     $target instanceof Vector3
                     &&(($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
@@ -247,7 +252,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
         }else{
             PureEntities::logOutput("$this: is NOT Friendly and target is $target", PureEntities::DEBUG);
             if($target instanceof Entity  && $target->distanceSquared($this) <= $this->attackDistance) {
-                $this->attackEntity($target);
+                $this->checkAndAttackEntity($target);
             }elseif(
                 $target instanceof Vector3
                 &&(($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
@@ -287,6 +292,22 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
+    }
+
+    /**
+     * This function checks if the entity (this) is currently tamed and has a valid owner and
+     * the current target is a monster. If so, the entity helps the player to attack a monster.
+     *
+     * @return bool
+     */
+    private function isTargetMonster () : bool {
+        $isTargetMonster = false;
+
+        if ($this instanceof IntfTameable and $this->isTamed() and $this->getOwner() !== null and $this->getBaseTarget() instanceof Monster) {
+            $isTargetMonster = true;
+        }
+
+        return $isTargetMonster;
     }
 
 }

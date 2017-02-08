@@ -32,6 +32,7 @@ use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\PureEntities;
 
 abstract class BaseEntity extends Creature{
 
@@ -84,6 +85,7 @@ abstract class BaseEntity extends Creature{
     }
 
     public function setBaseTarget ($baseTarget) {
+        PureEntities::logOutput("$this: setBaseTarget to $baseTarget", PureEntities::DEBUG);
         $this->baseTarget = $baseTarget;
     }
 
