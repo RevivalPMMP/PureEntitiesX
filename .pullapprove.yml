@@ -19,13 +19,16 @@ group_defaults:
 groups:
   Developers:
     required: 2
-
+    
+    users:
+      - kniffo80
     teams:
       - plugin-devs
     conditions:
       branches:
         - master
-        - 1.0.0-bug-fixes
+        - RideableMobs
+        - Jumping-Rabbits
       files:
         include:
           - '*.php'
