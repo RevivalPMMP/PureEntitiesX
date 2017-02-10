@@ -10,12 +10,11 @@ php:
 
 branches:
  - master
- - 1.0.0-bug-fixes
  - NewMobs
 before_script:
  - cd /home/travis/build/
  - pecl install channel://pecl.php.net/pthreads-3.1.6
- - pecl install channel://pecl.php.net/weakref-0.3.2
+ - pecl install channel://pecl.php.net/weakref-0.3.3
  - echo | pecl install channel://pecl.php.net/yaml-2.0.0
  - git clone --recursive --branch=master https://github.com/pmmp/PocketMine-MP.git
  - mkdir -p PocketMine-MP/plugins/PureEntitiesX
@@ -25,7 +24,7 @@ before_script:
  - cp -rf RevivalPMMP/PureEntitiesX/LICENSE PocketMine-MP/plugins/PureEntitiesX
  - cp -rf RevivalPMMP/PureEntitiesX/Travis.php PocketMine-MP/
  - cd PocketMine-MP/plugins/
- - wget -O DevTools.phar https://poggit.pmmp.io/r/1160/PocketMine-DevTools.phar
+ - wget -O DevTools.phar https://poggit.pmmp.io/p/DevTools/68/r/1586/PocketMine-DevTools.phar
  - cd /home/travis/build/PocketMine-MP
  
 script:
