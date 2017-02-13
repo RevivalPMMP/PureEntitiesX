@@ -81,7 +81,6 @@ class Zombie extends WalkingMonster {
                     if ($tamedMob instanceof Wolf and $tamedMob->isSitting()) {
                         $tamedMob->setSitting(false);
                     }
-                    PureEntities::logOutput("$this: setting this as target for $tamedMob", PureEntities::DEBUG);
                 }
             }
         }

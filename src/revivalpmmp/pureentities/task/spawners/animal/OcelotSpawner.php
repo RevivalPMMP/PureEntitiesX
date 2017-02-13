@@ -3,12 +3,9 @@ namespace revivalpmmp\pureentities\task\spawners\animal;
 
 
 use pocketmine\block\Grass;
-use pocketmine\block\Solid;
 use pocketmine\level\generator\biome\Biome;
-use pocketmine\level\generator\object\Tree;
-use pocketmine\level\Level;
+use pocketmine\level\generator\normal\object\Tree;
 use pocketmine\level\Position;
-use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\walking\Ocelot;
 use revivalpmmp\pureentities\PureEntities;

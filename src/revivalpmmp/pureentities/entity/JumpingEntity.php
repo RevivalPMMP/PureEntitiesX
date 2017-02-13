@@ -25,7 +25,7 @@ abstract class JumpingEntity extends BaseEntity{
      * Not to be confused for normal entity jumping
      */
     
-    protected function checkTarget(){
+    protected function checkTarget(bool $checkSkip = true){
         //TODO
     }
 

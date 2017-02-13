@@ -45,13 +45,6 @@ class Rabbit extends WalkingAnimal{ //TODO create JumpingAnimal class
         $this->setHealth(3);
     }
 
-    public function targetOption(Creature $creature, float $distance) : bool{
-        if($creature instanceof Player){
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::SEEDS && $distance <= 49;
-        }
-        return false;
-    }
-
     public function getDrops(){
         return [];
     }

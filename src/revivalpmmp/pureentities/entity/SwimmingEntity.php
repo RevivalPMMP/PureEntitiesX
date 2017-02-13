@@ -22,6 +22,7 @@ use revivalpmmp\pureentities\entity\animal\Animal;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\PureEntities;
 
 abstract class SwimmingEntity extends BaseEntity {
     
@@ -30,44 +31,46 @@ abstract class SwimmingEntity extends BaseEntity {
      * Adjust updateMove and set gravity to 0 if entity is in water
      */
     
-    protected function checkTarget(){
-        if($this->isKnockback()){
-            return;
-        }
-
-        $target = $this->getBaseTarget();
-        if(!$target instanceof Creature or !$this->targetOption($target, $this->distanceSquared($target))){
-            $near = PHP_INT_MAX;
-            foreach ($this->getLevel()->getEntities() as $creature){
-                if($creature === $this || !($creature instanceof Creature) || $creature instanceof Animal){
-                    continue;
-                }
-
-                if($creature instanceof BaseEntity && $creature->isFriendly() == $this->isFriendly()){
-                    continue;
-                }
-
-                $distance = $this->distanceSquared($creature);
-
-                if($distance > $near or !$this->targetOption($creature, $distance)){
-                    continue;
-                }
-                $near = $distance;
-
-                $this->moveTime = 0;
-                $this->setBaseTarget($creature);
+    protected function checkTarget(bool $checkSkip = true){
+        if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
+            if ($this->isKnockback()) {
+                return;
             }
-        }
 
-        if($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->isAlive()){
-            return;
-        }
+            $target = $this->getBaseTarget();
+            if (!$target instanceof Creature or !$this->targetOption($target, $this->distanceSquared($target))) {
+                $near = PHP_INT_MAX;
+                foreach ($this->getLevel()->getEntities() as $creature) {
+                    if ($creature === $this || !($creature instanceof Creature) || $creature instanceof Animal) {
+                        continue;
+                    }
 
-        if($this->moveTime <= 0 or !($this->getBaseTarget() instanceof Vector3)){
-            $x = mt_rand(20, 100);
-            $z = mt_rand(20, 100);
-            $this->moveTime = mt_rand(300, 1200);
-            $this->setBaseTarget($this->add(mt_rand(0, 1) ? $x : -$x, 0, mt_rand(0, 1) ? $z : -$z));
+                    if ($creature instanceof BaseEntity && $creature->isFriendly() == $this->isFriendly()) {
+                        continue;
+                    }
+
+                    $distance = $this->distanceSquared($creature);
+
+                    if ($distance > $near or !$this->targetOption($creature, $distance)) {
+                        continue;
+                    }
+                    $near = $distance;
+
+                    $this->moveTime = 0;
+                    $this->setBaseTarget($creature);
+                }
+            }
+
+            if ($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->isAlive()) {
+                return;
+            }
+
+            if ($this->moveTime <= 0 or !($this->getBaseTarget() instanceof Vector3)) {
+                $x = mt_rand(20, 100);
+                $z = mt_rand(20, 100);
+                $this->moveTime = mt_rand(300, 1200);
+                $this->setBaseTarget($this->add(mt_rand(0, 1) ? $x : -$x, 0, mt_rand(0, 1) ? $z : -$z));
+            }
         }
     }
 

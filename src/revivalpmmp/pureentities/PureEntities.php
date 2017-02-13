@@ -73,6 +73,7 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+use revivalpmmp\pureentities\task\InteractionTask;
 use revivalpmmp\pureentities\tile\Spawner;
 
 class PureEntities extends PluginBase implements CommandExecutor {
@@ -178,6 +179,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
         $this->reloadConfig();
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
 	    $this->getServer()->getLogger()->notice("Enabled!");
 	    $this->getServer()->getLogger()->notice("You're Running ".$this->getDescription()->getFullName());
 
@@ -274,22 +276,18 @@ class PureEntities extends PluginBase implements CommandExecutor {
 	    if(strpos(strtolower($type),"animal")) {
     		if($water == true) {
 			    if($i < $this->getServer()->getProperty("water-animals",5)) {
-			        self::logOutput("checkEntityCount for water returns true",self::DEBUG);
 				    return true;
 			    }
 		    }else{
 			    if($i < $this->getServer()->getProperty("animals",70)) {
-				    self::logOutput("checkEntityCount for animals returns true",self::DEBUG);
 				    return true;
 			    }
 		    }
 	    }else{
 		    if($i < $this->getServer()->getProperty("monsters",70)) {
-			    self::logOutput("checkEntityCount for monsters returns true",self::DEBUG);
 			    return true;
 		    }
 	    }
-	    self::logOutput("checkEntityCount returns false",self::DEBUG);
 	    return false;
     }
 

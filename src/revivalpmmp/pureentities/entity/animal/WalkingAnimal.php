@@ -95,16 +95,19 @@ abstract class WalkingAnimal extends WalkingEntity {
         return true;
     }
 
-    public function checkTarget() {
-        // breeding implementation (as only walking entities can breed atm)
-        if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
-            // we should also check for any blocks of interest for the entity
-            $this->getBreedingExtension()->checkInLove();
-            // tick the breedable class embedded
-            $this->getBreedingExtension()->tick();
-        }
+    public function checkTarget(bool $checkSkip = true) {
+        if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
+            // breeding implementation (as only walking entities can breed atm)
+            if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
+                // we should also check for any blocks of interest for the entity
+                $this->getBreedingExtension()->checkInLove();
+                // tick the breedable class embedded
+                $this->getBreedingExtension()->tick();
+            }
 
-        return parent::checkTarget();
+            return parent::checkTarget(false);
+        }
+        return;
     }
 
     /**
@@ -164,24 +167,17 @@ abstract class WalkingAnimal extends WalkingEntity {
     public function targetOption(Creature $creature, float $distance) : bool {
         $targetOption = false;
         if ($this instanceof IntfCanBreed || $this instanceof IntfFeedable) {
-            if ($creature instanceof Player) { // a player requests the target option
-                if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+            if ($creature != null and $creature instanceof Player) { // a player requests the target option
+                if ($creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
                     $feedableItems = $this->getFeedableItems();
                     if (in_array($creature->getInventory()->getItemInHand()->getId(), $feedableItems)) {
-                        if ($distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) { // we can feed a sheep! and it makes no difference if it's an adult or a baby ...
-                            InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $creature, $this);
-                        }
                         // check if the sheep is able to follow - but only on a distance of 6 blocks
-                        $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= 6;
+                        $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance();
                         // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
                         if (!$targetOption and $this->isFollowingPlayer($creature) and !$this->getBreedingExtension()->isBaby()) {
                             $this->setBaseTarget($this->getBreedingExtension()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
                         }
-                        PureEntities::logOutput("WalkingEntity: targetOption is $targetOption and distance is $distance", PureEntities::DEBUG);
-                    } else if ($this->checkDisplayInteractiveButton($creature, $distance)) {
-                        $this->stayTime = PluginConfiguration::getInstance()->getInteractStayTime(); // let the entity wait for a couple of ticks (it's easier for targetting!)
                     } else {
-                        InteractionHelper::displayButtonText("", $creature, $this);
                         // reset base target when it was player before (follow by holding wheat)
                         if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
                             // reset base target!
@@ -192,6 +188,24 @@ abstract class WalkingAnimal extends WalkingEntity {
             }
         }
         return $targetOption;
+    }
+
+    /**
+     * The general showButton function is implemented here for entities that are walking animals
+     * and can interact with - we're working with interfaces here.
+     *
+     * @param Player $player
+     */
+    protected function showButton (Player $player) {
+        if ($this instanceof IntfCanBreed || $this instanceof IntfFeedable) {
+            if (in_array($player->getInventory()->getItemInHand()->getId(), $this->getFeedableItems())) {
+                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
+            } else {
+                InteractionHelper::displayButtonText("", $player);
+            }
+        } else {
+            InteractionHelper::displayButtonText("", $player);
+        }
     }
 
 

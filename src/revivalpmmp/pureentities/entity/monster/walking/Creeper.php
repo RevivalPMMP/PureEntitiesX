@@ -102,15 +102,12 @@ class Creeper extends WalkingMonster implements Explosive{
             $diff = abs($x) + abs($z);
 
             if ($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->distanceSquared($this) <= 4.5) {
-                PureEntities::logOutput("Creeper($this): my target is a creature. I want to bomb now!", PureEntities::DEBUG);
                 $this->bombTime += $tickDiff;
                 if ($this->bombTime >= 64) {
-                    PureEntities::logOutput("Creeper($this): my target is a creature. I exploooooode!", PureEntities::DEBUG);
                     $this->explode();
                     return false;
                 }
             } else {
-                PureEntities::logOutput("Creeper($this): my target is not a creature or too far away. Resetting bomb time!", PureEntities::DEBUG);
                 $this->bombTime -= $tickDiff;
                 if ($this->bombTime < 0) {
                     $this->bombTime = 0;
