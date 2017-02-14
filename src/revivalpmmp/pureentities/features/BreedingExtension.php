@@ -355,8 +355,8 @@ class BreedingExtension {
     }
 
     /**
-     * Feed a sheep with (weat)
-     * @param Player $player    the player that feeds this sheep ...
+     * Feed a entity with feedable items
+     * @param Player $player    the player that feeds this entity ...
      * @return bool if feeding was successful true is returned
      */
     public function feed (Player $player) : bool {
@@ -372,7 +372,7 @@ class BreedingExtension {
             $age += self::FEED_INCREASE_AGE;
             $this->setAge($age);
         } else {
-            // this makes the sheep fall in love - and search for a partner ...
+            // this makes the entity fall in love - and search for a partner ...
             $this->setInLove(self::DEFAULT_IN_LOVE_TICKS);
             // checkTarget method recognizes the "inlove" and tries to find a partner
         }
@@ -380,7 +380,7 @@ class BreedingExtension {
     }
 
     /**
-     * This method has to be called by the entity (see how it works in Sheep entity)
+     * This method has to be called by the entity to tick this breeding extension
      */
     public function tick () {
         // we should also check for any blocks of interest for the entity

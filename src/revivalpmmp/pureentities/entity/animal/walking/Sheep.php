@@ -29,16 +29,16 @@ use pocketmine\network\protocol\EntityEventPacket;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use pocketmine\Player;
-use pocketmine\entity\Creature;
 use pocketmine\nbt\tag\ByteTag;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PureEntities;
 
-class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
+class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable {
     const NETWORK_ID = Data::SHEEP;
 
     const DATA_COLOR_INFO = 16;

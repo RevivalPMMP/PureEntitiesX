@@ -61,6 +61,14 @@ abstract class WalkingAnimal extends WalkingEntity {
             $this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, 300);
         }
 
+        // tick the breeding extension if it's available
+        if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
+            // we should also check for any blocks of interest for the entity
+            $this->getBreedingExtension()->checkInLove();
+            // tick the breedable class embedded
+            $this->getBreedingExtension()->tick();
+        }
+
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
@@ -93,21 +101,6 @@ abstract class WalkingAnimal extends WalkingEntity {
             $this->moveTime = 0;
         }
         return true;
-    }
-
-    public function checkTarget(bool $checkSkip = true) {
-        if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
-            // breeding implementation (as only walking entities can breed atm)
-            if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
-                // we should also check for any blocks of interest for the entity
-                $this->getBreedingExtension()->checkInLove();
-                // tick the breedable class embedded
-                $this->getBreedingExtension()->tick();
-            }
-
-            return parent::checkTarget(false);
-        }
-        return;
     }
 
     /**
@@ -196,7 +189,7 @@ abstract class WalkingAnimal extends WalkingEntity {
      *
      * @param Player $player
      */
-    protected function showButton (Player $player) {
+    public function showButton (Player $player) {
         if ($this instanceof IntfCanBreed || $this instanceof IntfFeedable) {
             if (in_array($player->getInventory()->getItemInHand()->getId(), $this->getFeedableItems())) {
                 InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);

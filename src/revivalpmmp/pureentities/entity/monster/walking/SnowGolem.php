@@ -32,14 +32,13 @@ use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\Player;
-use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\InteractionHelper;
-use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 
-class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract {
+class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract, IntfShearable {
     const NETWORK_ID = Data::SNOW_GOLEM;
 
     public $width = 0.6;
@@ -121,6 +120,16 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
             $this->namedtag->Pumpkin = new IntTag(self::NBT_KEY_PUMPKIN, 1); // default: has pumpkin on his head (1 - pumpkin on head, 0 - pumpkin off!)
         }
         return $this->namedtag[self::NBT_KEY_PUMPKIN] === 0;
+    }
+
+    public function shear (Player $player) : bool {
+        if($this->isSheared()) {
+            return false;
+        } else {
+            $this->setSheared(true);
+            InteractionHelper::displayButtonText("", $player);
+            return true;
+        }
     }
 
     /**
