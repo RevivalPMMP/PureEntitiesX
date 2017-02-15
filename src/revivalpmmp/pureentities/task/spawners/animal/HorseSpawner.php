@@ -6,7 +6,6 @@ use pocketmine\block\Solid;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
-use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\walking\Donkey;
 use revivalpmmp\pureentities\entity\animal\walking\Horse;
@@ -52,7 +51,8 @@ class HorseSpawner extends BaseSpawner {
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos) . ", herdSize: $herdSize, withDonkey: $spawnDonkey", PureEntities::DEBUG);
 
 
-            if ($this->isDay($pos->level) and // spawn only at day
+            if ($this->isSpawnAllowedByBlockLight($player, $pos, -1, 9) and // check block light when enabled
+                $this->isDay($pos->level) and // spawn only at day
                 $this->spawnAllowedByHorseCount($pos->level, $herdSize) and // check entity count for horse, donkey and mule
                 ($biomeId == Biome::PLAINS or $biomeId == Biome::TAIGA) and // spawn only allowed in PLAINS or SAVANNA (as there's no savanna atm we use taiga)
                 $block instanceof Solid and // must be a solid block

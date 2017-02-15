@@ -29,7 +29,8 @@ class BlazeSpawner extends BaseSpawner {
                 "], spawnAllowedByEntityCount: " . $this->spawnAllowedByEntityCount($pos->getLevel()) .
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
                 PureEntities::DEBUG);
-            if ($biomeId == Biome::HELL and // is this nether? hmmmm ...
+            if ($this->isSpawnAllowedByBlockLight($player, $pos, 11) and // check block light when enabled
+                $biomeId == Biome::HELL and // is this nether? hmmmm ...
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect entity count in level
                 $block->isSolid() and // block must be solid
                 $this->checkPlayerDistance($player, $pos)) { // respect distance to player which has to be at least 8 blocks

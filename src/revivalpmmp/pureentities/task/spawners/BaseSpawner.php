@@ -37,8 +37,8 @@ use revivalpmmp\pureentities\entity\monster\walking\WitherSkeleton;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\entity\monster\walking\Zombie;
 use revivalpmmp\pureentities\entity\monster\walking\ZombieVillager;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\task\spawners\animal\RabbitSpawner;
 
 /**
  * Class BaseSpawner
@@ -185,6 +185,54 @@ abstract class BaseSpawner {
     protected function spawnEntityToLevel (Position $pos, int $entityid, Level $level, string $type) : bool {
         $pos->y += self::HEIGHTS[$entityid];
         return PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityid, $level, $type);
+    }
+
+    /**
+     * Just a helper method
+     *
+     * @param Player $player
+     * @param Position $pos
+     * @return int
+     */
+    protected function getBlockLightAt (Player $player, Position $pos) {
+        return $player->getLevel()->getBlockLightAt($pos->x, $pos->y, $pos->z);
+    }
+
+    /**
+     * Just a helper method
+     *
+     * @param Player $player
+     * @param Position $pos
+     * @return int
+     */
+    protected function getSkyLightAt (Player $player, Position $pos) {
+        return $player->getLevel()->getBlockSkyLightAt($pos->x, $pos->y, $pos->z);
+    }
+
+    /**
+     * Returns true when spawning is allowed by block light at the given position. This method
+     * considers if the block light checking is enabled via configuration
+     *
+     * @param Player $player
+     * @param Position $pos
+     * @param int $maxBlockLight
+     * @param int $minBlockLight
+     * @return bool
+     */
+    protected function isSpawnAllowedByBlockLight (Player $player, Position $pos, int $maxBlockLight = -1, int $minBlockLight = -1) {
+        if ($maxBlockLight > -1 and $minBlockLight > -1) {
+            PureEntities::logOutput("Unable to execute isSpawnAllowedByBlockLight() because both are set: maxBlockLight and minBlockLight. Check your code!", PureEntities::WARN);
+            return false;
+        }
+        if (PluginConfiguration::getInstance()->getUseBlockLightForSpawn()) {
+            if ($maxBlockLight > -1 and $this->getBlockLightAt($player, $pos) <= $maxBlockLight) {
+                return true;
+            } else if ($minBlockLight > -1 and $this->getBlockLightAt($player, $pos) >= $minBlockLight) {
+                return true;
+            }
+            return false;
+        }
+        return true;
     }
 
 

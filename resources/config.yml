@@ -3,8 +3,11 @@
 # set how often the spawn and despawn task will be trigered
 spawn-task:
   trigger-ticks: 300
+  use-block-light: false
+  use-sky-light: false
+
 despawn-task:
-  trigger-ticks: 100
+  trigger-ticks: 500
 
 # when set to true the creeper will explode and also destroy blocks
 creeper:
@@ -12,6 +15,7 @@ creeper:
 
 # control logfile logging
 # possible: debug, warn, info
+# in productional environment info or warn should be set - otherwise it will take a lot of performance!
 logfile:
   loglevel: info
 

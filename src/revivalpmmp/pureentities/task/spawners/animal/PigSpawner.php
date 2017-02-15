@@ -2,11 +2,7 @@
 namespace revivalpmmp\pureentities\task\spawners\animal;
 
 
-use pocketmine\block\Solid;
-use pocketmine\level\generator\biome\Biome;
-use pocketmine\level\Level;
 use pocketmine\level\Position;
-use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\walking\Pig;
 use revivalpmmp\pureentities\PureEntities;
@@ -31,7 +27,8 @@ class PigSpawner extends BaseSpawner {
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos) . ", enoughAirAbovePos: " . $this->isEnoughAirAbovePosition($pos),
                 PureEntities::DEBUG);
 
-            if ($this->isDay($pos->getLevel()) and // only spawn at daylight ...
+            if ($this->isSpawnAllowedByBlockLight($player, $pos, -1, 9) and // check block light when enabled
+                $this->isDay($pos->getLevel()) and // only spawn at daylight ...
                 !$block->isTransparent() and // and only on opaque blocks
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level
                 $this->checkPlayerDistance($player, $pos) and // distance to player has to be at least a configurable amount of blocks (atm 8!)

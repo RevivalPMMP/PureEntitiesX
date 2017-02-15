@@ -32,10 +32,12 @@ class SlimeSpawner extends BaseSpawner {
 
             $y = $pos->y;
             $spawnAllowedByLayer = false;
+            $checkLightLevel = false;
             if ($biomeId != Biome::SWAMP and $y <= 40) {
                 $spawnAllowedByLayer = true;
             } else if ($biomeId == Biome::SWAMP and $y >= 50 and $y <= 70) {
                 $spawnAllowedByLayer = true;
+                $checkLightLevel = true;
             }
 
             PureEntities::logOutput($this->getClassNameShort() .
@@ -46,7 +48,8 @@ class SlimeSpawner extends BaseSpawner {
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
                 PureEntities::DEBUG);
 
-            if ($spawnAllowedByLayer and // respect layer for spawning
+            if (($checkLightLevel and $this->isSpawnAllowedByBlockLight($player, $pos, 7)) and // check block light when enabled
+                $spawnAllowedByLayer and // respect layer for spawning
                 !$this->isDay($pos->getLevel()) and // only spawn at night ...
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level
                 $this->checkPlayerDistance($player, $pos)) { // distance to player has to be at least a configurable amount of blocks (atm 8!)

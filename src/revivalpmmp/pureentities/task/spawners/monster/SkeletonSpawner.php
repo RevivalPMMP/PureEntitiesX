@@ -34,7 +34,8 @@ class SkeletonSpawner extends BaseSpawner {
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
                 PureEntities::DEBUG);
 
-            if (!$this->isDay($pos->level) and // spawn only at night
+            if ($this->isSpawnAllowedByBlockLight($player, $pos, 7) and // check block light when enabled
+                !$this->isDay($pos->level) and // spawn only at night
                 $block->isSolid() and // block must be solid
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level
                 $this->checkPlayerDistance($player, $pos)) { // distance to player has to be at least a configurable amount of blocks (atm 8!)

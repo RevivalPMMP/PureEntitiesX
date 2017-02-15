@@ -3,9 +3,7 @@ namespace revivalpmmp\pureentities\task\spawners\animal;
 
 
 use pocketmine\block\Solid;
-use pocketmine\level\Level;
 use pocketmine\level\Position;
-use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\PureEntities;
@@ -30,7 +28,8 @@ class CowSpawner extends BaseSpawner {
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos) . ", enoughAirAbovePos: " . $this->isEnoughAirAbovePosition($pos),
                 PureEntities::DEBUG);
 
-            if ($this->isDay($pos->getLevel()) and // only spawn at daylight ...
+            if ($this->isSpawnAllowedByBlockLight($player, $pos, -1, 9) and // check block light when enabled
+                $this->isDay($pos->getLevel()) and // only spawn at daylight ...
                 $block instanceof Solid and // and only on solid blocks (no matter, which solid)
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level
                 $this->checkPlayerDistance($player, $pos) and // distance to player has to be at least a configurable amount of blocks (atm 8!)

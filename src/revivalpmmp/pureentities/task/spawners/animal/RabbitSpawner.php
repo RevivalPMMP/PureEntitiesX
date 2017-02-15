@@ -40,7 +40,8 @@ class RabbitSpawner extends BaseSpawner {
                 ", herdSize: $herdSize", PureEntities::DEBUG);
 
 
-            if ($this->isDay($pos->level) and // spawn only at day
+            if ($this->isSpawnAllowedByBlockLight($player, $pos, -1, 9) and // check block light when enabled
+                $this->isDay($pos->level) and // spawn only at day
                 $this->spawnAllowedByRabbitCount($pos->level, $herdSize) and // check entity count for horse, donkey and mule
                 ($biomeId == Biome::DESERT or $biomeId == Biome::FOREST or $biomeId == Biome::TAIGA or $biomeId == Biome::PLAINS or $biomeId == Biome::BIRCH_FOREST or $biomeId == Biome::ICE_PLAINS) and // respect spawn biomes
                 $this->checkPlayerDistance($player, $pos)) { // player distance must be ok
