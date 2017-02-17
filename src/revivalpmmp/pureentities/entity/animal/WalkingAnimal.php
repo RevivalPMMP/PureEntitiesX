@@ -34,7 +34,7 @@ use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
-abstract class WalkingAnimal extends WalkingEntity {
+abstract class WalkingAnimal extends WalkingEntity implements Animal {
 
     // for eating grass etc. pp
     protected $blockInterestTime   = 0;

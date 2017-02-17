@@ -72,17 +72,7 @@ class Zombie extends WalkingMonster {
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
 
-            // check if the player has tamed mobs (wolf e.g.) if so - the wolves need to set
-            // target to this one and attack it!
-            if ($player instanceof Player) {
-                foreach ($this->getTamedMobs($player) as $tamedMob) {
-                    $tamedMob->setBaseTarget($this);
-                    $tamedMob->stayTime = 0;
-                    if ($tamedMob instanceof Wolf and $tamedMob->isSitting()) {
-                        $tamedMob->setSitting(false);
-                    }
-                }
-            }
+            $this->checkTamedMobsAttack ($player);
         }
     }
 
@@ -122,23 +112,5 @@ class Zombie extends WalkingMonster {
 
     public function getMaxHealth() {
         return 20;
-    }
-
-    /**
-     * Returns all tamed mobs for the given player ...
-     * @param Player $player
-     * @return array
-     */
-    private function getTamedMobs (Player $player) {
-        $tamedMobs = [];
-        foreach($player->getLevel()->getEntities() as $entity) {
-            if ($entity instanceof IntfTameable and
-                $entity->isTamed() and
-                strcasecmp($entity->getOwner()->getName(), $player->getName()) === 0 and
-                $entity->isAlive()) {
-                $tamedMobs[] = $entity;
-            }
-        }
-        return $tamedMobs;
     }
 }

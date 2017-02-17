@@ -52,18 +52,20 @@ class Spider extends WalkingMonster{
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
+
+            $this->checkTamedMobsAttack ($player);
         }
     }
 
     public function getDrops(){
-      $drops = [];
-      array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
-      switch (mt_rand(0, 2)) {
-        case 0:
-          array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
-          break;
-      }
-      return $drops;
+        $drops = [];
+        array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
+        switch (mt_rand(0, 2)) {
+            case 0:
+                array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
+                break;
+        }
+        return $drops;
     }
 
     public function getMaxHealth() {

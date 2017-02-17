@@ -168,7 +168,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
                 // is there any entity around that is attackable (skeletons, rabbits, sheeps)
                 foreach ($this->getLevel()->getNearbyEntities($this->boundingBox->grow(10, 10, 10), $this) as $entity) {
                     if ($entity instanceof Skeleton or $entity instanceof Rabbit or $entity instanceof Sheep and
-                        $entity->isAlive()) {
+                        $entity->isAlive()
+                    ) {
                         $this->setBaseTarget($entity); // set the given entity as target ...
                         return;
                     }
@@ -270,6 +271,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
+
+            $this->checkTamedMobsAttack($player);
         }
     }
 
@@ -406,7 +409,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * of the owner.
      */
     private function checkTeleport() {
-        if ($this->isTamed() && $this->getOwner() !== null && !$this->isSitting()) {
+        if ($this->isTamed() && $this->getOwner() !== null && !$this->isSitting() && !$this->isTargetMonsterOrAnimal()) {
             if ($this->getOwner()->distanceSquared($this) > 12) {
                 $this->setAngry(0); // reset angry flag
                 $this->setPosition($this->getOwner());

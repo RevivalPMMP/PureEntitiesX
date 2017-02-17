@@ -19,6 +19,7 @@
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
 use pocketmine\level\sound\PopSound;
+use pocketmine\network\protocol\EntityEventPacket;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\BreedingExtension;

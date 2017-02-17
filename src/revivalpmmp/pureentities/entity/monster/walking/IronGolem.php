@@ -59,6 +59,8 @@ class IronGolem extends WalkingMonster{
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
             $player->setMotion(new Vector3(0, 0.7, 0));
+
+            $this->checkTamedMobsAttack ($player);
         }
     }
 

@@ -87,9 +87,9 @@ class PureEntities extends PluginBase implements CommandExecutor {
     // logging constants for method call 'logOutput'
     const NORM = 0;
     const WARN = 1;
-	const DEBUG = 2;
+    const DEBUG = 2;
 
-	// button texts ...
+    // button texts ...
     const BUTTON_TEXT_SHEAR = "Shear";
     const BUTTON_TEXT_FEED  = "Feed";
     const BUTTON_TEXT_MILK  = "Milk";
@@ -102,12 +102,12 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * Returns the plugin instance to get access to config e.g.
      * @return PureEntities the current instance of the plugin main class
      */
-    public static function getInstance() : PureEntities {
+    public static function getInstance(): PureEntities {
         return PureEntities::$instance;
     }
 
 
-    public function onLoad(){
+    public function onLoad() {
         self::$registeredClasses = [
             Stray::class,
             Husk::class,
@@ -116,7 +116,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
             Mule::class,
             //ElderGuardian::class,
             //Guardian::class,
-	        //Bat::class,
+            //Bat::class,
             Squid::class,
             Villager::class,
             Blaze::class,
@@ -149,21 +149,21 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
         foreach (self::$registeredClasses as $name) {
             Entity::registerEntity($name);
-            if(
+            if (
                 $name == IronGolem::class
                 || $name == FireBall::class
                 || $name == SnowGolem::class
                 || $name == ZombieVillager::class
-            ){
+            ) {
                 continue;
             }
             $item = Item::get(Item::SPAWN_EGG, $name::NETWORK_ID);
-            if(!Item::isCreativeItem($item)){
+            if (!Item::isCreativeItem($item)) {
                 Item::addCreativeItem($item);
             }
         }
 
- 		Tile::registerTile(Spawner::class);
+        Tile::registerTile(Spawner::class);
 
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
 
@@ -173,20 +173,20 @@ class PureEntities extends PluginBase implements CommandExecutor {
         PureEntities::$instance = $this;
     }
 
-    public function onEnable(){
+    public function onEnable() {
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
         $this->saveDefaultConfig();
         $this->reloadConfig();
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
-	    $this->getServer()->getLogger()->notice("Enabled!");
-	    $this->getServer()->getLogger()->notice("You're Running ".$this->getDescription()->getFullName());
+        $this->getServer()->getLogger()->notice("Enabled!");
+        $this->getServer()->getLogger()->notice("You're Running " . $this->getDescription()->getFullName());
 
-	    new PluginConfiguration($this); // create plugin configuration
+        new PluginConfiguration($this); // create plugin configuration
     }
 
-    public function onDisable(){
+    public function onDisable() {
         $this->getServer()->getLogger()->notice("Disabled!");
     }
 
@@ -194,15 +194,15 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param int|string $type
      * @param Position $source
      * @param $args
-     * 
+     *
      * @return Entity
      */
-    public static function create($type, Position $source, ...$args){
+    public static function create($type, Position $source, ...$args) {
         $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);
-        if(!$chunk->isGenerated()){
+        if (!$chunk->isGenerated()) {
             $chunk->setGenerated();
         }
-        if(!$chunk->isPopulated()){
+        if (!$chunk->isPopulated()) {
             $chunk->setPopulated();
         }
 
@@ -237,9 +237,9 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return boolean
      */
     public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null,
-        Player $owner = null) {
+                                          Player $owner = null) {
         $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
-        if($event->isCancelled()) {
+        if ($event->isCancelled()) {
             return false;
         } else {
             $entity = self::create($entityid, $pos);
@@ -264,64 +264,36 @@ class PureEntities extends PluginBase implements CommandExecutor {
         }
     }
 
-    public function checkEntityCount(string $type, $water = false) : bool {
-    	$i = 0;
-    	foreach ($this->getServer()->getLevels() as $level) {
-    		foreach ($level->getEntities() as $entity) {
-    			if(!$entity instanceof Player) {
-    				$i++;
-			    }
-		    }
-	    }
-	    if(strpos(strtolower($type),"animal")) {
-    		if($water == true) {
-			    if($i < $this->getServer()->getProperty("water-animals",5)) {
-				    return true;
-			    }
-		    }else{
-			    if($i < $this->getServer()->getProperty("animals",70)) {
-				    return true;
-			    }
-		    }
-	    }else{
-		    if($i < $this->getServer()->getProperty("monsters",70)) {
-			    return true;
-		    }
-	    }
-	    return false;
-    }
-
-
-	/**
-	 * Logs an output to the plugin's logfile ...
-	 * @param string $logline   the output to be appended
-	 * @param int $type         the type of output to log
-	 * @return int|bool         returns false on failure
-	 */
-	public static function logOutput(string $logline, int $type) {
-		switch($type) {
-			case self::DEBUG:
-			    if (strcmp(self::$loglevel, "debug") == 0) {
+    /**
+     * Logs an output to the plugin's logfile ...
+     * @param string $logline the output to be appended
+     * @param int $type the type of output to log
+     * @return int|bool         returns false on failure
+     */
+    public static function logOutput(string $logline, int $type) {
+        switch ($type) {
+            case self::DEBUG:
+                if (strcmp(self::$loglevel, "debug") == 0) {
                     file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
                 }
-				break;
-			case self::WARN:
+                break;
+            case self::WARN:
                 file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-				break;
-			case self::NORM:
+                break;
+            case self::NORM:
                 file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-				break;
-			default:
-				if(strcmp(self::$loglevel, "debug") == 0) {
-					file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
-				} elseif(strcmp(self::$loglevel, "warn") == 0) {
-					file_put_contents('./pureentities_'.date("j.n.Y").'.log', "\033[31m".(date("j.n.Y G:i:s")." [WARN]  ".$logline."\033[0m\r\n"), FILE_APPEND);
-				}else{
-					file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-				}
-		}
-		return true;
-	}
+                break;
+            default:
+                if (strcmp(self::$loglevel, "debug") == 0) {
+                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                } elseif (strcmp(self::$loglevel, "warn") == 0) {
+                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                } else {
+                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                }
+        }
+        return true;
+    }
 
     /**
      * Returns a suitable Y-position for spawning an entity, starting from the given coordinates.
@@ -336,10 +308,10 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param $x                int the x position to start search
      * @param $y                int the y position to start search
      * @param $z                int the z position to start searching
-     * @param Level $level      Level the level object to search in
+     * @param Level $level Level the level object to search in
      * @return null|Position    either NULL if no valid position was found or the final AIR spawn position
      */
-	public static function getSuitableHeightPosition ($x, $y, $z, Level $level) {
+    public static function getSuitableHeightPosition($x, $y, $z, Level $level) {
         $newPosition = null;
         $id = $level->getBlockIdAt($x, $y, $z);
         if ($id == 0) { // we found an air block - we need to search down step by step to get the correct block which is not a "AIR" block
@@ -384,7 +356,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return bool
      */
     public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
-        switch($command->getName()){
+        switch ($command->getName()) {
             case "pesummon":
                 if (count($args) == 1 or count($args) == 2) {
                     $playerName = count($args) == 1 ? $sender->getName() : $args[1];
@@ -420,9 +392,9 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param string $longClassName
      * @return string
      */
-    private function getShortClassName (string $longClassName) : string {
+    private function getShortClassName(string $longClassName): string {
         $short = "";
-    	$longClassName = strtok ($longClassName , "\\");
+        $longClassName = strtok($longClassName, "\\");
         while ($longClassName !== false) {
             $short = $longClassName;
             $longClassName = strtok("\\");

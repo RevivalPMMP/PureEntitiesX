@@ -72,6 +72,8 @@ class WitherSkeleton extends WalkingMonster{
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
+
+            $this->checkTamedMobsAttack ($player);
         }
     }
     public function getDrops(){
@@ -79,9 +81,9 @@ class WitherSkeleton extends WalkingMonster{
         array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));
         array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
         switch (mt_rand(0, 8)) {
-          case 1:
-            array_push($drops, Item::get(Item::MOB_HEAD, 1, mt_rand(0, 2)));
-            break;
+            case 1:
+                array_push($drops, Item::get(Item::MOB_HEAD, 1, mt_rand(0, 2)));
+                break;
         }
         return $drops;
     }

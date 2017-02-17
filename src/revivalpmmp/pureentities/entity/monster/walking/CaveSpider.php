@@ -51,6 +51,8 @@ class CaveSpider extends WalkingMonster{
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
             $player->addEffect(Effect::getEffect(Effect::POISON));
+
+            $this->checkTamedMobsAttack ($player);
         }
     }
 
@@ -58,9 +60,9 @@ class CaveSpider extends WalkingMonster{
         $drops = [];
         array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
         switch (mt_rand(0, 2)) {
-          case 0:
-            array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
-            break;
+            case 0:
+                array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
+                break;
         }
         return $drops;
     }

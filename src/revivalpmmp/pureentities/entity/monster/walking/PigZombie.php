@@ -100,6 +100,8 @@ class PigZombie extends WalkingMonster{
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
+
+            $this->checkTamedMobsAttack ($player);
         }
     }
 
