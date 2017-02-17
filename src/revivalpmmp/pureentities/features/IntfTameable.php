@@ -1,7 +1,9 @@
 <?php
 
+namespace revivalpmmp\pureentities\features;
+
 /*  PureEntitiesX: Mob AI Plugin for PMMP
-    Copyright (C) 2017  RevivalPMMP
+    Copyright (C) 2017 RevivalPMMP
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,22 +17,22 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+use pocketmine\Player;
 
-namespace revivalpmmp\pureentities\entity;
+interface IntfTameable {
 
-abstract class JumpingEntity extends BaseEntity{
+    public function setTamed (bool $tamed);
+    public function isTamed () : bool;
 
-    /*
-     * For slimes and Magma Cubes ONLY
-     * Not to be confused for normal entity jumping
+    /**
+     * @return mixed null|Player
      */
-    
-    protected function checkTarget(bool $checkSkip = true){
-        //TODO
-    }
+    public function getOwner ();
+    public function setOwner (Player $player);
 
-    public function updateMove($tickDiff){
-        // TODO
-        return null;
-    }
+    /**
+     * @return mixed (array)
+     */
+    public function getTameFoods ();
+
 }

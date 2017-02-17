@@ -24,8 +24,9 @@ use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\features\IntfCanInteract;
 
-class Pig extends WalkingAnimal implements Rideable, IntfCanBreed {
+class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::PIG;
 
     public $width = 1.45;

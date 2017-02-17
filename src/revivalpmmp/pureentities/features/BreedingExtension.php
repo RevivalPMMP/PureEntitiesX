@@ -114,7 +114,7 @@ class BreedingExtension {
      */
     public function setBreedPartner ($breedPartner) {
         $this->breedPartner = $breedPartner;
-        $this->entity->baseTarget = $breedPartner;
+        $this->entity->setBaseTarget($breedPartner);
     }
 
     /**
@@ -188,7 +188,7 @@ class BreedingExtension {
             }
             // forget the parent and reset baseTarget immediately
             $this->setParent(null);
-            $this->entity->baseTarget = null;
+            $this->entity->setBaseTarget(null);
         }
     }
 
@@ -209,7 +209,7 @@ class BreedingExtension {
         $this->setBreeding(false); // reset breeding status
         $this->setBreedPartner(null); // reset breed partner
         $this->setInLove(0); // reset in love ticker
-        $this->entity->baseTarget = null; // search for a new target
+        $this->entity->setBaseTarget(null); // search for a new target
         $this->setAge(self::BREED_NOT_POSSIBLE_TICKS); // 20 ticks / second (should be) - the entity cannot breed for 5 minutes
     }
 
@@ -222,7 +222,6 @@ class BreedingExtension {
      * @param int $inLoveTicks
      */
     public function setInLove (int $inLoveTicks) {
-        PureEntities::logOutput("Breedable(" . $this->entity . "): setInLOve ($inLoveTicks)", PureEntities::DEBUG);
         $this->entity->namedtag->InLove = new IntTag(self::NBT_KEY_IN_LOVE, $inLoveTicks); // by default we have a adult entity
         if ($this->getInLove() > 0) {
             $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INLOVE, true); // set client "inlove"
@@ -301,7 +300,6 @@ class BreedingExtension {
      * @return Entity | bool
      */
     private function findAnotherEntityInLove (int $range) {
-        PureEntities::logOutput("Breedable(" . $this->entity . "): findAnotherEntityInLove -> entering", PureEntities::DEBUG);
         $entityFound = false;
         foreach ($this->entity->getLevel()->getEntities() as $otherEntity) {
             if (strcmp(get_class($otherEntity), get_class($this->entity)) == 0 and // must be of the same species
@@ -310,7 +308,6 @@ class BreedingExtension {
                 $otherEntity->getId() != $this->entity->getId() and // should be another entity of the same type
                 $otherEntity->getBreedingExtension()->getBreedPartner() == null) { // shouldn't have another breeding partner
                 $entityFound = $otherEntity;
-                PureEntities::logOutput("Breedable(" . $this->entity . "): findAnotherEntityInLove -> found $entityFound", PureEntities::DEBUG);
                 break;
             }
         }
@@ -321,12 +318,16 @@ class BreedingExtension {
      * @param Entity $partner
      */
     private function breed (Entity $partner) {
-        PureEntities::logOutput("Breedable(" . $this->entity . "): breed with partner $partner", PureEntities::DEBUG);
         // yeah we found ourselfes - now breed and reset target
         $this->resetBreedStatus();
         $partner->getBreedingExtension()->resetBreedStatus();
-        // spawn a baby entity!
-        PureEntities::getInstance()->scheduleCreatureSpawn($this->entity, $this->entity->getNetworkId(), $this->entity->getLevel(), "Animal", true, $this->entity);
+        // spawn a baby entity which may be owned by a player
+        $owner = null;
+        if ($this->entity instanceof IntfTameable) {
+            $owner = $this->entity->getOwner();
+        }
+        PureEntities::getInstance()->scheduleCreatureSpawn($this->entity, $this->entity->getNetworkId(), $this->entity->getLevel(),
+            "Animal", true, $this->entity, $owner);
     }
 
     /**
@@ -334,20 +335,17 @@ class BreedingExtension {
      */
     public function increaseAge () {
         if ($this->ageTickTimer >= self::AGE_TICK_DELAY) {
-            PureEntities::logOutput("Breedable(" . $this->entity . "): ageTick [timer:" . $this->ageTickTimer . "]", PureEntities::DEBUG);
             if ($this->isBaby()) {
                 $newAge = $this->getAge() + $this->ageTickTimer;
                 if ($newAge >= 0) {
                     $newAge = self::BREED_NOT_POSSIBLE_TICKS; // cannot breed for 5 minutes ...
                 }
-                PureEntities::logOutput("Breedable(" . $this->entity . "): ageTick(): setting age of baby to $newAge", PureEntities::DEBUG);
                 $this->setAge($newAge); // going to positive. when age reached 0 or more, it will be an adult ...
             } else if (!$this->isBaby() and $this->getAge() > 0) {
                 $newAge = $this->getAge() - $this->ageTickTimer;
                 if ($newAge < 0) {
                     $newAge = 0;
                 }
-                PureEntities::logOutput("Breedable(" . $this->entity . "): ageTick(): setting age of adult to $newAge", PureEntities::DEBUG);
                 $this->setAge($newAge); // going from positive to null (because when age > 0 it cannot breed)
             }
             $this->ageTickTimer = 0;
@@ -357,27 +355,24 @@ class BreedingExtension {
     }
 
     /**
-     * Feed a sheep with (weat)
-     * @param Player $player    the player that feeds this sheep ...
+     * Feed a entity with feedable items
+     * @param Player $player    the player that feeds this entity ...
      * @return bool if feeding was successful true is returned
      */
     public function feed (Player $player) : bool {
         if ($this->getAge() > 0) {
-            PureEntities::logOutput("Breedable(" . $this->entity . "): feed by player. But is not able to breed!", PureEntities::DEBUG);
             $pk = new EntityEventPacket();
             $pk->eid = $this->entity->getId();
             $pk->event = EntityEventPacket::TAME_FAIL; // this "plays" fail animation on entity
             $player->dataPacket($pk);
             return false;
         }
-        PureEntities::logOutput("Breedable(" . $this->entity . "): fed by player $player", PureEntities::DEBUG);
         if ($this->isBaby()) { // when a baby gets fed with weat, it grows up a little faster
             $age = $this->getAge();
             $age += self::FEED_INCREASE_AGE;
             $this->setAge($age);
-            PureEntities::logOutput("Breedable(" . $this->entity . "): fed a baby sheep. increase age by " . self::FEED_INCREASE_AGE, PureEntities::DEBUG);
         } else {
-            // this makes the sheep fall in love - and search for a partner ...
+            // this makes the entity fall in love - and search for a partner ...
             $this->setInLove(self::DEFAULT_IN_LOVE_TICKS);
             // checkTarget method recognizes the "inlove" and tries to find a partner
         }
@@ -385,7 +380,7 @@ class BreedingExtension {
     }
 
     /**
-     * This method has to be called by the entity (see how it works in Sheep entity)
+     * This method has to be called by the entity to tick this breeding extension
      */
     public function tick () {
         // we should also check for any blocks of interest for the entity
@@ -396,9 +391,8 @@ class BreedingExtension {
             $this->getParent() !== null and
             $this->getParent()->isAlive() and
             !$this->getParent()->closed and
-            ($this->entity->baseTarget === null or !$this->entity->baseTarget instanceof Player)) {
-            PureEntities::logOutput("Breedable(" . $this->entity . "): isBaby, setting parent to " . $this->getParent(), PureEntities::DEBUG);
-            $this->entity->baseTarget = $this->getParent();
+            ($this->entity->getBaseTarget() === null or !$this->entity->getBaseTarget() instanceof Player)) {
+            $this->entity->setBaseTarget($this->getParent());
             if ($this->getParent()->distance($this->entity) <= 4) {
                 $this->entity->stayTime = 100; // wait 100 ticks before moving after the parent ;)
             }

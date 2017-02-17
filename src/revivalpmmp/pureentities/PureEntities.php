@@ -56,6 +56,7 @@ use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
 use revivalpmmp\pureentities\event\EventListener;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
@@ -72,6 +73,7 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+use revivalpmmp\pureentities\task\InteractionTask;
 use revivalpmmp\pureentities\tile\Spawner;
 
 class PureEntities extends PluginBase implements CommandExecutor {
@@ -177,6 +179,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
         $this->reloadConfig();
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
 	    $this->getServer()->getLogger()->notice("Enabled!");
 	    $this->getServer()->getLogger()->notice("You're Running ".$this->getDescription()->getFullName());
 
@@ -229,10 +232,12 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param string $type
      * @param bool $baby
      * @param Entity $parentEntity
+     * @param Player $owner
      *
      * @return boolean
      */
-    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null) {
+    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null,
+        Player $owner = null) {
         $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
         if($event->isCancelled()) {
             return false;
@@ -244,6 +249,11 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     if ($parentEntity != null) {
                         $entity->getBreedingExtension()->setParent($parentEntity);
                     }
+                }
+                // new: a baby's parent (like a wolf) may belong to a player - if so, the baby is also owned by the player!
+                if ($owner !== null && $entity instanceof IntfTameable) {
+                    $entity->setTamed(true);
+                    $entity->setOwner($owner);
                 }
                 PureEntities::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", PureEntities::DEBUG);
                 $entity->spawnToAll();
@@ -266,22 +276,18 @@ class PureEntities extends PluginBase implements CommandExecutor {
 	    if(strpos(strtolower($type),"animal")) {
     		if($water == true) {
 			    if($i < $this->getServer()->getProperty("water-animals",5)) {
-			        self::logOutput("checkEntityCount for water returns true",self::DEBUG);
 				    return true;
 			    }
 		    }else{
 			    if($i < $this->getServer()->getProperty("animals",70)) {
-				    self::logOutput("checkEntityCount for animals returns true",self::DEBUG);
 				    return true;
 			    }
 		    }
 	    }else{
 		    if($i < $this->getServer()->getProperty("monsters",70)) {
-			    self::logOutput("checkEntityCount for monsters returns true",self::DEBUG);
 			    return true;
 		    }
 	    }
-	    self::logOutput("checkEntityCount returns false",self::DEBUG);
 	    return false;
     }
 

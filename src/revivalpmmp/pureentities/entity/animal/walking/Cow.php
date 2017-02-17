@@ -24,12 +24,13 @@ use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 
-class Cow extends WalkingAnimal implements IntfCanBreed {
+class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::COW;
 
     public $width = 0.9;
@@ -82,24 +83,6 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
         return $this->feedableItems;
     }
 
-    /**
-     * @param Creature $creature the creature itself, can be any creature (from player to entity)
-     * @param float $distance the distance to the creature
-     * @return bool true if the entity has interest in the creature, false if not
-     */
-    public function checkDisplayInteractiveButton(Creature $creature, float $distance) : bool {
-        if ($creature instanceof Player) { // is the player a target option?
-            if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
-                $item = $creature->getInventory()->getItemInHand();
-                if ($distance <= PluginConfiguration::getInstance()->getMaxInteractDistance() && $item->getId() === Item::BUCKET && $item->getDamage() === 0) { // empty bucket
-                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $creature, $this);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public function getDrops(){
         $drops = [];
         array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
@@ -122,18 +105,37 @@ class Cow extends WalkingAnimal implements IntfCanBreed {
      * @return bool true if milking was successful, false if not
      */
     public function milk (Player $player) : bool{
-        PureEntities::logOutput("Cow ($this): milk by $player", PureEntities::DEBUG);
         $item = $player->getInventory()->getItemInHand();
         if ($item !== null && $item->getId() === Item::BUCKET) {
-            PureEntities::logOutput("Cow ($this): producing milk in a bucket ...", PureEntities::DEBUG);
             --$item->count;
             $player->getInventory()->setItemInHand($item);
             $bucketWithMilk = Item::get(Item::BUCKET, 0, 1);
             $bucketWithMilk->setDamage(1);
             $player->getInventory()->addItem($bucketWithMilk);
-            InteractionHelper::displayButtonText("", $player, $this);
+            InteractionHelper::displayButtonText("", $player);
             return true;
         }
         return false;
     }
+
+
+    /**
+     * This method is called when a player is looking at this entity. This
+     * method shows an interactive button or not
+     *
+     * @param Player $player    the player to show a button eventually to
+     */
+    public function showButton (Player $player) {
+        if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+            $itemInHand = $player->getInventory()->getItemInHand();
+            if ($itemInHand->getId() === Item::BUCKET && $itemInHand->getDamage() === 0) { // empty bucket
+                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $player);
+                return;
+            }
+        }
+        parent::showButton($player);
+    }
+
 }
+
+

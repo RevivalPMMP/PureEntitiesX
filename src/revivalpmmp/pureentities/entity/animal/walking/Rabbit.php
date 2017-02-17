@@ -6,8 +6,9 @@ use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfCanInteract;
 
-class Rabbit extends WalkingAnimal implements IntfCanBreed {
+class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = 18;
 
     public $width = 0.5;

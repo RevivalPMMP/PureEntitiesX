@@ -19,6 +19,7 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\nbt\tag\IntTag;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
@@ -31,13 +32,13 @@ use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\Player;
-use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\InteractionHelper;
-use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 
-class SnowGolem extends WalkingMonster implements ProjectileSource {
+class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract, IntfShearable {
     const NETWORK_ID = Data::SNOW_GOLEM;
 
     public $width = 0.6;
@@ -54,21 +55,6 @@ class SnowGolem extends WalkingMonster implements ProjectileSource {
 
     public function getName(){
         return "SnowGolem";
-    }
-
-    public function targetOption(Creature $creature, float $distance) : bool{
-        if ($creature instanceof Player) {
-            if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
-                if ($creature->getInventory()->getItemInHand()->getId() === Item::SHEARS && $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance() && !$this->isSheared())  {
-                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $creature, $this);
-                } else {
-                    InteractionHelper::displayButtonText("", $creature, $this);
-                }
-            }
-        } else {
-            return !($creature instanceof Player) && $creature->isAlive() && $distance <= 60;
-        }
-        return false;
     }
 
     public function attackEntity(Entity $player){
@@ -135,5 +121,33 @@ class SnowGolem extends WalkingMonster implements ProjectileSource {
         }
         return $this->namedtag[self::NBT_KEY_PUMPKIN] === 0;
     }
+
+    public function shear (Player $player) : bool {
+        if($this->isSheared()) {
+            return false;
+        } else {
+            $this->setSheared(true);
+            InteractionHelper::displayButtonText("", $player);
+            return true;
+        }
+    }
+
+    /**
+     * This method is called when a player is looking at this entity. This
+     * method shows an interactive button or not
+     *
+     * @param Player $player    the player to show a button eventually to
+     */
+    public function showButton (Player $player) {
+        if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+            if ($player->getInventory()->getItemInHand()->getId() === ItemIds::SHEARS && !$this->isSheared()) {
+                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $player);
+                return;
+            }
+        }
+        parent::showButton($player);
+    }
+
+
 
 }

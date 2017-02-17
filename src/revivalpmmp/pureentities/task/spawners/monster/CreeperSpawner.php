@@ -26,7 +26,8 @@ class CreeperSpawner extends BaseSpawner {
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
                 PureEntities::DEBUG);
 
-            if (!$this->isDay($pos->getLevel()) and // only spawn at night ...
+            if ($this->isSpawnAllowedByBlockLight($player, $pos, 7) and // check block light when enabled
+                !$this->isDay($pos->getLevel()) and // only spawn at night ...
                 $block->isSolid() and // spawn only on solid blocks
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level
                 $this->checkPlayerDistance($player, $pos)) { // distance to player has to be at least a configurable amount of blocks (atm 8!)

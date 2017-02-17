@@ -32,6 +32,8 @@ use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\PureEntities;
 
 abstract class BaseEntity extends Creature{
 
@@ -39,7 +41,7 @@ abstract class BaseEntity extends Creature{
     protected $moveTime = 0;
 
     /** @var Vector3|Entity */
-    public $baseTarget = null;
+    private $baseTarget = null;
 
     private $movement = true;
     private $friendly = false;
@@ -81,6 +83,27 @@ abstract class BaseEntity extends Creature{
 
     public function setWallCheck(bool $value){
         $this->wallcheck = $value;
+    }
+
+    /**
+     * Sets the base target for the entity. If this method is called
+     * and the baseTarget is the same, nothing is set
+     *
+     * @param $baseTarget
+     */
+    public function setBaseTarget ($baseTarget) {
+        if ($baseTarget !== $this->baseTarget) {
+            $this->baseTarget = $baseTarget;
+        }
+    }
+
+    /**
+     * Returns the base target currently set for this entity
+     *
+     * @return Entity|Vector3
+     */
+    public function getBaseTarget () {
+        return $this->baseTarget;
     }
 
     public function getSpeed() : float{
@@ -173,6 +196,8 @@ abstract class BaseEntity extends Creature{
         }else{
             $this->motionY = 0.6;
         }
+
+        $this->checkAttackByTamedEntities ($source);
     }
 
     public function knockBack(Entity $attacker, $damage, $x, $z, $base = 0.4){
@@ -250,6 +275,37 @@ abstract class BaseEntity extends Creature{
      */
     public function isAnyBlockOfInterest (array $blocksAround) {
         return false;
+    }
+
+    /**
+     * This method is used to determine if the attack comes from a player. When the player has tamed
+     * entities - all will attack (when not already attacking another monster).
+     *
+     * @param EntityDamageEvent $source the event that has been raised
+     */
+    protected function checkAttackByTamedEntities (EntityDamageEvent $source) {
+        // next: if the player has any tamed entities - they will attack this entitiy too - but only when not already
+        // having a valid monster target
+        if ($source instanceof EntityDamageByEntityEvent) {
+            $attackedBy = $source->getDamager();
+            if ($attackedBy instanceof Player) {
+                // get all tamed entities in the world and search for those belonging to the player
+                foreach ($attackedBy->getLevel()->getEntities() as $entity) {
+                    if ($entity instanceof IntfTameable and
+                        $entity->getOwner() !== null and
+                        $entity->isTamed() and
+                        strcasecmp($entity->getOwner()->getName(), $attackedBy->getName()) == 0 and
+                        $entity instanceof BaseEntity and
+                        !$entity->getBaseTarget() instanceof Monster) {
+                        if ($entity->isSitting()) {
+                            $entity->setSitting(false);
+                        }
+                        $entity->setBaseTarget($this);
+                        PureEntities::logOutput("$this: will be attacked by $entity too", PureEntities::DEBUG);
+                    }
+                }
+            }
+        }
     }
 
 }

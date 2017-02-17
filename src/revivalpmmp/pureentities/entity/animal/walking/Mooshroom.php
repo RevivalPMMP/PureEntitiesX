@@ -23,8 +23,9 @@ use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\features\IntfCanInteract;
 
-class Mooshroom extends WalkingAnimal implements IntfCanBreed {
+class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::MOOSHROOM;
 
     public $width = 1.45;
