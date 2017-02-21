@@ -33,6 +33,7 @@ use pocketmine\nbt\tag\ByteTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\PluginConfiguration;
 
 abstract class BaseEntity extends Creature{
 
@@ -47,6 +48,11 @@ abstract class BaseEntity extends Creature{
     private $wallcheck = true;
     protected $fireProof = false;
     private $maxJumpHeight = 1; // default: 1 block jump height - this should be 2 for horses e.g.
+
+    /**
+     * @var int
+     */
+    private $checkTargetSkipCounter = 0;
 
     public function __destruct(){}
 
@@ -357,6 +363,21 @@ abstract class BaseEntity extends Creature{
             }
         }
         return $tamedMobs;
+    }
+
+    /**
+     * Checks if checkTarget can be called. If not, this method returns false
+     *
+     * @return bool
+     */
+    protected function isCheckTargetAllowedBySkip(): bool {
+        if ($this->checkTargetSkipCounter > PluginConfiguration::getInstance()->getCheckTargetSkipTicks()) {
+            $this->checkTargetSkipCounter = 0;
+            return true;
+        } else {
+            $this->checkTargetSkipCounter++;
+            return false;
+        }
     }
 
 

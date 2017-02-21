@@ -35,11 +35,6 @@ use revivalpmmp\pureentities\PluginConfiguration;
 
 abstract class WalkingEntity extends BaseEntity {
 
-    /**
-     * @var int
-     */
-    private $checkTargetSkipCounter = 0;
-
     protected function checkTarget(bool $checkSkip = true) {
         if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
             if ($this->isKnockback()) {
@@ -235,21 +230,6 @@ abstract class WalkingEntity extends BaseEntity {
      */
     protected function isFollowingPlayer(Creature $creature): bool {
         return $this->getBaseTarget() !== null and $this->getBaseTarget() instanceof Player and $this->getBaseTarget()->getId() === $creature->getId();
-    }
-
-    /**
-     * Checks if checkTarget can be called. If not, this method returns false
-     *
-     * @return bool
-     */
-    protected function isCheckTargetAllowedBySkip(): bool {
-        if ($this->checkTargetSkipCounter > PluginConfiguration::getInstance()->getCheckTargetSkipTicks()) {
-            $this->checkTargetSkipCounter = 0;
-            return true;
-        } else {
-            $this->checkTargetSkipCounter++;
-            return false;
-        }
     }
 
 
