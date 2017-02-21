@@ -20,6 +20,7 @@ namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\BlockSides;
 use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use pocketmine\block\Liquid;
@@ -31,7 +32,6 @@ use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
-use revivalpmmp\pureentities\PureEntities;
 
 abstract class WalkingEntity extends BaseEntity {
 
@@ -98,33 +98,41 @@ abstract class WalkingEntity extends BaseEntity {
      * @return bool
      */
     protected function checkJump($dx, $dz) {
-        if (!$this->onGround) {
+        if ($this->motionY == $this->gravity * 2) { // swimming
+            return $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int)$this->y, Math::floorFloat($this->z))) instanceof Liquid;
+        } else { // dive up?
+            if ($this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int)($this->y + 0.8), Math::floorFloat($this->z))) instanceof Liquid) {
+                $this->motionY = $this->gravity * 2; // set swimming (rather walking on water ;))
+                return true;
+            }
+        }
+
+        if (!$this->isOnGround() or $this->stayTime > 0) {
             return false;
         }
 
-        if ($this->motionY == $this->gravity * 2) {
-            return $this->level->getBlock(new Vector3(Math::floorFloat($this->x), (int)$this->y, Math::floorFloat($this->z))) instanceof Liquid;
-        } else if ($this->level->getBlock(new Vector3(Math::floorFloat($this->x), (int)($this->y + 0.8), Math::floorFloat($this->z))) instanceof Liquid) {
-            $this->motionY = $this->gravity * 2;
-            return true;
-        }
-
-        if ($this->stayTime > 0) {
+        if ($this->getDirection() === null) {
             return false;
         }
 
-        $block = $this->level->getBlock($this->add($dx, -0.1, $dz));
-
-        if ($block instanceof Fence || $block instanceof FenceGate) {
-            $this->motionY = $this->gravity;
-            return true;
-        } elseif ($this->motionY <= $this->gravity * 4) {
-            $this->motionY = $this->gravity * 4;
-            return true;
-        } else {
-            $this->motionY += $this->gravity * 0.25;
-            return true;
+        $that = $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x + $dx), (int)$this->y, Math::floorFloat($this->z + $dz)));
+        $block = $that->getSide(BlockSides::getSides()[$this->getDirection()]);
+        // we cannot pass through the block that is directly in front of us
+        if (!$block->canPassThrough()) {
+            // check if we can get through the upper of the block directly in front of the entity
+            if ($block->getSide(Block::SIDE_UP)->canPassThrough() && $that->getSide(Block::SIDE_UP, 2)->canPassThrough()) {
+                if ($block instanceof Fence || $block instanceof FenceGate) { // cannot pass fence or fence gate ...
+                    $this->motionY = $this->gravity;
+                } else if ($this->motionY <= ($this->gravity * 8)) {
+                    $this->motionY = $this->gravity * 8;
+                } else {
+                    $this->motionY += $this->gravity * 0.25;
+                }
+                return true;
+            }
         }
+        return false;
+
     }
 
     /**
@@ -180,7 +188,10 @@ abstract class WalkingEntity extends BaseEntity {
 
         $dx = $this->motionX * $tickDiff;
         $dz = $this->motionZ * $tickDiff;
-        $isJump = $this->isCollidedHorizontally;
+        $isJump = false;
+        if ($this->isCollidedHorizontally or $this->isInsideOfWater()) {
+            $isJump = $this->checkJump($dx, $dz);
+        }
         if ($this->stayTime > 0) {
             $this->stayTime -= $tickDiff;
             $this->move(0, $this->motionY * $tickDiff, 0);
@@ -188,22 +199,21 @@ abstract class WalkingEntity extends BaseEntity {
             $be = new Vector2($this->x + $dx, $this->z + $dz);
             $this->move($dx, $this->motionY * $tickDiff, $dz);
             $af = new Vector2($this->x, $this->z);
-
             if (($be->x != $af->x || $be->y != $af->y) && !$isJump) {
                 $this->moveTime -= 90 * $tickDiff;
             }
         }
 
         if (!$isJump) {
-            if ($this->onGround) {
+            if ($this->isOnGround()) {
                 $this->motionY = 0;
             } else if ($this->motionY > -$this->gravity * 4) {
-                $this->motionY = -$this->gravity * 4;
+                if (!($this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int)($this->y + 0.8), Math::floorFloat($this->z))) instanceof Liquid)) {
+                    $this->motionY -= $this->gravity * 1;
+                }
             } else {
-                $this->motionY -= $this->gravity;
+                $this->motionY -= $this->gravity * $tickDiff;
             }
-        } else {
-            $this->motionY = 0.7;
         }
         $this->updateMovement();
         return $this->getBaseTarget();

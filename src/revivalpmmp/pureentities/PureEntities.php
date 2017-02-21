@@ -22,7 +22,9 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
+use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
 use revivalpmmp\pureentities\entity\monster\jumping\Slime;
 use revivalpmmp\pureentities\entity\animal\walking\Villager;
@@ -95,6 +97,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
     const BUTTON_TEXT_MILK  = "Milk";
     const BUTTON_TEXT_TAME  = "Tame";
     const BUTTON_TEXT_SIT   = "Sit";
+    const BUTTON_TEXT_DYE   = "Dye";
 
     private static $registeredClasses = [];
 
@@ -169,6 +172,8 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
         PureEntities::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", 0));
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . PureEntities::$loglevel);
+
+        Color::init();
 
         PureEntities::$instance = $this;
     }
@@ -357,6 +362,21 @@ class PureEntities extends PluginBase implements CommandExecutor {
      */
     public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
         switch ($command->getName()) {
+            case "peremove":
+                $playerName = $sender->getName();
+                $player = $this->getServer()->getPlayer($playerName);
+                if ($player !== null and $player->isOnline()) {
+                    foreach ($player->getLevel()->getEntities() as $entity) {
+                        if ($entity instanceof BaseEntity) {
+                            $entity->close();
+                        }
+                    }
+                    $sender->sendMessage("Removed all entities (Animals/Monsters)");
+                    return true;
+                } else {
+                    $sender->sendMessage("Can only be done ingame by a player with op status");
+                }
+                break;
             case "pesummon":
                 if (count($args) == 1 or count($args) == 2) {
                     $playerName = count($args) == 1 ? $sender->getName() : $args[1];

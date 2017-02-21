@@ -64,7 +64,6 @@ class InteractionHelper {
             }
         }
 
-        PureEntities::logOutput("getEntityPlayerLookingAt(): returns $entity", PureEntities::DEBUG);
         return $entity;
     }
 

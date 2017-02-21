@@ -99,6 +99,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
                 PureEntities::logOutput("Wolf($this): is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", PureEntities::NORM);
             }
         }
+        $this->setCollarColor($this->getCollarColor());
 
         $this->breedableClass = new BreedingExtension($this);
         $this->breedableClass->init();
@@ -308,6 +309,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
             // set the properties accordingly
             $this->setTamed(true);
+            $this->setCollarColor(self::RED); // default color
             $this->setOwner($player);
             $this->setSitting(true);
 
@@ -327,8 +329,6 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      */
     public function setTamed(bool $tamed) {
         if ($tamed) {
-            $this->namedtag->CollarColor = new ByteTag(self::NBT_KEY_COLLAR_COLOR, self::RED); // set collar color
-            $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, self::RED); // collar color RED (because it's tamed!)
             $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED, true); // set tamed
         }
     }
@@ -401,6 +401,30 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      */
     public function isFriendly(): bool {
         return !$this->isAngry();
+    }
+
+    /**
+     * Sets the collar color when tamed
+     *
+     * @param $collarColor
+     */
+    public function setCollarColor($collarColor) {
+        if ($this->isTamed()) {
+            $this->namedtag->CollarColor = new ByteTag(self::NBT_KEY_COLLAR_COLOR, $collarColor); // set collar color
+            $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor); // collar color RED (because it's tamed!)
+        }
+    }
+
+    /**
+     * Returns the collar color of the wolf
+     *
+     * @return mixed
+     */
+    public function getCollarColor() {
+        if (!isset($this->namedtag->CollarColor)) {
+            $this->namedtag->CollarColor = new ByteTag(self::NBT_KEY_COLLAR_COLOR, self::RED); // set default collar color
+        }
+        return $this->namedtag[self::NBT_KEY_COLLAR_COLOR];
     }
 
     /**

@@ -33,7 +33,6 @@ use pocketmine\nbt\tag\ByteTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\features\IntfTameable;
-use revivalpmmp\pureentities\PureEntities;
 
 abstract class BaseEntity extends Creature{
 
@@ -47,6 +46,7 @@ abstract class BaseEntity extends Creature{
     private $friendly = false;
     private $wallcheck = true;
     protected $fireProof = false;
+    private $maxJumpHeight = 1; // default: 1 block jump height - this should be 2 for horses e.g.
 
     public function __destruct(){}
 
@@ -108,6 +108,13 @@ abstract class BaseEntity extends Creature{
 
     public function getSpeed() : float{
         return 1;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxJumpHeight(): int {
+        return $this->maxJumpHeight;
     }
 
     public function initEntity(){
@@ -296,12 +303,18 @@ abstract class BaseEntity extends Creature{
                         $entity->isTamed() and
                         strcasecmp($entity->getOwner()->getName(), $attackedBy->getName()) == 0 and
                         $entity instanceof BaseEntity and
-                        !$entity->getBaseTarget() instanceof Monster) {
+                        !$entity->getBaseTarget() instanceof Monster
+                    ) {
+                        if ($this instanceof IntfTameable and $this->isTamed() and
+                            strcasecmp($this->getOwner()->getName(), $attackedBy->getName()) == 0
+                        ) {
+                            // this entity belongs to the player. other tamed mobs shouldnt attack!
+                            continue;
+                        }
                         if ($entity->isSitting()) {
                             $entity->setSitting(false);
                         }
                         $entity->setBaseTarget($this);
-                        PureEntities::logOutput("$this: will be attacked by $entity too", PureEntities::DEBUG);
                     }
                 }
             }
