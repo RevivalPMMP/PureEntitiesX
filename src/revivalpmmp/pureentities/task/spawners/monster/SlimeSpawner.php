@@ -48,7 +48,8 @@ class SlimeSpawner extends BaseSpawner {
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
                 PureEntities::DEBUG);
 
-            if (($checkLightLevel and $this->isSpawnAllowedByBlockLight($player, $pos, 7)) and // check block light when enabled
+            if ($biomeId != Biome::HELL and // they don't spawn in nether
+                ($checkLightLevel and $this->isSpawnAllowedByBlockLight($player, $pos, 7)) and // check block light when enabled
                 $spawnAllowedByLayer and // respect layer for spawning
                 !$this->isDay($pos->getLevel()) and // only spawn at night ...
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level

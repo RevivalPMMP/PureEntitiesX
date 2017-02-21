@@ -2,6 +2,7 @@
 namespace revivalpmmp\pureentities\task\spawners\monster;
 
 
+use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\Player;
@@ -22,6 +23,7 @@ class SpiderSpawner extends BaseSpawner {
     public function spawn (Position $pos, Player $player) : bool {
         if ($this->spawnAllowedByProbability()) { // first check if spawn would be allowed, if not the other method calls make no sense at all
             $block = $pos->level->getBlock($pos); // because we get the air block, we need to substract 1 from the y position
+            $biomeId = $pos->level->getBiomeId($pos->x, $pos->z);
 
             PureEntities::logOutput($this->getClassNameShort() .
                 ": isNight: " . !$this->isDay($pos->level) .
@@ -30,7 +32,8 @@ class SpiderSpawner extends BaseSpawner {
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
                 PureEntities::DEBUG);
 
-            if ($this->isSpawnAllowedByBlockLight($player, $pos, 7) and // check block light when enabled
+            if ($biomeId != Biome::HELL and // they don't spawn in nether
+                $this->isSpawnAllowedByBlockLight($player, $pos, 7) and // check block light when enabled
                 !$this->isDay($pos->level) and // spawn only at night
                 $block->isSolid() and // block must be solid
                 $this->spawnAllowedBySpiderCount($pos->getLevel(), 4) and // respect count in level
