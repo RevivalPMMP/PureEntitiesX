@@ -309,9 +309,9 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
             // set the properties accordingly
             $this->setTamed(true);
-            $this->setCollarColor(self::RED); // default color
             $this->setOwner($player);
             $this->setSitting(true);
+            $this->setCollarColor(self::RED); // default color
 
         } else {
             $pk = new EntityEventPacket();
