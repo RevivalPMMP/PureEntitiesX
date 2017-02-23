@@ -1,0 +1,6 @@
+<code_scheme name="PureEntitiesX">
+  <codeStyleSettings language="PHP">
+    <option name="CLASS_BRACE_STYLE" value="1" />
+    <option name="METHOD_BRACE_STYLE" value="1" />
+  </codeStyleSettings>
+</code_scheme>
