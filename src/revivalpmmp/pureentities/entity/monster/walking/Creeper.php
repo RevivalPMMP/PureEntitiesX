@@ -103,7 +103,7 @@ class Creeper extends WalkingMonster implements Explosive{
 
             if ($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->distanceSquared($this) <= 4.5) {
                 $this->bombTime += $tickDiff;
-                if ($this->bombTime >= 64) {
+                if ($this->bombTime >= 64 && $this->isAlive()) {
                     $this->explode();
                     return false;
                 }
