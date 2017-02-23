@@ -1,31 +1,16 @@
 <?php
 
-/*  PureEntitiesX: Mob AI Plugin for PMMP
-    Copyright (C) 2017 RevivalPMMP
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
-
-namespace revivalpmmp\pureentities\event;
+namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\entity\Entity;
 use pocketmine\event\Cancellable;
+use pocketmine\event\entity\EntityEvent;
 
 
 /**
  * Called when a entity decides to explode
  */
-class ExplosionPrimeEvent extends \pocketmine\event\entity\ExplosionPrimeEvent implements Cancellable{
+class ExplosionPrimeEvent extends EntityEvent implements Cancellable{
 	public static $handlerList = null;
 
 	protected $force;
@@ -39,7 +24,6 @@ class ExplosionPrimeEvent extends \pocketmine\event\entity\ExplosionPrimeEvent i
 		$this->entity = $entity;
 		$this->force = $force;
 		$this->blockBreaking = true;
-		parent::__construct($entity, $force);
 	}
 
 	/**

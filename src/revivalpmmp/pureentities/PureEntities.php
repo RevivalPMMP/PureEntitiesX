@@ -219,7 +219,18 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 new FloatTag("", $source instanceof Location ? $source->pitch : 0)
             ]),
         ]);
-        return Entity::createEntity($type, $source->getLevel(), $nbt, ...$args);
+        if (PluginConfiguration::getInstance()->isRunningPmmp()) {
+            return Entity::createEntity($type, $source->getLevel(), $nbt, ...$args);
+        } else {
+            $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);
+            if (!$chunk->isGenerated()) {
+                $chunk->setGenerated();
+            }
+            if (!$chunk->isPopulated()) {
+                $chunk->setPopulated();
+            }
+            return Entity::createEntity($type, $chunk, $nbt, ...$args);
+        }
     }
 
     /**
