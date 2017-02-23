@@ -203,14 +203,6 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return Entity
      */
     public static function create($type, Position $source, ...$args) {
-        $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);
-        if (!$chunk->isGenerated()) {
-            $chunk->setGenerated();
-        }
-        if (!$chunk->isPopulated()) {
-            $chunk->setPopulated();
-        }
-
         $nbt = new CompoundTag("", [
             "Pos" => new ListTag("Pos", [
                 new DoubleTag("", $source->x),
@@ -227,7 +219,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 new FloatTag("", $source instanceof Location ? $source->pitch : 0)
             ]),
         ]);
-        return Entity::createEntity($type, $chunk, $nbt, ...$args);
+        return Entity::createEntity($type, $source->getLevel(), $nbt, ...$args);
     }
 
     /**

@@ -51,16 +51,22 @@ class InteractionHelper {
 
         $nearbyEntities = $player->getLevel()->getNearbyEntities($player->boundingBox->grow($maxDistance, $maxDistance, $maxDistance), $player);
 
-        // get all blocks in looking direction until the max interact distance is reached
-        $itr = new BlockIterator($player->level, $player->getPosition(), $player->getDirectionVector(), $player->getEyeHeight(), $maxDistance);
-        $block = null;
-        $entity = null;
-        while ($itr->valid()) {
-            $itr->next();
-            $block = $itr->current();
-            $entity = self::getEntityAtPosition($nearbyEntities, $block->x, $block->y, $block->z, $useCorrection);
-            if ($entity !== null) {
-                break;
+        // get all blocks in looking direction until the max interact distance is reached (it's possible that startblock isn't found!)
+        try {
+            $itr = new BlockIterator($player->level, $player->getPosition(), $player->getDirectionVector(), $player->getEyeHeight(), $maxDistance);
+        } catch (InvalidStateException $e) {
+            // nothing to log here!
+        }
+        if ($itr !== null) {
+            $block = null;
+            $entity = null;
+            while ($itr->valid()) {
+                $itr->next();
+                $block = $itr->current();
+                $entity = self::getEntityAtPosition($nearbyEntities, $block->x, $block->y, $block->z, $useCorrection);
+                if ($entity !== null) {
+                    break;
+                }
             }
         }
 

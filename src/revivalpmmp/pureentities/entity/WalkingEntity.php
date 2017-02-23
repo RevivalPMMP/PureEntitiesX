@@ -113,7 +113,7 @@ abstract class WalkingEntity extends BaseEntity {
         $that = $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x + $dx), (int)$this->y, Math::floorFloat($this->z + $dz)));
         $block = $that->getSide(BlockSides::getSides()[$this->getDirection()]);
         // we cannot pass through the block that is directly in front of us
-        if (!$block->canPassThrough()) {
+        if (!$block->canPassThrough() and $this->getMaxJumpHeight() > 0) { // it's possible that an entity can't jump?! better check!
             // check if we can get through the upper of the block directly in front of the entity
             if ($block->getSide(Block::SIDE_UP)->canPassThrough() && $that->getSide(Block::SIDE_UP, 2)->canPassThrough()) {
                 if ($block instanceof Fence || $block instanceof FenceGate) { // cannot pass fence or fence gate ...
@@ -128,6 +128,23 @@ abstract class WalkingEntity extends BaseEntity {
         }
         return false;
 
+    }
+
+    /**
+     * This function checks if upper blocks of the given block can be passed through. This
+     * method brings in jumpHeight of the entitiy (normal entities can only jump one block, horses
+     * e.g. jump 2 blocks ...)
+     *
+     * @param Block $block  the block the check starts with
+     * @return bool true if upper blocks can be passed through
+     */
+    private function canPassThroughUpperBlocks (Block $block) : bool {
+        for ($y=1; $y <= $this->getMaxJumpHeight(); $y++) {
+            if (!$block->getSide(Block::SIDE_UP, ($y + 1))->canPassThrough()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
