@@ -24,7 +24,7 @@ before_script:
  - cp -rf RevivalPMMP/PureEntitiesX/LICENSE PocketMine-MP/plugins/PureEntitiesX
  - cp -rf RevivalPMMP/PureEntitiesX/Travis.php PocketMine-MP/
  - cd PocketMine-MP/plugins/
- - wget -O DevTools.phar https://github.com/pmmp/PocketMine-DevTools/releases/download/v1.11.2/PocketMine-DevTools_v1.11.2.phar
+ - wget -O DevTools.phar https://poggit.pmmp.io/r/1582/PocketMine-DevTools.phar
  - cd /home/travis/build/PocketMine-MP
  
 script:
