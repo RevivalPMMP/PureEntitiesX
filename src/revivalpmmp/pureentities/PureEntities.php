@@ -175,6 +175,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
     public function onEnable(){
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
+	file_put_contents($this->getDataFolder() . "config.yml", $this->getResource("config.yml"));
         $this->saveDefaultConfig();
         $this->reloadConfig();
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
