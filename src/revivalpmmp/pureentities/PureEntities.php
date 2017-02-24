@@ -93,11 +93,11 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
     // button texts ...
     const BUTTON_TEXT_SHEAR = "Shear";
-    const BUTTON_TEXT_FEED  = "Feed";
-    const BUTTON_TEXT_MILK  = "Milk";
-    const BUTTON_TEXT_TAME  = "Tame";
-    const BUTTON_TEXT_SIT   = "Sit";
-    const BUTTON_TEXT_DYE   = "Dye";
+    const BUTTON_TEXT_FEED = "Feed";
+    const BUTTON_TEXT_MILK = "Milk";
+    const BUTTON_TEXT_TAME = "Tame";
+    const BUTTON_TEXT_SIT = "Sit";
+    const BUTTON_TEXT_DYE = "Dye";
 
     private static $registeredClasses = [];
 
@@ -195,7 +195,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * Checks if configuation is available. This function also checks if the config file available
      * is really filled - if not it will create a new config from the internal resource folder
      */
-    private function checkConfig () {
+    private function checkConfig() {
         // check if a config file exists. if not - use the default config (from resources) and put it into the local config file
         if (!file_exists($this->getDataFolder() . "config.yml")) {
             $this->saveDefaultPEConfig();
@@ -210,9 +210,9 @@ class PureEntities extends PluginBase implements CommandExecutor {
     /**
      * Saves the default config found in resources to the disk for further usage!
      */
-    private function saveDefaultPEConfig () {
+    private function saveDefaultPEConfig() {
         $filehandle = $this->getResource("config.yml");
-        $content = stream_get_contents ($filehandle);
+        $content = stream_get_contents($filehandle);
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Storing default config to " . $this->getDataFolder() . "config.yml");
         fclose($filehandle);
 

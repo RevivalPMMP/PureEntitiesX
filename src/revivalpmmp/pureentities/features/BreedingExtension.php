@@ -1,8 +1,21 @@
 <?php
 
-/**
- * This class contains functionality for entities that are able to breed
- */
+/*  PureEntitiesX: Mob AI Plugin for PMMP
+    Copyright (C) 2017 RevivalPMMP
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+
 namespace revivalpmmp\pureentities\features;
 
 
@@ -13,6 +26,10 @@ use pocketmine\Player;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
+/**
+ * Class BreedingExtension
+ * @package revivalpmmp\pureentities\features
+ */
 class BreedingExtension {
 
     // ----------------------------------------
@@ -28,10 +45,10 @@ class BreedingExtension {
     // ----------------------------------------
     // well known NBT keys
     // ----------------------------------------
-    const NBT_KEY_AGE           = "Age";            // Represents the age of the mob in ticks; when negative, the mob is a baby. When 0 or above, the mob is an adult. When above 0,
+    const NBT_KEY_AGE = "Age";            // Represents the age of the mob in ticks; when negative, the mob is a baby. When 0 or above, the mob is an adult. When above 0,
     // represents the number of ticks before this mob can breed again.
-    const NBT_KEY_IN_LOVE       = "InLove";         // Number of ticks until the mob loses its breeding hearts and stops searching for a mate. 0 when not searching for a mate.
-    const NBT_KEY_FORCED_AGE    = "ForcedAge";      // A value of age which will be assigned to this mob when it grows up. Incremented when a baby mob is fed.
+    const NBT_KEY_IN_LOVE = "InLove";         // Number of ticks until the mob loses its breeding hearts and stops searching for a mate. 0 when not searching for a mate.
+    const NBT_KEY_FORCED_AGE = "ForcedAge";      // A value of age which will be assigned to this mob when it grows up. Incremented when a baby mob is fed.
 
 
     /**
@@ -101,7 +118,7 @@ class BreedingExtension {
     /**
      * call this method each time, the entity's init method is called
      */
-    public function init () {
+    public function init() {
         $this->setAge($this->getAge());
     }
 
@@ -109,7 +126,7 @@ class BreedingExtension {
      * Returns the breed partner as an entity instance or NULL if no breed partner set
      * TODO: add to NBT
      */
-    public function getBreedPartner () {
+    public function getBreedPartner() {
         return $this->breedPartner;
     }
 
@@ -118,7 +135,7 @@ class BreedingExtension {
      * TODO: add to NBT
      * @param Entity $breedPartner
      */
-    public function setBreedPartner ($breedPartner) {
+    public function setBreedPartner($breedPartner) {
         $this->breedPartner = $breedPartner;
         $this->entity->setBaseTarget($breedPartner);
     }
@@ -128,7 +145,7 @@ class BreedingExtension {
      * TODO: add to NBT
      * @param bool $breeding
      */
-    public function setBreeding (bool $breeding) {
+    public function setBreeding(bool $breeding) {
         $this->breeding = $breeding;
     }
 
@@ -137,7 +154,7 @@ class BreedingExtension {
      * TODO: add to NBT
      * @return bool
      */
-    public function isBreeding () {
+    public function isBreeding() {
         return $this->breeding;
     }
 
@@ -146,11 +163,11 @@ class BreedingExtension {
      * TODO: add to NBT
      * @param Entity $parent
      */
-    public function setParent ($parent) {
+    public function setParent($parent) {
         $this->parent = $parent;
     }
 
-    public function getParent () {
+    public function getParent() {
         return $this->parent;
     }
 
@@ -160,7 +177,7 @@ class BreedingExtension {
      *
      * @return int
      */
-    public function getAge () : int {
+    public function getAge(): int {
         if (!isset($this->entity->namedtag->Age)) {
             $this->entity->namedtag->Age = new IntTag(self::NBT_KEY_AGE, 0); // by default we have a adult entity
         }
@@ -174,7 +191,7 @@ class BreedingExtension {
      *
      * @param int $age
      */
-    public function setAge (int $age) {
+    public function setAge(int $age) {
         $this->entity->namedtag->Age = new IntTag(self::NBT_KEY_AGE, $age); // set baby (all under zero is baby) - this is only for testing!
         if ($age < 0) {
             $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 0.5); // this is a workaround?!
@@ -210,7 +227,7 @@ class BreedingExtension {
     /**
      * completely resets the breed status for this entity
      */
-    public function resetBreedStatus () {
+    public function resetBreedStatus() {
         $this->entity->stayTime = 300; // wait 300 ticks until moving forward
         $this->setBreeding(false); // reset breeding status
         $this->setBreedPartner(null); // reset breed partner
@@ -227,7 +244,7 @@ class BreedingExtension {
      *
      * @param int $inLoveTicks
      */
-    public function setInLove (int $inLoveTicks) {
+    public function setInLove(int $inLoveTicks) {
         $this->entity->namedtag->InLove = new IntTag(self::NBT_KEY_IN_LOVE, $inLoveTicks); // by default we have a adult entity
         if ($this->getInLove() > 0) {
             $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INLOVE, true); // set client "inlove"
@@ -242,7 +259,7 @@ class BreedingExtension {
      *
      * @return int
      */
-    public function getInLove () : int {
+    public function getInLove(): int {
         if (!isset($this->entity->namedtag->InLove)) {
             $this->entity->namedtag->InLove = new IntTag(self::NBT_KEY_IN_LOVE, 0);
         }
@@ -254,14 +271,15 @@ class BreedingExtension {
      *
      * @return bool
      */
-    public function checkInLove () : bool {
+    public function checkInLove(): bool {
         if ($this->getInLove() > 0) {
 
             // check if we are near our breeding partner. if so, set breed!
             if ($this->getBreedPartner() != null and
                 $this->getBreedPartner()->getBreedingExtension()->getInLove() > 0 and
                 $this->getBreedPartner()->distance($this->entity) <= 2 and
-                !$this->isBreeding()) {
+                !$this->isBreeding()
+            ) {
                 $this->breed($this->getBreedPartner());
                 return true;
             }
@@ -284,7 +302,8 @@ class BreedingExtension {
 
             // search for partner
             if ($this->partnerSearchTimer >= self::SEARCH_FOR_PARTNER_DELAY and
-                $this->getBreedPartner() == null) {
+                $this->getBreedPartner() == null
+            ) {
                 $validTarget = $this->findAnotherEntityInLove(PluginConfiguration::getInstance()->getMaxFindPartnerDistance()); // find another target within 20 blocks
                 if ($validTarget != false) {
                     $this->setBreedPartner($validTarget); // now my target is my "in love" partner - this entity will move to the other entity
@@ -305,14 +324,15 @@ class BreedingExtension {
      * @param int $range the range (documentation says 8)
      * @return Entity | bool
      */
-    private function findAnotherEntityInLove (int $range) {
+    private function findAnotherEntityInLove(int $range) {
         $entityFound = false;
         foreach ($this->entity->getLevel()->getEntities() as $otherEntity) {
             if (strcmp(get_class($otherEntity), get_class($this->entity)) == 0 and // must be of the same species
                 $otherEntity->distance($this->entity) <= $range and // must be in range
                 $otherEntity->getBreedingExtension()->getInLove() > 0 and // must be in love
                 $otherEntity->getId() != $this->entity->getId() and // should be another entity of the same type
-                $otherEntity->getBreedingExtension()->getBreedPartner() == null) { // shouldn't have another breeding partner
+                $otherEntity->getBreedingExtension()->getBreedPartner() == null
+            ) { // shouldn't have another breeding partner
                 $entityFound = $otherEntity;
                 break;
             }
@@ -323,7 +343,7 @@ class BreedingExtension {
     /**
      * @param Entity $partner
      */
-    private function breed (Entity $partner) {
+    private function breed(Entity $partner) {
         // yeah we found ourselfes - now breed and reset target
         $this->resetBreedStatus();
         $partner->getBreedingExtension()->resetBreedStatus();
@@ -339,7 +359,7 @@ class BreedingExtension {
     /**
      * Method to increase the age for adult / baby entities
      */
-    public function increaseAge () {
+    public function increaseAge() {
         if ($this->ageTickTimer >= self::AGE_TICK_DELAY) {
             if ($this->isBaby()) {
                 $newAge = $this->getAge() + $this->ageTickTimer;
@@ -356,16 +376,16 @@ class BreedingExtension {
             }
             $this->ageTickTimer = 0;
         } else {
-            $this->ageTickTimer ++;
+            $this->ageTickTimer++;
         }
     }
 
     /**
      * Feed a entity with feedable items
-     * @param Player $player    the player that feeds this entity ...
+     * @param Player $player the player that feeds this entity ...
      * @return bool if feeding was successful true is returned
      */
-    public function feed (Player $player) : bool {
+    public function feed(Player $player): bool {
         if ($this->getAge() > 0) {
             $pk = new EntityEventPacket();
             $pk->eid = $this->entity->getId();
@@ -393,7 +413,7 @@ class BreedingExtension {
     /**
      * This method has to be called by the entity to tick this breeding extension
      */
-    public function tick () {
+    public function tick() {
         // we should also check for any blocks of interest for the entity
         $this->increaseAge();
 
@@ -402,7 +422,8 @@ class BreedingExtension {
             $this->getParent() !== null and
             $this->getParent()->isAlive() and
             !$this->getParent()->closed and
-            ($this->entity->getBaseTarget() === null or !$this->entity->getBaseTarget() instanceof Player)) {
+            ($this->entity->getBaseTarget() === null or !$this->entity->getBaseTarget() instanceof Player)
+        ) {
             $this->entity->setBaseTarget($this->getParent());
             if ($this->getParent()->distance($this->entity) <= 4) {
                 $this->entity->stayTime = 100; // wait 100 ticks before moving after the parent ;)

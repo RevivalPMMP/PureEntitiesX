@@ -41,30 +41,30 @@ class Spawner extends Spawnable {
     protected $minSpawnDelay;
     protected $maxSpawnDelay;
 
-    public function __construct(FullChunk $chunk, CompoundTag $nbt){
+    public function __construct(FullChunk $chunk, CompoundTag $nbt) {
         parent::__construct($chunk, $nbt);
 
-        if(isset($this->namedtag->EntityId)){
+        if (isset($this->namedtag->EntityId)) {
             $this->entityId = $this->namedtag["EntityId"];
         }
 
-        if(!isset($this->namedtag->SpawnRange)){
+        if (!isset($this->namedtag->SpawnRange)) {
             $this->namedtag->SpawnRange = new ShortTag("SpawnRange", 8);
         }
 
-        if(!isset($this->namedtag->MinSpawnDelay)){
+        if (!isset($this->namedtag->MinSpawnDelay)) {
             $this->namedtag->MinSpawnDelay = new ShortTag("MinSpawnDelay", 200);
         }
 
-        if(!isset($this->namedtag->MaxSpawnDelay)){
+        if (!isset($this->namedtag->MaxSpawnDelay)) {
             $this->namedtag->MaxSpawnDelay = new ShortTag("MaxSpawnDelay", 8000);
         }
 
-        if(!isset($this->namedtag->MaxNearbyEntities)){
+        if (!isset($this->namedtag->MaxNearbyEntities)) {
             $this->namedtag->MaxNearbyEntities = new ShortTag("MaxNearbyEntities", 25);
         }
 
-        if(!isset($this->namedtag->RequiredPlayerRange)){
+        if (!isset($this->namedtag->RequiredPlayerRange)) {
             $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", 20);
         }
 
@@ -93,19 +93,19 @@ class Spawner extends Spawnable {
         $this->scheduleUpdate();
     }
 
-    public function onUpdate(){
-        if($this->closed){
+    public function onUpdate() {
+        if ($this->closed) {
             return false;
         }
 
-        if($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)){
+        if ($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)) {
             $this->delay = 0;
 
             $list = [];
             $isValid = false;
-            foreach($this->level->getEntities() as $entity){
-                if($entity->distance($this) <= $this->requiredPlayerRange){
-                    if($entity instanceof Player){
+            foreach ($this->level->getEntities() as $entity) {
+                if ($entity->distance($this) <= $this->requiredPlayerRange) {
+                    if ($entity instanceof Player) {
                         $isValid = true;
                     }
                     $list[] = $entity;
@@ -113,14 +113,14 @@ class Spawner extends Spawnable {
                 }
             }
 
-            if($isValid && count($list) <= $this->maxNearbyEntities){
+            if ($isValid && count($list) <= $this->maxNearbyEntities) {
                 $y = $this->y;
                 $x = $this->x + mt_rand(-$this->spawnRange, $this->spawnRange);
                 $z = $this->z + mt_rand(-$this->spawnRange, $this->spawnRange);
                 $pos = PureEntities::getSuitableHeightPosition($x, $y, $z, $this->level);
                 $pos->y += BaseSpawner::HEIGHTS[$this->entityId];
                 $entity = PureEntities::create($this->entityId, $pos);
-                if($entity != null){
+                if ($entity != null) {
                     PureEntities::logOutput("Spawner: spawn $entity to $pos", PureEntities::NORM);
                     $entity->spawnToAll();
                 }
@@ -129,7 +129,7 @@ class Spawner extends Spawnable {
         return true;
     }
 
-    public function saveNBT(){
+    public function saveNBT() {
         parent::saveNBT();
 
         $this->namedtag->EntityId = new ShortTag("EntityId", $this->entityId);
@@ -141,14 +141,14 @@ class Spawner extends Spawnable {
         $this->namedtag->SpawnData = new CompoundTag("SpawnData", [new IntTag("EntityId", $this->entityId)]);
     }
 
-    public function getSpawnCompound(){
+    public function getSpawnCompound() {
         return new CompoundTag("", [
             new StringTag("id", Tile::MOB_SPAWNER),
             new IntTag("EntityId", $this->entityId)
         ]);
     }
 
-    public function setSpawnEntityType(int $entityId){
+    public function setSpawnEntityType(int $entityId) {
         $this->entityId = $entityId;
         $this->namedtag->EntityId = new ShortTag("EntityId", $this->entityId);
         $this->namedtag->SpawnData = new CompoundTag("SpawnData", [
@@ -157,24 +157,24 @@ class Spawner extends Spawnable {
         $this->spawnToAll();
     }
 
-    public function setMinSpawnDelay(int $minDelay){
-        if($minDelay > $this->maxSpawnDelay){
+    public function setMinSpawnDelay(int $minDelay) {
+        if ($minDelay > $this->maxSpawnDelay) {
             return;
         }
 
         $this->minSpawnDelay = $minDelay;
     }
 
-    public function setMaxSpawnDelay(int $maxDelay){
-        if($this->minSpawnDelay > $maxDelay){
+    public function setMaxSpawnDelay(int $maxDelay) {
+        if ($this->minSpawnDelay > $maxDelay) {
             return;
         }
 
         $this->maxSpawnDelay = $maxDelay;
     }
 
-    public function setSpawnDelay(int $minDelay, int $maxDelay){
-        if($minDelay > $maxDelay){
+    public function setSpawnDelay(int $minDelay, int $maxDelay) {
+        if ($minDelay > $maxDelay) {
             return;
         }
 
@@ -182,11 +182,11 @@ class Spawner extends Spawnable {
         $this->maxSpawnDelay = $maxDelay;
     }
 
-    public function setRequiredPlayerRange(int $range){
+    public function setRequiredPlayerRange(int $range) {
         $this->requiredPlayerRange = $range;
     }
 
-    public function setMaxNearbyEntities(int $count){
+    public function setMaxNearbyEntities(int $count) {
         $this->maxNearbyEntities = $count;
     }
 

@@ -33,33 +33,33 @@ use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
-class Ghast extends FlyingMonster implements ProjectileSource{
+class Ghast extends FlyingMonster implements ProjectileSource {
     const NETWORK_ID = Data::GHAST;
 
     public $width = 4;
     public $height = 4;
 
-    public function getSpeed() : float{
+    public function getSpeed(): float {
         return 1.2;
     }
 
-    public function initEntity(){
+    public function initEntity() {
         parent::initEntity();
 
         $this->fireProof = true;
         $this->setDamage([0, 0, 0, 0]);
     }
 
-    public function getName(){
+    public function getName() {
         return "Ghast";
     }
 
-    public function targetOption(Creature $creature, float $distance) : bool{
+    public function targetOption(Creature $creature, float $distance): bool {
         return (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 10000;
     }
 
-    public function attackEntity(Entity $player){
-        if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distance($player) <= 100){
+    public function attackEntity(Entity $player) {
+        if ($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distance($player) <= 100) {
             $this->attackDelay = 0;
 
             $f = 2;
@@ -68,13 +68,13 @@ class Ghast extends FlyingMonster implements ProjectileSource{
             $pos = new Location(
                 $this->x + (-sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5),
                 $this->getEyeHeight(),
-                $this->z +(cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5),
+                $this->z + (cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5),
                 $yaw,
                 $pitch,
                 $this->level
             );
             $fireball = PureEntities::create("FireBall", $pos, $this);
-            if(!($fireball instanceof FireBall)){
+            if (!($fireball instanceof FireBall)) {
                 return;
             }
 
@@ -86,16 +86,16 @@ class Ghast extends FlyingMonster implements ProjectileSource{
             ));
 
             $this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($fireball));
-            if($launch->isCancelled()){
+            if ($launch->isCancelled()) {
                 $fireball->kill();
-            }else{
+            } else {
                 $fireball->spawnToAll();
                 $this->level->addSound(new LaunchSound($this), $this->getViewers());
             }
         }
     }
 
-    public function getDrops(){
+    public function getDrops() {
         return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
     }
 

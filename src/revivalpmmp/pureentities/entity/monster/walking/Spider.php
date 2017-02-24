@@ -26,38 +26,38 @@ use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
-class Spider extends WalkingMonster{
+class Spider extends WalkingMonster {
     const NETWORK_ID = Data::SPIDER;
 
     public $width = 1.3;
     public $height = 1.12;
 
-    public function getSpeed() : float{
+    public function getSpeed(): float {
         return 1.13;
     }
 
-    public function initEntity(){
+    public function initEntity() {
         parent::initEntity();
 
         $this->setDamage([0, 2, 2, 3]);
     }
 
-    public function getName(){
+    public function getName() {
         return "Spider";
     }
 
-    public function attackEntity(Entity $player){
-        if($this->attackDelay > 10 && (($this->isFriendly() && !($player instanceof Player)) || !$this->isFriendly())){
+    public function attackEntity(Entity $player) {
+        if ($this->attackDelay > 10 && (($this->isFriendly() && !($player instanceof Player)) || !$this->isFriendly())) {
             $this->attackDelay = 0;
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
 
-            $this->checkTamedMobsAttack ($player);
+            $this->checkTamedMobsAttack($player);
         }
     }
 
-    public function getDrops(){
+    public function getDrops() {
         $drops = [];
         array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
         switch (mt_rand(0, 2)) {

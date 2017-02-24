@@ -1,5 +1,21 @@
 <?php
 
+/*  PureEntitiesX: Mob AI Plugin for PMMP
+    Copyright (C) 2017 RevivalPMMP
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+
 namespace revivalpmmp\pureentities\task\spawners;
 
 use pocketmine\level\Level;
@@ -50,13 +66,13 @@ use revivalpmmp\pureentities\PureEntities;
 abstract class BaseSpawner {
 
     // stores all heights of mobs for spwaning reasons
-    const HEIGHTS = array (
-        Bat::NETWORK_ID     => 0.3,
+    const HEIGHTS = array(
+        Bat::NETWORK_ID => 0.3,
         Squid::NETWORK_ID => 0.95,
         Chicken::NETWORK_ID => 0.7,
-        Cow::NETWORK_ID     => 1.3,
+        Cow::NETWORK_ID => 1.3,
         Donkey::NETWORK_ID => 1.6,
-        Horse::NETWORK_ID   => 1.6,
+        Horse::NETWORK_ID => 1.6,
         Mooshroom::NETWORK_ID => 1.12,
         Mule::NETWORK_ID => 1.4,
         Ocelot::NETWORK_ID => 0.9,
@@ -81,7 +97,7 @@ abstract class BaseSpawner {
         Stray::NETWORK_ID => 2,
         WitherSkeleton::NETWORK_ID => 1.8,
         Wolf::NETWORK_ID => 0.9,
-        Zombie::NETWORK_ID  => 1.8,
+        Zombie::NETWORK_ID => 1.8,
         ZombieVillager::NETWORK_ID => 1.8
     );
 
@@ -113,14 +129,14 @@ abstract class BaseSpawner {
      * @param Level $level
      * @return bool
      */
-    protected function spawnAllowedByEntityCount (Level $level) : bool {
+    protected function spawnAllowedByEntityCount(Level $level): bool {
         if ($this->maxSpawn <= 0) {
             return false;
         }
         $count = 0;
         foreach ($level->getEntities() as $entity) { // check all entities in given level
             if ($entity->isAlive() and !$entity->closed and $entity::NETWORK_ID == $this->getEntityNetworkId()) { // count only alive, not closed and desired entities
-                $count ++;
+                $count++;
             }
         }
 
@@ -137,7 +153,7 @@ abstract class BaseSpawner {
      *
      * @return bool
      */
-    protected function spawnAllowedByProbability () : bool {
+    protected function spawnAllowedByProbability(): bool {
         return $this->probability > 0 ? (mt_rand(0, 100) <= $this->probability) : false;
     }
 
@@ -149,7 +165,7 @@ abstract class BaseSpawner {
      * @param Position $pos
      * @return bool
      */
-    protected function checkPlayerDistance (Player $player, Position $pos) {
+    protected function checkPlayerDistance(Player $player, Position $pos) {
         return $player->distance($pos) > self::MIN_DISTANCE_TO_PLAYER;
     }
 
@@ -159,7 +175,7 @@ abstract class BaseSpawner {
      * @param Level $level
      * @return bool
      */
-    protected function isDay (Level $level) {
+    protected function isDay(Level $level) {
         $time = $level->getTime() % Level::TIME_FULL;
         return ($time <= Level::TIME_SUNSET || $time >= Level::TIME_SUNRISE);
     }
@@ -167,9 +183,9 @@ abstract class BaseSpawner {
     /**
      * @return string
      */
-    protected function getClassNameShort () : string {
+    protected function getClassNameShort(): string {
         $classNameWithNamespace = get_class($this);
-        return substr($classNameWithNamespace, strrpos($classNameWithNamespace, '\\')+1);
+        return substr($classNameWithNamespace, strrpos($classNameWithNamespace, '\\') + 1);
     }
 
     /**
@@ -182,7 +198,7 @@ abstract class BaseSpawner {
      * @param string $type
      * @return bool
      */
-    protected function spawnEntityToLevel (Position $pos, int $entityid, Level $level, string $type) : bool {
+    protected function spawnEntityToLevel(Position $pos, int $entityid, Level $level, string $type): bool {
         $pos->y += self::HEIGHTS[$entityid];
         return PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityid, $level, $type);
     }
@@ -194,7 +210,7 @@ abstract class BaseSpawner {
      * @param Position $pos
      * @return int
      */
-    protected function getBlockLightAt (Player $player, Position $pos) {
+    protected function getBlockLightAt(Player $player, Position $pos) {
         return $player->getLevel()->getBlockLightAt($pos->x, $pos->y, $pos->z);
     }
 
@@ -205,7 +221,7 @@ abstract class BaseSpawner {
      * @param Position $pos
      * @return int
      */
-    protected function getSkyLightAt (Player $player, Position $pos) {
+    protected function getSkyLightAt(Player $player, Position $pos) {
         return $player->getLevel()->getBlockSkyLightAt($pos->x, $pos->y, $pos->z);
     }
 
@@ -219,7 +235,7 @@ abstract class BaseSpawner {
      * @param int $minBlockLight
      * @return bool
      */
-    protected function isSpawnAllowedByBlockLight (Player $player, Position $pos, int $maxBlockLight = -1, int $minBlockLight = -1) {
+    protected function isSpawnAllowedByBlockLight(Player $player, Position $pos, int $maxBlockLight = -1, int $minBlockLight = -1) {
         if ($maxBlockLight > -1 and $minBlockLight > -1) {
             PureEntities::logOutput("Unable to execute isSpawnAllowedByBlockLight() because both are set: maxBlockLight and minBlockLight. Check your code!", PureEntities::WARN);
             return false;
@@ -237,8 +253,10 @@ abstract class BaseSpawner {
 
 
     // ---- abstract functions declaration ----
-    protected abstract function getEntityNetworkId () : int;
-    protected abstract function getEntityName () : string;
-    public abstract function spawn (Position $pos, Player $player) : bool;
+    protected abstract function getEntityNetworkId(): int;
+
+    protected abstract function getEntityName(): string;
+
+    public abstract function spawn(Position $pos, Player $player): bool;
 
 }

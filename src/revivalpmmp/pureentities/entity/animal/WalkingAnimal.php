@@ -37,27 +37,27 @@ use revivalpmmp\pureentities\PureEntities;
 abstract class WalkingAnimal extends WalkingEntity implements Animal {
 
     // for eating grass etc. pp
-    protected $blockInterestTime   = 0;
+    protected $blockInterestTime = 0;
 
-    public function getSpeed() : float{
+    public function getSpeed(): float {
         return 0.7;
     }
 
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
+    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
-        if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()){
+        if (!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
             $hasUpdate = true;
             $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
-            if($airTicks <= -20){
+            if ($airTicks <= -20) {
                 $airTicks = 0;
                 $ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
                 $this->attack($ev->getFinalDamage(), $ev);
             }
             $this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, $airTicks);
-        }else{
+        } else {
             $this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, 300);
         }
 
@@ -73,9 +73,9 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         return $hasUpdate;
     }
 
-    public function onUpdate($currentTick){
-        if(!$this->isAlive()){
-            if(++$this->deadTicks >= 23){
+    public function onUpdate($currentTick) {
+        if (!$this->isAlive()) {
+            if (++$this->deadTicks >= 23) {
                 $this->close();
                 return false;
             }
@@ -87,17 +87,17 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         $this->entityBaseTick($tickDiff);
 
         $target = $this->updateMove($tickDiff);
-        if($target instanceof Player){
-            if($this->distance($target) <= 2){
+        if ($target instanceof Player) {
+            if ($this->distance($target) <= 2) {
                 $this->pitch = 22;
                 $this->x = $this->lastX;
                 $this->y = $this->lastY;
                 $this->z = $this->lastZ;
             }
-        }elseif(
+        } elseif (
             $target instanceof Vector3
             && $this->distance($target) <= 1
-        ){
+        ) {
             $this->moveTime = 0;
         }
         return true;
@@ -106,10 +106,10 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
     /**
      * Does the check for interesting blocks and sets the baseTarget if an interesting block is found
      */
-    protected function checkBlockOfInterest () {
+    protected function checkBlockOfInterest() {
         // no creature is the target, so we can check if there's any interesting block for the entity
         if ($this->blockInterestTime > 0) { // we take a look at interesting blocks only each 300 ticks!
-            $this->blockInterestTime --;
+            $this->blockInterestTime--;
         } else { // it's time to check for any interesting block around ...
             if ($this->getBaseTarget() instanceof Block) { // check if we have a block target and the target is not closed. if so, we have our target!
                 return;
@@ -128,10 +128,10 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
      * Returns all blocks around in a flat way - meaning, there is no search in y axis, only what the entity provides
      * with it's y property.
      *
-     * @param int $range    the range in blocks
+     * @param int $range the range in blocks
      * @return array an array of Block
      */
-    protected function getBlocksFlatAround (int $range) {
+    protected function getBlocksFlatAround(int $range) {
         if ($this instanceof BaseEntity) {
             $blocksAround = [];
 
@@ -157,7 +157,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
      * @param float $distance
      * @return bool
      */
-    public function targetOption(Creature $creature, float $distance) : bool {
+    public function targetOption(Creature $creature, float $distance): bool {
         $targetOption = false;
         if ($this instanceof IntfCanBreed || $this instanceof IntfFeedable) {
             if ($creature != null and $creature instanceof Player) { // a player requests the target option
@@ -189,7 +189,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
      *
      * @param Player $player
      */
-    public function showButton (Player $player) {
+    public function showButton(Player $player) {
         if ($this instanceof IntfCanBreed || $this instanceof IntfFeedable) {
             if (in_array($player->getInventory()->getItemInHand()->getId(), $this->getFeedableItems())) {
                 InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);

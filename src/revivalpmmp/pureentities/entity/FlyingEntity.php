@@ -27,9 +27,9 @@ use pocketmine\Player;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\PureEntities;
 
-abstract class FlyingEntity extends BaseEntity{
+abstract class FlyingEntity extends BaseEntity {
 
-    protected function checkTarget(bool $checkSkip = true){
+    protected function checkTarget(bool $checkSkip = true) {
         if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
             if ($this->isKnockback()) {
                 return;
@@ -75,29 +75,29 @@ abstract class FlyingEntity extends BaseEntity{
         }
     }
 
-    public function updateMove($tickDiff){
-        if(!$this->isMovement()){
+    public function updateMove($tickDiff) {
+        if (!$this->isMovement()) {
             return null;
         }
 
-        if($this->isKnockback()){
+        if ($this->isKnockback()) {
             $this->move($this->motionX * $tickDiff, $this->motionY * $tickDiff, $this->motionZ * $tickDiff);
             $this->updateMovement();
             return null;
         }
-        
+
         $before = $this->getBaseTarget();
         $this->checkTarget();
-        if($this->getBaseTarget() instanceof Player or $before !== $this->getBaseTarget()){
+        if ($this->getBaseTarget() instanceof Player or $before !== $this->getBaseTarget()) {
             $x = $this->getBaseTarget()->x - $this->x;
             $y = $this->getBaseTarget()->y - $this->y;
             $z = $this->getBaseTarget()->z - $this->z;
 
             $diff = abs($x) + abs($z);
-            if($x ** 2 + $z ** 2 < 0.5){
+            if ($x ** 2 + $z ** 2 < 0.5) {
                 $this->motionX = 0;
                 $this->motionZ = 0;
-            }else{
+            } else {
                 $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                 $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
                 $this->motionY = $this->getSpeed() * 0.27 * ($y / $diff);
@@ -116,50 +116,50 @@ abstract class FlyingEntity extends BaseEntity{
         $this->move($dx, $dy, $dz);
         $af = new Vector2($this->x, $this->z);
 
-        if($be->x != $af->x || $be->y != $af->y){
-            if($this instanceof Blaze){
+        if ($be->x != $af->x || $be->y != $af->y) {
+            if ($this instanceof Blaze) {
                 $x = 0;
                 $z = 0;
-                if($be->x - $af->x != 0){
+                if ($be->x - $af->x != 0) {
                     $x = $be->x > $af->x ? 1 : -1;
                 }
-                if($be->y - $af->y != 0){
+                if ($be->y - $af->y != 0) {
                     $z = $be->y > $af->y ? 1 : -1;
                 }
 
                 $vec = new Vector3(Math::floorFloat($be->x) + $x, $this->y, Math::floorFloat($be->y) + $z);
                 $block = $this->level->getBlock($vec->add($x, 0, $z));
                 $block2 = $this->level->getBlock($vec->add($x, 1, $z));
-                if(!$block->canPassThrough()){
+                if (!$block->canPassThrough()) {
                     $bb = $block2->getBoundingBox();
-                    if(
+                    if (
                         $this->motionY > -$this->gravity * 4
                         && ($block2->canPassThrough() || ($bb == null || $bb->maxY - $this->y <= 1))
-                    ){
+                    ) {
                         $isJump = true;
-                        if($this->motionY >= 0.3){
+                        if ($this->motionY >= 0.3) {
                             $this->motionY += $this->gravity;
-                        }else{
+                        } else {
                             $this->motionY = 0.3;
                         }
                     }
                 }
 
-                if(!$isJump){
+                if (!$isJump) {
                     $this->moveTime -= 90 * $tickDiff;
                 }
-            }else{
+            } else {
                 $this->moveTime -= 90 * $tickDiff;
             }
         }
 
-        if($this instanceof Blaze){
-            if($this->onGround && !$isJump){
+        if ($this instanceof Blaze) {
+            if ($this->onGround && !$isJump) {
                 $this->motionY = 0;
-            }else if(!$isJump){
-                if($this->motionY > -$this->gravity * 4){
+            } else if (!$isJump) {
+                if ($this->motionY > -$this->gravity * 4) {
                     $this->motionY = -$this->gravity * 4;
-                }else{
+                } else {
                     $this->motionY -= $this->gravity;
                 }
             }

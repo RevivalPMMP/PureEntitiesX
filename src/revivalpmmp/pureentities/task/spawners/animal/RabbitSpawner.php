@@ -1,4 +1,21 @@
 <?php
+
+/*  PureEntitiesX: Mob AI Plugin for PMMP
+    Copyright (C) 2017 RevivalPMMP
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+
 namespace revivalpmmp\pureentities\task\spawners\animal;
 
 
@@ -25,7 +42,7 @@ class RabbitSpawner extends BaseSpawner {
         parent::__construct();
     }
 
-    public function spawn (Position $pos, Player $player) : bool {
+    public function spawn(Position $pos, Player $player): bool {
 
         if ($this->spawnAllowedByProbability()) {
             $biomeId = $pos->level->getBiomeId($pos->x, $pos->z);
@@ -44,14 +61,15 @@ class RabbitSpawner extends BaseSpawner {
                 $this->isDay($pos->level) and // spawn only at day
                 $this->spawnAllowedByRabbitCount($pos->level, $herdSize) and // check entity count for horse, donkey and mule
                 ($biomeId == Biome::DESERT or $biomeId == Biome::FOREST or $biomeId == Biome::TAIGA or $biomeId == Biome::PLAINS or $biomeId == Biome::BIRCH_FOREST or $biomeId == Biome::ICE_PLAINS) and // respect spawn biomes
-                $this->checkPlayerDistance($player, $pos)) { // player distance must be ok
+                $this->checkPlayerDistance($player, $pos)
+            ) { // player distance must be ok
 
                 // spawn 1 adult rabbit and the rest is baby rabbit
                 $this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Animal");
                 PureEntities::logOutput($this->getClassNameShort() . ": scheduleCreatureSpawn (pos: $pos) as adult", PureEntities::NORM);
 
                 // spawn the rest as baby (not implemented yet)
-                for ($i=0; $i < ($herdSize - 1); $i++) {
+                for ($i = 0; $i < ($herdSize - 1); $i++) {
                     $this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Animal");
                     PureEntities::logOutput($this->getClassNameShort() . ": scheduleCreatureSpawn (pos: $pos) as baby", PureEntities::NORM);
                 }
@@ -64,10 +82,11 @@ class RabbitSpawner extends BaseSpawner {
         return false;
     }
 
-    protected function getEntityNetworkId () : int {
+    protected function getEntityNetworkId(): int {
         return Rabbit::NETWORK_ID;
     }
-    protected function getEntityName () : string {
+
+    protected function getEntityName(): string {
         return "Rabbit";
     }
 
@@ -81,14 +100,14 @@ class RabbitSpawner extends BaseSpawner {
      * @param int $herdSize
      * @return bool
      */
-    protected function spawnAllowedByRabbitCount (Level $level, int $herdSize) : bool {
+    protected function spawnAllowedByRabbitCount(Level $level, int $herdSize): bool {
         if ($this->maxSpawn <= 0) {
             return false;
         }
         $count = 0;
         foreach ($level->getEntities() as $entity) { // check all entities in given level
             if ($entity->isAlive() and !$entity->closed and $entity::NETWORK_ID == Rabbit::NETWORK_ID) { // count only alive, not closed and desired entities
-                $count ++;
+                $count++;
             }
         }
 

@@ -32,7 +32,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
     public $width = 1.45;
     public $height = 1.12;
 
-    private $feedableItems = array (
+    private $feedableItems = array(
         Item::CARROT,
         Item::BEETROOT);
 
@@ -49,7 +49,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
         $this->breedableClass->init();
     }
 
-    public function getName(){
+    public function getName() {
         return "Pig";
     }
 
@@ -58,7 +58,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
      *
      * @return BreedingExtension
      */
-    public function getBreedingExtension () {
+    public function getBreedingExtension() {
         return $this->breedableClass;
     }
 
@@ -79,11 +79,11 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
         return $this->feedableItems;
     }
 
-    public function getDrops(){
+    public function getDrops() {
         if ($this->isOnFire()) {
-          return [Item::get(Item::COOKED_PORKCHOP, 0, mt_rand(1, 3))];
+            return [Item::get(Item::COOKED_PORKCHOP, 0, mt_rand(1, 3))];
         } else {
-          return [Item::get(Item::RAW_PORKCHOP, 0, mt_rand(1, 3))];
+            return [Item::get(Item::RAW_PORKCHOP, 0, mt_rand(1, 3))];
         }
     }
 

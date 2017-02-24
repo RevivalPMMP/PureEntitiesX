@@ -26,12 +26,12 @@ use pocketmine\level\Level;
 
 class CreatureSpawnEvent extends PluginEvent implements Cancellable {
     public static $handlerList = null;
-    
+
     private $pos;
     private $entityid;
     private $level;
     private $type;
-    
+
     /**
      * @param PureEntities $plugin
      * @param Position $pos
@@ -46,7 +46,7 @@ class CreatureSpawnEvent extends PluginEvent implements Cancellable {
         $this->level = $level;
         $this->type = $type;
     }
-    
+
     /**
      * Returns the position the entity is about to be spawned at.
      * @return Position
@@ -54,7 +54,7 @@ class CreatureSpawnEvent extends PluginEvent implements Cancellable {
     public function getPosition() {
         return $this->pos;
     }
-    
+
     /**
      * Returns the Network ID from the entity about to be spawned.
      * @return int
@@ -62,7 +62,7 @@ class CreatureSpawnEvent extends PluginEvent implements Cancellable {
     public function getEntityId(): int {
         return $this->entityid;
     }
-    
+
     /**
      * Returns the level the entity is about to spawn in.
      * @return Level
@@ -70,7 +70,7 @@ class CreatureSpawnEvent extends PluginEvent implements Cancellable {
     public function getLevel() {
         return $this->level;
     }
-    
+
     /**
      * Returns the type of the entity about to be spawned. (Animal/Monster)
      * @return string

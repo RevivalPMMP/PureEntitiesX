@@ -1,5 +1,21 @@
 <?php
 
+/*  PureEntitiesX: Mob AI Plugin for PMMP
+    Copyright (C) 2017 RevivalPMMP
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+
 namespace revivalpmmp\pureentities;
 
 use pocketmine\entity\Entity;
@@ -76,11 +92,11 @@ class InteractionHelper {
     /**
      * Returns the entity at the given position from the array of nearby entities
      *
-     * @param array $nearbyEntities     an array of entity which are close to the player
-     * @param int $x                    the x corrdinate to search for any of the given entites coordinates to match
-     * @param int $y                    the y corrdinate to search for any of the given entites coordinates to match
-     * @param int $z                    the z corrdinate to search for any of the given entites coordinates to match
-     * @param bool $useCorrection       set this to true if the matching should be extended by -1 / +1 (in x, y, z directions)
+     * @param array $nearbyEntities an array of entity which are close to the player
+     * @param int $x the x corrdinate to search for any of the given entites coordinates to match
+     * @param int $y the y corrdinate to search for any of the given entites coordinates to match
+     * @param int $z the z corrdinate to search for any of the given entites coordinates to match
+     * @param bool $useCorrection set this to true if the matching should be extended by -1 / +1 (in x, y, z directions)
      * @return mixed|null|Entity        NULL when none of the given entities matched or the first entity matching found
      */
     private static function getEntityAtPosition(array $nearbyEntities, int $x, int $y, int $z, bool $useCorrection) {
@@ -97,20 +113,20 @@ class InteractionHelper {
     /**
      * Searches around the given x, y, z coordinates (-1/+1) for the given entity coordinates to match.
      *
-     * @param Entity $entity    the entity to check coordinates with
-     * @param int $x            the starting x position
-     * @param int $y            the starting y position
-     * @param int $z            the starting z position
+     * @param Entity $entity the entity to check coordinates with
+     * @param int $x the starting x position
+     * @param int $y the starting y position
+     * @param int $z the starting z position
      * @return null|Entity      NULL when entity position doesn't match, an instance of entity if it matches
      */
-    private static function getCorrectedEntity (Entity $entity, int $x, int $y, int $z) {
+    private static function getCorrectedEntity(Entity $entity, int $x, int $y, int $z) {
         $entityX = $entity->getFloorX();
         $entityY = $entity->getFloorY();
         $entityZ = $entity->getFloorZ();
 
         for ($searchX = ($x - 1); $searchX <= ($x + 1); $searchX++) {
             for ($searchY = ($y - 1); $searchY <= ($y + 1); $searchY++) {
-                for ($searchZ = ($z -1); $searchZ <= ($z + 1); $searchZ++) {
+                for ($searchZ = ($z - 1); $searchZ <= ($z + 1); $searchZ++) {
                     if ($entityX == $searchX and $entityY == $searchY and $entityZ == $searchZ) {
                         return $entity;
                     }

@@ -28,35 +28,38 @@ use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
-class WitherSkeleton extends WalkingMonster{
+class WitherSkeleton extends WalkingMonster {
     const NETWORK_ID = Data::WITHER_SKELETON;
     public $width = 0.65;
     public $height = 1.8;
 
-    public function getName(){
+    public function getName() {
         return "Wither Skeleton";
     }
-    public function initEntity(){
+
+    public function initEntity() {
         parent::initEntity();
 
         $this->setDamage([0, 3, 4, 6]);
     }
-    public function setHealth($amount){
+
+    public function setHealth($amount) {
         parent::setHealth($amount);
 
-        if($this->isAlive()){
-            if(15 < $this->getHealth()){
+        if ($this->isAlive()) {
+            if (15 < $this->getHealth()) {
                 $this->setDamage([0, 2, 3, 4]);
-            }else if(10 < $this->getHealth()){
+            } else if (10 < $this->getHealth()) {
                 $this->setDamage([0, 3, 4, 6]);
-            }else if(5 < $this->getHealth()){
+            } else if (5 < $this->getHealth()) {
                 $this->setDamage([0, 3, 5, 7]);
-            }else{
+            } else {
                 $this->setDamage([0, 4, 6, 9]);
             }
         }
     }
-    public function spawnTo(Player $player){
+
+    public function spawnTo(Player $player) {
         parent::spawnTo($player);
 
         $pk = new MobEquipmentPacket();
@@ -66,17 +69,19 @@ class WitherSkeleton extends WalkingMonster{
         $pk->selectedSlot = 10;
         $player->dataPacket($pk);
     }
-    public function attackEntity(Entity $player){
-        if($this->attackDelay > 10 && $this->distanceSquared($player) < 2){
+
+    public function attackEntity(Entity $player) {
+        if ($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
             $this->attackDelay = 0;
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
 
-            $this->checkTamedMobsAttack ($player);
+            $this->checkTamedMobsAttack($player);
         }
     }
-    public function getDrops(){
+
+    public function getDrops() {
         $drops = [];
         array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));
         array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));

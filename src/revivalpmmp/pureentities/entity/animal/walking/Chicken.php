@@ -40,7 +40,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     const DROP_EGG_DELAY_MIN = 6000;
     const DROP_EGG_DELAY_MAX = 12000;
 
-    private $feedableItems = array (
+    private $feedableItems = array(
         Item::WHEAT_SEEDS,
         Item::PUMPKIN_SEEDS,
         Item::MELON_SEEDS,
@@ -59,7 +59,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         $this->breedableClass->init();
     }
 
-    public function getName(){
+    public function getName() {
         return "Chicken";
     }
 
@@ -68,7 +68,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
      *
      * @return BreedingExtension
      */
-    public function getBreedingExtension () {
+    public function getBreedingExtension() {
         return $this->breedableClass;
     }
 
@@ -89,7 +89,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         return $this->feedableItems;
     }
 
-    public function getDrops(){
+    public function getDrops() {
         $drops = [];
 
         // only adult chicken drop something ...
@@ -116,7 +116,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         }
 
         if ($this->dropEggTimer >= $this->dropEggTime) { // drop an egg!
-            $this->layEgg ();
+            $this->layEgg();
         } else {
             $this->dropEggTimer += $tickDiff;
         }
@@ -124,7 +124,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         parent::entityBaseTick($tickDiff);
     }
 
-    private function layEgg () {
+    private function layEgg() {
         $item = Item::get(Item::EGG, 0, 1);
         $this->getLevel()->dropItem($this, $item);
         $this->getLevel()->addSound(new PopSound($this), $this->getViewers());

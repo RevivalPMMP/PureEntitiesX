@@ -1,4 +1,21 @@
 <?php
+
+/*  PureEntitiesX: Mob AI Plugin for PMMP
+    Copyright (C) 2017 RevivalPMMP
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+
 namespace revivalpmmp\pureentities\task\spawners\monster;
 
 
@@ -20,7 +37,7 @@ use revivalpmmp\pureentities\task\spawners\BaseSpawner;
  */
 class SpiderSpawner extends BaseSpawner {
 
-    public function spawn (Position $pos, Player $player) : bool {
+    public function spawn(Position $pos, Player $player): bool {
         if ($this->spawnAllowedByProbability()) { // first check if spawn would be allowed, if not the other method calls make no sense at all
             $block = $pos->level->getBlock($pos); // because we get the air block, we need to substract 1 from the y position
             $biomeId = $pos->level->getBiomeId($pos->x, $pos->z);
@@ -37,8 +54,9 @@ class SpiderSpawner extends BaseSpawner {
                 !$this->isDay($pos->level) and // spawn only at night
                 $block->isSolid() and // block must be solid
                 $this->spawnAllowedBySpiderCount($pos->getLevel(), 4) and // respect count in level
-                $this->checkPlayerDistance($player, $pos)) { // distance to player has to be at least a configurable amount of blocks (atm 8!)
-                for ($i = 0 ; $i < 4; $i++) {
+                $this->checkPlayerDistance($player, $pos)
+            ) { // distance to player has to be at least a configurable amount of blocks (atm 8!)
+                for ($i = 0; $i < 4; $i++) {
                     $this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Monster");
                     PureEntities::logOutput($this->getClassNameShort() . ": scheduleCreatureSpawn (pos: $pos)", PureEntities::NORM);
                 }
@@ -51,10 +69,11 @@ class SpiderSpawner extends BaseSpawner {
         return false;
     }
 
-    protected function getEntityNetworkId () : int {
+    protected function getEntityNetworkId(): int {
         return Spider::NETWORK_ID;
     }
-    protected function getEntityName () : string {
+
+    protected function getEntityName(): string {
         return "Spider";
     }
 
@@ -67,14 +86,14 @@ class SpiderSpawner extends BaseSpawner {
      * @param int $herdSize
      * @return bool
      */
-    protected function spawnAllowedBySpiderCount (Level $level, int $herdSize) : bool {
+    protected function spawnAllowedBySpiderCount(Level $level, int $herdSize): bool {
         if ($this->maxSpawn <= 0) {
             return false;
         }
         $count = 0;
         foreach ($level->getEntities() as $entity) { // check all entities in given level
             if ($entity->isAlive() and !$entity->closed and $entity::NETWORK_ID == $this->getEntityNetworkId()) { // count only alive, not closed and desired entities
-                $count ++;
+                $count++;
             }
         }
 
