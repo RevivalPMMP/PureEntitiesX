@@ -99,6 +99,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
                 PureEntities::logOutput("Wolf($this): is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", PureEntities::NORM);
             }
         }
+        $this->setCollarColor($this->getCollarColor());
 
         $this->breedableClass = new BreedingExtension($this);
         $this->breedableClass->init();
@@ -168,7 +169,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
                 // is there any entity around that is attackable (skeletons, rabbits, sheeps)
                 foreach ($this->getLevel()->getNearbyEntities($this->boundingBox->grow(10, 10, 10), $this) as $entity) {
                     if ($entity instanceof Skeleton or $entity instanceof Rabbit or $entity instanceof Sheep and
-                        $entity->isAlive()) {
+                        $entity->isAlive()
+                    ) {
                         $this->setBaseTarget($entity); // set the given entity as target ...
                         return;
                     }
@@ -270,6 +272,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
+
+            $this->checkTamedMobsAttack($player);
         }
     }
 
@@ -307,6 +311,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
             $this->setTamed(true);
             $this->setOwner($player);
             $this->setSitting(true);
+            $this->setCollarColor(self::RED); // default color
 
         } else {
             $pk = new EntityEventPacket();
@@ -324,8 +329,6 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      */
     public function setTamed(bool $tamed) {
         if ($tamed) {
-            $this->namedtag->CollarColor = new ByteTag(self::NBT_KEY_COLLAR_COLOR, self::RED); // set collar color
-            $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, self::RED); // collar color RED (because it's tamed!)
             $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED, true); // set tamed
         }
     }
@@ -401,12 +404,36 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     }
 
     /**
+     * Sets the collar color when tamed
+     *
+     * @param $collarColor
+     */
+    public function setCollarColor($collarColor) {
+        if ($this->isTamed()) {
+            $this->namedtag->CollarColor = new ByteTag(self::NBT_KEY_COLLAR_COLOR, $collarColor); // set collar color
+            $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor); // collar color RED (because it's tamed!)
+        }
+    }
+
+    /**
+     * Returns the collar color of the wolf
+     *
+     * @return mixed
+     */
+    public function getCollarColor() {
+        if (!isset($this->namedtag->CollarColor)) {
+            $this->namedtag->CollarColor = new ByteTag(self::NBT_KEY_COLLAR_COLOR, self::RED); // set default collar color
+        }
+        return $this->namedtag[self::NBT_KEY_COLLAR_COLOR];
+    }
+
+    /**
      * Checks if the wolf is tamed and not sitting and has a "physically" available owner.
      * If so and the distance to the owner is more than 12 blocks: set position to the position
      * of the owner.
      */
     private function checkTeleport() {
-        if ($this->isTamed() && $this->getOwner() !== null && !$this->isSitting()) {
+        if ($this->isTamed() && $this->getOwner() !== null && !$this->isSitting() && !$this->isTargetMonsterOrAnimal()) {
             if ($this->getOwner()->distanceSquared($this) > 12) {
                 $this->setAngry(0); // reset angry flag
                 $this->setPosition($this->getOwner());

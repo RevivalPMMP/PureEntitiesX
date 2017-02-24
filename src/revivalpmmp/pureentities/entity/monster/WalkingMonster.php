@@ -19,7 +19,10 @@
 namespace revivalpmmp\pureentities\entity\monster;
 
 use pocketmine\entity\Creature;
+use pocketmine\item\ItemIds;
+use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\monster\walking\Enderman;
+use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\entity\WalkingEntity;
 use pocketmine\block\Water;
 use pocketmine\entity\Effect;
@@ -70,9 +73,9 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
             if ($this instanceof IntfTameable) {
                 if ($this->isTamed()) { // breeding extension only applies to tamed monsters
                     if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
-                        if (!$this->getBreedingExtension()->checkInLove()) { // when the entity is NOT in love, but tamed, it should follow the player!!!
+                        if ($this->getBreedingExtension()->getInLove() <= 0) { // when the entity is NOT in love, but tamed, it should follow the player!!!
                             $target = $this->getBaseTarget();
-                            if (!$target instanceof Monster or !$target->isAlive()) {
+                            if (!$this->isTargetMonsterOrAnimal() or !$target->isAlive()) {
                                 // set target to owner ...
                                 $player = $this->getOwner();
                                 if ($player !== null and $player->isOnline()) {
@@ -80,8 +83,6 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                                 }
                             }
                         }
-                        // tick the breedable class embedded
-                        $this->getBreedingExtension()->tick();
                     }
                 }
             }
@@ -229,20 +230,29 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
             }
         }
 
+        // tick the breeding extension if it's available
+        if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
+            // we should also check for any blocks of interest for the entity
+            $this->getBreedingExtension()->checkInLove();
+            // tick the breedable class embedded
+            $this->getBreedingExtension()->tick();
+        }
+
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
 
     /**
      * This function checks if the entity (this) is currently tamed and has a valid owner and
-     * the current target is a monster. If so, the entity helps the player to attack a monster.
+     * the current target is a monster or an animal. If so, the entity helps the player to attack a monster.
      *
      * @return bool
      */
-    private function isTargetMonster(): bool {
+    protected function isTargetMonsterOrAnimal(): bool {
         $isTargetMonster = false;
 
-        if ($this instanceof IntfTameable and $this->isTamed() and $this->getOwner() !== null and $this->getBaseTarget() instanceof Monster) {
+        if ($this instanceof IntfTameable and $this->isTamed() and $this->getOwner() !== null and
+            ($this->getBaseTarget() instanceof Monster or $this->getBaseTarget() instanceof Animal)) {
             $isTargetMonster = true;
         }
 
@@ -260,6 +270,10 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                     $tameFood = $this->getTameFoods();
                     if (!$this->isTamed() and in_array($itemInHand, $tameFood)) {
                         InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
+                    } else if ($this instanceof Wolf and $this->isTamed() and $itemInHand == ItemIds::DYE and
+                        $player->getInventory()->getItemInHand()->getDamage() > 0
+                    ) { // normal dye won't work ...
+                        InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_DYE, $player);
                     } else if ($this instanceof IntfCanBreed) {
                         if ($this->isTamed()) { // tamed - it can breed!!!
                             $feedableItems = $this->getFeedableItems();
@@ -294,7 +308,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         $targetOption = false;
 
         if ($this->isFriendly()) {
-            if (!$this->isTargetMonster() and $creature instanceof Player) { // a player requests the target option
+            if (!$this->isTargetMonsterOrAnimal() and $creature instanceof Player) { // a player requests the target option
                 if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
                     $itemInHand = $creature->getInventory()->getItemInHand()->getId();
                     if ($this instanceof IntfTameable) {
@@ -302,7 +316,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                         if (!$this->isTamed() and in_array($itemInHand, $tameFood) and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) {
                             $targetOption = true;
                         } else if ($this instanceof IntfCanBreed) {
-                           if ($this->isTamed() and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) { // tamed - it can breed!!!
+                            if ($this->isTamed() and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) { // tamed - it can breed!!!
                                 $feedableItems = $this->getFeedableItems();
                                 $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
                                 if ($hasFeedableItemsInHand) {

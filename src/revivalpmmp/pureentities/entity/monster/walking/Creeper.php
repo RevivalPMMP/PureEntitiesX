@@ -26,6 +26,7 @@ use pocketmine\level\Explosion;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\event\ExplosionPrimeEvent;
 use revivalpmmp\pureentities\PureEntities;
 
 class Creeper extends WalkingMonster implements Explosive{
@@ -103,7 +104,7 @@ class Creeper extends WalkingMonster implements Explosive{
 
             if ($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->distanceSquared($this) <= 4.5) {
                 $this->bombTime += $tickDiff;
-                if ($this->bombTime >= 64) {
+                if ($this->bombTime >= 64 && $this->isAlive()) {
                     $this->explode();
                     return false;
                 }

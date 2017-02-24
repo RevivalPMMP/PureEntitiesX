@@ -18,13 +18,13 @@ before_script:
  - echo | pecl install channel://pecl.php.net/yaml-2.0.0
  - git clone --recursive --branch=master https://github.com/pmmp/PocketMine-MP.git
  - mkdir -p PocketMine-MP/plugins/PureEntitiesX
+ - cp -f RevivalPMMP/PureEntitiesX/DevTools.phar PocketMine-MP/plugins/
  - cp -rf RevivalPMMP/PureEntitiesX/src PocketMine-MP/plugins/PureEntitiesX
  - cp -rf RevivalPMMP/PureEntitiesX/resources PocketMine-MP/plugins/PureEntitiesX
  - cp -rf RevivalPMMP/PureEntitiesX/plugin.yml PocketMine-MP/plugins/PureEntitiesX
  - cp -rf RevivalPMMP/PureEntitiesX/LICENSE PocketMine-MP/plugins/PureEntitiesX
  - cp -rf RevivalPMMP/PureEntitiesX/Travis.php PocketMine-MP/
  - cd PocketMine-MP/plugins/
- - wget -O DevTools.phar https://poggit.pmmp.io/r/1582/PocketMine-DevTools.phar
  - cd /home/travis/build/PocketMine-MP
  
 script:

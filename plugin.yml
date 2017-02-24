@@ -1,7 +1,7 @@
 name: PureEntitiesX
 main: revivalpmmp\pureentities\PureEntities
 version: 0.1.2_dev
-api: [3.0.0-ALPHA3]
+api: [3.0.0-ALPHA3, 3.0.0-ALPHA4]
 
 load: STARTUP
 authors: ["milk0417", "RevivalPMMP"]
@@ -13,6 +13,10 @@ commands:
     description: Summons a creature
     usage: "/pesummon <mob-name> <optional:playername>"
     permission: pureentities.command.pesummon
+  peremove:
+    description: Removes all entities from the current level
+    usage: "/peremove"
+    permission: pureentities.command.peremove
 
 permissions:
  pureentities:
@@ -24,5 +28,8 @@ permissions:
     description: "Allows using all the PureEntities commands"
     children:
       pureentities.command.pesummon:
-      default: op
-      description: "Allows spawning mobs"
+        default: op
+        description: "Allows spawning mobs"
+      pureentities.command.peremove:
+        default: op
+        description: "Allows remove of all entities in current level"

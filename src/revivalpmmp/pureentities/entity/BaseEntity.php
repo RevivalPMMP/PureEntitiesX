@@ -33,7 +33,7 @@ use pocketmine\nbt\tag\ByteTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\features\IntfTameable;
-use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\PluginConfiguration;
 
 abstract class BaseEntity extends Creature{
 
@@ -47,6 +47,12 @@ abstract class BaseEntity extends Creature{
     private $friendly = false;
     private $wallcheck = true;
     protected $fireProof = false;
+    private $maxJumpHeight = 1; // default: 1 block jump height - this should be 2 for horses e.g.
+
+    /**
+     * @var int
+     */
+    private $checkTargetSkipCounter = 0;
 
     public function __destruct(){}
 
@@ -108,6 +114,13 @@ abstract class BaseEntity extends Creature{
 
     public function getSpeed() : float{
         return 1;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxJumpHeight(): int {
+        return $this->maxJumpHeight;
     }
 
     public function initEntity(){
@@ -296,16 +309,76 @@ abstract class BaseEntity extends Creature{
                         $entity->isTamed() and
                         strcasecmp($entity->getOwner()->getName(), $attackedBy->getName()) == 0 and
                         $entity instanceof BaseEntity and
-                        !$entity->getBaseTarget() instanceof Monster) {
+                        !$entity->getBaseTarget() instanceof Monster
+                    ) {
+                        if ($this instanceof IntfTameable and $this->isTamed() and
+                            strcasecmp($this->getOwner()->getName(), $attackedBy->getName()) == 0
+                        ) {
+                            // this entity belongs to the player. other tamed mobs shouldnt attack!
+                            continue;
+                        }
                         if ($entity->isSitting()) {
                             $entity->setSitting(false);
                         }
                         $entity->setBaseTarget($this);
-                        PureEntities::logOutput("$this: will be attacked by $entity too", PureEntities::DEBUG);
                     }
                 }
             }
         }
     }
+
+    /**
+     * Call this function in any entity you want the tamed mobs to attack when player gets attacked.
+     * Take a look at Zombie Entity for usage!
+     *
+     * @param Entity $player
+     */
+    protected function checkTamedMobsAttack (Entity $player) {
+        // check if the player has tamed mobs (wolf e.g.) if so - the wolves need to set
+        // target to this one and attack it!
+        if ($player instanceof Player) {
+            foreach ($this->getTamedMobs($player) as $tamedMob) {
+                $tamedMob->setBaseTarget($this);
+                $tamedMob->stayTime = 0;
+                if ($tamedMob instanceof Wolf and $tamedMob->isSitting()) {
+                    $tamedMob->setSitting(false);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns all tamed mobs for the given player ...
+     * @param Player $player
+     * @return array
+     */
+    private function getTamedMobs (Player $player) {
+        $tamedMobs = [];
+        foreach($player->getLevel()->getEntities() as $entity) {
+            if ($entity instanceof IntfTameable and
+                $entity->isTamed() and
+                strcasecmp($entity->getOwner()->getName(), $player->getName()) === 0 and
+                $entity->isAlive()) {
+                $tamedMobs[] = $entity;
+            }
+        }
+        return $tamedMobs;
+    }
+
+    /**
+     * Checks if checkTarget can be called. If not, this method returns false
+     *
+     * @return bool
+     */
+    protected function isCheckTargetAllowedBySkip(): bool {
+        if ($this->checkTargetSkipCounter > PluginConfiguration::getInstance()->getCheckTargetSkipTicks()) {
+            $this->checkTargetSkipCounter = 0;
+            return true;
+        } else {
+            $this->checkTargetSkipCounter++;
+            return false;
+        }
+    }
+
 
 }

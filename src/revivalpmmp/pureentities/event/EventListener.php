@@ -16,6 +16,7 @@ use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\Info;
 use pocketmine\network\protocol\InteractPacket;
 use pocketmine\tile\Tile;
+use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\features\IntfCanBreed;
@@ -96,10 +97,17 @@ class EventListener implements Listener {
                 } else if ($entity instanceof IntfTameable and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame", PureEntities::DEBUG);
                     $return = $entity->tame($player);
-                } else if ($entity instanceof Wolf and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SIT) == 0) {
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit", PureEntities::DEBUG);
-                    $entity->setSitting(!$entity->isSitting());
-                    $return = true;
+                } else if ($entity instanceof Wolf) {
+                    if (strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SIT) == 0) {
+                        PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit", PureEntities::DEBUG);
+                        $entity->setSitting(!$entity->isSitting());
+                        $return = true;
+                    } else if (strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_DYE) == 0) {
+                        $color = Color::convert($player->getInventory()->getItemInHand()->getDamage());
+                        PureEntities::logOutput("$entity: dataPacketReceiveEvent->dye with color: $color", PureEntities::DEBUG);
+                        $entity->setCollarColor($color);
+                        $return = true;
+                    }
                 }
 			}
 		}

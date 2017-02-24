@@ -53,7 +53,9 @@ class Slime extends JumpingMonster{
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
-    }
+
+            $this->checkTamedMobsAttack ($player);
+        }
     }
 
     public function targetOption(Creature $creature, float $distance) : bool{

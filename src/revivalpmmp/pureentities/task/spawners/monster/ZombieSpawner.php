@@ -2,6 +2,7 @@
 namespace revivalpmmp\pureentities\task\spawners\monster;
 
 
+use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\Player;
@@ -38,7 +39,8 @@ class ZombieSpawner extends BaseSpawner {
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
                 PureEntities::DEBUG);
 
-            if ($this->isSpawnAllowedByBlockLight($player, $pos, 7) and // check block light when enabled
+            if ($biomeId != Biome::HELL and // they don't spawn in nether!
+                $this->isSpawnAllowedByBlockLight($player, $pos, 7) and // check block light when enabled
                 !$this->isDay($pos->getLevel()) and // only spawn at night ...
                 $block->isSolid() and // spawn only on solid blocks
                 $this->spawnAllowedByZombieCount($pos->getLevel(), $herdSize) and // respect count in level

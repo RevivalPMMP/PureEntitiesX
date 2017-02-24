@@ -89,6 +89,8 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
                     $this->level->addSound(new LaunchSound($this), $this->getViewers());
                 }
             }
+
+            $this->checkTamedMobsAttack ($player);
         }
     }
 

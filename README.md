@@ -16,6 +16,8 @@ Compatibility may be found with some, but do not expect anything.
 
 We are pretty relaxed about our issues. As long as they are descriptive and contain readable english, we may allow them to be referenced for bug fixes. For Pull Requests, please make sure that they actually fix or add something and that you ***test it*** before you PR. If the PR is buggy, we will request changes or close it. Please use our [Forums](http://revivalpmmpforums.gq) for setup questions, feature requests, and anything that isn't an Issue. ***Please note that issues that don't comply with our rules will be closed***
 
+**When contributing and using PhpStorm - use the phpstorm_codeformatting.xml template which can be found in root directory!**
+
 ## Usage:
 
 You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item Drops), but please don't copy our AI and claim it as your own. We give full credit to @milk0417 to starting the AI, but we have made numerous changes since then, so we ask you kindly _*Not to Copy our code (Unless you are forking and PR-ing, of course)*_

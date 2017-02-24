@@ -86,10 +86,16 @@ class BreedingExtension {
      */
     private $adultWidth = -1;
 
+    /**
+     * @var bool
+     */
+    private $emitLoveParticles = false;
+
     public function __construct(Entity $belongsTo) {
         $this->entity = $belongsTo;
         $this->adultHeight = $belongsTo->height;
         $this->adultWidth = $belongsTo->width;
+        $this->emitLoveParticles = PluginConfiguration::getInstance()->getEmitLoveParticlesCostantly();
     }
 
     /**
@@ -262,7 +268,7 @@ class BreedingExtension {
 
 
             // emit heart particles ...
-            if ($this->inLoveTimer >= self::IN_LOVE_EMIT_DELAY) {
+            if ($this->inLoveTimer >= self::IN_LOVE_EMIT_DELAY and $this->emitLoveParticles) {
                 foreach ($this->entity->getLevel()->getPlayers() as $player) { // don't know if this is the correct one :/
                     if ($player->distance($this->entity) <= 49) {
                         $pk = new EntityEventPacket();
@@ -272,7 +278,7 @@ class BreedingExtension {
                     }
                 }
                 $this->inLoveTimer = 0;
-            } else {
+            } else if ($this->emitLoveParticles) {
                 $this->inLoveTimer++;
             }
 
@@ -375,6 +381,11 @@ class BreedingExtension {
             // this makes the entity fall in love - and search for a partner ...
             $this->setInLove(self::DEFAULT_IN_LOVE_TICKS);
             // checkTarget method recognizes the "inlove" and tries to find a partner
+            // when feeding was successful and entity is in love mode emit heart particles (only once for now)
+            $pk = new EntityEventPacket();
+            $pk->eid = $this->entity->getId();
+            $pk->event = EntityEventPacket::TAME_SUCCESS; // i think this plays the "heart" animation
+            $player->dataPacket($pk);
         }
         return true;
     }

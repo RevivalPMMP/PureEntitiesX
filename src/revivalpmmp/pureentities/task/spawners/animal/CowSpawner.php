@@ -3,6 +3,7 @@ namespace revivalpmmp\pureentities\task\spawners\animal;
 
 
 use pocketmine\block\Solid;
+use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\Position;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
@@ -22,13 +23,15 @@ class CowSpawner extends BaseSpawner {
 
         if ($this->spawnAllowedByProbability()) { // first check if spawn would be allowed, if not the other method calls make no sense at all
             $block = $pos->level->getBlock($pos); // because we get the air block, we need to substract 1 from the y position
+            $biomeId = $pos->level->getBiomeId($pos->x, $pos->z);
 
             PureEntities::logOutput($this->getClassNameShort() . ": isDay: " . $this->isDay($pos->getLevel()) . ", block is instanceof Solid" . $block instanceof Solid .
                 "[" . $block->getName() . "], spawnAllowedByEntityCount: " . $this->spawnAllowedByEntityCount($pos->getLevel()) .
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos) . ", enoughAirAbovePos: " . $this->isEnoughAirAbovePosition($pos),
                 PureEntities::DEBUG);
 
-            if ($this->isSpawnAllowedByBlockLight($player, $pos, -1, 9) and // check block light when enabled
+            if ($biomeId != Biome::HELL and // they don't spawn in nether
+                $this->isSpawnAllowedByBlockLight($player, $pos, -1, 9) and // check block light when enabled
                 $this->isDay($pos->getLevel()) and // only spawn at daylight ...
                 $block instanceof Solid and // and only on solid blocks (no matter, which solid)
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level
