@@ -168,6 +168,8 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
         Tile::registerTile(Spawner::class);
 
+        $this->checkConfig();
+
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
 
         PureEntities::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", 0));
@@ -180,15 +182,45 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
     public function onEnable() {
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
-        $this->saveDefaultConfig();
-        $this->reloadConfig();
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
-        $this->getServer()->getLogger()->notice("Enabled!");
-        $this->getServer()->getLogger()->notice("You're Running " . $this->getDescription()->getFullName());
+        $this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
+        $this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
 
         new PluginConfiguration($this); // create plugin configuration
+    }
+
+    /**
+     * Checks if configuation is available. This function also checks if the config file available
+     * is really filled - if not it will create a new config from the internal resource folder
+     */
+    private function checkConfig () {
+        // check if a config file exists. if not - use the default config (from resources) and put it into the local config file
+        if (!file_exists($this->getDataFolder() . "config.yml")) {
+            $this->saveDefaultPEConfig();
+        } else {
+            // check for empty file ...
+            if (filesize($this->getDataFolder() . "config.yml") == 0) {
+                $this->saveDefaultPEConfig();
+            }
+        }
+    }
+
+    /**
+     * Saves the default config found in resources to the disk for further usage!
+     */
+    private function saveDefaultPEConfig () {
+        $filehandle = $this->getResource("config.yml");
+        $content = stream_get_contents ($filehandle);
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Storing default config to " . $this->getDataFolder() . "config.yml");
+        fclose($filehandle);
+
+        if (!file_exists($this->getDataFolder())) {
+            mkdir($this->getDataFolder(), 0777, true);
+        }
+
+        file_put_contents($this->getDataFolder() . "config.yml", $content);
     }
 
     public function onDisable() {
