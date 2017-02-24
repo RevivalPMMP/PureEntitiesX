@@ -18,7 +18,6 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\event\entity\ExplosionPrimeEvent;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
@@ -27,6 +26,7 @@ use pocketmine\level\Explosion;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\event\ExplosionPrimeEvent;
 use revivalpmmp\pureentities\PureEntities;
 
 class Creeper extends WalkingMonster implements Explosive{

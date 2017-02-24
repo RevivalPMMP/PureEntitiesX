@@ -1,6 +1,6 @@
 <?php
 
-namespace revivalpmmp\pureentities\entity\monster\walking;
+namespace revivalpmmp\pureentities\event;
 
 use pocketmine\entity\Entity;
 use pocketmine\event\Cancellable;
