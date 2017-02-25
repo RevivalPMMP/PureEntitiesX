@@ -255,13 +255,14 @@ class PureEntities extends PluginBase implements CommandExecutor {
             return Entity::createEntity($type, $source->getLevel(), $nbt, ...$args);
         } else {
             $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);
+			$level = $source->getLevel();
             if (!$chunk->isGenerated()) {
                 $chunk->setGenerated();
             }
             if (!$chunk->isPopulated()) {
                 $chunk->setPopulated();
             }
-            return Entity::createEntity($type, $chunk, $nbt, ...$args);
+            return Entity::createEntity($type, $level, $nbt, ...$args);
         }
     }
 

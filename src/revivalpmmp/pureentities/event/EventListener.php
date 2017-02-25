@@ -58,7 +58,7 @@ class EventListener implements Listener {
 					new IntTag("y", $block->y),
 					new IntTag("z", $block->z),
 				]);
-				new Spawner($block->getLevel()->getChunk((int) $block->x >> 4, (int) $block->z >> 4), $nbt);
+				new Spawner($block->getLevel(), $nbt);
 			}
 		}
 	}
