@@ -1,5 +1,22 @@
 <?php
 
+/*  PureEntitiesX: Mob AI Plugin for PMMP
+    Copyright (C) 2017 RevivalPMMP
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+
+
 namespace revivalpmmp\pureentities\task;
 
 use pocketmine\level\Position;
@@ -39,10 +56,10 @@ class AutoSpawnTask extends PluginTask {
         $this->prepareSpawnerClasses();
     }
 
-    public function onRun($currentTick){
-        PureEntities::logOutput("AutoSpawnTask: onRun ($currentTick)",PureEntities::DEBUG);
+    public function onRun($currentTick) {
+        PureEntities::logOutput("AutoSpawnTask: onRun ($currentTick)", PureEntities::DEBUG);
 
-        foreach($this->plugin->getServer()->getLevels() as $level) {
+        foreach ($this->plugin->getServer()->getLevels() as $level) {
             if (count($level->getPlayers()) > 0) {
                 foreach ($level->getPlayers() as $player) {
                     foreach ($this->spawnerClasses as $spawnerClass) {
@@ -57,7 +74,7 @@ class AutoSpawnTask extends PluginTask {
                             $pos = new Position($correctedPosition->x, $correctedPosition->y - 1, $correctedPosition->z, $level);
                             $spawnerClass->spawn($pos, $player);
                         } else {
-                            PureEntities::logOutput("AutoSpawnTask: cannot find a suitable spawn coordinate [search.x:$x] [search.y:$y] [search.z:$z]" , PureEntities::WARN);
+                            PureEntities::logOutput("AutoSpawnTask: cannot find a suitable spawn coordinate [search.x:$x] [search.y:$y] [search.z:$z]", PureEntities::WARN);
                         }
                     }
                 }
@@ -65,7 +82,7 @@ class AutoSpawnTask extends PluginTask {
         }
     }
 
-    private function prepareSpawnerClasses () {
+    private function prepareSpawnerClasses() {
         // $this->spawnerClasses[] = new BatSpawner();
         $this->spawnerClasses[] = new ChickenSpawner();
         $this->spawnerClasses[] = new CowSpawner();

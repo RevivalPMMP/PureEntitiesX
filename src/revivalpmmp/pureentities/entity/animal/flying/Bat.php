@@ -22,22 +22,22 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\animal\FlyingAnimal;
 use pocketmine\entity\Creature;
 
-class Bat extends FlyingAnimal{
-	//TODO implement
+class Bat extends FlyingAnimal {
+    //TODO implement
     const NETWORK_ID = Data::BAT;
 
     public $width = 0.3;
     public $height = 0.3;
 
-    public function getName(){
+    public function getName() {
         return "Bat";
     }
 
-    public function targetOption(Creature $creature, float $distance) : bool{
+    public function targetOption(Creature $creature, float $distance): bool {
         return false;
     }
 
-    public function getDrops(){
+    public function getDrops() {
         return [];
     }
 

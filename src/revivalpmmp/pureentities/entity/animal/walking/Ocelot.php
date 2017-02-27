@@ -24,28 +24,28 @@ use pocketmine\item\Item;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
-class Ocelot extends WalkingAnimal{
+class Ocelot extends WalkingAnimal {
     const NETWORK_ID = Data::OCELOT;
 
     public $width = 0.72;
     public $height = 0.9;
 
-    public function getSpeed() : float{
+    public function getSpeed(): float {
         return 1.4;
     }
 
-    public function getName(){
+    public function getName() {
         return "Ocelot";
     }
 
-    public function targetOption(Creature $creature, float $distance) : bool{
-        if($creature instanceof Player){
+    public function targetOption(Creature $creature, float $distance): bool {
+        if ($creature instanceof Player) {
             return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::RAW_FISH && $distance <= 49;
         }
         return false;
     }
 
-    public function getDrops(){
+    public function getDrops() {
         return [];
     }
 

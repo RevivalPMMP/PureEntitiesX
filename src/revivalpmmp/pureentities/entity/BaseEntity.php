@@ -35,7 +35,7 @@ use pocketmine\Player;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 
-abstract class BaseEntity extends Creature{
+abstract class BaseEntity extends Creature {
 
     public $stayTime = 0;
     protected $moveTime = 0;
@@ -54,40 +54,41 @@ abstract class BaseEntity extends Creature{
      */
     private $checkTargetSkipCounter = 0;
 
-    public function __destruct(){}
+    public function __destruct() {
+    }
 
     public abstract function updateMove($tickDiff);
 
-    public function getSaveId(){
+    public function getSaveId() {
         $class = new \ReflectionClass(get_class($this));
         return $class->getShortName();
     }
 
-    public function isMovement() : bool{
+    public function isMovement(): bool {
         return $this->movement;
     }
 
-    public function isFriendly() : bool{
+    public function isFriendly(): bool {
         return $this->friendly;
     }
 
-    public function isKnockback() : bool{
+    public function isKnockback(): bool {
         return $this->attackTime > 0;
     }
 
-    public function isWallCheck() : bool{
+    public function isWallCheck(): bool {
         return $this->wallcheck;
     }
 
-    public function setMovement(bool $value){
+    public function setMovement(bool $value) {
         $this->movement = $value;
     }
 
-    public function setFriendly(bool $bool){
+    public function setFriendly(bool $bool) {
         $this->friendly = $bool;
     }
 
-    public function setWallCheck(bool $value){
+    public function setWallCheck(bool $value) {
         $this->wallcheck = $value;
     }
 
@@ -97,7 +98,7 @@ abstract class BaseEntity extends Creature{
      *
      * @param $baseTarget
      */
-    public function setBaseTarget ($baseTarget) {
+    public function setBaseTarget($baseTarget) {
         if ($baseTarget !== $this->baseTarget) {
             $this->baseTarget = $baseTarget;
         }
@@ -108,11 +109,11 @@ abstract class BaseEntity extends Creature{
      *
      * @return Entity|Vector3
      */
-    public function getBaseTarget () {
+    public function getBaseTarget() {
         return $this->baseTarget;
     }
 
-    public function getSpeed() : float{
+    public function getSpeed(): float {
         return 1;
     }
 
@@ -123,30 +124,30 @@ abstract class BaseEntity extends Creature{
         return $this->maxJumpHeight;
     }
 
-    public function initEntity(){
+    public function initEntity() {
         parent::initEntity();
 
-        if(isset($this->namedtag->Movement)){
+        if (isset($this->namedtag->Movement)) {
             $this->setMovement($this->namedtag["Movement"]);
         }
 
-        if(isset($this->namedtag->WallCheck)){
+        if (isset($this->namedtag->WallCheck)) {
             $this->setWallCheck($this->namedtag["WallCheck"]);
         }
         $this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
     }
 
-    public function saveNBT(){
+    public function saveNBT() {
         parent::saveNBT();
         $this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
         $this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
     }
 
-    public function spawnTo(Player $player){
-        if(
+    public function spawnTo(Player $player) {
+        if (
             !isset($this->hasSpawned[$player->getLoaderId()])
             && isset($player->usedChunks[Level::chunkHash($this->chunk->getX(), $this->chunk->getZ())])
-        ){
+        ) {
             $pk = new AddEntityPacket();
             $pk->eid = $this->getID();
             $pk->type = static::NETWORK_ID;
@@ -165,14 +166,14 @@ abstract class BaseEntity extends Creature{
         }
     }
 
-    public function updateMovement(){
-        if(
+    public function updateMovement() {
+        if (
             $this->lastX !== $this->x
             || $this->lastY !== $this->y
             || $this->lastZ !== $this->z
             || $this->lastYaw !== $this->yaw
             || $this->lastPitch !== $this->pitch
-        ){
+        ) {
             $this->lastX = $this->x;
             $this->lastY = $this->y;
             $this->lastZ = $this->z;
@@ -182,18 +183,18 @@ abstract class BaseEntity extends Creature{
         $this->level->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $this->x, $this->y, $this->z, $this->yaw, $this->pitch);
     }
 
-    public function isInsideOfSolid(){
+    public function isInsideOfSolid() {
         $block = $this->level->getBlock($this->temporalVector->setComponents(Math::floorFloat($this->x), Math::floorFloat($this->y + $this->height - 0.18), Math::floorFloat($this->z)));
         $bb = $block->getBoundingBox();
         return $bb !== null and $block->isSolid() and !$block->isTransparent() and $bb->intersectsWith($this->getBoundingBox());
     }
 
-    public function attack($damage, EntityDamageEvent $source){
-        if($this->isKnockback() > 0) return;
+    public function attack($damage, EntityDamageEvent $source) {
+        if ($this->isKnockback() > 0) return;
 
         parent::attack($damage, $source);
 
-        if($source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)){
+        if ($source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)) {
             return;
         }
 
@@ -204,35 +205,35 @@ abstract class BaseEntity extends Creature{
         $motion = (new Vector3($this->x - $damager->x, $this->y - $damager->y, $this->z - $damager->z))->normalize();
         $this->motionX = $motion->x * 0.19;
         $this->motionZ = $motion->z * 0.19;
-        if(($this instanceof FlyingEntity) && !($this instanceof Blaze)){
+        if (($this instanceof FlyingEntity) && !($this instanceof Blaze)) {
             $this->motionY = $motion->y * 0.19;
-        }else{
+        } else {
             $this->motionY = 0.6;
         }
 
-        $this->checkAttackByTamedEntities ($source);
+        $this->checkAttackByTamedEntities($source);
     }
 
-    public function knockBack(Entity $attacker, $damage, $x, $z, $base = 0.4){
+    public function knockBack(Entity $attacker, $damage, $x, $z, $base = 0.4) {
 
     }
 
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
+    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = Entity::entityBaseTick($tickDiff);
 
-        if($this->isInsideOfSolid()){
+        if ($this->isInsideOfSolid()) {
             $hasUpdate = true;
             $ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_SUFFOCATION, 1);
             $this->attack($ev->getFinalDamage(), $ev);
         }
 
-        if($this->moveTime > 0){
+        if ($this->moveTime > 0) {
             $this->moveTime -= $tickDiff;
         }
 
-        if($this->attackTime > 0){
+        if ($this->attackTime > 0) {
             $this->attackTime -= $tickDiff;
         }
 
@@ -240,7 +241,7 @@ abstract class BaseEntity extends Creature{
         return $hasUpdate;
     }
 
-    public function move($dx, $dy, $dz) : bool{
+    public function move($dx, $dy, $dz): bool {
         Timings::$entityMoveTimer->startTiming();
 
         $movX = $dx;
@@ -248,18 +249,18 @@ abstract class BaseEntity extends Creature{
         $movZ = $dz;
 
         $list = $this->level->getCollisionCubes($this, $this->level->getTickRate() > 1 ? $this->boundingBox->getOffsetBoundingBox($dx, $dy, $dz) : $this->boundingBox->addCoord($dx, $dy, $dz));
-        if($this->isWallCheck()){
-            foreach($list as $bb){
+        if ($this->isWallCheck()) {
+            foreach ($list as $bb) {
                 $dx = $bb->calculateXOffset($this->boundingBox, $dx);
             }
             $this->boundingBox->offset($dx, 0, 0);
 
-            foreach($list as $bb){
+            foreach ($list as $bb) {
                 $dz = $bb->calculateZOffset($this->boundingBox, $dz);
             }
             $this->boundingBox->offset(0, 0, $dz);
         }
-        foreach($list as $bb){
+        foreach ($list as $bb) {
             $dy = $bb->calculateYOffset($this->boundingBox, $dy);
         }
         $this->boundingBox->offset(0, $dy, 0);
@@ -274,7 +275,7 @@ abstract class BaseEntity extends Creature{
         return true;
     }
 
-    public function targetOption(Creature $creature, float $distance) : bool{
+    public function targetOption(Creature $creature, float $distance): bool {
         return $this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 81;
     }
 
@@ -286,7 +287,7 @@ abstract class BaseEntity extends Creature{
      * @param array $blocksAround
      * @return bool|Block
      */
-    public function isAnyBlockOfInterest (array $blocksAround) {
+    public function isAnyBlockOfInterest(array $blocksAround) {
         return false;
     }
 
@@ -296,7 +297,7 @@ abstract class BaseEntity extends Creature{
      *
      * @param EntityDamageEvent $source the event that has been raised
      */
-    protected function checkAttackByTamedEntities (EntityDamageEvent $source) {
+    protected function checkAttackByTamedEntities(EntityDamageEvent $source) {
         // next: if the player has any tamed entities - they will attack this entitiy too - but only when not already
         // having a valid monster target
         if ($source instanceof EntityDamageByEntityEvent) {
@@ -333,7 +334,7 @@ abstract class BaseEntity extends Creature{
      *
      * @param Entity $player
      */
-    protected function checkTamedMobsAttack (Entity $player) {
+    protected function checkTamedMobsAttack(Entity $player) {
         // check if the player has tamed mobs (wolf e.g.) if so - the wolves need to set
         // target to this one and attack it!
         if ($player instanceof Player) {
@@ -352,13 +353,14 @@ abstract class BaseEntity extends Creature{
      * @param Player $player
      * @return array
      */
-    private function getTamedMobs (Player $player) {
+    private function getTamedMobs(Player $player) {
         $tamedMobs = [];
-        foreach($player->getLevel()->getEntities() as $entity) {
+        foreach ($player->getLevel()->getEntities() as $entity) {
             if ($entity instanceof IntfTameable and
                 $entity->isTamed() and
                 strcasecmp($entity->getOwner()->getName(), $player->getName()) === 0 and
-                $entity->isAlive()) {
+                $entity->isAlive()
+            ) {
                 $tamedMobs[] = $entity;
             }
         }

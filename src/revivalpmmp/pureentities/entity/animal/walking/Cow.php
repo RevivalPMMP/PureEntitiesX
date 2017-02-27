@@ -37,7 +37,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     public $height = 1.3;
     public $eyeHeight = 1.2;
 
-    private $feedableItems = array (Item::WHEAT);
+    private $feedableItems = array(Item::WHEAT);
 
     /**
      * Is needed for breeding functionality
@@ -53,7 +53,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     }
 
 
-    public function getName(){
+    public function getName() {
         return "Cow";
     }
 
@@ -62,7 +62,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
      *
      * @return BreedingExtension
      */
-    public function getBreedingExtension () {
+    public function getBreedingExtension() {
         return $this->breedableClass;
     }
 
@@ -83,13 +83,13 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         return $this->feedableItems;
     }
 
-    public function getDrops(){
+    public function getDrops() {
         $drops = [];
         array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
         if ($this->isOnFire()) {
-          array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
+            array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
         } else {
-          array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
+            array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
         }
         return $drops;
     }
@@ -104,7 +104,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
      * @param Player $player
      * @return bool true if milking was successful, false if not
      */
-    public function milk (Player $player) : bool{
+    public function milk(Player $player): bool {
         $item = $player->getInventory()->getItemInHand();
         if ($item !== null && $item->getId() === Item::BUCKET) {
             --$item->count;
@@ -123,9 +123,9 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
      * This method is called when a player is looking at this entity. This
      * method shows an interactive button or not
      *
-     * @param Player $player    the player to show a button eventually to
+     * @param Player $player the player to show a button eventually to
      */
-    public function showButton (Player $player) {
+    public function showButton(Player $player) {
         if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
             $itemInHand = $player->getInventory()->getItemInHand();
             if ($itemInHand->getId() === Item::BUCKET && $itemInHand->getDamage() === 0) { // empty bucket

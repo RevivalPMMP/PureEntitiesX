@@ -25,25 +25,25 @@ use pocketmine\Player;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
-class Donkey extends WalkingAnimal implements Rideable{
+class Donkey extends WalkingAnimal implements Rideable {
     const NETWORK_ID = Data::DONKEY;
 
     public $width = 1.4;
     public $height = 1.6;
 
-    public function getName(){
+    public function getName() {
         return "Donkey";
     }
 
-    public function targetOption(Creature $creature, float $distance) : bool{
-        if($creature instanceof Player){
+    public function targetOption(Creature $creature, float $distance): bool {
+        if ($creature instanceof Player) {
             return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
         }
         return false;
-}
+    }
 
-    public function getDrops(){
-        return [Item::get(Item::LEATHER, 0, mt_rand(0,2))];
+    public function getDrops() {
+        return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
     }
 
     public function getMaxHealth() {

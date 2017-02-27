@@ -135,11 +135,11 @@ abstract class WalkingEntity extends BaseEntity {
      * method brings in jumpHeight of the entitiy (normal entities can only jump one block, horses
      * e.g. jump 2 blocks ...)
      *
-     * @param Block $block  the block the check starts with
+     * @param Block $block the block the check starts with
      * @return bool true if upper blocks can be passed through
      */
-    private function canPassThroughUpperBlocks (Block $block) : bool {
-        for ($y=1; $y <= $this->getMaxJumpHeight(); $y++) {
+    private function canPassThroughUpperBlocks(Block $block): bool {
+        for ($y = 1; $y <= $this->getMaxJumpHeight(); $y++) {
             if (!$block->getSide(Block::SIDE_UP, ($y + 1))->canPassThrough()) {
                 return false;
             }

@@ -44,21 +44,21 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
     public $width = 0.6;
     public $height = 1.8;
 
-    const NBT_KEY_PUMPKIN       = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
+    const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
 
-    public function initEntity(){
+    public function initEntity() {
         parent::initEntity();
 
         $this->setFriendly(true);
         $this->setSheared($this->isSheared()); // set data from NBT
     }
 
-    public function getName(){
+    public function getName() {
         return "SnowGolem";
     }
 
-    public function attackEntity(Entity $player){
-        if($this->attackDelay > 23  && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55){
+    public function attackEntity(Entity $player) {
+        if ($this->attackDelay > 23 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55) {
             $this->attackDelay = 0;
 
             $f = 1.2;
@@ -68,7 +68,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
                 "Pos" => new ListTag("Pos", [
                     new DoubleTag("", $this->x + (-sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5)),
                     new DoubleTag("", $this->y + 1),
-                    new DoubleTag("", $this->z +(cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5))
+                    new DoubleTag("", $this->z + (cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5))
                 ]),
                 "Motion" => new ListTag("Motion", [
                     new DoubleTag("", -sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI)),
@@ -86,18 +86,18 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
             $snowball->setMotion($snowball->getMotion()->multiply($f));
 
             $this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($snowball));
-            if($launch->isCancelled()){
+            if ($launch->isCancelled()) {
                 $snowball->kill();
-            }else{
+            } else {
                 $snowball->spawnToAll();
                 $this->level->addSound(new LaunchSound($this), $this->getViewers());
             }
 
-            $this->checkTamedMobsAttack ($player);
+            $this->checkTamedMobsAttack($player);
         }
     }
 
-    public function getDrops(){
+    public function getDrops() {
         return [Item::get(Item::SNOWBALL, 0, mt_rand(0, 15))];
     }
 
@@ -112,20 +112,20 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
     /**
      * Sets the snowgolem sheared. This means, he looses his pumpkin and shows face
      */
-    public function setSheared (bool $sheared) {
+    public function setSheared(bool $sheared) {
         $this->namedtag->Pumpkin = new IntTag(self::NBT_KEY_PUMPKIN, $sheared ? 0 : 1); // set pumpkin in NBT
         $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SHEARED, $sheared); // set pumpkin on/off (sheared?)
     }
 
-    public function isSheared () : bool {
-        if(!isset($this->namedtag->Pumpkin)){
+    public function isSheared(): bool {
+        if (!isset($this->namedtag->Pumpkin)) {
             $this->namedtag->Pumpkin = new IntTag(self::NBT_KEY_PUMPKIN, 1); // default: has pumpkin on his head (1 - pumpkin on head, 0 - pumpkin off!)
         }
         return $this->namedtag[self::NBT_KEY_PUMPKIN] === 0;
     }
 
-    public function shear (Player $player) : bool {
-        if($this->isSheared()) {
+    public function shear(Player $player): bool {
+        if ($this->isSheared()) {
             return false;
         } else {
             $this->setSheared(true);
@@ -138,9 +138,9 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
      * This method is called when a player is looking at this entity. This
      * method shows an interactive button or not
      *
-     * @param Player $player    the player to show a button eventually to
+     * @param Player $player the player to show a button eventually to
      */
-    public function showButton (Player $player) {
+    public function showButton(Player $player) {
         if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
             if ($player->getInventory()->getItemInHand()->getId() === ItemIds::SHEARS && !$this->isSheared()) {
                 InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $player);
@@ -149,7 +149,6 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
         }
         parent::showButton($player);
     }
-
 
 
 }

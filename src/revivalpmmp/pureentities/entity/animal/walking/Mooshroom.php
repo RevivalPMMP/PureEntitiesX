@@ -31,7 +31,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     public $width = 1.45;
     public $height = 1.12;
 
-    private $feedableItems = array (Item::WHEAT);
+    private $feedableItems = array(Item::WHEAT);
 
     /**
      * Is needed for breeding functionality
@@ -46,7 +46,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         $this->breedableClass->init();
     }
 
-    public function getName(){
+    public function getName() {
         return "Mooshroom";
     }
 
@@ -55,7 +55,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
      *
      * @return BreedingExtension
      */
-    public function getBreedingExtension () {
+    public function getBreedingExtension() {
         return $this->breedableClass;
     }
 
@@ -76,15 +76,15 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         return $this->feedableItems;
     }
 
-    public function getDrops(){
-      $drops = [];
-      array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
-      if ($this->isOnFire()) {
-        array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
-      } else {
-        array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
-      }
-      return $drops;
+    public function getDrops() {
+        $drops = [];
+        array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
+        if ($this->isOnFire()) {
+            array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
+        } else {
+            array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
+        }
+        return $drops;
     }
 
     public function getMaxHealth() {

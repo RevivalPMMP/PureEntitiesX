@@ -29,7 +29,7 @@ use pocketmine\level\Explosion;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\event\ExplosionPrimeEvent;
 
-class FireBall extends Projectile{
+class FireBall extends Projectile {
     const NETWORK_ID = Data::FIRE_BALL;
 
     public $width = 0.5;
@@ -43,22 +43,22 @@ class FireBall extends Projectile{
     protected $isCritical;
     protected $canExplode = false;
 
-    public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
+    public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false) {
         parent::__construct($chunk, $nbt, $shootingEntity);
 
         $this->isCritical = $critical;
     }
 
-    public function isExplode() : bool{
+    public function isExplode(): bool {
         return $this->canExplode;
     }
 
-    public function setExplode(bool $bool){
+    public function setExplode(bool $bool) {
         $this->canExplode = $bool;
     }
 
-    public function onUpdate($currentTick){
-        if($this->closed){
+    public function onUpdate($currentTick) {
+        if ($this->closed) {
             return false;
         }
 
@@ -66,21 +66,21 @@ class FireBall extends Projectile{
 
         $hasUpdate = parent::onUpdate($currentTick);
 
-        if(!$this->hadCollision and $this->isCritical){
+        if (!$this->hadCollision and $this->isCritical) {
             $this->level->addParticle(new CriticalParticle($this->add(
                 $this->width / 2 + mt_rand(-100, 100) / 500,
                 $this->height / 2 + mt_rand(-100, 100) / 500,
                 $this->width / 2 + mt_rand(-100, 100) / 500)));
-        }elseif($this->onGround){
+        } elseif ($this->onGround) {
             $this->isCritical = false;
         }
 
-        if($this->age > 1200 or $this->isCollided){
-            if($this->isCollided and $this->canExplode){
+        if ($this->age > 1200 or $this->isCollided) {
+            if ($this->isCollided and $this->canExplode) {
                 $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
-                if(!$ev->isCancelled()){
+                if (!$ev->isCancelled()) {
                     $explosion = new Explosion($this, $ev->getForce(), $this->shootingEntity);
-                    if($ev->isBlockBreaking()){
+                    if ($ev->isBlockBreaking()) {
                         $explosion->explodeA();
                     }
                     $explosion->explodeB();
@@ -94,7 +94,7 @@ class FireBall extends Projectile{
         return $hasUpdate;
     }
 
-    public function spawnTo(Player $player){
+    public function spawnTo(Player $player) {
         $pk = new AddEntityPacket();
         $pk->type = self::NETWORK_ID;
         $pk->eid = $this->getId();

@@ -44,71 +44,71 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
     const DATA_COLOR_INFO = 16;
 
     const WHITE = 0;
-	const ORANGE = 1;
-	const MAGENTA = 2;
-	const LIGHT_BLUE = 3;
-	const YELLOW = 4;
-	const LIME = 5;
-	const PINK = 6;
-	const GRAY = 7;
-	const LIGHT_GRAY = 8;
-	const CYAN = 9;
-	const PURPLE = 10;
-	const BLUE = 11;
-	const BROWN = 12;
-	const GREEN = 13;
-	const RED = 14;
-	const BLACK = 15;
+    const ORANGE = 1;
+    const MAGENTA = 2;
+    const LIGHT_BLUE = 3;
+    const YELLOW = 4;
+    const LIME = 5;
+    const PINK = 6;
+    const GRAY = 7;
+    const LIGHT_GRAY = 8;
+    const CYAN = 9;
+    const PURPLE = 10;
+    const BLUE = 11;
+    const BROWN = 12;
+    const GREEN = 13;
+    const RED = 14;
+    const BLACK = 15;
 
-	const NBT_KEY_COLOR         = "Color";
-	const NBT_KEY_SHEARED       = "Sheared";
+    const NBT_KEY_COLOR = "Color";
+    const NBT_KEY_SHEARED = "Sheared";
 
 
     public $width = 0.625;
-	public $length = 1.4375;
-	public $height = 1.8;
+    public $length = 1.4375;
+    public $height = 1.8;
 
-    private $feedableItems = array (Item::WHEAT);
+    private $feedableItems = array(Item::WHEAT);
 
     /**
      * Is needed for breeding functionality
      *
      * @var BreedingExtension
      */
-	private $breedableClass;
+    private $breedableClass;
 
-    public function getName(){
+    public function getName() {
         return "Sheep";
     }
 
-    public static function getRandomColor() : int {
-		$rand = "";
-		$rand .= str_repeat(self::WHITE . " ", 20);
-		$rand .= str_repeat(self::ORANGE . " ", 5);
-		$rand .= str_repeat(self::MAGENTA . " ", 5);
-		$rand .= str_repeat(self::LIGHT_BLUE . " ", 5);
-		$rand .= str_repeat(self::YELLOW . " ", 5);
-		$rand .= str_repeat(self::GRAY . " ", 10);
-		$rand .= str_repeat(self::LIGHT_GRAY . " ", 10);
-		$rand .= str_repeat(self::CYAN . " ", 5);
-		$rand .= str_repeat(self::PURPLE . " ", 5);
-		$rand .= str_repeat(self::BLUE . " ", 5);
-		$rand .= str_repeat(self::BROWN . " ", 5);
-		$rand .= str_repeat(self::GREEN . " ", 5);
-		$rand .= str_repeat(self::RED . " ", 5);
-		$rand .= str_repeat(self::BLACK . " ", 10);
-		$arr = explode(" ", $rand);
-		return intval($arr[mt_rand(0, count($arr) - 1)]);
-	}
+    public static function getRandomColor(): int {
+        $rand = "";
+        $rand .= str_repeat(self::WHITE . " ", 20);
+        $rand .= str_repeat(self::ORANGE . " ", 5);
+        $rand .= str_repeat(self::MAGENTA . " ", 5);
+        $rand .= str_repeat(self::LIGHT_BLUE . " ", 5);
+        $rand .= str_repeat(self::YELLOW . " ", 5);
+        $rand .= str_repeat(self::GRAY . " ", 10);
+        $rand .= str_repeat(self::LIGHT_GRAY . " ", 10);
+        $rand .= str_repeat(self::CYAN . " ", 5);
+        $rand .= str_repeat(self::PURPLE . " ", 5);
+        $rand .= str_repeat(self::BLUE . " ", 5);
+        $rand .= str_repeat(self::BROWN . " ", 5);
+        $rand .= str_repeat(self::GREEN . " ", 5);
+        $rand .= str_repeat(self::RED . " ", 5);
+        $rand .= str_repeat(self::BLACK . " ", 10);
+        $arr = explode(" ", $rand);
+        return intval($arr[mt_rand(0, count($arr) - 1)]);
+    }
 
-    public function initEntity(){
+    public function initEntity() {
         parent::initEntity();
 
         $this->breedableClass = new BreedingExtension($this);
         $this->breedableClass->init();
 
         $this->setColor($this->getColor());
-        $this->setSheared ($this->isSheared());
+        $this->setSheared($this->isSheared());
 
     }
 
@@ -117,7 +117,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      *
      * @return BreedingExtension
      */
-    public function getBreedingExtension () {
+    public function getBreedingExtension() {
         return $this->breedableClass;
     }
 
@@ -148,7 +148,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
         }
     }
 
-    public function getDrops(){
+    public function getDrops() {
         $drops = [];
         if (!$this->isSheared() && !$this->getBreedingExtension()->isBaby()) {
             $drops = [Item::get(Item::WOOL, self::getColor(), mt_rand(0, 2))];
@@ -161,7 +161,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      *
      * @return int
      */
-    public function getMaxHealth(){
+    public function getMaxHealth() {
         return 8;
     }
 
@@ -171,8 +171,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      * @param Player $player
      * @return bool
      */
-    public function shear (Player $player) : bool {
-        if($this->isSheared()) { // already sheared
+    public function shear(Player $player): bool {
+        if ($this->isSheared()) { // already sheared
             return false;
         } else { // not sheared yet
             // drop correct wool color by calling getDrops of the entity (the entity knows what to drop!)
@@ -196,11 +196,11 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      * Checks if this entity is sheared
      * @return bool
      */
-    public function isSheared () : bool {
+    public function isSheared(): bool {
         if (!isset($this->namedtag->Sheared)) {
             $this->namedtag->Sheared = new ByteTag(self::NBT_KEY_SHEARED, 0); // set not sheared
         }
-        return (bool) $this->namedtag[self::NBT_KEY_SHEARED];
+        return (bool)$this->namedtag[self::NBT_KEY_SHEARED];
     }
 
     /**
@@ -208,7 +208,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      *
      * @param bool $sheared
      */
-    public function setSheared (bool $sheared) {
+    public function setSheared(bool $sheared) {
         $this->namedtag->Sheared = new ByteTag(self::NBT_KEY_SHEARED, $sheared); // update NBT
         $this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, $sheared); // send client data
     }
@@ -218,11 +218,11 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      *
      * @return int
      */
-    public function getColor() : int {
-        if(!isset($this->namedtag->Color)){
+    public function getColor(): int {
+        if (!isset($this->namedtag->Color)) {
             $this->namedtag->Color = new ByteTag(self::NBT_KEY_COLOR, self::getRandomColor());
         }
-        return (int) $this->namedtag[self::NBT_KEY_COLOR];
+        return (int)$this->namedtag[self::NBT_KEY_COLOR];
     }
 
     /**
@@ -230,7 +230,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      *
      * @param int $color
      */
-    public function setColor(int $color){
+    public function setColor(int $color) {
         $this->namedtag->Color = new ByteTag(self::NBT_KEY_COLOR, $color);
         $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $color);
     }
@@ -241,7 +241,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      * @param array $blocksAround
      * @return bool|mixed
      */
-    public function isAnyBlockOfInterest (array $blocksAround) {
+    public function isAnyBlockOfInterest(array $blocksAround) {
         if ($this->isSheared()) { // sheep has only interest in gras blocks around if sheared
             foreach ($blocksAround as $block) { // check all the given blocks
                 if ($block instanceof Grass or $block instanceof TallGrass or strcmp($block->getName(), "Double Tallgrass") == 0) { // only grass blocks are eatable by sheeps
@@ -258,7 +258,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      *
      * @param Block $block
      */
-    protected function blockOfInterestReached ($block) {
+    protected function blockOfInterestReached($block) {
         $this->stayTime = 1000; // let this entity stay still
         // play eat grass animation but only when there are players near ...
         foreach ($this->getLevel()->getPlayers() as $player) { // don't know if this is the correct one :/
@@ -286,9 +286,9 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      * This method is called when a player is looking at this entity. This
      * method shows an interactive button or not
      *
-     * @param Player $player    the player to show a button eventually to
+     * @param Player $player the player to show a button eventually to
      */
-    public function showButton (Player $player) {
+    public function showButton(Player $player) {
         if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
             if ($player->getInventory()->getItemInHand()->getId() === ItemIds::SHEARS && !$this->isSheared()) {
                 InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $player);

@@ -1,10 +1,20 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mige
- * Date: 11.02.17
- * Time: 12:48
- */
+
+/*  PureEntitiesX: Mob AI Plugin for PMMP
+    Copyright (C) 2017 RevivalPMMP
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 namespace revivalpmmp\pureentities\task;
 
@@ -42,7 +52,7 @@ class InteractionTask extends PluginTask {
      * @param int $currentTick
      */
     public function onRun($currentTick) {
-        foreach($this->plugin->getServer()->getOnlinePlayers() as $player) {
+        foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
             $entity = InteractionHelper::getEntityPlayerLookingAt($player, PluginConfiguration::getInstance()->getMaxInteractDistance(),
                 PluginConfiguration::getInstance()->isInteractiveButtonCorrection());
             PureEntities::logOutput("InteractionTask: $player is looking at $entity", PureEntities::DEBUG);

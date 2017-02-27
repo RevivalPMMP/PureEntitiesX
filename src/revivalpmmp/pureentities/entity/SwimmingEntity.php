@@ -25,13 +25,13 @@ use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\PureEntities;
 
 abstract class SwimmingEntity extends BaseEntity {
-    
+
     /*
      * TODO:
      * Adjust updateMove and set gravity to 0 if entity is in water
      */
-    
-    protected function checkTarget(bool $checkSkip = true){
+
+    protected function checkTarget(bool $checkSkip = true) {
         if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
             if ($this->isKnockback()) {
                 return;
@@ -79,30 +79,30 @@ abstract class SwimmingEntity extends BaseEntity {
      *
      * @return null|Vector3
      */
-    public function updateMove($tickDiff){
-        if(!$this->isMovement()){
+    public function updateMove($tickDiff) {
+        if (!$this->isMovement()) {
             return null;
         }
 
-        if($this->isKnockback()){
+        if ($this->isKnockback()) {
             $this->move($this->motionX * $tickDiff, $this->motionY, $this->motionZ * $tickDiff);
             $this->motionY -= 0.2 * $tickDiff;
             $this->updateMovement();
             return null;
         }
-        
+
         $before = $this->getBaseTarget();
         $this->checkTarget();
-        if($this->getBaseTarget() instanceof Creature or $before !== $this->getBaseTarget()){
+        if ($this->getBaseTarget() instanceof Creature or $before !== $this->getBaseTarget()) {
             $x = $this->getBaseTarget()->x - $this->x;
             $y = $this->getBaseTarget()->y - $this->y;
             $z = $this->getBaseTarget()->z - $this->z;
 
             $diff = abs($x) + abs($z);
-            if($x ** 2 + $z ** 2 < 0.7){
+            if ($x ** 2 + $z ** 2 < 0.7) {
                 $this->motionX = 0;
                 $this->motionZ = 0;
-            }else{
+            } else {
                 $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                 $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
             }
@@ -112,15 +112,15 @@ abstract class SwimmingEntity extends BaseEntity {
 
         $dx = $this->motionX * $tickDiff;
         $dz = $this->motionZ * $tickDiff;
-        if($this->stayTime > 0){
+        if ($this->stayTime > 0) {
             $this->stayTime -= $tickDiff;
             $this->move(0, $this->motionY * $tickDiff, 0);
-        }else{
+        } else {
             $be = new Vector2($this->x + $dx, $this->z + $dz);
             $this->move($dx, $this->motionY * $tickDiff, $dz);
             $af = new Vector2($this->x, $this->z);
 
-            if(($be->x != $af->x || $be->y != $af->y)){
+            if (($be->x != $af->x || $be->y != $af->y)) {
                 $this->moveTime -= 90 * $tickDiff;
             }
         }

@@ -29,7 +29,7 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\event\ExplosionPrimeEvent;
 use revivalpmmp\pureentities\PureEntities;
 
-class Creeper extends WalkingMonster implements Explosive{
+class Creeper extends WalkingMonster implements Explosive {
     const NETWORK_ID = Data::CREEPER;
     const DATA_POWERED = 19;
 
@@ -40,51 +40,51 @@ class Creeper extends WalkingMonster implements Explosive{
 
     private $explodeBlocks = false;
 
-    public function getSpeed() : float{
+    public function getSpeed(): float {
         return 0.9;
     }
 
-    public function initEntity(){
+    public function initEntity() {
         parent::initEntity();
 
-        if(isset($this->namedtag->IsPowered)){
+        if (isset($this->namedtag->IsPowered)) {
             $this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->namedtag->IsPowered ? 1 : 0);
-        }elseif(isset($this->namedtag->powered)){
+        } elseif (isset($this->namedtag->powered)) {
             $this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->namedtag->powered ? 1 : 0);
         }
 
-        if(isset($this->namedtag->BombTime)){
-            $this->bombTime = (int) $this->namedtag["BombTime"];
+        if (isset($this->namedtag->BombTime)) {
+            $this->bombTime = (int)$this->namedtag["BombTime"];
         }
 
         $this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) == 0 ? false : true);
     }
 
-    public function isPowered(){
+    public function isPowered() {
         return $this->getDataProperty(self::DATA_POWERED) == 1;
     }
 
-    public function setPowered($value = true){
+    public function setPowered($value = true) {
         $this->namedtag->powered = $value;
         $this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $value ? 1 : 0);
     }
 
-    public function saveNBT(){
+    public function saveNBT() {
         parent::saveNBT();
         $this->namedtag->BombTime = new IntTag("BombTime", $this->bombTime);
     }
 
-    public function getName(){
+    public function getName() {
         return "Creeper";
     }
 
-    public function explode(){
+    public function explode() {
         $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
 
-        if(!$ev->isCancelled()){
+        if (!$ev->isCancelled()) {
             $explosion = new Explosion($this, $ev->getForce(), $this);
             $ev->setBlockBreaking($this->explodeBlocks); // this is configuration!
-            if($ev->isBlockBreaking()){
+            if ($ev->isBlockBreaking()) {
                 $explosion->explodeA();
             }
             $explosion->explodeB();
@@ -92,7 +92,7 @@ class Creeper extends WalkingMonster implements Explosive{
         }
     }
 
-    public function onUpdate($currentTick){
+    public function onUpdate($currentTick) {
         $tickDiff = $currentTick - $this->lastUpdate;
 
         if ($this->getBaseTarget() !== null) {
@@ -126,11 +126,11 @@ class Creeper extends WalkingMonster implements Explosive{
         return parent::onUpdate($currentTick);
     }
 
-    public function attackEntity(Entity $player){
+    public function attackEntity(Entity $player) {
         // the creeper doesn't attack - it simply explodes
     }
 
-    public function getDrops(){
+    public function getDrops() {
         return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
     }
 

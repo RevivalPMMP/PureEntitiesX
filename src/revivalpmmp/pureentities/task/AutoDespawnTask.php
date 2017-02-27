@@ -26,18 +26,18 @@ use revivalpmmp\pureentities\entity\animal\Animal;
 
 class AutoDespawnTask extends PluginTask {
 
-	private $plugin;
+    private $plugin;
 
     public function __construct(PureEntities $plugin) {
         parent::__construct($plugin);
         $this->plugin = $plugin;
     }
-    
-    public function onRun($currentTick){
-        PureEntities::logOutput("AutoDespawnTask: onRun ($currentTick)",PureEntities::DEBUG);
+
+    public function onRun($currentTick) {
+        PureEntities::logOutput("AutoDespawnTask: onRun ($currentTick)", PureEntities::DEBUG);
         $despawnable = [];
-        foreach($this->plugin->getServer()->getLevels() as $level) {
-            foreach($level->getEntities() as $entity) {
+        foreach ($this->plugin->getServer()->getLevels() as $level) {
+            foreach ($level->getEntities() as $entity) {
                 $isTameable = $entity instanceof IntfTameable;
                 if (!$isTameable or ($isTameable and !$entity->isTamed())) { // do NOT despawn tamed entities!
                     $despawnable[$entity->getId()] = 2;
@@ -48,22 +48,22 @@ class AutoDespawnTask extends PluginTask {
                             $despawnable[$entity->getId()] = 3;
                         }
                     }
-                    if($despawnable[$entity->getId()] === 2) {
+                    if ($despawnable[$entity->getId()] === 2) {
                         $probability = mt_rand(1, 100);
-                        if($probability === 1) {
-                            if($entity instanceof Monster) {
-                                PureEntities::logOutput("AutoDespawnTask: close monster entity (id: ". $entity->getId() . ", name:" . $entity->getNameTag() .")",PureEntities::DEBUG);
+                        if ($probability === 1) {
+                            if ($entity instanceof Monster) {
+                                PureEntities::logOutput("AutoDespawnTask: close monster entity (id: " . $entity->getId() . ", name:" . $entity->getNameTag() . ")", PureEntities::DEBUG);
                                 $entity->close();
                             }
                         }
-                    } elseif($despawnable[$entity->getId()] === 3) {
-                        if($entity instanceof Animal || $entity instanceof Monster) {
-                            PureEntities::logOutput("AutoDespawnTask: close animal/monster entity (id: ". $entity->getId() . ", name:" . $entity->getNameTag() .")",PureEntities::DEBUG);
+                    } elseif ($despawnable[$entity->getId()] === 3) {
+                        if ($entity instanceof Animal || $entity instanceof Monster) {
+                            PureEntities::logOutput("AutoDespawnTask: close animal/monster entity (id: " . $entity->getId() . ", name:" . $entity->getNameTag() . ")", PureEntities::DEBUG);
                             $entity->close();
                         }
                     }
                 }
-                
+
             }
         }
     }

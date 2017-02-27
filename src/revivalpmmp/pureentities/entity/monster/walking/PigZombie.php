@@ -30,7 +30,7 @@ use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
-class PigZombie extends WalkingMonster{
+class PigZombie extends WalkingMonster {
     const NETWORK_ID = Data::PIG_ZOMBIE;
 
     private $angry = 0;
@@ -39,51 +39,51 @@ class PigZombie extends WalkingMonster{
     public $height = 1.8;
     public $eyeHeight = 1.62;
 
-    public function getSpeed() : float{
+    public function getSpeed(): float {
         return 1.15;
     }
 
-    public function initEntity(){
+    public function initEntity() {
         parent::initEntity();
 
-        if(isset($this->namedtag->Angry)){
-            $this->angry = (int) $this->namedtag["Angry"];
+        if (isset($this->namedtag->Angry)) {
+            $this->angry = (int)$this->namedtag["Angry"];
         }
 
         $this->fireProof = true;
         $this->setDamage([0, 5, 9, 13]);
     }
 
-    public function saveNBT(){
+    public function saveNBT() {
         parent::saveNBT();
         $this->namedtag->Angry = new IntTag("Angry", $this->angry);
     }
 
-    public function getName(){
+    public function getName() {
         return "PigZombie";
     }
 
-    public function isAngry() : bool{
+    public function isAngry(): bool {
         return $this->angry > 0;
     }
 
-    public function setAngry(int $val){
+    public function setAngry(int $val) {
         $this->angry = $val;
     }
 
-    public function targetOption(Creature $creature, float $distance) : bool{
+    public function targetOption(Creature $creature, float $distance): bool {
         return $this->isAngry() && parent::targetOption($creature, $distance);
     }
 
-    public function attack($damage, EntityDamageEvent $source){
+    public function attack($damage, EntityDamageEvent $source) {
         parent::attack($damage, $source);
 
-        if(!$source->isCancelled()){
+        if (!$source->isCancelled()) {
             $this->setAngry(1000);
         }
     }
 
-    public function spawnTo(Player $player){
+    public function spawnTo(Player $player) {
         parent::spawnTo($player);
 
         $pk = new MobEquipmentPacket();
@@ -94,18 +94,18 @@ class PigZombie extends WalkingMonster{
         $player->dataPacket($pk);
     }
 
-    public function attackEntity(Entity $player){
-        if($this->attackDelay > 10 && $this->distanceSquared($player) < 1.44){
+    public function attackEntity(Entity $player) {
+        if ($this->attackDelay > 10 && $this->distanceSquared($player) < 1.44) {
             $this->attackDelay = 0;
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
 
-            $this->checkTamedMobsAttack ($player);
+            $this->checkTamedMobsAttack($player);
         }
     }
 
-    public function getDrops(){
+    public function getDrops() {
         $drops = [];
         array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 1)));
         array_push($drops, Item::get(Item::GOLD_INGOT, 0, mt_rand(0, 1)));

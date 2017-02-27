@@ -24,28 +24,28 @@ use pocketmine\Player;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
-class Rabbit extends WalkingAnimal{ //TODO create JumpingAnimal class
+class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
     const NETWORK_ID = Data::RABBIT;
 
     public $width = 0.5;
     public $height = 0.5;
 
-    public function getSpeed() : float{
+    public function getSpeed(): float {
         return 1.2;
     }
-    
-    public function getName(){
+
+    public function getName() {
         return "Rabbit";
     }
 
-    public function initEntity(){
+    public function initEntity() {
         parent::initEntity();
 
         $this->setMaxHealth(3);
         $this->setHealth(3);
     }
 
-    public function getDrops(){
+    public function getDrops() {
         return [];
     }
 
