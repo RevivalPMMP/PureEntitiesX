@@ -18,7 +18,6 @@
 
 namespace revivalpmmp\pureentities;
 
-use pocketmine\Server;
 
 
 /**
@@ -41,12 +40,6 @@ class PluginConfiguration {
     private $useBlockLightForSpawn = false; // determines if the spawner classes should use block light instead of time on server
     private $useSkyLightForSpawn = false; // determines if the spawner classes should use skylight instead of time on server
     private $emitLoveParticlesCostantly = false; // determines if love particles are emitted constantly for entities that are in love mode
-
-
-    /**
-     * @var string
-     */
-    private $serverCodeName = null;
 
     /**
      * Returns the plugin instance to get access to config e.g.
@@ -76,8 +69,6 @@ class PluginConfiguration {
             " [blockOfInterestTicks:" . $this->blockOfInterestTicks . "] [checkTargetSkipTicks:" . $this->checkTargetSkipTicks . "]" .
             " [interactiveButtonCorrection:" . $this->interactiveButtonCorrection . "] [useBlockLight:" . $this->useBlockLightForSpawn . "] [useSkyLight:" . $this->useSkyLightForSpawn . "]" .
             " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "]");
-
-        $this->serverCodeName = Server::getInstance()->getCodename();
 
         self::$instance = $this;
     }
@@ -142,19 +133,6 @@ class PluginConfiguration {
      */
     public function getEmitLoveParticlesCostantly() {
         return $this->emitLoveParticlesCostantly;
-    }
-
-    /**
-     * A very "uiuiui" check. It just checks if the codename is "Unleashed" - then it's running pocketmine, otherwise
-     * it's running another fork/spoon. But in future we shouldn't rely on this method.
-     *
-     * @return bool
-     */
-    public function isRunningPmmp(): bool {
-        if (strcasecmp("unleashed", $this->serverCodeName) === 0) {
-            return true;
-        }
-        return false;
     }
 
 

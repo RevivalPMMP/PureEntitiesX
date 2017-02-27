@@ -43,8 +43,8 @@ class FireBall extends Projectile {
     protected $isCritical;
     protected $canExplode = false;
 
-    public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false) {
-        parent::__construct($chunk, $nbt, $shootingEntity);
+    public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false) {
+        parent::__construct($level, $nbt, $shootingEntity);
 
         $this->isCritical = $critical;
     }

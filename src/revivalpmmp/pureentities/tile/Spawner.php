@@ -41,8 +41,8 @@ class Spawner extends Spawnable {
     protected $minSpawnDelay;
     protected $maxSpawnDelay;
 
-    public function __construct(FullChunk $chunk, CompoundTag $nbt) {
-        parent::__construct($chunk, $nbt);
+    public function __construct(Level $level, CompoundTag $nbt) {
+        parent::__construct($level, $nbt);
 
         if (isset($this->namedtag->EntityId)) {
             $this->entityId = $this->namedtag["EntityId"];
