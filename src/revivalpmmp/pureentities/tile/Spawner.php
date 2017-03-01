@@ -18,10 +18,10 @@
 
 namespace revivalpmmp\pureentities\tile;
 
+use pocketmine\level\Level;
 use pocketmine\Player;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\PureEntities;
-use pocketmine\level\format\Chunk as FullChunk;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
