@@ -32,7 +32,7 @@ ticks:
   block-interest: 100 # defines how many ticks pass by before the block of interest check kicks in
 
 xp:
-  enabled: true # enable experience pickup system - disable if you have problems!
+  enabled: false # enable experience pickup system - disable if you have problems!
 
 # control max spawning values ...
 max-spawn:
