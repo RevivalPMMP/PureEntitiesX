@@ -18,7 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\projectile;
 
-use pocketmine\level\format\Chunk as FullChunk;
+use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\protocol\AddEntityPacket;
