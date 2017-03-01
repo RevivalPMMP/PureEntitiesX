@@ -50,4 +50,10 @@ class Donkey extends WalkingAnimal implements Rideable {
         return 20;
     }
 
+    public function getKillExperience(): int {
+        // babies drop more, to be implemented
+        return mt_rand(1, 3);
+    }
+
+
 }

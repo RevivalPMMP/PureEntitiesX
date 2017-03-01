@@ -133,4 +133,12 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         $this->dropEggTime = 0;
     }
 
+    public function getKillExperience(): int {
+        if ($this->getBreedingExtension()->isBaby()) {
+            return mt_rand(1, 7);
+        }
+        return mt_rand(1, 3);
+    }
+
+
 }

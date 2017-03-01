@@ -96,4 +96,9 @@ class WitherSkeleton extends WalkingMonster {
     public function getMaxHealth() {
         return 20;
     }
+
+    public function getKillExperience(): int {
+        return 5;
+    }
+
 }

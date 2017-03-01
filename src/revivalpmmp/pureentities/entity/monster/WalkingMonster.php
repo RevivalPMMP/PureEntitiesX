@@ -195,7 +195,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                 $this->checkAndAttackEntity($target);
             } elseif (
                 $target instanceof Vector3
-                && (($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
+                && $this->distanceSquared($target) <= 1
             ) {
                 $this->moveTime = 0;
             }

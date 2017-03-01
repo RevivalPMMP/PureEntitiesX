@@ -113,4 +113,10 @@ class Zombie extends WalkingMonster {
     public function getMaxHealth() {
         return 20;
     }
+
+    public function getKillExperience(): int {
+        // adult: 5, baby: 12
+        return 5;
+    }
+
 }

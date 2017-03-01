@@ -103,4 +103,10 @@ class Husk extends WalkingMonster implements Ageable {
     public function getMaxHealth() {
         return 20;
     }
+
+    public function getKillExperience(): int {
+        // babies spawn 12 exp - not for now - as it isn't implemented yet
+        return 5;
+    }
+
 }

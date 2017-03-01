@@ -104,4 +104,12 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         return 3;
     }
 
+    public function getKillExperience(): int {
+        if ($this->getBreedingExtension()->isBaby()) {
+            return mt_rand(1, 4);
+        }
+        return mt_rand(1, 3);
+    }
+
+
 }

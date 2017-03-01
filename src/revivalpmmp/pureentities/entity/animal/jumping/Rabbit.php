@@ -49,4 +49,9 @@ class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
         return [];
     }
 
+    public function getKillExperience(): int {
+        // breeding drop 1-4 (not implemented yet)
+        return mt_rand(1, 3);
+    }
+
 }

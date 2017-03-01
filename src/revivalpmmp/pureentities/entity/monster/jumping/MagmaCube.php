@@ -69,4 +69,10 @@ class MagmaCube extends JumpingMonster {
         return $drops;
     }
 
+    public function getKillExperience(): int {
+        // normally it would be set by small/medium/big sized - but as we have it not now - i'll make it more static
+        return mt_rand(3, 6);
+    }
+
+
 }

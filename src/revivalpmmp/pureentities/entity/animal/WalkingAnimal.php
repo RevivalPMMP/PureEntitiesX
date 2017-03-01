@@ -73,6 +73,14 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         return $hasUpdate;
     }
 
+    /**
+     * This method is called from the server framework for each entity. This is our main
+     * entry point when it comes to tracing how all that stuff works. With each server
+     * tick each entity is ticked by calling this entry method.
+     *
+     * @param $currentTick
+     * @return bool
+     */
     public function onUpdate($currentTick) {
         if (!$this->isAlive()) {
             if (++$this->deadTicks >= 23) {
@@ -89,14 +97,14 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         $target = $this->updateMove($tickDiff);
         if ($target instanceof Player) {
             if ($this->distance($target) <= 2) {
-                $this->pitch = 22;
+                $this->pitch = 22; // pitch is the angle for looking up or down while yaw is looking left/right
                 $this->x = $this->lastX;
                 $this->y = $this->lastY;
                 $this->z = $this->lastZ;
             }
         } elseif (
             $target instanceof Vector3
-            && $this->distance($target) <= 1
+            && $this->distanceSquared($target) <= 1
         ) {
             $this->moveTime = 0;
         }

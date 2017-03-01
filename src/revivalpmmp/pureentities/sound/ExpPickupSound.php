@@ -1,7 +1,7 @@
 <?php
 
 /*  PureEntitiesX: Mob AI Plugin for PMMP
-    Copyright (C) 2016 RevivalPMMP
+    Copyright (C) 2017 RevivalPMMP
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,35 +16,13 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-namespace revivalpmmp\pureentities\entity\animal\walking;
+namespace revivalpmmp\pureentities\sound;
 
-use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use revivalpmmp\pureentities\data\Data;
+use pocketmine\level\sound\GenericSound;
+use pocketmine\math\Vector3;
 
-class Villager extends WalkingAnimal {
-    const NETWORK_ID = Data::VILLAGER;
-
-    public $width = 0.72;
-    public $height = 1.8;
-
-    public function getSpeed(): float {
-        return 1.1;
-    }
-
-    public function getName() {
-        return "Villager";
-    }
-
-    public function getDrops() {
-        return [];
-    }
-
-    public function getMaxHealth() {
-        return 10;
-    }
-
-    public function getKillExperience(): int {
-        return mt_rand(3, 6);
-    }
-
+class ExpPickupSound extends GenericSound {
+	public function __construct(Vector3 $pos, $pitch = 0){
+		parent::__construct($pos, 1051, $pitch);
+	}
 }

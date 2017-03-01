@@ -40,6 +40,8 @@ class PluginConfiguration {
     private $useBlockLightForSpawn = false; // determines if the spawner classes should use block light instead of time on server
     private $useSkyLightForSpawn = false; // determines if the spawner classes should use skylight instead of time on server
     private $emitLoveParticlesCostantly = false; // determines if love particles are emitted constantly for entities that are in love mode
+    private $tamedTeleportBlocks = 12; // minimum distance to player when tamed entities start to teleport to their ownes
+    private $xpEnabled = false; // default is false!
 
     /**
      * Returns the plugin instance to get access to config e.g.
@@ -54,6 +56,8 @@ class PluginConfiguration {
         // read some more config which we need internally (read once, give access to them via this class!)
         $this->maxFindPartnerDistance = $pluginBase->getConfig()->getNested("distances.find-partner", 49);
         $this->maxInteractDistance = $pluginBase->getConfig()->getNested("distances.interact", 4);
+        $this->tamedTeleportBlocks = $pluginBase->getConfig()->getNested("distances.tamed-teleport", 12);
+
         $this->blockOfInterestTicks = $pluginBase->getConfig()->getNested("ticks.block-interest", 300);
 
         $this->checkTargetSkipTicks = $pluginBase->getConfig()->getNested("performance.check-target-tick-skip", 1); // default: do not skip ticks asking checkTarget method
@@ -64,11 +68,15 @@ class PluginConfiguration {
 
         $this->emitLoveParticlesCostantly = $pluginBase->getConfig()->getNested("breeding.emit-love-particles-constantly", false); // default: do not emit love particles constantly
 
+        $this->xpEnabled = $pluginBase->getConfig()->getNested("xp.enabled", false); // default: xp system not enabled
+
         // print effective configuration!
-        $pluginBase->getServer()->getLogger()->notice("Distances configured: [findPartner:" . $this->maxFindPartnerDistance . "] [interact:" . $this->maxInteractDistance . "]" .
+        $pluginBase->getServer()->getLogger()->notice("[PureEntitiesX] Configuration loaded:" .
+            " [findPartnerDistance:" . $this->maxFindPartnerDistance . "] [interactDistance:" . $this->maxInteractDistance . "]" .
+            " [teleportTamedDistance:" . $this->tamedTeleportBlocks . "]" .
             " [blockOfInterestTicks:" . $this->blockOfInterestTicks . "] [checkTargetSkipTicks:" . $this->checkTargetSkipTicks . "]" .
             " [interactiveButtonCorrection:" . $this->interactiveButtonCorrection . "] [useBlockLight:" . $this->useBlockLightForSpawn . "] [useSkyLight:" . $this->useSkyLightForSpawn . "]" .
-            " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "]");
+            " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "] [xpEnabled:" . $this->xpEnabled . "]");
 
         self::$instance = $this;
     }
@@ -134,6 +142,21 @@ class PluginConfiguration {
     public function getEmitLoveParticlesCostantly() {
         return $this->emitLoveParticlesCostantly;
     }
+
+    /**
+     * @return int|mixed
+     */
+    public function getTamedTeleportBlocks() {
+        return $this->tamedTeleportBlocks;
+    }
+
+    /**
+     * @return bool|mixed
+     */
+    public function getXpEnabled() {
+        return $this->xpEnabled;
+    }
+
 
 
 }

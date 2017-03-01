@@ -133,4 +133,9 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
         return 20;
     }
 
+    public function getKillExperience(): int {
+        return 5;
+    }
+
+
 }

@@ -52,4 +52,9 @@ class Ocelot extends WalkingAnimal {
     public function getMaxHealth() {
         return 10;
     }
+
+    public function getKillExperience(): int {
+        return mt_rand(1, 3);
+    }
+
 }

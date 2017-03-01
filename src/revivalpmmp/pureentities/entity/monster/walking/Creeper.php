@@ -138,4 +138,9 @@ class Creeper extends WalkingMonster implements Explosive {
         return 20;
     }
 
+    public function getKillExperience(): int {
+        return 5;
+    }
+
+
 }

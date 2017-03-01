@@ -34,6 +34,7 @@ use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
+use revivalpmmp\pureentities\PureEntities;
 
 abstract class BaseEntity extends Creature {
 
@@ -58,6 +59,14 @@ abstract class BaseEntity extends Creature {
     }
 
     public abstract function updateMove($tickDiff);
+
+    /**
+     * Should return the experience dropped by the entity when killed
+     * @return int
+     */
+    public function getKillExperience() : int {
+        return 0; // default no experience drops
+    }
 
     public function getSaveId() {
         $class = new \ReflectionClass(get_class($this));
@@ -100,6 +109,8 @@ abstract class BaseEntity extends Creature {
      */
     public function setBaseTarget($baseTarget) {
         if ($baseTarget !== $this->baseTarget) {
+            PureEntities::logOutput("$this: setBaseTarget to $baseTarget", PureEntities::DEBUG);
+
             $this->baseTarget = $baseTarget;
         }
     }

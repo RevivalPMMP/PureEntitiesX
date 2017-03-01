@@ -103,4 +103,9 @@ class Ghast extends FlyingMonster implements ProjectileSource {
         return 10;
     }
 
+    public function getKillExperience(): int {
+        return 5;
+    }
+
+
 }

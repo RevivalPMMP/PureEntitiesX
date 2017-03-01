@@ -20,25 +20,36 @@ namespace revivalpmmp\pureentities\event;
 
 use pocketmine\block\Air;
 use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\Item;
+use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\DoubleTag;
+use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\Info;
 use pocketmine\network\protocol\InteractPacket;
+use pocketmine\Player;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
+use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
+use revivalpmmp\pureentities\entity\other\XPOrb;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\tile\Spawner;
 
@@ -189,6 +200,62 @@ class EventListener implements Listener {
                 }
             }
         }
+    }
+
+    /**
+     * EventListener method for spawning XP orbs when an entity got killed
+     *
+     * @param EntityDeathEvent $ev
+     */
+    public function entityDeathEvent (EntityDeathEvent $ev) {
+        if (PluginConfiguration::getInstance()->getXpEnabled()) {
+            $entityDamaged = $ev->getEntity();
+            if ($entityDamaged instanceof BaseEntity) {
+                $damageCause = $entityDamaged->getLastDamageCause();
+                if ($damageCause instanceof EntityDamageByEntityEvent) {
+                    $damager = $damageCause->getDamager();
+                    if ($damager instanceof Player) {
+                        $killExperience = $entityDamaged->getKillExperience();
+                        $this->spawnXPOrb($entityDamaged->getLevel(), $entityDamaged, $killExperience);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Add an experience orb - copied from Tesseract / Genisys
+     *
+     * @param Vector3 $pos
+     * @param int     $exp
+     * @return bool|XPOrb
+     */
+    public function spawnXPOrb(Level $level, Vector3 $pos, int $exp = 1){
+        if($exp > 0){
+            $nbt = new CompoundTag("", [
+                "Pos" => new ListTag("Pos", [
+                    new DoubleTag("", $pos->getX()),
+                    new DoubleTag("", $pos->getY() + 0.5),
+                    new DoubleTag("", $pos->getZ())
+                ]),
+                "Motion" => new ListTag("Motion", [
+                    new DoubleTag("", 0),
+                    new DoubleTag("", 0),
+                    new DoubleTag("", 0)
+                ]),
+                "Rotation" => new ListTag("Rotation", [
+                    new FloatTag("", 0),
+                    new FloatTag("", 0)
+                ]),
+                "Experience" => new LongTag("Experience", $exp),
+            ]);
+
+            $expOrb = new XPOrb($level, $nbt);
+            $expOrb->spawnToAll();
+
+            return $expOrb;
+        }
+        return false;
     }
 
 

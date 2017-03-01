@@ -64,4 +64,9 @@ class Silverfish extends WalkingMonster {
         return 8;
     }
 
+    public function getKillExperience(): int {
+        return 5;
+    }
+
+
 }

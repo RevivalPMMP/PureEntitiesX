@@ -237,4 +237,9 @@ class Blaze extends FlyingMonster implements ProjectileSource {
         return [Item::get(Item::BLAZE_ROD, 0, mt_rand(0, 1))];
     }
 
+    public function getKillExperience(): int {
+        return 10;
+    }
+
+
 }

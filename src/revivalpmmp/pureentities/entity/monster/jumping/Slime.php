@@ -72,4 +72,10 @@ class Slime extends JumpingMonster {
     public function getMaxHealth() {
         return 4;
     }
+
+    public function getKillExperience(): int {
+        // normally big, small, tiny
+        return mt_rand(1, 4);
+    }
+
 }

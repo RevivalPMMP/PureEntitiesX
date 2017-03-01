@@ -90,4 +90,12 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     public function getMaxHealth() {
         return 10;
     }
+
+    public function getKillExperience(): int {
+        if ($this->getBreedingExtension()->isBaby()) {
+            return mt_rand(1, 7);
+        }
+        return mt_rand(1, 3);
+    }
+
 }

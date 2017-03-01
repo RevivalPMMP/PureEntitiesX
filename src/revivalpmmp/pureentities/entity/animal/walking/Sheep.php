@@ -107,6 +107,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
         $this->breedableClass = new BreedingExtension($this);
         $this->breedableClass->init();
 
+
         $this->setColor($this->getColor());
         $this->setSheared($this->isSheared());
 
@@ -296,6 +297,13 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
             }
         }
         parent::showButton($player);
+    }
+
+    public function getKillExperience(): int {
+        if ($this->getBreedingExtension()->isBaby()) {
+            return mt_rand(1, 7);
+        }
+        return mt_rand(1, 3);
     }
 
 

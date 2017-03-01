@@ -35,6 +35,7 @@ use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 
@@ -78,6 +79,13 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      */
     private $breedableClass;
 
+    /**
+     * Teleport distance - when does a tamed wolf start to teleport to it's owner?
+     *
+     * @var int
+     */
+    private $teleportDistance = 12;
+
     public function getSpeed(): float {
         return 1.2;
     }
@@ -103,6 +111,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
         $this->breedableClass = new BreedingExtension($this);
         $this->breedableClass->init();
+
+        $this->teleportDistance = PluginConfiguration::getInstance()->getTamedTeleportBlocks();
     }
 
     /**
@@ -434,11 +444,19 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      */
     private function checkTeleport() {
         if ($this->isTamed() && $this->getOwner() !== null && !$this->isSitting() && !$this->isTargetMonsterOrAnimal()) {
-            if ($this->getOwner()->distanceSquared($this) > 12) {
+            if ($this->getOwner()->distanceSquared($this) > $this->teleportDistance) {
                 $this->setAngry(0); // reset angry flag
                 $this->setPosition($this->getOwner());
             }
         }
     }
+
+    public function getKillExperience(): int {
+        if ($this->getBreedingExtension()->isBaby()) {
+            return mt_rand(1, 7);
+        }
+        return mt_rand(1, 3);
+    }
+
 
 }
