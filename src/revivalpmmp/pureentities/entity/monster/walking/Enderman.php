@@ -18,6 +18,9 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\block\Pumpkin;
+use pocketmine\entity\Creature;
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -62,12 +65,27 @@ class Enderman extends WalkingMonster {
         return [];
     }
 
-//    public function getMaxHealth() {
-//        return 40;
-//    }
+    public function targetOption(Creature $creature, float $distance): bool {
+        // enderman don't attack alone. they only attack when looked at
+        return false;
+    }
+
 
     public function getKillExperience(): int {
         return 5;
+    }
+
+    /**
+     * This method is called from InteractionHelper when a player looks at this entity
+     *
+     * @param Player $player
+     */
+    public function playerLooksAt (Player $player) {
+        // if the player wears a pumpkin, the enderman doesn't attack the player
+        if (!$player->getInventory()->getHelmet() instanceof Pumpkin) {
+            $this->setBaseTarget($player);
+        }
+
     }
 
 

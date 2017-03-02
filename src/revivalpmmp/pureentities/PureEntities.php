@@ -75,6 +75,7 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+use revivalpmmp\pureentities\task\EndermanLookingTask;
 use revivalpmmp\pureentities\task\InteractionTask;
 use revivalpmmp\pureentities\tile\Spawner;
 
@@ -181,14 +182,15 @@ class PureEntities extends PluginBase implements CommandExecutor {
     }
 
     public function onEnable() {
+        new PluginConfiguration($this); // create plugin configuration
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
         $this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
+        $this->getServer()->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
+
         $this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
         $this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
-
-        new PluginConfiguration($this); // create plugin configuration
     }
 
     /**

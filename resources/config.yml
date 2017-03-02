@@ -91,3 +91,4 @@ performance:
   check-target-tick-skip: 5 # the lower the value the more performance it takes
   check-interactive-ticks: 10 # how often does the plugin check if an interactive button is displayed - the lesser the value the more performance is needed
   check-interactive-correction: true # setting this to true the interactive button finding is a lot better but more unprecise and consumes more performance
+  check-enderman-looking: 10 # how often does the plugin check if a player looks at an enderman
