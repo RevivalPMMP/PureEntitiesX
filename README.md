@@ -27,8 +27,16 @@ You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item
 - Mobs have proper AI and tracking
 - Mobs naturally spawn within the proper areas
 - Mobs now drop their proper items with their proper rates
-- Server setting implimentations
-- Others Coming soon!
+- Server setting implementations
+- shearable entities
+- tameable wolves
+- mob equipment (in progress)
+- very flexible configuration
+
+## WIP (Work in progress)
+- mob equipment - damage calculation
+- mob equipment - drop rates
+- mob equipment - pick up
 
 ## How to Install
 

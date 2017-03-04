@@ -18,7 +18,6 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -27,14 +26,19 @@ use pocketmine\event\Timings;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\features\IntfTameable;
-use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\features\IntfCanEquip;
+use revivalpmmp\pureentities\features\MobEquipment;
 
-class Zombie extends WalkingMonster {
+class Zombie extends WalkingMonster implements IntfCanEquip {
     const NETWORK_ID = Data::ZOMBIE;
 
     public $width = 0.72;
     public $height = 1.8;
+
+    /**
+     * @var MobEquipment
+     */
+    private $mobEquipment;
 
     public function getSpeed(): float {
         return 1.1;
@@ -43,6 +47,9 @@ class Zombie extends WalkingMonster {
     public function initEntity() {
         parent::initEntity();
         $this->setDamage([0, 2, 3, 4]);
+
+        $this->mobEquipment = new MobEquipment($this);
+        $this->mobEquipment->init();
     }
 
     public function getName() {
@@ -89,6 +96,8 @@ class Zombie extends WalkingMonster {
             $this->setOnFire(100);
         }
 
+        // TODO: armor equipment set
+
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
@@ -117,6 +126,13 @@ class Zombie extends WalkingMonster {
     public function getKillExperience(): int {
         // adult: 5, baby: 12
         return 5;
+    }
+
+    /**
+     * @return MobEquipment
+     */
+    public function getMobEquipment(): MobEquipment {
+        return $this->mobEquipment;
     }
 
 }

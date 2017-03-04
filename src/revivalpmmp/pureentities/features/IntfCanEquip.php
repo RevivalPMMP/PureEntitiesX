@@ -16,35 +16,17 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-
 namespace revivalpmmp\pureentities\features;
 
-use pocketmine\Player;
+/**
+ * Interface IntfCanEquip
+ *
+ * To be implemented by the entities that are capable of wearing armor / other stuff
+ *
+ * @package revivalpmmp\pureentities\features
+ */
+interface IntfCanEquip {
 
-interface IntfTameable {
-
-    public function setTamed(bool $tamed);
-
-    public function isTamed(): bool;
-
-    /**
-     * @return mixed null|Player
-     */
-    public function getOwner();
-
-    public function setOwner(Player $player);
-
-    /**
-     * @return mixed (array)
-     */
-    public function getTameFoods();
-
-    /**
-     * Called when an entity gets tamed by a player
-     *
-     * @param Player $player
-     * @return mixed
-     */
-    public function tame (Player $player);
+    public function getMobEquipment () : MobEquipment;
 
 }

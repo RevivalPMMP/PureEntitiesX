@@ -78,6 +78,7 @@ use pocketmine\utils\TextFormat;
 use revivalpmmp\pureentities\task\EndermanLookingTask;
 use revivalpmmp\pureentities\task\InteractionTask;
 use revivalpmmp\pureentities\tile\Spawner;
+use revivalpmmp\pureentities\utils\MobEquipper;
 
 class PureEntities extends PluginBase implements CommandExecutor {
 
@@ -262,16 +263,15 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param Level $level
      * @param string $type
      * @param bool $baby
-     * @param Entity $parentEntity
-     * @param Player $owner
-     *
-     * @return boolean
+     * @param Entity|null $parentEntity
+     * @param Player|null $owner
+     * @return null|Entity
      */
     public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null,
                                           Player $owner = null) {
         $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
         if ($event->isCancelled()) {
-            return false;
+            return null;
         } else {
             $entity = self::create($entityid, $pos);
             if ($entity !== null) {
@@ -288,10 +288,16 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 }
                 PureEntities::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", PureEntities::DEBUG);
                 $entity->spawnToAll();
-                return true;
+
+                // additionally: mob equipment
+                if ($entity instanceof BaseEntity) {
+                    MobEquipper::equipMob($entity);
+                }
+
+                return $entity;
             }
             self::logOutput("Cannot create entity [entityId:$entityid]", self::WARN);
-            return false;
+            return null;
         }
     }
 

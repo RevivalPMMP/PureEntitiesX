@@ -24,6 +24,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
+use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
@@ -39,18 +40,22 @@ use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\Info;
 use pocketmine\network\protocol\InteractPacket;
 use pocketmine\Player;
+use pocketmine\Server;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\entity\other\XPOrb;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\task\delayed\ShowMobEquipmentTask;
 use revivalpmmp\pureentities\tile\Spawner;
 
 class EventListener implements Listener {
@@ -221,6 +226,31 @@ class EventListener implements Listener {
                 }
             }
         }
+    }
+
+    /**
+     * This method is called when a player joins the server. We've to do different stuff here - especially
+     * for mobs that are equipped - as this says we should do so: https://forums.pmmp.io/threads/mob-equipment.1212/
+     *
+     * Anyway it seems that when PlayerJoin event is called - the entity is not spawned to all players already. So
+     * then sending the EquipPacket to the player doesn't work as it's not respected by the client somehow. Therefore
+     * we set a flag in each living entity that is capable of wearing equipment to resend all equipment data to
+     * all players next time "onUpdate" is called - atm this is only implemented for walking monsters.
+     *
+     * @param PlayerJoinEvent $ev
+     */
+    public function playerJoin (PlayerJoinEvent $ev) {
+        PureEntities::logOutput("[EventListener] playerJoin: " . $ev->getPlayer()->getName(), PureEntities::DEBUG);
+        foreach ($ev->getPlayer()->getLevel()->getEntities() as $entity) {
+            if ($entity->isAlive() and !$entity->closed and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster) {
+                // old method!
+                // $entity->setResendMobEquipment();
+                // new method: send
+                Server::getInstance()->getScheduler()->scheduleDelayedTask(new ShowMobEquipmentTask(
+                    PureEntities::getInstance(), $ev->getPlayer()), 20); // send mob equipment after 20 ticks
+            }
+        }
+
     }
 
     /**
