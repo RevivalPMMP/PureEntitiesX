@@ -57,8 +57,13 @@ class MobEquipper {
             // check if configuration already cached - if not create it and store it
             if (!array_key_exists($entity->getName(), self::$config)) {
                 self::$config[$entity->getName()] = new EntityConfig($entity->getName());
-                $entityConfig = self::$config[$entity->getName()];
             }
+
+            $entityConfig = self::$config[$entity->getName()];
+            if ($entity === null) {
+                return;
+            }
+
             /**
              * @var $entityConfig EntityConfig
              */

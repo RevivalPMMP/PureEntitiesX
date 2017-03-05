@@ -28,6 +28,7 @@ use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\features\MobEquipment;
+use revivalpmmp\pureentities\PureEntities;
 
 class Zombie extends WalkingMonster implements IntfCanEquip {
     const NETWORK_ID = Data::ZOMBIE;
@@ -72,11 +73,45 @@ class Zombie extends WalkingMonster implements IntfCanEquip {
         }
     }
 
+    /**
+     * Zombie gets attacked. We need to recalculate the damage done with reducing the damage by armor type.
+     *
+     * @param float $damage
+     * @param EntityDamageEvent $source
+     * @return mixed
+     */
+    public function attack($damage, EntityDamageEvent $source) {
+        PureEntities::logOutput("$this: attacked with original damage of $damage", PureEntities::DEBUG);
+        $reduceDamagePercent = 0;
+        if ($this->getMobEquipment() !== null) {
+            $reduceDamagePercent = $this->getMobEquipment()->getArmorDamagePercentToReduce();
+        }
+        if ($reduceDamagePercent > 0) {
+            $reduceBy = $damage * $reduceDamagePercent / 100;
+            PureEntities::logOutput("$this: reduce damage by $reduceBy", PureEntities::DEBUG);
+            $damage = $damage - $reduceBy;
+        }
+
+        PureEntities::logOutput("$this: attacked with final damage of $damage", PureEntities::DEBUG);
+
+        return parent::attack($damage, $source);
+    }
+
+    /**
+     * This zombie attacks a player
+     *
+     * @param Entity $player
+     */
     public function attackEntity(Entity $player) {
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
             $this->attackDelay = 0;
-
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
+            // maybe this needs some rework ... as it should be calculated within the event class and take
+            // mob's weapon into account. for now, i just add the damage from the weapon the mob wears
+            $damage = $this->getDamage();
+            if ($this->getMobEquipment() !== null) {
+                $damage = $damage + $this->getMobEquipment()->getWeaponDamageToAdd();
+            }
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $damage);
             $player->attack($ev->getFinalDamage(), $ev);
 
             $this->checkTamedMobsAttack($player);
@@ -95,9 +130,6 @@ class Zombie extends WalkingMonster implements IntfCanEquip {
         ) {
             $this->setOnFire(100);
         }
-
-        // TODO: armor equipment set
-
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
@@ -116,6 +148,10 @@ class Zombie extends WalkingMonster implements IntfCanEquip {
                 array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
                 break;
         }
+
+        // add equipment with a chance of 9% (drop chance)
+        $this->getMobEquipment()->addLoot($drops);
+
         return $drops;
     }
 
