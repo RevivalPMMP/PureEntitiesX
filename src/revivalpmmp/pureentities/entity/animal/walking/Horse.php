@@ -54,5 +54,13 @@ class Horse extends WalkingAnimal implements Rideable {
         return mt_rand(1, 3);
     }
 
+    /**
+     * Just for Bluelight ...
+     * @return null
+     */
+    public function getRidePosition() {
+        return null;
+    }
+
 
 }
