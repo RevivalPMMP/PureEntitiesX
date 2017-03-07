@@ -451,7 +451,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         if ($this->isTamed() && $this->getOwner() !== null && !$this->isSitting() && !$this->isTargetMonsterOrAnimal()) {
             if ($this->getOwner()->distanceSquared($this) > $this->teleportDistance) {
                 $this->setAngry(0); // reset angry flag
-                $this->setPosition($this->getOwner());
+                $this->teleport($this->getOwner()); // this is better and more precise
             }
         }
     }

@@ -42,6 +42,7 @@ class PluginConfiguration {
     private $emitLoveParticlesCostantly = false; // determines if love particles are emitted constantly for entities that are in love mode
     private $tamedTeleportBlocks = 12; // minimum distance to player when tamed entities start to teleport to their ownes
     private $xpEnabled = false; // default is false!
+    private $pickupLootTicks = 10; // default: 10
 
     /**
      * Returns the plugin instance to get access to config e.g.
@@ -62,6 +63,7 @@ class PluginConfiguration {
 
         $this->checkTargetSkipTicks = $pluginBase->getConfig()->getNested("performance.check-target-tick-skip", 1); // default: do not skip ticks asking checkTarget method
         $this->interactiveButtonCorrection = $pluginBase->getConfig()->getNested("performance.check-interactive-correction", false); // default: do not check other blocks for the entity for button display
+        $this->pickupLootTicks = $pluginBase->getConfig()->getNested("performance.check-pickup-loot", 10); // default: check every 10 ticks for picking up loot
 
         $this->useBlockLightForSpawn = $pluginBase->getConfig()->getNested("spawn-task.use-block-light", false); // default: do not use block light
         $this->useSkyLightForSpawn = $pluginBase->getConfig()->getNested("spawn-task.use-sky-light", false); // default: do not use block light
@@ -74,7 +76,7 @@ class PluginConfiguration {
         $pluginBase->getServer()->getLogger()->notice("[PureEntitiesX] Configuration loaded:" .
             " [findPartnerDistance:" . $this->maxFindPartnerDistance . "] [interactDistance:" . $this->maxInteractDistance . "]" .
             " [teleportTamedDistance:" . $this->tamedTeleportBlocks . "]" .
-            " [blockOfInterestTicks:" . $this->blockOfInterestTicks . "] [checkTargetSkipTicks:" . $this->checkTargetSkipTicks . "]" .
+            " [blockOfInterestTicks:" . $this->blockOfInterestTicks . "] [checkTargetSkipTicks:" . $this->checkTargetSkipTicks . "] [pickupLootTicks:" . $this->pickupLootTicks . "]" .
             " [interactiveButtonCorrection:" . $this->interactiveButtonCorrection . "] [useBlockLight:" . $this->useBlockLightForSpawn . "] [useSkyLight:" . $this->useSkyLightForSpawn . "]" .
             " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "] [xpEnabled:" . $this->xpEnabled . "]");
 
@@ -157,6 +159,12 @@ class PluginConfiguration {
         return $this->xpEnabled;
     }
 
+    /**
+     * @return int|mixed
+     */
+    public function getPickupLootTicks() {
+        return $this->pickupLootTicks;
+    }
 
 
 }

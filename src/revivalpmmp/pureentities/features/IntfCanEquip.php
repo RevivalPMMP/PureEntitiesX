@@ -27,6 +27,17 @@ namespace revivalpmmp\pureentities\features;
  */
 interface IntfCanEquip {
 
+    /**
+     * Has to return the mob equipment class which should be initialized in initEntity
+     * @return MobEquipment
+     */
     public function getMobEquipment () : MobEquipment;
+
+    /**
+     * Has to return either an empty array when nothing is picked up by the entity or an array with
+     * ItemIds that the entity may pick up
+     * @return array
+     */
+    public function getPickupLoot(): array;
 
 }

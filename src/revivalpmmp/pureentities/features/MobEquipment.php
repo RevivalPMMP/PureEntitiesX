@@ -20,6 +20,7 @@
 namespace revivalpmmp\pureentities\features;
 
 
+use pocketmine\item\Armor;
 use pocketmine\item\DiamondBoots;
 use pocketmine\item\DiamondChestplate;
 use pocketmine\item\DiamondHelmet;
@@ -51,9 +52,17 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\protocol\DataPacket;
 use pocketmine\network\protocol\MobArmorEquipmentPacket;
 use pocketmine\network\protocol\MobEquipmentPacket;
+use pocketmine\network\protocol\TakeItemEntityPacket;
 use pocketmine\Player;
+use pocketmine\Server;
+use revivalpmmp\pureentities\config\mobequipment\EntityConfig;
 use revivalpmmp\pureentities\entity\BaseEntity;
+use revivalpmmp\pureentities\entity\WalkingEntity;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\utils\MobEquipmentConfigHolder;
+use revivalpmmp\pureentities\utils\MobEquipper;
+use revivalpmmp\pureentities\utils\TickCounter;
 
 class MobEquipment {
 
@@ -88,7 +97,7 @@ class MobEquipment {
     /**
      * The entity that this equipment object is for
      *
-     * @var BaseEntity
+     * @var BaseEntity|IntfCanEquip
      */
     private $entity;
 
@@ -96,8 +105,65 @@ class MobEquipment {
 
     private $damageIncreaseByWeapon = 0;
 
+    /**
+     * @var null|TickCounter
+     */
+    private $pickupTimer = null;
+
     public function __construct(BaseEntity $entity) {
         $this->entity = $entity;
+        $this->pickupTimer = new TickCounter(PluginConfiguration::getInstance()->getPickupLootTicks());
+    }
+
+    /**
+     * This has to be called from entity with each entityBaseTick!
+     *
+     * Normally this should be implemented in checkTarget. But this is more understandable (in my eyes) because the
+     * context is the same (mob equipment) and at least maybe easier to maintain. Let's see ;)
+     *
+     * @param int $tickDiff
+     */
+    public function entityBaseTick($tickDiff = 1) {
+        if ($this->pickupTimer->isTicksExpired($tickDiff) and !$this->entity->getBaseTarget() instanceof \pocketmine\entity\Item) {
+            $entityConfig = MobEquipmentConfigHolder::getConfig($this->entity->getName());
+            $pickupByChance = mt_rand(0, 100) <= $entityConfig->getWearPickupChance()->getCanPickupLootChance();
+            PureEntities::logOutput($this->entity . ": got mob equipment config: " . ($entityConfig !== null) .
+                " and pickupByChance is $pickupByChance", PureEntities::DEBUG);
+            /**
+             * @var $entityConfig EntityConfig
+             */
+            if ($entityConfig !== null and $pickupByChance) {
+                $itemsOfInterest = $this->getLootOfInterest(2); // check 2 blocks around ...
+                if ($itemsOfInterest !== null && sizeof($itemsOfInterest) > 0) {
+                    // we need some additional checks if the items to be picked up are better than the items currently holding
+                    PureEntities::logOutput($this->entity . ": found interesting loot. Set target to " . $itemsOfInterest[0], PureEntities::DEBUG);
+                    $this->entity->setBaseTarget($itemsOfInterest[0]);
+                } else {
+                    PureEntities::logOutput($this->entity . ": no interesting loot found.", PureEntities::DEBUG);
+                }
+            }
+        }
+    }
+
+    /**
+     * This is called from WalkingEntity when the item is reached by the entity which was desired.
+     *
+     * @param \pocketmine\entity\Item $item
+     */
+    public function itemReached(\pocketmine\entity\Item $item) {
+        PureEntities::logOutput($this->entity . ": reached $item. Pick it up!", PureEntities::DEBUG);
+        $this->entity->stayTime = 50; // first: stay here!
+        $this->entity->getLevel()->removeEntity($item); // remove item from level
+        $this->putInCorrectSlot($item->getItem());
+
+        // broadcast pick up item (plays pickup animation)
+        $pk = new TakeItemEntityPacket ();
+        $pk->eid = $this->entity->getId();
+        $pk->target = $item->getId();
+        Server::getInstance()->broadcastPacket($this->entity->getViewers(), $pk);
+
+        $item->kill();
+        $this->entity->setBaseTarget(null);
     }
 
     /**
@@ -245,9 +311,16 @@ class MobEquipment {
      * @param int $blocksAround
      * @return mixed
      */
-    public function isAnyLootOfIntereset(int $blocksAround) {
-        // TODO: implement
-        return null;
+    public function getLootOfInterest(int $blocksAround) {
+        $itemsAround = [];
+
+        foreach ($this->entity->getLevel()->getNearbyEntities($this->entity->boundingBox->grow($blocksAround, $blocksAround, $blocksAround)) as $entity) {
+            if ($entity instanceof \pocketmine\entity\Item and in_array($entity->getItem()->getId(), $this->entity->getPickupLoot())) {
+                PureEntities::logOutput($this->entity . ": found interesting loot: " . $entity->getItem(), PureEntities::DEBUG);
+                $itemsAround[] = $entity;
+            }
+        }
+        return $itemsAround;
     }
 
 
@@ -298,6 +371,30 @@ class MobEquipment {
         }
     }
 
+    /**
+     * Puts the item in the correct slot
+     *
+     * @param Item $item
+     */
+    private function putInCorrectSlot(Item $item) {
+        if ($item instanceof Armor) {
+            if ($item instanceof LeatherCap or $item instanceof IronHelmet or $item instanceof GoldHelmet or $item instanceof DiamondHelmet) {
+                $this->setHelmet($item);
+            } else if ($item instanceof LeatherPants or $item instanceof IronLeggings or $item instanceof GoldLeggings or $item instanceof DiamondLeggings) {
+                $this->setLeggings($item);
+            } else if ($item instanceof LeatherBoots or $item instanceof IronBoots or $item instanceof GoldBoots or $item instanceof DiamondBoots) {
+                $this->setBoots($item);
+            } else if ($item instanceof LeatherTunic or $item instanceof IronChestplate or $item instanceof GoldChestplate or $item instanceof DiamondChestplate) {
+                $this->setChestplate($item);
+            }
+        } else {
+            $this->setMainHand($item);
+        }
+    }
+
+    /**
+     * Recalculates the weapon damage points to be added when entity attacks
+     */
     private function recalculateDamageIncreaseByWeapon() {
         $this->damageIncreaseByWeapon = $this->getWeaponDamage();
     }

@@ -37,10 +37,6 @@ use revivalpmmp\pureentities\PureEntities;
  */
 class MobEquipper {
 
-    /**
-     * @var array
-     */
-    private static $config = [];
 
     const DIAMOND = "diamond";
     const GOLD = "gold";
@@ -55,12 +51,8 @@ class MobEquipper {
     public static function equipMob (BaseEntity $entity) {
         if ($entity instanceof IntfCanEquip) {
             // check if configuration already cached - if not create it and store it
-            if (!array_key_exists($entity->getName(), self::$config)) {
-                self::$config[$entity->getName()] = new EntityConfig($entity->getName());
-            }
-
-            $entityConfig = self::$config[$entity->getName()];
-            if ($entity === null) {
+            $entityConfig = MobEquipmentConfigHolder::getConfig($entity->getName());
+            if ($entityConfig === null) {
                 return;
             }
 

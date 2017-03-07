@@ -21,6 +21,7 @@ namespace revivalpmmp\pureentities\entity;
 use pocketmine\block\Block;
 use pocketmine\block\Slab;
 use pocketmine\block\Stair;
+use pocketmine\entity\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\BlockSides;
 use revivalpmmp\pureentities\entity\animal\Animal;
@@ -32,6 +33,7 @@ use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
@@ -122,7 +124,9 @@ abstract class WalkingEntity extends BaseEntity {
 
         $before = $this->getBaseTarget();
         $this->checkTarget();
-        if ($this->getBaseTarget() instanceof Creature or $this->getBaseTarget() instanceof Block or $before !== $this->getBaseTarget()) {
+        if ($this->getBaseTarget() instanceof Creature or $this->getBaseTarget() instanceof Block or $before !== $this->getBaseTarget() and
+            $this->getBaseTarget() !== null
+        ) {
             $x = $this->getBaseTarget()->x - $this->x;
             $y = $this->getBaseTarget()->y - $this->y;
             $z = $this->getBaseTarget()->z - $this->z;
@@ -152,6 +156,11 @@ abstract class WalkingEntity extends BaseEntity {
                 $this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
             }
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
+        } else if ($this->getBaseTarget() instanceof Item and $this instanceof IntfCanEquip) { // mob equipment
+            $distance = $this->distanceSquared($this->getBaseTarget());
+            if ($distance <= 1.5) {
+                $this->getMobEquipment()->itemReached($this->getBaseTarget());
+            }
         }
 
         $dx = $this->motionX * $tickDiff;
@@ -258,7 +267,7 @@ abstract class WalkingEntity extends BaseEntity {
     /**
      * Finds the next random location starting from current x/y/z and sets it as base target
      */
-    protected function findRandomLocation () {
+    public function findRandomLocation() {
         $x = mt_rand(20, 100);
         $z = mt_rand(20, 100);
         $this->moveTime = mt_rand(300, 1200);

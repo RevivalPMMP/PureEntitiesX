@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\item\ItemIds;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -40,6 +41,11 @@ class Zombie extends WalkingMonster implements IntfCanEquip {
      * @var MobEquipment
      */
     private $mobEquipment;
+
+    /**
+     * @var array
+     */
+    private $pickUpLoot = [ItemIds::IRON_SWORD, ItemIds::IRON_SHOVEL];
 
     public function getSpeed(): float {
         return 1.1;
@@ -121,6 +127,8 @@ class Zombie extends WalkingMonster implements IntfCanEquip {
     public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
         Timings::$timerEntityBaseTick->startTiming();
 
+        $this->getMobEquipment()->entityBaseTick($tickDiff);
+
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
         $time = $this->getLevel()->getTime() % Level::TIME_FULL;
@@ -164,11 +172,21 @@ class Zombie extends WalkingMonster implements IntfCanEquip {
         return 5;
     }
 
+
+    // -------------------- equipment methods --------------------
+
     /**
      * @return MobEquipment
      */
     public function getMobEquipment(): MobEquipment {
         return $this->mobEquipment;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPickupLoot(): array {
+        return $this->pickUpLoot;
     }
 
 }
