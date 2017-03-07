@@ -96,7 +96,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         $this->fireProof = false;
         $this->setDamage([0, 3, 4, 6]);
 
-        $this->setAngry($this->isAngry());
+        $this->setAngry($this->isAngry() ? $this->getAngryValue() : 0, true);
         $this->setTamed($this->isTamed());
         $this->setSitting($this->isSitting());
         if ($this->isTamed()) {
@@ -237,11 +237,16 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         return $value;
     }
 
-    public function setAngry(int $val) {
+    public function setAngry(int $val, bool $init = false) {
         if ($val < 0) {
             $val = 0;
         }
+        $valueBefore = $this->getAngryValue();
         $this->namedtag->Angry = new IntTag(self::NBT_KEY_ANGRY, $val);
+        // only change the data property when aggression mode changes or in init phase
+        if (($valueBefore > 0 and $val <= 0) or ($valueBefore <= 0 and $val > 0) or $init) {
+            $this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_ANGRY, $val > 0);
+        }
     }
 
     /**
