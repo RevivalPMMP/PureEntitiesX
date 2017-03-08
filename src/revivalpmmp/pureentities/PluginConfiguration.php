@@ -41,6 +41,7 @@ class PluginConfiguration {
     private $useSkyLightForSpawn = false; // determines if the spawner classes should use skylight instead of time on server
     private $emitLoveParticlesCostantly = false; // determines if love particles are emitted constantly for entities that are in love mode
     private $tamedTeleportBlocks = 12; // minimum distance to player when tamed entities start to teleport to their ownes
+    private $tamedPlayerMaxDistance = 10; // default: until the player is not x blocks away the tamed entities are walking around aimlessly
     private $xpEnabled = false; // default is false!
     private $pickupLootTicks = 10; // default: 10
 
@@ -58,6 +59,7 @@ class PluginConfiguration {
         $this->maxFindPartnerDistance = $pluginBase->getConfig()->getNested("distances.find-partner", 49);
         $this->maxInteractDistance = $pluginBase->getConfig()->getNested("distances.interact", 4);
         $this->tamedTeleportBlocks = $pluginBase->getConfig()->getNested("distances.tamed-teleport", 12);
+        $this->tamedPlayerMaxDistance = $pluginBase->getConfig()->getNested("distances.tamed-follow-player", 10);
 
         $this->blockOfInterestTicks = $pluginBase->getConfig()->getNested("ticks.block-interest", 300);
 
@@ -75,7 +77,7 @@ class PluginConfiguration {
         // print effective configuration!
         $pluginBase->getServer()->getLogger()->notice("[PureEntitiesX] Configuration loaded:" .
             " [findPartnerDistance:" . $this->maxFindPartnerDistance . "] [interactDistance:" . $this->maxInteractDistance . "]" .
-            " [teleportTamedDistance:" . $this->tamedTeleportBlocks . "]" .
+            " [teleportTamedDistance:" . $this->tamedTeleportBlocks . "] [tamedFollowDistance:" . $this->tamedPlayerMaxDistance . "]" .
             " [blockOfInterestTicks:" . $this->blockOfInterestTicks . "] [checkTargetSkipTicks:" . $this->checkTargetSkipTicks . "] [pickupLootTicks:" . $this->pickupLootTicks . "]" .
             " [interactiveButtonCorrection:" . $this->interactiveButtonCorrection . "] [useBlockLight:" . $this->useBlockLightForSpawn . "] [useSkyLight:" . $this->useSkyLightForSpawn . "]" .
             " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "] [xpEnabled:" . $this->xpEnabled . "]");
@@ -164,6 +166,13 @@ class PluginConfiguration {
      */
     public function getPickupLootTicks() {
         return $this->pickupLootTicks;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getTamedPlayerMaxDistance() {
+        return $this->tamedPlayerMaxDistance;
     }
 
 

@@ -86,6 +86,14 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      */
     private $teleportDistance = 12;
 
+    /**
+     * Tamed wolves are walking aimlessly until they get too far away from the player. This describes the
+     * max distance to the player
+     *
+     * @var int
+     */
+    private $followDistance = 10;
+
     public function getSpeed(): float {
         return 1.2;
     }
@@ -164,7 +172,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * @return bool
      */
     public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
-        $this->checkTeleport();
+        $this->checkFollowOwner();
         return parent::entityBaseTick($tickDiff, $EnchantL);
     }
 
@@ -447,11 +455,25 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * If so and the distance to the owner is more than 12 blocks: set position to the position
      * of the owner.
      */
-    private function checkTeleport() {
-        if ($this->isTamed() && $this->getOwner() !== null && !$this->isSitting() && !$this->isTargetMonsterOrAnimal()) {
-            if ($this->getOwner()->distanceSquared($this) > $this->teleportDistance) {
-                $this->setAngry(0); // reset angry flag
-                $this->teleport($this->getOwner()); // this is better and more precise
+    private function checkFollowOwner() {
+        if ($this->isTamed()) {
+            if ($this->getOwner() !== null && !$this->isSitting() && !$this->isTargetMonsterOrAnimal()) {
+                if ($this->getOwner()->distanceSquared($this) > $this->teleportDistance) {
+                    $this->setAngry(0); // reset angry flag
+                    $this->teleport($this->getOwner()); // this is better and more precise
+                    PureEntities::logOutput("$this: teleport distance exceeded. Teleport myself to owner.");
+                } else if ($this->getOwner()->distanceSquared($this) > $this->followDistance) {
+                    if ($this->getBaseTarget() !== $this->getOwner() and !$this->isTargetMonsterOrAnimal()) {
+                        $this->setBaseTarget($this->getOwner());
+                        PureEntities::logOutput("$this: follow distance exceeded. Set target to owner. Continue to follow.");
+                    } else {
+                        PureEntities::logOutput("$this: follow distance exceeded. But target already set to owner. Continue to follow.");
+                    }
+                } else if ($this->getBaseTarget() === null or $this->getBaseTarget() === $this->getOwner()) {
+                    // no distance exceeded. if the target is the owner - forget him as target and set a random one
+                    $this->findRandomLocation();
+                    PureEntities::logOutput("$this: set random walking location. Continue to idle.");
+                }
             }
         }
     }

@@ -25,6 +25,7 @@ use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
@@ -243,14 +244,36 @@ class EventListener implements Listener {
         PureEntities::logOutput("[EventListener] playerJoin: " . $ev->getPlayer()->getName(), PureEntities::DEBUG);
         foreach ($ev->getPlayer()->getLevel()->getEntities() as $entity) {
             if ($entity->isAlive() and !$entity->closed and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster) {
-                // old method!
-                // $entity->setResendMobEquipment();
-                // new method: send
                 Server::getInstance()->getScheduler()->scheduleDelayedTask(new ShowMobEquipmentTask(
                     PureEntities::getInstance(), $ev->getPlayer()), 20); // send mob equipment after 20 ticks
+            } else if ($entity->isAlive() and $entity instanceof IntfTameable and $entity->getOwner() === null) {
+                // sometimes tamed wolves don't get their owner back when the player logs back in again. so we
+                // need to do that at this point to be SURE that the wolf when respawned belongs to the correct player
+                $player = $entity->getOwner();
+                if ($player !== null) {
+                    $entity->setOwner($player);
+                }
             }
         }
+    }
 
+    /**
+     * We need this for tamed entities. So when a player quits, we need to store all tamed entities and remove
+     * them from the level. They should be there when player logs in again
+     *
+     * @param PlayerQuitEvent $ev
+     */
+    public function playerQuit(PlayerQuitEvent $ev) {
+        PureEntities::logOutput("[EventListener] playerQuit: " . $ev->getPlayer()->getName(), PureEntities::DEBUG);
+        foreach ($ev->getPlayer()->getLevel()->getEntities() as $entity) {
+            if ($entity instanceof IntfTameable and $entity->getOwner() !== null and
+                strcasecmp($entity->getOwner()->getName(), $ev->getPlayer()->getName()) == 0
+            ) {
+                $entity->teleport($ev->getPlayer());
+                $entity->despawnFromAll();
+                PureEntities::logOutput("$entity: despawned from level because player quit: " . $ev->getPlayer());
+            }
+        }
     }
 
     /**

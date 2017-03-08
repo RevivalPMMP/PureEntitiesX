@@ -35,7 +35,6 @@ use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\features\IntfTameable;
-use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 abstract class WalkingEntity extends BaseEntity {

@@ -307,7 +307,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param int $type the type of output to log
      * @return int|bool         returns false on failure
      */
-    public static function logOutput(string $logline, int $type) {
+    public static function logOutput(string $logline, int $type = PureEntities::DEBUG) {
         switch ($type) {
             case self::DEBUG:
                 if (strcmp(self::$loglevel, "debug") == 0) {
