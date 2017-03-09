@@ -36,12 +36,15 @@ use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\utils\PeTimings;
 
 abstract class WalkingEntity extends BaseEntity {
 
     protected function checkTarget(bool $checkSkip = true) {
         if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
+            PeTimings::startTiming("WalkingAnimal: checkTarget()");
             if ($this->isKnockback()) {
+                PeTimings::stopTiming("WalkingAnimal: checkTarget()");
                 return;
             }
 
@@ -78,12 +81,14 @@ abstract class WalkingEntity extends BaseEntity {
             }
 
             if ($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->isAlive()) {
+                PeTimings::stopTiming("WalkingAnimal: checkTarget()", true);
                 return;
             }
 
             if (($this->moveTime <= 0 or !($this->getBaseTarget() instanceof Vector3)) and $this->motionY == 0) {
                 $this->findRandomLocation();
             }
+            PeTimings::stopTiming("WalkingAnimal: checkTarget()", true);
         }
     }
 
@@ -274,7 +279,10 @@ abstract class WalkingEntity extends BaseEntity {
         // set a real y coordinate ...
         $yPos = PureEntities::getSuitableHeightPosition($x, $this->y, $z, $this->getLevel());
 
-        $this->setBaseTarget($this->add(mt_rand(0, 1) ? $x : -$x, $yPos !== null ? $yPos->y : 0, mt_rand(0, 1) ? $z : -$z));
+        $this->setBaseTarget(new Vector3(
+            mt_rand(0, 1) ? $this->x + $x : $this->x - $x,
+            $yPos !== null ? $yPos->y : $this->y,
+            mt_rand(0, 1) ? $this->z + $z : $this->z - $z));
     }
 
 

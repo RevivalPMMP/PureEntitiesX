@@ -21,6 +21,7 @@ namespace revivalpmmp\pureentities;
 use pocketmine\entity\Entity;
 use pocketmine\Player;
 use pocketmine\utils\BlockIterator;
+use revivalpmmp\pureentities\utils\PeTimings;
 
 /**
  * This class is useful when it comes to interaction with entities.
@@ -60,6 +61,7 @@ class InteractionHelper {
      * @return mixed|null|Entity    either NULL if no entity is found or an instance of the entity
      */
     public static function getEntityPlayerLookingAt(Player $player, int $maxDistance, bool $useCorrection = false) {
+        PeTimings::startTiming("getEntityPlayerLookingAt [distance:$maxDistance]");
         /**
          * @var Entity
          */
@@ -85,6 +87,8 @@ class InteractionHelper {
                 }
             }
         }
+
+        PeTimings::stopTiming("getEntityPlayerLookingAt [distance:$maxDistance]", true);
 
         return $entity;
     }

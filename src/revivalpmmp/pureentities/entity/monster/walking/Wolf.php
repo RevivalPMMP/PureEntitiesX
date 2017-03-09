@@ -19,6 +19,8 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\item\Item;
+use pocketmine\level\Position;
+use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\protocol\EntityEventPacket;
@@ -353,6 +355,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     public function setTamed(bool $tamed) {
         if ($tamed) {
             $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED, true); // set tamed
+        } else {
+            $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED, false); // set not tamed
         }
     }
 
@@ -460,8 +464,9 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
             if ($this->getOwner() !== null && !$this->isSitting() && !$this->isTargetMonsterOrAnimal()) {
                 if ($this->getOwner()->distanceSquared($this) > $this->teleportDistance) {
                     $this->setAngry(0); // reset angry flag
-                    $this->teleport($this->getOwner()); // this is better and more precise
-                    PureEntities::logOutput("$this: teleport distance exceeded. Teleport myself to owner.");
+                    $newPosition = $this->getPositionNearOwner();
+                    $this->teleport($newPosition !== null ? $newPosition : $this->getOwner()); // this should be better than teleporting directly onto player
+                    PureEntities::logOutput("$this: teleport distance exceeded. Teleport myself near to owner.");
                 } else if ($this->getOwner()->distanceSquared($this) > $this->followDistance) {
                     if ($this->getBaseTarget() !== $this->getOwner() and !$this->isTargetMonsterOrAnimal()) {
                         $this->setBaseTarget($this->getOwner());
@@ -476,6 +481,23 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
                 }
             }
         }
+    }
+
+    /**
+     * Returns a position near the player (owner) of this entity
+     *
+     * @return Position the position near the owner
+     */
+    private function getPositionNearOwner(): Vector3 {
+        $x = $this->getOwner()->x + (mt_rand(0, 1) == 0 ? -1 : 1);
+        $z = $this->getOwner()->z + (mt_rand(0, 1) == 0 ? -1 : 1);
+        $pos = PureEntities::getInstance()->getSuitableHeightPosition($x, $this->getOwner()->y, $z, $this->getLevel());
+        if ($pos !== null) {
+            return new Vector3($x, $pos->y, $z);
+        } else {
+            return null;
+        }
+
     }
 
     public function getKillExperience(): int {
