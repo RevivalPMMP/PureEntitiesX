@@ -104,7 +104,9 @@ class XPOrb extends Entity {
                 $this->kill();
                 $this->close();
                 if($this->getExperience() > 0){
-                    $this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
+                    if ($this->getLevel() !== null) {
+                        $this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
+                    }
                     $target->addXp($this->getExperience());
                     $target->resetXpCooldown();
                 }

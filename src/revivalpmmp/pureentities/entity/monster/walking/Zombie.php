@@ -19,6 +19,7 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\item\ItemIds;
+use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -28,7 +29,6 @@ use pocketmine\item\Item;
 use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanEquip;
-use revivalpmmp\pureentities\features\MobEquipment;
 use revivalpmmp\pureentities\PureEntities;
 
 class Zombie extends WalkingMonster implements IntfCanEquip {

@@ -275,10 +275,10 @@ class PureEntities extends PluginBase implements CommandExecutor {
         } else {
             $entity = self::create($entityid, $pos);
             if ($entity !== null) {
-                if ($entity instanceof IntfCanBreed and $baby and $entity->getBreedingExtension() !== false) {
-                    $entity->getBreedingExtension()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
+                if ($entity instanceof IntfCanBreed and $baby and $entity->getBreedingComponent() !== false) {
+                    $entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
                     if ($parentEntity != null) {
-                        $entity->getBreedingExtension()->setParent($parentEntity);
+                        $entity->getBreedingComponent()->setParent($parentEntity);
                     }
                 }
                 // new: a baby's parent (like a wolf) may belong to a player - if so, the baby is also owned by the player!

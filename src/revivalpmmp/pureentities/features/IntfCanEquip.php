@@ -18,6 +18,8 @@
 
 namespace revivalpmmp\pureentities\features;
 
+use revivalpmmp\pureentities\components\MobEquipment;
+
 /**
  * Interface IntfCanEquip
  *

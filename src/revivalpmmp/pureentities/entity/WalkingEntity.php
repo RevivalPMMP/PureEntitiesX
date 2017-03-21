@@ -86,7 +86,9 @@ abstract class WalkingEntity extends BaseEntity {
             }
 
             if (($this->moveTime <= 0 or !($this->getBaseTarget() instanceof Vector3)) and $this->motionY == 0) {
-                $this->findRandomLocation();
+                if (!$this->idlingComponent->checkAndSetIdling()) {
+                    $this->findRandomLocation();
+                }
             }
             PeTimings::stopTiming("WalkingAnimal: checkTarget()", true);
         }
@@ -126,6 +128,11 @@ abstract class WalkingEntity extends BaseEntity {
             return null;
         }
 
+        if ($this->idlingComponent->isIdling() and !$this->idlingComponent->stopIdling($tickDiff)) {
+            $this->idlingComponent->doSomeIdleStuff($tickDiff);
+            return null;
+        }
+
         $before = $this->getBaseTarget();
         $this->checkTarget();
         if ($this->getBaseTarget() instanceof Creature or $this->getBaseTarget() instanceof Block or $before !== $this->getBaseTarget() and
@@ -137,9 +144,7 @@ abstract class WalkingEntity extends BaseEntity {
 
             $distance = $this->distanceSquared($this->getBaseTarget());
 
-            if ($this->getBaseTarget() instanceof Block and $distance <= 1.5) {
-                $this->blockOfInterestReached($this->getBaseTarget());
-            } else if ($this instanceof IntfTameable and
+            if ($this instanceof IntfTameable and
                 $this->getBaseTarget() instanceof Player
                 and $this->isFriendly()
                 and $this->isTamed()
@@ -251,14 +256,6 @@ abstract class WalkingEntity extends BaseEntity {
     }
 
     /**
-     * Implement this for entities who have interest in blocks
-     * @param Block $block the block that has been reached
-     */
-    protected function blockOfInterestReached($block) {
-        // nothing important here. look e.g. Sheep.class
-    }
-
-    /**
      * Checks if this entity is following a player
      *
      * @param Creature $creature the possible player
@@ -272,6 +269,7 @@ abstract class WalkingEntity extends BaseEntity {
      * Finds the next random location starting from current x/y/z and sets it as base target
      */
     public function findRandomLocation() {
+        PureEntities::logOutput("$this(findRandomLocation): entering");
         $x = mt_rand(20, 100);
         $z = mt_rand(20, 100);
         $this->moveTime = mt_rand(300, 1200);

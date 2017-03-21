@@ -56,6 +56,7 @@ use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\task\delayed\SetTamedOwnerTask;
 use revivalpmmp\pureentities\task\delayed\ShowMobEquipmentTask;
 use revivalpmmp\pureentities\tile\Spawner;
 
@@ -120,10 +121,10 @@ class EventListener implements Listener {
                     $return = $entity->milk($player);
                 } else if ($entity instanceof IntfCanBreed and
                     strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_FEED) == 0 and
-                    $entity->getBreedingExtension() !== false
+                    $entity->getBreedingComponent() !== false
                 ) { // normally, this shouldn't be needed (because IntfCanBreed needs this method! - that's why i don't like php that much!)
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->feed", PureEntities::DEBUG);
-                    $return = $entity->getBreedingExtension()->feed($player); // feed the sheep
+                    $return = $entity->getBreedingComponent()->feed($player); // feed the sheep
                     // decrease wheat in players hand
                     $itemInHand = $player->getInventory()->getItemInHand();
                     if ($itemInHand != null) {
@@ -249,10 +250,8 @@ class EventListener implements Listener {
             } else if ($entity->isAlive() and $entity instanceof IntfTameable and $entity->getOwner() === null) {
                 // sometimes tamed wolves don't get their owner back when the player logs back in again. so we
                 // need to do that at this point to be SURE that the wolf when respawned belongs to the correct player
-                $player = $entity->getOwner();
-                if ($player !== null) {
-                    $entity->setOwner($player);
-                }
+                Server::getInstance()->getScheduler()->scheduleDelayedTask(new SetTamedOwnerTask(
+                    PureEntities::getInstance(), $entity), 20); // map owner after 20 ticks
             }
         }
     }

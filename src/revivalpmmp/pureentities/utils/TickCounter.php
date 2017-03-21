@@ -42,7 +42,7 @@ class TickCounter {
      * @param int $tickDiff
      * @return bool
      */
-    public function isTicksExpired ($tickDiff = 1) : bool {
+    public function isTicksExpired($tickDiff = 1): bool {
         if ($this->currentCounter >= $this->maxCounter) {
             $this->currentCounter = 0;
             return true;
@@ -56,8 +56,30 @@ class TickCounter {
      *
      * @param $maxCounter
      */
-    public function setMaxCounter ($maxCounter) {
+    public function setMaxCounter($maxCounter) {
         $this->maxCounter = $maxCounter;
     }
+
+    /**
+     * @param int $currentCounter
+     */
+    public function setCurrentCounter(int $currentCounter) {
+        $this->currentCounter = $currentCounter;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCurrentCounter(): int {
+        return $this->currentCounter;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxCounter(): int {
+        return $this->maxCounter;
+    }
+
 
 }

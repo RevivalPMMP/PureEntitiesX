@@ -34,6 +34,8 @@ interface IntfTameable {
 
     public function setOwner(Player $player);
 
+    public function getOwnerName();
+
     /**
      * @return mixed (array)
      */
@@ -46,5 +48,12 @@ interface IntfTameable {
      * @return mixed
      */
     public function tame (Player $player);
+
+    /**
+     * This method is called from SetTamedOwnerTask to map the owner after the player logged in
+     * Implementation details in Wolf.php
+     * @return mixed
+     */
+    public function mapOwner();
 
 }

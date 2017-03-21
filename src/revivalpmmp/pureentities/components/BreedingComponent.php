@@ -16,21 +16,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-namespace revivalpmmp\pureentities\features;
+namespace revivalpmmp\pureentities\components;
 
 
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 /**
- * Class BreedingExtension
- * @package revivalpmmp\pureentities\features
+ * Class BreedingComponent
+ *
+ * This class contains functionality for ageable entities as well as for entities that can breed.
+ *
+ * @package revivalpmmp\pureentities\components
  */
-class BreedingExtension {
+class BreedingComponent {
 
     // ----------------------------------------
     // some useful constants
@@ -108,6 +113,10 @@ class BreedingExtension {
      */
     private $emitLoveParticles = false;
 
+    private $age = 0;
+
+    private $inLove = 0;
+
     public function __construct(Entity $belongsTo) {
         $this->entity = $belongsTo;
         $this->adultHeight = $belongsTo->height;
@@ -115,11 +124,27 @@ class BreedingExtension {
         $this->emitLoveParticles = PluginConfiguration::getInstance()->getEmitLoveParticlesCostantly();
     }
 
+    public function loadFromNBT() {
+        if (isset($this->entity->namedtag->Age)) {
+            $this->age = $this->entity->namedtag[self::NBT_KEY_AGE];
+        }
+        if (isset($this->entity->namedtag->InLove)) {
+            $this->inLove = $this->entity->namedtag[self::NBT_KEY_IN_LOVE];
+        }
+    }
+
+    public function saveNBT() {
+        $this->entity->namedtag->Age = new IntTag(self::NBT_KEY_AGE, $this->age);
+        $this->entity->namedtag->InLove = new IntTag(self::NBT_KEY_IN_LOVE, $this->inLove);
+    }
+
     /**
      * call this method each time, the entity's init method is called
      */
     public function init() {
+        $this->loadFromNBT();
         $this->setAge($this->getAge());
+        $this->setInLove($this->getInLove());
     }
 
     /**
@@ -178,10 +203,7 @@ class BreedingExtension {
      * @return int
      */
     public function getAge(): int {
-        if (!isset($this->entity->namedtag->Age)) {
-            $this->entity->namedtag->Age = new IntTag(self::NBT_KEY_AGE, 0); // by default we have a adult entity
-        }
-        return $this->entity->namedtag[self::NBT_KEY_AGE];
+        return $this->age;
     }
 
     /**
@@ -192,9 +214,12 @@ class BreedingExtension {
      * @param int $age
      */
     public function setAge(int $age) {
-        $this->entity->namedtag->Age = new IntTag(self::NBT_KEY_AGE, $age); // set baby (all under zero is baby) - this is only for testing!
+        $this->age = $age; // all under zero is baby
         if ($age < 0) {
-            $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 0.5); // this is a workaround?!
+            // we don't want to set the data property each time (because it's transmitted each time to the client)
+            if ($this->entity->getDataProperty(Entity::DATA_SCALE) > 0.5) {
+                $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 0.5); // this is a workaround?!
+            }
             if (!$this->entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY)) {
                 $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY, true); // set baby
                 // we also need to adjust the height and width of the entity
@@ -202,7 +227,9 @@ class BreedingExtension {
                 $this->entity->width = $this->adultWidth / 2; // because we scale 0.5
             }
         } else {
-            $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 1.0); // set as an adult entity
+            if ($this->entity->getDataProperty(Entity::DATA_SCALE) < 1.0) {
+                $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 1.0); // set as an adult entity
+            }
             if ($this->entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY)) {
                 $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY, false); // set adult
                 // reset entity sizes
@@ -245,7 +272,7 @@ class BreedingExtension {
      * @param int $inLoveTicks
      */
     public function setInLove(int $inLoveTicks) {
-        $this->entity->namedtag->InLove = new IntTag(self::NBT_KEY_IN_LOVE, $inLoveTicks); // by default we have a adult entity
+        $this->inLove = $inLoveTicks;
         if ($this->getInLove() > 0) {
             $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INLOVE, true); // set client "inlove"
         } else {
@@ -260,10 +287,7 @@ class BreedingExtension {
      * @return int
      */
     public function getInLove(): int {
-        if (!isset($this->entity->namedtag->InLove)) {
-            $this->entity->namedtag->InLove = new IntTag(self::NBT_KEY_IN_LOVE, 0);
-        }
-        return $this->entity->namedtag[self::NBT_KEY_IN_LOVE];
+        return $this->inLove;
     }
 
     /**
@@ -276,7 +300,7 @@ class BreedingExtension {
 
             // check if we are near our breeding partner. if so, set breed!
             if ($this->getBreedPartner() != null and
-                $this->getBreedPartner()->getBreedingExtension()->getInLove() > 0 and
+                $this->getBreedPartner()->getBreedingComponent()->getInLove() > 0 and
                 $this->getBreedPartner()->distance($this->entity) <= 2 and
                 !$this->isBreeding()
             ) {
@@ -307,7 +331,10 @@ class BreedingExtension {
                 $validTarget = $this->findAnotherEntityInLove(PluginConfiguration::getInstance()->getMaxFindPartnerDistance()); // find another target within 20 blocks
                 if ($validTarget != false) {
                     $this->setBreedPartner($validTarget); // now my target is my "in love" partner - this entity will move to the other entity
-                    $validTarget->getBreedingExtension()->setBreedPartner($this->entity); // set the other one's breed partner to ourselves
+                    /**
+                     * @var $validTarget IntfCanBreed
+                     */
+                    $validTarget->getBreedingComponent()->setBreedPartner($this->entity); // set the other one's breed partner to ourselves
                 }
                 $this->partnerSearchTimer = 0;
             } else {
@@ -329,9 +356,9 @@ class BreedingExtension {
         foreach ($this->entity->getLevel()->getEntities() as $otherEntity) {
             if (strcmp(get_class($otherEntity), get_class($this->entity)) == 0 and // must be of the same species
                 $otherEntity->distance($this->entity) <= $range and // must be in range
-                $otherEntity->getBreedingExtension()->getInLove() > 0 and // must be in love
+                $otherEntity->getBreedingComponent()->getInLove() > 0 and // must be in love
                 $otherEntity->getId() != $this->entity->getId() and // should be another entity of the same type
-                $otherEntity->getBreedingExtension()->getBreedPartner() == null
+                $otherEntity->getBreedingComponent()->getBreedPartner() == null
             ) { // shouldn't have another breeding partner
                 $entityFound = $otherEntity;
                 break;
@@ -346,7 +373,7 @@ class BreedingExtension {
     private function breed(Entity $partner) {
         // yeah we found ourselfes - now breed and reset target
         $this->resetBreedStatus();
-        $partner->getBreedingExtension()->resetBreedStatus();
+        $partner->getBreedingComponent()->resetBreedStatus();
         // spawn a baby entity which may be owned by a player
         $owner = null;
         if ($this->entity instanceof IntfTameable) {

@@ -46,10 +46,20 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 
     const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
 
+    // --------------------------------------------------
+    // nbt variables
+    // --------------------------------------------------
+
+    /**
+     * @var bool
+     */
+    private $sheared = false;
+
     public function initEntity() {
         parent::initEntity();
 
         $this->setFriendly(true);
+        $this->loadFromNBT();
         $this->setSheared($this->isSheared()); // set data from NBT
     }
 
@@ -113,15 +123,12 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
      * Sets the snowgolem sheared. This means, he looses his pumpkin and shows face
      */
     public function setSheared(bool $sheared) {
-        $this->namedtag->Pumpkin = new IntTag(self::NBT_KEY_PUMPKIN, $sheared ? 0 : 1); // set pumpkin in NBT
+        $this->sheared = $sheared;
         $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SHEARED, $sheared); // set pumpkin on/off (sheared?)
     }
 
     public function isSheared(): bool {
-        if (!isset($this->namedtag->Pumpkin)) {
-            $this->namedtag->Pumpkin = new IntTag(self::NBT_KEY_PUMPKIN, 1); // default: has pumpkin on his head (1 - pumpkin on head, 0 - pumpkin off!)
-        }
-        return $this->namedtag[self::NBT_KEY_PUMPKIN] === 0;
+        return $this->sheared;
     }
 
     public function shear(Player $player): bool {
@@ -148,6 +155,23 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
             }
         }
         parent::showButton($player);
+    }
+
+    /**
+     * loads data from nbt and fills internal variables
+     */
+    public function loadFromNBT() {
+        if (isset($this->namedtag->Pumpkin)) {
+            $this->sheared = $this->namedtag[self::NBT_KEY_PUMPKIN] === 0;
+        }
+    }
+
+    /**
+     * Stores internal variables to NBT
+     */
+    public function saveNBT() {
+        parent::saveNBT();
+        $this->namedtag->Pumpkin = new IntTag(self::NBT_KEY_PUMPKIN, $this->sheared ? 0 : 1); // default: has pumpkin on his head (1 - pumpkin on head, 0 - pumpkin off!)
     }
 
 

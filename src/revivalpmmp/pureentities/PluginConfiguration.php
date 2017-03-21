@@ -19,7 +19,6 @@
 namespace revivalpmmp\pureentities;
 
 
-
 /**
  * Class PluginConfiguration
  *
@@ -44,6 +43,12 @@ class PluginConfiguration {
     private $tamedPlayerMaxDistance = 10; // default: until the player is not x blocks away the tamed entities are walking around aimlessly
     private $xpEnabled = false; // default is false!
     private $pickupLootTicks = 10; // default: 10
+
+    // idle settings
+    private $idleChance = 20;
+    private $idleMin = 100;
+    private $idleMax = 500;
+    private $idleTimeBetween = 60;
 
     /**
      * Returns the plugin instance to get access to config e.g.
@@ -74,13 +79,20 @@ class PluginConfiguration {
 
         $this->xpEnabled = $pluginBase->getConfig()->getNested("xp.enabled", false); // default: xp system not enabled
 
+        $this->idleChance = $pluginBase->getConfig()->getNested("idle.chance", 20); // default: 20 percent idle chance
+        $this->idleChance = $pluginBase->getConfig()->getNested("idle.min-idle", 100); // default: 100 ticks
+        $this->idleChance = $pluginBase->getConfig()->getNested("idle.max-idle", 500); // default: 500 ticks
+        $this->idleChance = $pluginBase->getConfig()->getNested("idle.time-between-idle", 60); // default: 60 seconds
+
+
         // print effective configuration!
         $pluginBase->getServer()->getLogger()->notice("[PureEntitiesX] Configuration loaded:" .
             " [findPartnerDistance:" . $this->maxFindPartnerDistance . "] [interactDistance:" . $this->maxInteractDistance . "]" .
             " [teleportTamedDistance:" . $this->tamedTeleportBlocks . "] [tamedFollowDistance:" . $this->tamedPlayerMaxDistance . "]" .
             " [blockOfInterestTicks:" . $this->blockOfInterestTicks . "] [checkTargetSkipTicks:" . $this->checkTargetSkipTicks . "] [pickupLootTicks:" . $this->pickupLootTicks . "]" .
             " [interactiveButtonCorrection:" . $this->interactiveButtonCorrection . "] [useBlockLight:" . $this->useBlockLightForSpawn . "] [useSkyLight:" . $this->useSkyLightForSpawn . "]" .
-            " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "] [xpEnabled:" . $this->xpEnabled . "]");
+            " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "] [xpEnabled:" . $this->xpEnabled . "]" .
+            " [idleChance:" . $this->idleChance . "] [idleMin:" . $this->idleMin . "] [idleMax:" . $this->idleMax . "] [idleTimeBetween:" . $this->idleTimeBetween . "secs]");
 
         self::$instance = $this;
     }
@@ -173,6 +185,34 @@ class PluginConfiguration {
      */
     public function getTamedPlayerMaxDistance() {
         return $this->tamedPlayerMaxDistance;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getIdleChance() {
+        return $this->idleChance;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdleMin(): int {
+        return $this->idleMin;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdleMax(): int {
+        return $this->idleMax;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdleTimeBetween(): int {
+        return $this->idleTimeBetween;
     }
 
 

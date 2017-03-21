@@ -18,15 +18,13 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
-use pocketmine\entity\Creature;
 use pocketmine\Player;
+use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
-use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\InteractionHelper;
-use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 
@@ -42,14 +40,19 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     /**
      * Is needed for breeding functionality
      *
-     * @var BreedingExtension
+     * @var BreedingComponent
      */
     private $breedableClass;
 
     public function initEntity() {
         parent::initEntity();
-        $this->breedableClass = new BreedingExtension($this);
+        $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
+    }
+
+    public function saveNBT() {
+        parent::saveNBT();
+        $this->breedableClass->saveNBT();
     }
 
 
@@ -60,9 +63,9 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     /**
      * Returns the breedable class or NULL if not configured
      *
-     * @return BreedingExtension
+     * @return BreedingComponent
      */
-    public function getBreedingExtension() {
+    public function getBreedingComponent() {
         return $this->breedableClass;
     }
 
@@ -137,7 +140,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     }
 
     public function getKillExperience(): int {
-        if ($this->getBreedingExtension()->isBaby()) {
+        if ($this->getBreedingComponent()->isBaby()) {
             return mt_rand(1, 7);
         }
         return mt_rand(1, 3);

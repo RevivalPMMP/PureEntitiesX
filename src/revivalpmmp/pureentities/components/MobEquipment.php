@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 
-namespace revivalpmmp\pureentities\features;
+namespace revivalpmmp\pureentities\components;
 
 
 use pocketmine\item\Armor;
@@ -57,11 +57,10 @@ use pocketmine\Player;
 use pocketmine\Server;
 use revivalpmmp\pureentities\config\mobequipment\EntityConfig;
 use revivalpmmp\pureentities\entity\BaseEntity;
-use revivalpmmp\pureentities\entity\WalkingEntity;
+use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\MobEquipmentConfigHolder;
-use revivalpmmp\pureentities\utils\MobEquipper;
 use revivalpmmp\pureentities\utils\TickCounter;
 
 class MobEquipment {
@@ -346,7 +345,7 @@ class MobEquipment {
      * This method adds loot to the given drops array by checking with a 9% chance if anything is weared. If so,
      * the drop array will be extended by the equipment the entity wears
      *
-     * @param $existingDrops Item the existing drops containing none or any item already
+     * @param $existingDrops array the existing drops containing none or any item already
      */
     public function addLoot(array $existingDrops) {
         // Some monsters can spawn with a sword, and have a 8.5% (9.5% with Looting I, 10.5% with Looting II and 11.5% with Looting III)

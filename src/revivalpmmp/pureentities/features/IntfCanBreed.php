@@ -30,7 +30,7 @@ interface IntfCanBreed extends IntfFeedable {
      *
      * @return mixed
      */
-    public function getBreedingExtension();
+    public function getBreedingComponent();
 
     /**
      * Has to return the network id for the associated entity

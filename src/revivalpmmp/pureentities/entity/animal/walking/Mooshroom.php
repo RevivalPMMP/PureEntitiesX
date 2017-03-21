@@ -18,9 +18,9 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
-use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanInteract;
@@ -36,13 +36,13 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     /**
      * Is needed for breeding functionality
      *
-     * @var BreedingExtension
+     * @var BreedingComponent
      */
     private $breedableClass;
 
     public function initEntity() {
         parent::initEntity();
-        $this->breedableClass = new BreedingExtension($this);
+        $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
     }
 
@@ -50,12 +50,17 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         return "Mooshroom";
     }
 
+    public function saveNBT() {
+        parent::saveNBT();
+        $this->breedableClass->saveNBT();
+    }
+
     /**
      * Returns the breedable class or NULL if not configured
      *
-     * @return BreedingExtension
+     * @return BreedingComponent
      */
-    public function getBreedingExtension() {
+    public function getBreedingComponent() {
         return $this->breedableClass;
     }
 
@@ -92,7 +97,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     }
 
     public function getKillExperience(): int {
-        if ($this->getBreedingExtension()->isBaby()) {
+        if ($this->getBreedingComponent()->isBaby()) {
             return mt_rand(1, 7);
         }
         return mt_rand(1, 3);

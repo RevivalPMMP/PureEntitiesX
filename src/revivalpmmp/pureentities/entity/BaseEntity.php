@@ -19,6 +19,8 @@
 namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
+use pocketmine\nbt\tag\CompoundTag;
+use revivalpmmp\pureentities\components\IdlingComponent;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use pocketmine\entity\Creature;
@@ -32,6 +34,7 @@ use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
@@ -49,13 +52,25 @@ abstract class BaseEntity extends Creature {
     private $wallcheck = true;
     protected $fireProof = false;
     private $maxJumpHeight = 1; // default: 1 block jump height - this should be 2 for horses e.g.
+    protected $checkTargetSkipTicks = 1; // default: no skip
 
     /**
      * @var int
      */
     private $checkTargetSkipCounter = 0;
 
+    /**
+     * @var IdlingComponent
+     */
+    protected $idlingComponent;
+
     public function __destruct() {
+    }
+
+    public function __construct(Level $level, CompoundTag $nbt) {
+        $this->idlingComponent = new IdlingComponent($this);
+        $this->checkTargetSkipTicks = PluginConfiguration::getInstance()->getCheckTargetSkipTicks();
+        parent::__construct($level, $nbt);
     }
 
     public abstract function updateMove($tickDiff);
@@ -146,12 +161,15 @@ abstract class BaseEntity extends Creature {
             $this->setWallCheck($this->namedtag["WallCheck"]);
         }
         $this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
+
+        $this->idlingComponent->loadFromNBT();
     }
 
     public function saveNBT() {
         parent::saveNBT();
         $this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
         $this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
+        $this->idlingComponent->saveNBT();
     }
 
     public function spawnTo(Player $player) {
@@ -202,6 +220,9 @@ abstract class BaseEntity extends Creature {
 
     public function attack($damage, EntityDamageEvent $source) {
         if ($this->isKnockback() > 0) return;
+
+        // "wake up" entity - it gets attacked!
+        $this->idlingComponent->stopIdling(1, true);
 
         parent::attack($damage, $source);
 
@@ -292,13 +313,12 @@ abstract class BaseEntity extends Creature {
 
     /**
      * This is called while moving around. This is specially important for entities like sheep etc. pp
-     * which eat grass to grow their wool. They should return the block which is of interest to move
-     * the entity there.
+     * which eat grass to grow their wool. This method should check at which block the entity is currently
+     * staying / moving. If it is suitable - it should eat grass or something similar
      *
-     * @param array $blocksAround
      * @return bool|Block
      */
-    public function isAnyBlockOfInterest(array $blocksAround) {
+    public function isCurrentBlockOfInterest() {
         return false;
     }
 
@@ -384,7 +404,7 @@ abstract class BaseEntity extends Creature {
      * @return bool
      */
     protected function isCheckTargetAllowedBySkip(): bool {
-        if ($this->checkTargetSkipCounter > PluginConfiguration::getInstance()->getCheckTargetSkipTicks()) {
+        if ($this->checkTargetSkipCounter > $this->checkTargetSkipTicks) {
             $this->checkTargetSkipCounter = 0;
             return true;
         } else {

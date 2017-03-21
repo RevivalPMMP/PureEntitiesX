@@ -72,20 +72,20 @@ class InteractionHelper {
         // get all blocks in looking direction until the max interact distance is reached (it's possible that startblock isn't found!)
         try {
             $itr = new BlockIterator($player->level, $player->getPosition(), $player->getDirectionVector(), $player->getEyeHeight(), $maxDistance);
-        } catch (InvalidStateException $e) {
-            // nothing to log here!
-        }
-        if ($itr !== null) {
-            $block = null;
-            $entity = null;
-            while ($itr->valid()) {
-                $itr->next();
-                $block = $itr->current();
-                $entity = self::getEntityAtPosition($nearbyEntities, $block->x, $block->y, $block->z, $useCorrection);
-                if ($entity !== null) {
-                    break;
+            if ($itr !== null) {
+                $block = null;
+                $entity = null;
+                while ($itr->valid()) {
+                    $itr->next();
+                    $block = $itr->current();
+                    $entity = self::getEntityAtPosition($nearbyEntities, $block->x, $block->y, $block->z, $useCorrection);
+                    if ($entity !== null) {
+                        break;
+                    }
                 }
             }
+        } catch (\InvalidStateException $e) {
+            // nothing to log here!
         }
 
         PeTimings::stopTiming("getEntityPlayerLookingAt [distance:$maxDistance]", true);

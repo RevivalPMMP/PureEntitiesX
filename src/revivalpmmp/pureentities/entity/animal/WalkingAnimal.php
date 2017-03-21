@@ -62,11 +62,11 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         }
 
         // tick the breeding extension if it's available
-        if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
+        if ($this instanceof IntfCanBreed && $this->getBreedingComponent() !== null) {
             // we should also check for any blocks of interest for the entity
-            $this->getBreedingExtension()->checkInLove();
+            $this->getBreedingComponent()->checkInLove();
             // tick the breedable class embedded
-            $this->getBreedingExtension()->tick();
+            $this->getBreedingComponent()->tick();
         }
 
         Timings::$timerEntityBaseTick->stopTiming();
@@ -114,21 +114,17 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
     /**
      * Does the check for interesting blocks and sets the baseTarget if an interesting block is found
      */
-    protected function checkBlockOfInterest() {
+    protected function getCurrentBlock() {
+        $block = null;
         // no creature is the target, so we can check if there's any interesting block for the entity
         if ($this->blockInterestTime > 0) { // we take a look at interesting blocks only each 300 ticks!
             $this->blockInterestTime--;
-        } else { // it's time to check for any interesting block around ...
-            if ($this->getBaseTarget() instanceof Block) { // check if we have a block target and the target is not closed. if so, we have our target!
-                return;
-            }
+        } else { // it's time to check for any interesting block the entity is on
             $this->blockInterestTime = PluginConfiguration::getInstance()->getBlockOfInterestTicks();
-            $block = $this->isAnyBlockOfInterest($this->getBlocksFlatAround(4)); // check only 4 blocks - to spare computing time?!
-            if ($block != false) {
-                // we found our target let's move to it!
-                $this->setBaseTarget($block);
-            }
+            $temporalVector = new Vector3($this->x, $this->y - $this->height / 2, $this->z);
+            $block = $this->level->getBlock($temporalVector);
         }
+        return $block;
     }
 
 
@@ -175,14 +171,14 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
                         // check if the sheep is able to follow - but only on a distance of 6 blocks
                         $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance();
                         // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
-                        if (!$targetOption and $this->isFollowingPlayer($creature) and !$this->getBreedingExtension()->isBaby()) {
-                            $this->setBaseTarget($this->getBreedingExtension()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
+                        if (!$targetOption and $this->isFollowingPlayer($creature) and !$this->getBreedingComponent()->isBaby()) {
+                            $this->setBaseTarget($this->getBreedingComponent()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
                         }
                     } else {
                         // reset base target when it was player before (follow by holding wheat)
                         if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
                             // reset base target!
-                            $this->setBaseTarget($this->getBreedingExtension()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
+                            $this->setBaseTarget($this->getBreedingComponent()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
                         }
                     }
                 }
