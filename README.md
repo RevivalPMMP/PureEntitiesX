@@ -34,7 +34,7 @@ You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item
 
 Download the Zip folder under the Releases tab for V#.0-beta and extract the Phar. Alternatively, you can download the scource code, or new development builds from Poggit.
 
-It still has some bugs, but it is still very usable, and we will work to get them resolved ASAP. 
+For More information on Poggit, see the Paragraph on it below.
 
 ## Pocketmine Mob AI
 
