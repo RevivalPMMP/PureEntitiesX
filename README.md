@@ -46,5 +46,7 @@ Protect an Area from Mob Spawns:
 
 The PureEntitiesX API allows you to disable/enable Mob spawning in certain areas. See and download our monster protection addon plugin over here: https://github.com/RevivalPMMP/PEXProtection
 
+## Poggit
 
+We use Poggit to share our Latest Builds! Keep in mind that they may not all be stable, so use our release build from https://poggit.pmmp.io/p/PureEntitiesX if you want to stay stable! Feel free to also drop a review while you are there, because they help us know how you like the plugin.
 
