@@ -413,5 +413,17 @@ abstract class BaseEntity extends Creature {
         }
     }
 
+    /**
+     * Checks if dropping loot is allowed.
+     * @return bool true when allowed, false when not
+     */
+    protected function isLootDropAllowed(): bool {
+        $lastDamageEvent = $this->getLastDamageCause();
+        if ($lastDamageEvent !== null and $lastDamageEvent instanceof EntityDamageByEntityEvent) {
+            return $lastDamageEvent->getDamager() instanceof Player;
+        }
+        return false;
+    }
+
 
 }

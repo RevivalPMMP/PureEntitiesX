@@ -234,7 +234,11 @@ class Blaze extends FlyingMonster implements ProjectileSource {
     }
 
     public function getDrops() {
-        return [Item::get(Item::BLAZE_ROD, 0, mt_rand(0, 1))];
+        if ($this->isLootDropAllowed()) {
+            return [Item::get(Item::BLAZE_ROD, 0, mt_rand(0, 1))];
+        } else {
+            return [];
+        }
     }
 
     public function getKillExperience(): int {

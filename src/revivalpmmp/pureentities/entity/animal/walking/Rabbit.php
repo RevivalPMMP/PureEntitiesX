@@ -90,16 +90,17 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
 
     public function getDrops() {
         $drops = [];
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::RABBIT_HIDE, 0, mt_rand(0, 1)));
+            if ($this->isOnFire()) {
+                array_push($drops, Item::get(Item::COOKED_RABBIT, 0, mt_rand(0, 1)));
+            } else {
+                array_push($drops, Item::get(Item::RAW_RABBIT, 0, mt_rand(0, 1)));
+            }
 
-        array_push($drops, Item::get(Item::RABBIT_HIDE, 0, mt_rand(0, 1)));
-        if ($this->isOnFire()) {
-            array_push($drops, Item::get(Item::COOKED_RABBIT, 0, mt_rand(0, 1)));
-        } else {
-            array_push($drops, Item::get(Item::RAW_RABBIT, 0, mt_rand(0, 1)));
-        }
-
-        if (mt_rand(0, 100) <= 10) { // at 10 percent chance, rabbits drop rabbit's foot
-            array_push($drops, Item::get(Item::RABBIT_FOOT, 0, 1));
+            if (mt_rand(0, 100) <= 10) { // at 10 percent chance, rabbits drop rabbit's foot
+                array_push($drops, Item::get(Item::RABBIT_FOOT, 0, 1));
+            }
         }
 
         return $drops;

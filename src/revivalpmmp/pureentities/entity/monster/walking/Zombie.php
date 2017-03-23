@@ -144,21 +144,23 @@ class Zombie extends WalkingMonster implements IntfCanEquip {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
-        switch (mt_rand(0, 5)) {
-            case 1:
-                array_push($drops, Item::get(Item::CARROT, 0, 1));
-                break;
-            case 2:
-                array_push($drops, Item::get(Item::POTATO, 0, 1));
-                break;
-            case 3:
-                array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
-                break;
-        }
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
+            switch (mt_rand(0, 5)) {
+                case 1:
+                    array_push($drops, Item::get(Item::CARROT, 0, 1));
+                    break;
+                case 2:
+                    array_push($drops, Item::get(Item::POTATO, 0, 1));
+                    break;
+                case 3:
+                    array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
+                    break;
+            }
 
-        // add equipment with a chance of 9% (drop chance)
-        $this->getMobEquipment()->addLoot($drops);
+            // add equipment with a chance of 9% (drop chance)
+            $this->getMobEquipment()->addLoot($drops);
+        }
 
         return $drops;
     }

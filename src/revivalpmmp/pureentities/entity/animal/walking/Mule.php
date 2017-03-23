@@ -44,7 +44,11 @@ class Mule extends WalkingAnimal implements Rideable {
     }
 
     public function getDrops() {
-        return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
+        if ($this->isLootDropAllowed()) {
+            return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
+        } else {
+            return [];
+        }
     }
 
     public function getMaxHealth() {

@@ -23,6 +23,7 @@ use pocketmine\block\Slab;
 use pocketmine\block\Stair;
 use pocketmine\entity\Item;
 use pocketmine\Player;
+use pocketmine\utils\BlockIterator;
 use revivalpmmp\pureentities\data\BlockSides;
 use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
@@ -145,10 +146,10 @@ abstract class WalkingEntity extends BaseEntity {
             $distance = $this->distanceSquared($this->getBaseTarget());
 
             if ($this instanceof IntfTameable and
-                $this->getBaseTarget() instanceof Player
-                and $this->isFriendly()
-                and $this->isTamed()
-                and $distance <= 6
+                $this->getBaseTarget() instanceof Player and
+                $this->isFriendly() and
+                $this->isTamed() and
+                $distance <= 6
             ) { // before moving nearer to the player, check if distance
                 // this entity is tamed and the target is the owner - hold distance 4 blocks
                 $this->stayTime = 50; // rest for 50 ticks before moving on ...
@@ -212,25 +213,39 @@ abstract class WalkingEntity extends BaseEntity {
      * @return bool
      */
     protected function checkJump($dx, $dz) {
+        PureEntities::logOutput("$this: entering checkJump [dx:$dx] [dz:$dz]");
         if ($this->motionY == $this->gravity * 2) { // swimming
+            PureEntities::logOutput("$this: checkJump(): motionY == gravity*2");
             return $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int)$this->y, Math::floorFloat($this->z))) instanceof Liquid;
         } else { // dive up?
             if ($this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int)($this->y + 0.8), Math::floorFloat($this->z))) instanceof Liquid) {
+                PureEntities::logOutput("$this: checkJump(): instanceof liquid");
                 $this->motionY = $this->gravity * 2; // set swimming (rather walking on water ;))
                 return true;
             }
         }
 
-        if (!$this->isOnGround() or $this->stayTime > 0) {
+        if ($this->motionY > 0.1 or $this->stayTime > 0) {
+            PureEntities::logOutput("$this: checkJump(): onGround:" . $this->isOnGround() . ", stayTime:" . $this->stayTime . ", motionY:" . $this->motionY);
             return false;
         }
 
         if ($this->getDirection() === null) {
+            PureEntities::logOutput("$this: checkJump(): no direction given ...");
             return false;
         }
 
+        PureEntities::logOutput("$this: checkJump(): position is [x:" . $this->x . "] [y:" . $this->y . "] [z:" . $this->z . "]");
         $that = $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x + $dx), (int)$this->y, Math::floorFloat($this->z + $dz)));
         $block = $that->getSide(BlockSides::getSides()[$this->getDirection()]);
+        PureEntities::logOutput("$this: checkJump(): that is $that [x:" . $that->x . "] [y:" . $that->y . "] [z:" . $that->z . "] and block is $block" .
+            " [x:" . $block->x . "] [y:" . $this->y . "] [z:" . $this->z . "]");
+
+        $blockInFront = $this->getBlockInFrontOfPosition();
+        if ($blockInFront != null) {
+            PureEntities::logOutput("$this: checkJump(): block in front is $blockInFront");
+        }
+
         // we cannot pass through the block that is directly in front of us
         if (!$block->canPassThrough() and $this->getMaxJumpHeight() > 0) { // it's possible that an entity can't jump?! better check!
             // check if we can get through the upper of the block directly in front of the entity
@@ -249,10 +264,35 @@ abstract class WalkingEntity extends BaseEntity {
                     $this->motionY += $this->gravity * 0.25;
                 }
                 return true;
+            } else {
+                PureEntities::logOutput("$this: checkJump(): cannot pass throug the upper blocks!", PureEntities::DEBUG);
             }
+        } else {
+            PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $block->canPassThrough() . "] " .
+                "[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $block . "]", PureEntities::DEBUG);
         }
         return false;
 
+    }
+
+    protected function getBlockInFrontOfPosition() {
+        if ($this->getDirection() === null) {
+            PureEntities::logOutput("$this: checkJump(): no direction given ...");
+            return false;
+        }
+
+        $pos = $this->getPosition();
+        $pos->add($this->getDirectionVector());
+
+        $itr = new BlockIterator($this->level, $this->getPosition(), $this->getDirectionVector(), 0, 1);
+        if ($itr !== null) {
+            while ($itr->valid()) {
+                $itr->next();
+                return $itr->current();
+            }
+        }
+
+        return null;
     }
 
     /**

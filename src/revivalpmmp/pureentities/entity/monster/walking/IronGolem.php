@@ -73,8 +73,10 @@ class IronGolem extends WalkingMonster {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));
-        array_push($drops, Item::get(Item::POPPY, 0, mt_rand(0, 2)));
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));
+            array_push($drops, Item::get(Item::POPPY, 0, mt_rand(0, 2)));
+        }
         return $drops;
     }
 

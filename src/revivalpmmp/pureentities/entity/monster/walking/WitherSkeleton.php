@@ -83,12 +83,14 @@ class WitherSkeleton extends WalkingMonster {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));
-        array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
-        switch (mt_rand(0, 8)) {
-            case 1:
-                array_push($drops, Item::get(Item::MOB_HEAD, 1, mt_rand(0, 2)));
-                break;
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));
+            array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
+            switch (mt_rand(0, 8)) {
+                case 1:
+                    array_push($drops, Item::get(Item::MOB_HEAD, 1, mt_rand(0, 2)));
+                    break;
+            }
         }
         return $drops;
     }
