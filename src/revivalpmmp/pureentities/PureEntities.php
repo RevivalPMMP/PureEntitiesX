@@ -22,6 +22,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
+use pocketmine\Server;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\BaseEntity;
@@ -393,21 +394,33 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return bool
      */
     public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
+        $commandSuccessul = false;
+
         switch ($command->getName()) {
             case "peremove":
-                $playerName = $sender->getName();
-                $player = $this->getServer()->getPlayer($playerName);
-                if ($player !== null and $player->isOnline()) {
-                    foreach ($player->getLevel()->getEntities() as $entity) {
-                        if ($entity instanceof BaseEntity) {
+                $counterLivingEntities = 0;
+                $counterOtherEntities = 0;
+                $entitiesRemoved = [];
+                foreach (Server::getInstance()->getLevels() as $level) {
+                    foreach ($level->getEntities() as $entity) {
+                        if (!$entity instanceof Player) {
                             $entity->close();
+                            $entitiesRemoved[] = $entity;
+                            if ($entity instanceof BaseEntity) {
+                                $counterLivingEntities++;
+                            } else {
+                                $counterOtherEntities++;
+                            }
                         }
                     }
-                    $sender->sendMessage("Removed all entities (Animals/Monsters)");
-                    return true;
-                } else {
-                    $sender->sendMessage("Can only be done ingame by a player with op status");
                 }
+                $sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
+                PureEntities::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", PureEntities::NORM);
+                foreach ($entitiesRemoved as $entity) {
+                    $name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
+                    PureEntities::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", PureEntities::NORM);
+                }
+                $commandSuccessul = true;
                 break;
             case "pesummon":
                 if (count($args) == 1 or count($args) == 2) {
@@ -429,13 +442,13 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     }
                 } else {
                     $sender->sendMessage("Need a mob name!");
-                    return true;
+                    $commandSuccessul = true;
                 }
                 break;
             default:
                 break;
         }
-        return false;
+        return $commandSuccessul;
     }
 
     /**
