@@ -27,8 +27,9 @@ use revivalpmmp\pureentities\data\Data;
 class Ocelot extends WalkingAnimal {
     const NETWORK_ID = Data::OCELOT;
 
-    public $width = 0.72;
-    public $height = 0.9;
+    public $width = 0.6;
+    public $length = 0.8;
+    public $height = 0.8;
 
     public function getSpeed(): float {
         return 1.4;

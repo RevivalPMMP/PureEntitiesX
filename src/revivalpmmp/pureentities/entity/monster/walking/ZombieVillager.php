@@ -30,8 +30,9 @@ use revivalpmmp\pureentities\data\Data;
 class ZombieVillager extends WalkingMonster {
     const NETWORK_ID = Data::ZOMBIE_VILLAGER;
 
-    public $width = 0.72;
-    public $height = 1.8;
+    public $width = 1.031;
+    public $length = 0.891;
+    public $height = 2.125;
 
     public function getSpeed(): float {
         return 1.1;

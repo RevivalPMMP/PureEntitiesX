@@ -44,8 +44,9 @@ use revivalpmmp\pureentities\data\Data;
 class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::WOLF;
 
-    public $width = 0.72;
-    public $height = 0.9;
+    public $height = 0.969;
+    public $width = 0.5;
+    public $length = 1.594;
 
     const RED = 14;
 

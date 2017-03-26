@@ -40,8 +40,9 @@ use revivalpmmp\pureentities\data\Data;
 class Skeleton extends WalkingMonster implements ProjectileSource {
     const NETWORK_ID = Data::SKELETON;
 
-    public $width = 0.65;
-    public $height = 1.8;
+    public $height = 2;
+    public $width = 0.781;
+    public $length = 0.875;
 
     public function getName() {
         return "Skeleton";

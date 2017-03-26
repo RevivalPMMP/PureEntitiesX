@@ -29,8 +29,9 @@ use revivalpmmp\pureentities\data\Data;
 class Mule extends WalkingAnimal implements Rideable {
     const NETWORK_ID = Data::MULE;
 
-    public $width = 1.3;
-    public $height = 1.4;
+    public $width = 0.75;
+    public $height = 1.562;
+    public $length = 1.2;
 
     public function getName() {
         return "Mule";

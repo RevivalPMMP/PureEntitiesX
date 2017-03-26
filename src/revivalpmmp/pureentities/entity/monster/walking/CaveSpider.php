@@ -29,8 +29,9 @@ use revivalpmmp\pureentities\data\Data;
 class CaveSpider extends WalkingMonster {
     const NETWORK_ID = Data::CAVE_SPIDER;
 
-    public $width = 0.9;
-    public $height = 0.8;
+    public $width = 1.438;
+    public $length = 1.188;
+    public $height = 0.547;
 
     public function getSpeed(): float {
         return 1.3;

@@ -29,8 +29,9 @@ use revivalpmmp\pureentities\features\IntfCanInteract;
 class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::PIG;
 
-    public $width = 1.45;
-    public $height = 1.12;
+    public $width = 0.625;
+    public $height = 1;
+    public $length = 1.5;
 
     private $feedableItems = array(
         Item::CARROT,

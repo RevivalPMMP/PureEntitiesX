@@ -9,6 +9,12 @@ spawn-task:
 despawn-task:
   trigger-ticks: 500
 
+# task definitions - to have full functionality, enable all!
+tasks:
+  spawn: true # set to true to enable spawn/unspawn tasks
+  async: true # set to true for mob equipment working and relogging tamed entities working
+  looking: true # set to true to enable entity interaction and enderman looking detection e.g.
+
 # when set to true the creeper will explode and also destroy blocks
 creeper:
   block-breaking-explosion: false
@@ -31,6 +37,12 @@ distances:
 
 ticks:
   block-interest: 100 # defines how many ticks pass by before the block of interest check kicks in
+
+idle:
+  chance: 20 # 20 percent of idle after walking around
+  min-idle: 100 # minimum idle in ticks
+  max-idle: 500 # max idle in ticks
+  time-between-idle: 60 # time that has to pass at least between each idling status in seconds
 
 xp:
   enabled: false # enable experience pickup system - disable if you have problems!
@@ -94,6 +106,7 @@ performance:
   check-interactive-correction: true # setting this to true the interactive button finding is a lot better but more unprecise and consumes more performance
   check-enderman-looking: 10 # how often does the plugin check if a player looks at an enderman
   check-pickup-loot: 10 # how often do entities look after things they can pick up (configure ticks between checks)
+  enable-logging: true # enable file logging (set to false for productive environments)
 
 # mob equipment configuration
 mob-equipment:

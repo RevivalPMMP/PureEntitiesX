@@ -40,8 +40,9 @@ use revivalpmmp\pureentities\data\Data;
 class Stray extends WalkingMonster implements ProjectileSource {
     const NETWORK_ID = Data::STRAY;
 
-    public $width = 0.781;
     public $height = 2;
+    public $width = 0.781;
+    public $length = 0.875;
 
     public function getName() {
         return "Stray";

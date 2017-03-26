@@ -29,9 +29,10 @@ use revivalpmmp\pureentities\features\IntfCanInteract;
 class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::CHICKEN;
 
-    public $width = 0.4;
-    public $height = 0.7;
-    public $eyeHeight = 0.7;
+    public $width = 1;
+    public $length = 0.5;
+    public $height = 0.8;
+    public $eyeHeight = 0.6;
 
     // egg laying specific configuration (an egg is layed by a chicken each 6000-120000 ticks)
     private $dropEggTimer = 0;

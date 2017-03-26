@@ -36,8 +36,9 @@ use revivalpmmp\pureentities\data\Data;
 class Ghast extends FlyingMonster implements ProjectileSource {
     const NETWORK_ID = Data::GHAST;
 
-    public $width = 4;
-    public $height = 4;
+    public $width = 4.5;
+    public $length = 4.5;
+    public $height = 4.5;
 
     public function getSpeed(): float {
         return 1.2;

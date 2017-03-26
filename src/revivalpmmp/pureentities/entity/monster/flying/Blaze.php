@@ -42,8 +42,9 @@ use revivalpmmp\pureentities\data\Data;
 class Blaze extends FlyingMonster implements ProjectileSource {
     const NETWORK_ID = Data::BLAZE;
 
-    public $width = 0.72;
-    public $height = 1.8;
+    public $height = 1.5;
+    public $width = 1.25;
+    public $length = 0.906;
     public $gravity = 0.04;
 
     public function initEntity() {

@@ -23,8 +23,6 @@ use pocketmine\block\Slab;
 use pocketmine\block\Stair;
 use pocketmine\entity\Item;
 use pocketmine\Player;
-use pocketmine\utils\BlockIterator;
-use revivalpmmp\pureentities\data\BlockSides;
 use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use pocketmine\block\Liquid;
@@ -225,74 +223,86 @@ abstract class WalkingEntity extends BaseEntity {
             }
         }
 
-        if ($this->motionY > 0.1 or $this->stayTime > 0) {
+        if ($this->motionY > 0.1 or $this->stayTime > 0) { // when entites are "hunting" they sometimes have a really small y motion (lesser than 0.1) so we've to take this into account
             PureEntities::logOutput("$this: checkJump(): onGround:" . $this->isOnGround() . ", stayTime:" . $this->stayTime . ", motionY:" . $this->motionY);
             return false;
         }
 
-        if ($this->getDirection() === null) {
+        if ($this->getDirection() === null) { // without a direction jump calculation is not possible!
             PureEntities::logOutput("$this: checkJump(): no direction given ...");
             return false;
         }
 
         PureEntities::logOutput("$this: checkJump(): position is [x:" . $this->x . "] [y:" . $this->y . "] [z:" . $this->z . "]");
-        $that = $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x + $dx), (int)$this->y, Math::floorFloat($this->z + $dz)));
-        $block = $that->getSide(BlockSides::getSides()[$this->getDirection()]);
-        PureEntities::logOutput("$this: checkJump(): that is $that [x:" . $that->x . "] [y:" . $that->y . "] [z:" . $that->z . "] and block is $block" .
-            " [x:" . $block->x . "] [y:" . $this->y . "] [z:" . $this->z . "]");
 
         $blockInFront = $this->getBlockInFrontOfPosition();
         if ($blockInFront != null) {
             PureEntities::logOutput("$this: checkJump(): block in front is $blockInFront");
-        }
-
-        // we cannot pass through the block that is directly in front of us
-        if (!$block->canPassThrough() and $this->getMaxJumpHeight() > 0) { // it's possible that an entity can't jump?! better check!
-            // check if we can get through the upper of the block directly in front of the entity
-            if ($block->getSide(Block::SIDE_UP)->canPassThrough() && $that->getSide(Block::SIDE_UP, 2)->canPassThrough()) {
-                if ($block instanceof Fence || $block instanceof FenceGate) { // cannot pass fence or fence gate ...
-                    $this->motionY = $this->gravity;
-                    PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
-                } else if ($block instanceof Slab or $block instanceof Stair) { // on stairs entities shouldnt jump THAT high
-                    $this->motionY = $this->gravity * 4;
-                    PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
-                } else if ($this->motionY <= ($this->gravity * 8)) {
-                    PureEntities::logOutput("$this: checkJump(): set motion to gravity * 8!", PureEntities::DEBUG);
-                    $this->motionY = $this->gravity * 8;
+            // we cannot pass through the block that is directly in front of us
+            if (!$blockInFront->canPassThrough() and $this->getMaxJumpHeight() > 0) { // it's possible that an entity can't jump?! better check!
+                // check if we can get through the upper of the block directly in front of the entity
+                if ($blockInFront->getSide(Block::SIDE_UP)->canPassThrough() && $blockInFront->getSide(Block::SIDE_UP, 2)->canPassThrough()) {
+                    if ($blockInFront instanceof Fence || $blockInFront instanceof FenceGate) { // cannot pass fence or fence gate ...
+                        $this->motionY = $this->gravity;
+                        PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
+                    } else if ($blockInFront instanceof Slab or $blockInFront instanceof Stair) { // on stairs entities shouldnt jump THAT high
+                        $this->motionY = $this->gravity * 4;
+                        PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
+                    } else if ($this->motionY <= ($this->gravity * 8)) {
+                        PureEntities::logOutput("$this: checkJump(): set motion to gravity * 8!", PureEntities::DEBUG);
+                        $this->motionY = $this->gravity * 8;
+                    } else {
+                        PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
+                        $this->motionY += $this->gravity * 0.25;
+                    }
+                    return true;
                 } else {
-                    PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
-                    $this->motionY += $this->gravity * 0.25;
+                    PureEntities::logOutput("$this: checkJump(): cannot pass throug the upper blocks!", PureEntities::DEBUG);
                 }
-                return true;
             } else {
-                PureEntities::logOutput("$this: checkJump(): cannot pass throug the upper blocks!", PureEntities::DEBUG);
+                PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $blockInFront->canPassThrough() . "] " .
+                    "[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $blockInFront . "]", PureEntities::DEBUG);
             }
-        } else {
-            PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $block->canPassThrough() . "] " .
-                "[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $block . "]", PureEntities::DEBUG);
         }
         return false;
-
     }
 
+    /**
+     * Returns the block in front of the entity, taking entity width into account. This is a very "special"
+     * version of a block iterator. Sometimes when we take the normal position - entities are overlapping blocks
+     * and therefore sometimes we get a wrong block. This method takes this into account (somehow ...)
+     *
+     * @return null|Block
+     */
     protected function getBlockInFrontOfPosition() {
         if ($this->getDirection() === null) {
-            PureEntities::logOutput("$this: checkJump(): no direction given ...");
-            return false;
+            PureEntities::logOutput("$this: getBlockInFrontOfPosition(): no direction given ...");
+            return null;
         }
 
         $pos = $this->getPosition();
-        $pos->add($this->getDirectionVector());
+        $directionBlock = null;
 
-        $itr = new BlockIterator($this->level, $this->getPosition(), $this->getDirectionVector(), 0, 1);
-        if ($itr !== null) {
-            while ($itr->valid()) {
-                $itr->next();
-                return $itr->current();
-            }
+        switch ($this->getDirection()) {
+            case 2: // north
+                $directionBlock = $this->level->getBlock($pos->add(-1, 0, 0));
+                $pos->x = $pos->x + ($this->length / 2) - 1;
+                break;
+            case 0: // south
+                $directionBlock = $this->level->getBlock($pos->add(1, 0, 0));
+                $pos->x = $pos->x - ($this->length / 2) + 1;
+                break;
+            case 1: // west
+                $directionBlock = $this->level->getBlock($pos->add(0, 0, +1));
+                $pos->z = $pos->z + ($this->length / 2) - 1;
+                break;
+            case 3: // east
+                $directionBlock = $this->level->getBlock($pos->add(0, 0, -1));
+                $pos->z = $pos->z - ($this->length / 2) + 1;
+                break;
         }
-
-        return null;
+        PureEntities::logOutput("$this: getBlockInFrontOfPosition: after correct myPos is [x" . $pos->x . "] [z:" . $pos->z . "] [directionBlock:$directionBlock]");
+        return $directionBlock;
     }
 
     /**

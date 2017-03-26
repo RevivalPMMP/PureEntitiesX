@@ -34,8 +34,9 @@ use revivalpmmp\pureentities\PureEntities;
 class Zombie extends WalkingMonster implements IntfCanEquip {
     const NETWORK_ID = Data::ZOMBIE;
 
-    public $width = 0.72;
-    public $height = 1.8;
+    public $width = 1.031;
+    public $length = 0.891;
+    public $height = 2;
 
     /**
      * @var MobEquipment

@@ -28,8 +28,9 @@ use revivalpmmp\pureentities\data\Data;
 class Donkey extends WalkingAnimal implements Rideable {
     const NETWORK_ID = Data::DONKEY;
 
-    public $width = 1.4;
-    public $height = 1.6;
+    public $width = 0.75;
+    public $height = 1.562;
+    public $length = 1.2;
 
     public function getName() {
         return "Donkey";

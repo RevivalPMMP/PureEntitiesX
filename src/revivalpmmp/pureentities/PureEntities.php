@@ -105,6 +105,11 @@ class PureEntities extends PluginBase implements CommandExecutor {
     private static $registeredClasses = [];
 
     /**
+     * @var bool
+     */
+    private static $loggingEnabled = false;
+
+    /**
      * Returns the plugin instance to get access to config e.g.
      * @return PureEntities the current instance of the plugin main class
      */
@@ -186,13 +191,19 @@ class PureEntities extends PluginBase implements CommandExecutor {
     public function onEnable() {
         new PluginConfiguration($this); // create plugin configuration
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
+        if (PluginConfiguration::getInstance()->getEnableSpawning()) {
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
+        }
+        if (PluginConfiguration::getInstance()->getEnableLookingTasks()) {
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
+        }
 
         $this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
         $this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
+
+        PureEntities::$loggingEnabled = PluginConfiguration::getInstance()->getLogEnabled();
     }
 
     /**
@@ -309,26 +320,28 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return int|bool         returns false on failure
      */
     public static function logOutput(string $logline, int $type = PureEntities::DEBUG) {
-        switch ($type) {
-            case self::DEBUG:
-                if (strcmp(self::$loglevel, "debug") == 0) {
-                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                }
-                break;
-            case self::WARN:
-                file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                break;
-            case self::NORM:
-                file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                break;
-            default:
-                if (strcmp(self::$loglevel, "debug") == 0) {
-                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                } elseif (strcmp(self::$loglevel, "warn") == 0) {
+        if (PureEntities::$loggingEnabled) {
+            switch ($type) {
+                case self::DEBUG:
+                    if (strcmp(self::$loglevel, "debug") == 0) {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    }
+                    break;
+                case self::WARN:
                     file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                } else {
+                    break;
+                case self::NORM:
                     file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                }
+                    break;
+                default:
+                    if (strcmp(self::$loglevel, "debug") == 0) {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    } elseif (strcmp(self::$loglevel, "warn") == 0) {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    } else {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    }
+            }
         }
         return true;
     }

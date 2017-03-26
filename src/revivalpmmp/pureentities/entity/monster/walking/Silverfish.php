@@ -27,8 +27,9 @@ use revivalpmmp\pureentities\data\Data;
 class Silverfish extends WalkingMonster {
     const NETWORK_ID = Data::SILVERFISH;
 
-    public $width = 0.4;
-    public $height = 0.2;
+    public $height = 0.438;
+    public $width = 0.609;
+    public $length = 1.094;
 
     public function getSpeed(): float {
         return 1.4;

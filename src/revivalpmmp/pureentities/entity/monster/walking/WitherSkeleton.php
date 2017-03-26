@@ -30,8 +30,10 @@ use revivalpmmp\pureentities\data\Data;
 
 class WitherSkeleton extends WalkingMonster {
     const NETWORK_ID = Data::WITHER_SKELETON;
-    public $width = 0.65;
-    public $height = 1.8;
+
+    public $height = 2;
+    public $width = 0.781;
+    public $length = 0.875;
 
     public function getName() {
         return "Wither Skeleton";

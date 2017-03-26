@@ -27,8 +27,9 @@ use revivalpmmp\pureentities\data\Data;
 class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
     const NETWORK_ID = Data::RABBIT;
 
-    public $width = 0.5;
     public $height = 0.5;
+    public $width = 0.5;
+    public $length = 0.5;
 
     public function getSpeed(): float {
         return 1.2;

@@ -35,8 +35,9 @@ class PigZombie extends WalkingMonster {
 
     private $angry = 0;
 
-    public $width = 0.72;
-    public $height = 1.8;
+    public $height = 2.03;
+    public $width = 1.031;
+    public $length = 1.125;
     public $eyeHeight = 1.62;
 
     public function getSpeed(): float {

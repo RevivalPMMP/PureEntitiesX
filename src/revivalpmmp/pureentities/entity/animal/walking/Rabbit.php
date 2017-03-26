@@ -28,8 +28,9 @@ use revivalpmmp\pureentities\features\IntfCanInteract;
 class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = 18;
 
-    public $width = 0.5;
     public $height = 0.5;
+    public $width = 0.5;
+    public $length = 0.5;
 
     private $feedableItems = array(
         Item::CARROT,

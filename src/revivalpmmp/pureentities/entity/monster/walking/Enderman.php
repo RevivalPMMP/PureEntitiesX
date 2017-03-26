@@ -30,8 +30,9 @@ use revivalpmmp\pureentities\data\Data;
 class Enderman extends WalkingMonster {
     const NETWORK_ID = Data::ENDERMAN;
 
-    public $width = 0.72;
-    public $height = 2.8;
+    public $height = 2.875;
+    public $width = 1.094;
+    public $length = 0.5;
 
     public function getSpeed(): float {
         return 1.21;

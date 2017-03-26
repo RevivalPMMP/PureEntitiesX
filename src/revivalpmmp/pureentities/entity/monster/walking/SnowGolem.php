@@ -41,8 +41,9 @@ use revivalpmmp\pureentities\data\Data;
 class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract, IntfShearable {
     const NETWORK_ID = Data::SNOW_GOLEM;
 
-    public $width = 0.6;
-    public $height = 1.8;
+    public $height = 1.875;
+    public $width = 1.281;
+    public $length = 0.688;
 
     const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
 

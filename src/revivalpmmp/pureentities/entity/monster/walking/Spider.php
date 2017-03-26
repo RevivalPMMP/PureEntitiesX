@@ -29,8 +29,9 @@ use revivalpmmp\pureentities\data\Data;
 class Spider extends WalkingMonster {
     const NETWORK_ID = Data::SPIDER;
 
-    public $width = 1.3;
-    public $height = 1.12;
+    public $width = 2.062;
+    public $length = 1.703;
+    public $height = 0.781;
 
     public function getSpeed(): float {
         return 1.13;

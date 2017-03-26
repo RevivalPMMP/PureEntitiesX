@@ -31,8 +31,9 @@ use revivalpmmp\pureentities\data\Data;
 class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::COW;
 
-    public $width = 0.9;
-    public $height = 1.3;
+    public $width = 0.75;
+    public $height = 1.562;
+    public $length = 1.5;
     public $eyeHeight = 1.2;
 
     private $feedableItems = array(Item::WHEAT);
