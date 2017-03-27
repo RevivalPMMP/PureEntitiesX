@@ -18,7 +18,6 @@
 
 namespace revivalpmmp\pureentities\entity\animal;
 
-use pocketmine\block\Block;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\WalkingEntity;

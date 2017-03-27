@@ -19,9 +19,6 @@
 namespace revivalpmmp\pureentities\entity\animal\jumping;
 
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use pocketmine\item\Item;
-use pocketmine\Player;
-use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
 class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class

@@ -269,35 +269,17 @@ class MobEquipment {
     }
 
     /**
-     * Checks if any hand (weapon) items NBT tag is set
-     *
-     * @return bool
-     */
-    public function isHandItemsSet () {
-        return isset($this->entity->namedtag->HandItems);
-    }
-
-    /**
-     * Checks if any amor items NBT tag is set
-     *
-     * @return bool
-     */
-    public function isArmorItemsSet () {
-        return isset($this->entity->namedtag->ArmorItems);
-    }
-
-    /**
      * This should be called as soon as a player enters the server / level to update the entities
      * holding any MobEquipment class.
      *
      * @param Player $player    the player to send the data packet to
      */
     public function sendEquipmentUpdate (Player $player) {
-        if ($this->isArmorItemsSet()) {
+        if (isset($this->entity->namedtag->ArmorItems)) {
             PureEntities::logOutput("sendEquipmentUpdate: armor to " . $player->getName(), PureEntities::DEBUG);
             $player->dataPacket($this->createArmorEquipPacket());
         }
-        if ($this->isHandItemsSet()) {
+        if (isset($this->entity->namedtag->HandItems)) {
             PureEntities::logOutput("sendEquipmentUpdate: hand items to " . $player->getName(), PureEntities::DEBUG);
             $player->dataPacket($this->createHandItemsEquipPacket());
         }
@@ -555,69 +537,73 @@ class MobEquipment {
     }
 
     private function storeToNBT () {
-        // feet, legs, chest, head - store armor content to NBT
-        $armor[0] = new CompoundTag("0", [
-            "Count" => new IntTag("Count", 1),
-            "Damage" => new IntTag("Damage", 10),
-            "id" => new IntTag("id", $this->boots !== null ? $this->boots->getId() : ItemIds::AIR),
-        ]);
-        $armor[1] = new CompoundTag("1", [
-            "Count" => new IntTag("Count", 1),
-            "Damage" => new IntTag("Damage", 10),
-            "id" => new IntTag("id", $this->leggings !== null ? $this->leggings->getId() : ItemIds::AIR),
-        ]);
-        $armor[2] = new CompoundTag("2", [
-            "Count" => new IntTag("Count", 1),
-            "Damage" => new IntTag("Damage", 10),
-            "id" => new IntTag("id", $this->chestplate !== null ? $this->chestplate->getId() : ItemIds::AIR),
-        ]);
-        $armor[3] = new CompoundTag("3", [
-            "Count" => new IntTag("Count", 1),
-            "Damage" => new IntTag("Damage", 10),
-            "id" => new IntTag("id", $this->helmet !== null ? $this->helmet->getId() : ItemIds::AIR),
-        ]);
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            // feet, legs, chest, head - store armor content to NBT
+            $armor[0] = new CompoundTag("0", [
+                "Count" => new IntTag("Count", 1),
+                "Damage" => new IntTag("Damage", 10),
+                "id" => new IntTag("id", $this->boots !== null ? $this->boots->getId() : ItemIds::AIR),
+            ]);
+            $armor[1] = new CompoundTag("1", [
+                "Count" => new IntTag("Count", 1),
+                "Damage" => new IntTag("Damage", 10),
+                "id" => new IntTag("id", $this->leggings !== null ? $this->leggings->getId() : ItemIds::AIR),
+            ]);
+            $armor[2] = new CompoundTag("2", [
+                "Count" => new IntTag("Count", 1),
+                "Damage" => new IntTag("Damage", 10),
+                "id" => new IntTag("id", $this->chestplate !== null ? $this->chestplate->getId() : ItemIds::AIR),
+            ]);
+            $armor[3] = new CompoundTag("3", [
+                "Count" => new IntTag("Count", 1),
+                "Damage" => new IntTag("Damage", 10),
+                "id" => new IntTag("id", $this->helmet !== null ? $this->helmet->getId() : ItemIds::AIR),
+            ]);
 
-        $this->entity->namedtag->ArmorItems = new ListTag(self::NBT_KEY_ARMOR_ITEMS, $armor);
+            $this->entity->namedtag->ArmorItems = new ListTag(self::NBT_KEY_ARMOR_ITEMS, $armor);
 
-        // store hand item to NBT
-        $hands[0] = new CompoundTag("0", [
-            "Count" => new ByteTag("Count", 1),
-            "Damage" => new IntTag("Damage", 10),
-            "id" => new IntTag("id", $this->getMainHand() !== null ? $this->getMainHand()->getId() : ItemIds::AIR),
-        ]);
-        $this->entity->namedtag->HandItems = new ListTag(self::NBT_KEY_HAND_ITEMS, $hands);
+            // store hand item to NBT
+            $hands[0] = new CompoundTag("0", [
+                "Count" => new ByteTag("Count", 1),
+                "Damage" => new IntTag("Damage", 10),
+                "id" => new IntTag("id", $this->getMainHand() !== null ? $this->getMainHand()->getId() : ItemIds::AIR),
+            ]);
+            $this->entity->namedtag->HandItems = new ListTag(self::NBT_KEY_HAND_ITEMS, $hands);
+        }
     }
 
     private function loadFromNBT () {
-        PureEntities::logOutput("MobEquipment: loadFromNBT for " . $this->entity, PureEntities::DEBUG);
-        if ($this->isArmorItemsSet()) {
-            PureEntities::logOutput("MobEquipment: armorItems set for " . $this->entity, PureEntities::DEBUG);
-            $nbt = $this->entity->namedtag[self::NBT_KEY_ARMOR_ITEMS];
-            if ($nbt instanceof ListTag) {
-                $itemId = $nbt[0]["id"];
-                $this->boots = Item::get($itemId);
-                $itemId = $nbt[1]["id"];
-                $this->leggings = Item::get($itemId);
-                $itemId = $nbt[2]["id"];
-                $this->chestplate = Item::get($itemId);
-                $itemId = $nbt[3]["id"];
-                $this->helmet = Item::get($itemId);
-                PureEntities::logOutput("MobEquipment: loaded from NBT [boots:" . $this->boots . "] [legs:" . $this->leggings . "] " .
-                    "[chest:" . $this->chestplate . "] [helmet:" . $this->helmet . "]", PureEntities::DEBUG);
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            PureEntities::logOutput("MobEquipment: loadFromNBT for " . $this->entity, PureEntities::DEBUG);
+            if (isset($this->entity->namedtag->ArmorItems)) {
+                PureEntities::logOutput("MobEquipment: armorItems set for " . $this->entity, PureEntities::DEBUG);
+                $nbt = $this->entity->namedtag[self::NBT_KEY_ARMOR_ITEMS];
+                if ($nbt instanceof ListTag) {
+                    $itemId = $nbt[0]["id"];
+                    $this->boots = Item::get($itemId);
+                    $itemId = $nbt[1]["id"];
+                    $this->leggings = Item::get($itemId);
+                    $itemId = $nbt[2]["id"];
+                    $this->chestplate = Item::get($itemId);
+                    $itemId = $nbt[3]["id"];
+                    $this->helmet = Item::get($itemId);
+                    PureEntities::logOutput("MobEquipment: loaded from NBT [boots:" . $this->boots . "] [legs:" . $this->leggings . "] " .
+                        "[chest:" . $this->chestplate . "] [helmet:" . $this->helmet . "]", PureEntities::DEBUG);
+                }
             }
-        }
 
-        if ($this->isHandItemsSet()) {
-            PureEntities::logOutput("MobEquipment: handItems set for " . $this->entity, PureEntities::DEBUG);
-            $nbt = $this->entity->namedtag[self::NBT_KEY_HAND_ITEMS];
-            if ($nbt instanceof ListTag) {
-                $itemId = $nbt[0]["id"];
-                PureEntities::logOutput("MobEquipment: found hand item (id): $itemId -> set it now!", PureEntities::DEBUG);
-                $this->mainHand = Item::get($itemId);
+            if (isset($this->entity->namedtag->HandItems)) {
+                PureEntities::logOutput("MobEquipment: handItems set for " . $this->entity, PureEntities::DEBUG);
+                $nbt = $this->entity->namedtag[self::NBT_KEY_HAND_ITEMS];
+                if ($nbt instanceof ListTag) {
+                    $itemId = $nbt[0]["id"];
+                    PureEntities::logOutput("MobEquipment: found hand item (id): $itemId -> set it now!", PureEntities::DEBUG);
+                    $this->mainHand = Item::get($itemId);
+                }
             }
+            $this->recalculateArmorDamageReducement();
+            $this->recalculateDamageIncreaseByWeapon();
         }
-        $this->recalculateArmorDamageReducement();
-        $this->recalculateDamageIncreaseByWeapon();
     }
 
     /**

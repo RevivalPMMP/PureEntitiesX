@@ -187,6 +187,7 @@ class MobEquipper {
     /**
      * Returns the armor to be worn by the entity by chance
      *
+     * @param $chances ArmorTypeChances
      * @return string
      */
     private static function getArmorType (ArmorTypeChances $chances) : string {

@@ -19,6 +19,7 @@
 namespace revivalpmmp\pureentities\task;
 
 use pocketmine\scheduler\PluginTask;
+use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\entity\monster\Monster;
@@ -39,6 +40,9 @@ class AutoDespawnTask extends PluginTask {
         foreach ($this->plugin->getServer()->getLevels() as $level) {
             foreach ($level->getEntities() as $entity) {
                 $isTameable = $entity instanceof IntfTameable;
+                /**
+                 * @var $entity IntfTameable|BaseEntity
+                 */
                 if (!$isTameable or ($isTameable and !$entity->isTamed())) { // do NOT despawn tamed entities!
                     $despawnable[$entity->getId()] = 2;
                     foreach ($level->getPlayers() as $player) {

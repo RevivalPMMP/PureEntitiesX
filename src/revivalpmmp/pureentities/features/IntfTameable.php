@@ -56,4 +56,17 @@ interface IntfTameable {
      */
     public function mapOwner();
 
+    /**
+     * Should return true when tamed entity is sitting
+     * @return bool
+     */
+    public function isSitting(): bool;
+
+    /**
+     * Sets entity sitting or not
+     *
+     * @param bool $sit
+     */
+    public function setSitting(bool $sit);
+
 }

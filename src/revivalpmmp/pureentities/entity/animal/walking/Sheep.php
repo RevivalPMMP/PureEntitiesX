@@ -36,6 +36,7 @@ use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable {
@@ -210,23 +211,28 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      * loads data from nbt and fills internal variables
      */
     public function loadFromNBT() {
-        if (isset($this->namedtag->Sheared)) {
-            $this->sheared = (bool)$this->namedtag[self::NBT_KEY_SHEARED];
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->namedtag->Sheared)) {
+                $this->sheared = (bool)$this->namedtag[self::NBT_KEY_SHEARED];
+            }
+            if (isset($this->namedtag->Color)) {
+                $this->color = (int)$this->namedtag[self::NBT_KEY_COLOR];
+            } else {
+                $this->color = Sheep::getRandomColor();
+            }
         }
-        if (isset($this->namedtag->Color)) {
-            $this->color = (int)$this->namedtag[self::NBT_KEY_COLOR];
-        } else {
-            $this->color = Sheep::getRandomColor();
-        }
+        $this->breedableClass->loadFromNBT();
     }
 
     /**
      * Stores internal variables to NBT
      */
     public function saveNBT() {
-        parent::saveNBT();
-        $this->namedtag->Sheared = new ByteTag(self::NBT_KEY_SHEARED, $this->sheared);
-        $this->namedtag->Color = new ByteTag(self::NBT_KEY_COLOR, $this->color);
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::saveNBT();
+            $this->namedtag->Sheared = new ByteTag(self::NBT_KEY_SHEARED, $this->sheared);
+            $this->namedtag->Color = new ByteTag(self::NBT_KEY_COLOR, $this->color);
+        }
         $this->breedableClass->saveNBT();
     }
 

@@ -47,6 +47,7 @@ class PluginConfiguration {
     private $enableSpawning = true; // enable spawning of entities
     private $enableAsyncTasks = true; // enable async tasks for setting owner of tamed and setting mob equipment
     private $enableLookingTasks = true; // enable looking tasks (like shear, tame etc. pp) and enderman looking task
+    private $enableNBT = true; // enable load/store of NBT
 
     // idle settings
     private $idleChance = 20;
@@ -80,6 +81,7 @@ class PluginConfiguration {
         $this->interactiveButtonCorrection = $pluginBase->getConfig()->getNested("performance.check-interactive-correction", false); // default: do not check other blocks for the entity for button display
         $this->pickupLootTicks = $pluginBase->getConfig()->getNested("performance.check-pickup-loot", 10); // default: check every 10 ticks for picking up loot
         $this->logEnabled = $pluginBase->getConfig()->getNested("performance.enable-logging", false); // default: false - do not use logging
+        $this->enableNBT = $pluginBase->getConfig()->getNested("performance.enable-nbt-storage", true); // default: enable storage and loading of NBT
 
         $this->useBlockLightForSpawn = $pluginBase->getConfig()->getNested("spawn-task.use-block-light", false); // default: do not use block light
         $this->useSkyLightForSpawn = $pluginBase->getConfig()->getNested("spawn-task.use-sky-light", false); // default: do not use block light
@@ -95,6 +97,7 @@ class PluginConfiguration {
 
         // print effective configuration!
         $pluginBase->getServer()->getLogger()->notice("[PureEntitiesX] Configuration loaded:" .
+            " [enableNBT:" . $this->enableNBT . "]" .
             " [enableSpawn:" . $this->enableSpawning . "] [enableAsyncTasks:" . $this->enableAsyncTasks . "] [enableLookingTasks:" . $this->enableLookingTasks . "]" .
             " [loggingEnabled:" . $this->logEnabled . "] [findPartnerDistance:" . $this->maxFindPartnerDistance . "] [interactDistance:" . $this->maxInteractDistance . "]" .
             " [teleportTamedDistance:" . $this->tamedTeleportBlocks . "] [tamedFollowDistance:" . $this->tamedPlayerMaxDistance . "]" .
@@ -250,6 +253,13 @@ class PluginConfiguration {
      */
     public function getEnableLookingTasks() {
         return $this->enableLookingTasks;
+    }
+
+    /**
+     * @return bool|mixed
+     */
+    public function getEnableNBT() {
+        return $this->enableNBT;
     }
 
 

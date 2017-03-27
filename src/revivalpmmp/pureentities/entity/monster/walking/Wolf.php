@@ -19,7 +19,6 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\item\Item;
-use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\StringTag;
@@ -126,6 +125,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         $this->fireProof = false;
         $this->setDamage([0, 3, 4, 6]);
 
+        $this->breedableClass = new BreedingComponent($this);
+
         $this->loadFromNBT();
 
         $this->setAngry($this->isAngry() ? $this->angryValue : 0, true);
@@ -138,8 +139,6 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
             }
         }
         $this->setCollarColor($this->getCollarColor());
-
-        $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
 
         $this->teleportDistance = PluginConfiguration::getInstance()->getTamedTeleportBlocks();
@@ -202,7 +201,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     /**
      * We need to override this function as the wolf is hunting for skeletons, rabbits and sheeps when not tamed and wild.
      * When tamed and no other target is set (or is following player) the tamed wolf attack only skeletons!
-     *
+     * @param bool $checkSkip
      */
     public function checkTarget(bool $checkSkip = true) {
         if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
@@ -246,42 +245,47 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * Loads data from nbt and stores to local variables
      */
     public function loadFromNBT() {
-        if (isset($this->namedtag->Angry)) {
-            $this->angryValue = (int)$this->namedtag[self::NBT_KEY_ANGRY];
-        }
-        if (isset($this->namedtag->CollarColor)) {
-            $this->collarColor = $this->namedtag[self::NBT_KEY_COLLAR_COLOR];
-        }
-        if (isset($this->namedtag->Sitting)) {
-            $this->sitting = $this->namedtag[self::NBT_KEY_SITTING] === 1;
-        }
-        if (isset($this->namedtag->OwnerName)) {
-            $this->ownerName = $this->namedtag[self::NBT_SERVER_KEY_OWNER_NAME];
-            $this->tamed = true;
-        }
-        if ($this->ownerName !== null) {
-            foreach ($this->getLevel()->getPlayers() as $levelPlayer) {
-                if (strcasecmp($levelPlayer->getName(), $this->namedtag->OwnerName) == 0) {
-                    $this->owner = $levelPlayer;
-                    break;
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->namedtag->Angry)) {
+                $this->angryValue = (int)$this->namedtag[self::NBT_KEY_ANGRY];
+            }
+            if (isset($this->namedtag->CollarColor)) {
+                $this->collarColor = $this->namedtag[self::NBT_KEY_COLLAR_COLOR];
+            }
+            if (isset($this->namedtag->Sitting)) {
+                $this->sitting = $this->namedtag[self::NBT_KEY_SITTING] === 1;
+            }
+            if (isset($this->namedtag->OwnerName)) {
+                $this->ownerName = $this->namedtag[self::NBT_SERVER_KEY_OWNER_NAME];
+                $this->tamed = true;
+            }
+            if ($this->ownerName !== null) {
+                foreach ($this->getLevel()->getPlayers() as $levelPlayer) {
+                    if (strcasecmp($levelPlayer->getName(), $this->namedtag->OwnerName) == 0) {
+                        $this->owner = $levelPlayer;
+                        break;
+                    }
                 }
             }
         }
+        $this->breedableClass->saveNBT();
     }
 
     /**
      * Saves important variables to the NBT
      */
     public function saveNBT() {
-        parent::saveNBT();
-        $this->namedtag->Angry = new IntTag(self::NBT_KEY_ANGRY, $this->angryValue);
-        $this->namedtag->CollarColor = new ByteTag(self::NBT_KEY_COLLAR_COLOR, $this->collarColor); // set collar color
-        $this->namedtag->Sitting = new IntTag(self::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
-        if ($this->getOwnerName() !== null) {
-            $this->namedtag->OwnerName = new StringTag(self::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
-        }
-        if ($this->owner !== null) {
-            $this->namedtag->OwnerUUID = new StringTag(self::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::saveNBT();
+            $this->namedtag->Angry = new IntTag(self::NBT_KEY_ANGRY, $this->angryValue);
+            $this->namedtag->CollarColor = new ByteTag(self::NBT_KEY_COLLAR_COLOR, $this->collarColor); // set collar color
+            $this->namedtag->Sitting = new IntTag(self::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
+            if ($this->getOwnerName() !== null) {
+                $this->namedtag->OwnerName = new StringTag(self::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
+            }
+            if ($this->owner !== null) {
+                $this->namedtag->OwnerUUID = new StringTag(self::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
+            }
         }
         $this->breedableClass->saveNBT();
     }
@@ -543,7 +547,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     /**
      * Returns a position near the player (owner) of this entity
      *
-     * @return Position the position near the owner
+     * @return Vector3|null the position near the owner
      */
     private function getPositionNearOwner(): Vector3 {
         $x = $this->getOwner()->x + (mt_rand(0, 1) == 0 ? -1 : 1);

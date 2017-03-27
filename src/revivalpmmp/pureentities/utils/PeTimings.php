@@ -47,6 +47,7 @@ class PeTimings {
      * This stops the timing and returns the expired time between start and stop in milliseconds
      *
      * @param string $description
+     * @param bool $logToFile
      * @return float
      */
     public static function stopTiming(string $description, bool $logToFile = false) {

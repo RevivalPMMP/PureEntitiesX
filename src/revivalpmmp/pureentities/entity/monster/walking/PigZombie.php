@@ -29,6 +29,7 @@ use pocketmine\entity\Creature;
 use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\PluginConfiguration;
 
 class PigZombie extends WalkingMonster {
     const NETWORK_ID = Data::PIG_ZOMBIE;
@@ -47,8 +48,10 @@ class PigZombie extends WalkingMonster {
     public function initEntity() {
         parent::initEntity();
 
-        if (isset($this->namedtag->Angry)) {
-            $this->angry = (int)$this->namedtag["Angry"];
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->namedtag->Angry)) {
+                $this->angry = (int)$this->namedtag["Angry"];
+            }
         }
 
         $this->fireProof = true;
@@ -56,8 +59,10 @@ class PigZombie extends WalkingMonster {
     }
 
     public function saveNBT() {
-        parent::saveNBT();
-        $this->namedtag->Angry = new IntTag("Angry", $this->angry);
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::saveNBT();
+            $this->namedtag->Angry = new IntTag("Angry", $this->angry);
+        }
     }
 
     public function getName() {

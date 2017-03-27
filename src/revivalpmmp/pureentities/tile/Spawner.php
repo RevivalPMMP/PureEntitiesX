@@ -21,6 +21,7 @@ namespace revivalpmmp\pureentities\tile;
 use pocketmine\level\Level;
 use pocketmine\Player;
 use pocketmine\tile\Tile;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
@@ -44,51 +45,53 @@ class Spawner extends Spawnable {
     public function __construct(Level $level, CompoundTag $nbt) {
         parent::__construct($level, $nbt);
 
-        if (isset($this->namedtag->EntityId)) {
-            $this->entityId = $this->namedtag["EntityId"];
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->namedtag->EntityId)) {
+                $this->entityId = $this->namedtag["EntityId"];
+            }
+
+            if (!isset($this->namedtag->SpawnRange)) {
+                $this->namedtag->SpawnRange = new ShortTag("SpawnRange", 8);
+            }
+
+            if (!isset($this->namedtag->MinSpawnDelay)) {
+                $this->namedtag->MinSpawnDelay = new ShortTag("MinSpawnDelay", 200);
+            }
+
+            if (!isset($this->namedtag->MaxSpawnDelay)) {
+                $this->namedtag->MaxSpawnDelay = new ShortTag("MaxSpawnDelay", 8000);
+            }
+
+            if (!isset($this->namedtag->MaxNearbyEntities)) {
+                $this->namedtag->MaxNearbyEntities = new ShortTag("MaxNearbyEntities", 25);
+            }
+
+            if (!isset($this->namedtag->RequiredPlayerRange)) {
+                $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", 20);
+            }
+
+            // TODO: add SpawnData: Contains tags to copy to the next spawned entity(s) after spawning. Any of the entity or
+            // mob tags may be used. Note that if a spawner specifies any of these tags, almost all variable data such as mob
+            // equipment, villager profession, sheep wool color, etc., will not be automatically generated, and must also be
+            // manually specified (note that this does not apply to position data, which will be randomized as normal unless
+            // Pos is specified. Similarly, unless Size and Health are specified for a Slime or Magma Cube, these will still
+            // be randomized). This, together with EntityId, also determines the appearance of the miniature entity spinning
+            // in the spawner cage. Note: this tag is optional: if it does not exist, the next spawned entity will use
+            // the default vanilla spawning properties for this mob, including potentially randomized armor (this is true even
+            // if SpawnPotentials does exist). Warning: If SpawnPotentials exists, this tag will get overwritten after the
+            // next spawning attempt: see above for more details.
+            if (!isset($this->namedtag->SpawnData)) {
+                $this->namedtag->SpawnData = new CompoundTag("SpawnData", [new IntTag("EntityId", $this->entityId)]);
+            }
+
+            // TODO: add SpawnCount: How many mobs to attempt to spawn each time. Note: Requires the MinSpawnDelay property to also be set.
+
+            $this->spawnRange = $this->namedtag["SpawnRange"];
+            $this->minSpawnDelay = $this->namedtag["MinSpawnDelay"];
+            $this->maxSpawnDelay = $this->namedtag["MaxSpawnDelay"];
+            $this->maxNearbyEntities = $this->namedtag["MaxNearbyEntities"];
+            $this->requiredPlayerRange = $this->namedtag["RequiredPlayerRange"];
         }
-
-        if (!isset($this->namedtag->SpawnRange)) {
-            $this->namedtag->SpawnRange = new ShortTag("SpawnRange", 8);
-        }
-
-        if (!isset($this->namedtag->MinSpawnDelay)) {
-            $this->namedtag->MinSpawnDelay = new ShortTag("MinSpawnDelay", 200);
-        }
-
-        if (!isset($this->namedtag->MaxSpawnDelay)) {
-            $this->namedtag->MaxSpawnDelay = new ShortTag("MaxSpawnDelay", 8000);
-        }
-
-        if (!isset($this->namedtag->MaxNearbyEntities)) {
-            $this->namedtag->MaxNearbyEntities = new ShortTag("MaxNearbyEntities", 25);
-        }
-
-        if (!isset($this->namedtag->RequiredPlayerRange)) {
-            $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", 20);
-        }
-
-        // TODO: add SpawnData: Contains tags to copy to the next spawned entity(s) after spawning. Any of the entity or
-        // mob tags may be used. Note that if a spawner specifies any of these tags, almost all variable data such as mob
-        // equipment, villager profession, sheep wool color, etc., will not be automatically generated, and must also be
-        // manually specified (note that this does not apply to position data, which will be randomized as normal unless
-        // Pos is specified. Similarly, unless Size and Health are specified for a Slime or Magma Cube, these will still
-        // be randomized). This, together with EntityId, also determines the appearance of the miniature entity spinning
-        // in the spawner cage. Note: this tag is optional: if it does not exist, the next spawned entity will use
-        // the default vanilla spawning properties for this mob, including potentially randomized armor (this is true even
-        // if SpawnPotentials does exist). Warning: If SpawnPotentials exists, this tag will get overwritten after the
-        // next spawning attempt: see above for more details.
-        if (!isset($this->namedtag->SpawnData)) {
-            $this->namedtag->SpawnData = new CompoundTag("SpawnData", [new IntTag("EntityId", $this->entityId)]);
-        }
-
-        // TODO: add SpawnCount: How many mobs to attempt to spawn each time. Note: Requires the MinSpawnDelay property to also be set.
-
-        $this->spawnRange = $this->namedtag["SpawnRange"];
-        $this->minSpawnDelay = $this->namedtag["MinSpawnDelay"];
-        $this->maxSpawnDelay = $this->namedtag["MaxSpawnDelay"];
-        $this->maxNearbyEntities = $this->namedtag["MaxNearbyEntities"];
-        $this->requiredPlayerRange = $this->namedtag["RequiredPlayerRange"];
 
         $this->scheduleUpdate();
     }
@@ -130,15 +133,17 @@ class Spawner extends Spawnable {
     }
 
     public function saveNBT() {
-        parent::saveNBT();
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::saveNBT();
 
-        $this->namedtag->EntityId = new ShortTag("EntityId", $this->entityId);
-        $this->namedtag->SpawnRange = new ShortTag("SpawnRange", $this->spawnRange);
-        $this->namedtag->MinSpawnDelay = new ShortTag("MinSpawnDelay", $this->minSpawnDelay);
-        $this->namedtag->MaxSpawnDelay = new ShortTag("MaxSpawnDelay", $this->maxSpawnDelay);
-        $this->namedtag->MaxNearbyEntities = new ShortTag("MaxNearbyEntities", $this->maxNearbyEntities);
-        $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", $this->requiredPlayerRange);
-        $this->namedtag->SpawnData = new CompoundTag("SpawnData", [new IntTag("EntityId", $this->entityId)]);
+            $this->namedtag->EntityId = new ShortTag("EntityId", $this->entityId);
+            $this->namedtag->SpawnRange = new ShortTag("SpawnRange", $this->spawnRange);
+            $this->namedtag->MinSpawnDelay = new ShortTag("MinSpawnDelay", $this->minSpawnDelay);
+            $this->namedtag->MaxSpawnDelay = new ShortTag("MaxSpawnDelay", $this->maxSpawnDelay);
+            $this->namedtag->MaxNearbyEntities = new ShortTag("MaxNearbyEntities", $this->maxNearbyEntities);
+            $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", $this->requiredPlayerRange);
+            $this->namedtag->SpawnData = new CompoundTag("SpawnData", [new IntTag("EntityId", $this->entityId)]);
+        }
     }
 
     public function getSpawnCompound() {
@@ -150,10 +155,12 @@ class Spawner extends Spawnable {
 
     public function setSpawnEntityType(int $entityId) {
         $this->entityId = $entityId;
-        $this->namedtag->EntityId = new ShortTag("EntityId", $this->entityId);
-        $this->namedtag->SpawnData = new CompoundTag("SpawnData", [
-            new IntTag("EntityId", $this->entityId)
-        ]);
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            $this->namedtag->EntityId = new ShortTag("EntityId", $this->entityId);
+            $this->namedtag->SpawnData = new CompoundTag("SpawnData", [
+                new IntTag("EntityId", $this->entityId)
+            ]);
+        }
         $this->spawnToAll();
     }
 

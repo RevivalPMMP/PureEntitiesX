@@ -18,7 +18,6 @@
 
 namespace revivalpmmp\pureentities\entity\monster\flying;
 
-use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\entity\monster\FlyingMonster;
 use revivalpmmp\pureentities\entity\projectile\FireBall;

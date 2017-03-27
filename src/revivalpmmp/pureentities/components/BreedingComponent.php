@@ -23,6 +23,7 @@ use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -58,7 +59,7 @@ class BreedingComponent {
 
     /**
      * This is the entity that owns this Breedable class (a reference to the Entity)
-     * @var Entity
+     * @var Entity|BaseEntity|IntfCanBreed
      */
     private $entity = null;
 
@@ -125,17 +126,21 @@ class BreedingComponent {
     }
 
     public function loadFromNBT() {
-        if (isset($this->entity->namedtag->Age)) {
-            $this->age = $this->entity->namedtag[self::NBT_KEY_AGE];
-        }
-        if (isset($this->entity->namedtag->InLove)) {
-            $this->inLove = $this->entity->namedtag[self::NBT_KEY_IN_LOVE];
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->entity->namedtag->Age)) {
+                $this->age = $this->entity->namedtag[self::NBT_KEY_AGE];
+            }
+            if (isset($this->entity->namedtag->InLove)) {
+                $this->inLove = $this->entity->namedtag[self::NBT_KEY_IN_LOVE];
+            }
         }
     }
 
     public function saveNBT() {
-        $this->entity->namedtag->Age = new IntTag(self::NBT_KEY_AGE, $this->age);
-        $this->entity->namedtag->InLove = new IntTag(self::NBT_KEY_IN_LOVE, $this->inLove);
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            $this->entity->namedtag->Age = new IntTag(self::NBT_KEY_AGE, $this->age);
+            $this->entity->namedtag->InLove = new IntTag(self::NBT_KEY_IN_LOVE, $this->inLove);
+        }
     }
 
     /**
@@ -150,6 +155,7 @@ class BreedingComponent {
     /**
      * Returns the breed partner as an entity instance or NULL if no breed partner set
      * TODO: add to NBT
+     * @return Entity|BaseEntity|IntfCanBreed|null
      */
     public function getBreedPartner() {
         return $this->breedPartner;
@@ -354,6 +360,9 @@ class BreedingComponent {
     private function findAnotherEntityInLove(int $range) {
         $entityFound = false;
         foreach ($this->entity->getLevel()->getEntities() as $otherEntity) {
+            /**
+             * @var $otherEntity IntfCanBreed|BaseEntity
+             */
             if (strcmp(get_class($otherEntity), get_class($this->entity)) == 0 and // must be of the same species
                 $otherEntity->distance($this->entity) <= $range and // must be in range
                 $otherEntity->getBreedingComponent()->getInLove() > 0 and // must be in love
@@ -373,6 +382,9 @@ class BreedingComponent {
     private function breed(Entity $partner) {
         // yeah we found ourselfes - now breed and reset target
         $this->resetBreedStatus();
+        /**
+         * @var $partner Entity|BaseEntity|IntfCanBreed
+         */
         $partner->getBreedingComponent()->resetBreedStatus();
         // spawn a baby entity which may be owned by a player
         $owner = null;

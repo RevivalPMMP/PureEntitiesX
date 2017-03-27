@@ -153,12 +153,14 @@ abstract class BaseEntity extends Creature {
     public function initEntity() {
         parent::initEntity();
 
-        if (isset($this->namedtag->Movement)) {
-            $this->setMovement($this->namedtag["Movement"]);
-        }
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->namedtag->Movement)) {
+                $this->setMovement($this->namedtag["Movement"]);
+            }
 
-        if (isset($this->namedtag->WallCheck)) {
-            $this->setWallCheck($this->namedtag["WallCheck"]);
+            if (isset($this->namedtag->WallCheck)) {
+                $this->setWallCheck($this->namedtag["WallCheck"]);
+            }
         }
         $this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
 
@@ -166,9 +168,11 @@ abstract class BaseEntity extends Creature {
     }
 
     public function saveNBT() {
-        parent::saveNBT();
-        $this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
-        $this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::saveNBT();
+            $this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
+            $this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
+        }
         $this->idlingComponent->saveNBT();
     }
 
@@ -349,6 +353,9 @@ abstract class BaseEntity extends Creature {
                             // this entity belongs to the player. other tamed mobs shouldnt attack!
                             continue;
                         }
+                        /**
+                         * @var $entity IntfTameable
+                         */
                         if ($entity->isSitting()) {
                             $entity->setSitting(false);
                         }

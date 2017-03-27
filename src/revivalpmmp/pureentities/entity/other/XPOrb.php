@@ -20,6 +20,7 @@ namespace revivalpmmp\pureentities\entity\other;
 use pocketmine\entity\Entity;
 use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\sound\ExpPickupSound;
 
 class XPOrb extends Entity {
@@ -38,9 +39,11 @@ class XPOrb extends Entity {
 
 	public function initEntity(){
 		parent::initEntity();
-		if(isset($this->namedtag->Experience)){
-			$this->experience = $this->namedtag["Experience"];
-		}else $this->close();
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->namedtag->Experience)) {
+                $this->experience = $this->namedtag["Experience"];
+            } else $this->close();
+        }
 	}
 
 	public function onUpdate($currentTick){
