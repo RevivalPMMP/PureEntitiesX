@@ -31,9 +31,10 @@ class MagmaCube extends JumpingMonster {
     public $width = 1.2;
     public $height = 1.2;
     public $length = 1.2;
+    public $speed = 0.8;
 
     public function getSpeed(): float {
-        return 0.8;
+        return $this->speed;
     }
 
     public function initEntity() {

@@ -21,7 +21,7 @@ namespace revivalpmmp\pureentities\entity\projectile;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\protocol\AddEntityPacket;
+use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\entity\Projectile;
 use pocketmine\entity\Entity;

@@ -33,9 +33,10 @@ class Husk extends WalkingMonster implements Ageable {
     public $width = 1.031;
     public $length = 0.891;
     public $height = 2;
+    public $speed = 1.1;
 
     public function getSpeed(): float {
-        return 1.1;
+        return $this->speed;
     }
 
     public function initEntity() {
@@ -77,7 +78,7 @@ class Husk extends WalkingMonster implements Ageable {
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
-            $effect = Effect::getEffect(17)->setDuration(1800)->setAmplifier(1)->setVisible(true);
+            $effect = Effect::getEffect(17)->setDuration(1800)->setAmplifier(1);
             $player->addEffect($effect);
 
             $this->checkTamedMobsAttack($player);

@@ -63,7 +63,6 @@ use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
-
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
@@ -436,15 +435,19 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 $commandSuccessul = true;
                 break;
             case "pesummon":
-                if (count($args) == 1 or count($args) == 2) {
+                if (count($args) == 1 or count($args) == 2 or count($args) == 3) {
                     $playerName = count($args) == 1 ? $sender->getName() : $args[1];
+                    $isBaby = false;
+                    if (count($args) == 3) {
+                        $isBaby = strcmp(strtolower($args[2]), "true") == 0;
+                    }
                     foreach ($this->getServer()->getOnlinePlayers() as $player) {
                         if (strcasecmp($player->getName(), $playerName) == 0) {
                             // find a mob with the name issued
                             $mobName = strtolower($args[0]);
                             foreach (self::$registeredClasses as $registeredClass) {
                                 if (strcmp($mobName, strtolower($this->getShortClassName($registeredClass))) == 0) {
-                                    self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster");
+                                    self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster", $isBaby);
                                     $sender->sendMessage("Spawned $mobName");
                                     return true;
                                 }

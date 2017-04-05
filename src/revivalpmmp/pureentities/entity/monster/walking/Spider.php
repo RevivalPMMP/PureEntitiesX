@@ -32,9 +32,10 @@ class Spider extends WalkingMonster {
     public $width = 2.062;
     public $length = 1.703;
     public $height = 0.781;
+    public $speed = 1.13;
 
     public function getSpeed(): float {
-        return 1.13;
+        return $this->speed;
     }
 
     public function initEntity() {

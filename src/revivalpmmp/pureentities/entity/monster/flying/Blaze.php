@@ -46,6 +46,12 @@ class Blaze extends FlyingMonster implements ProjectileSource {
     public $width = 1.25;
     public $length = 0.906;
     public $gravity = 0.04;
+    public $speed = 1.0;
+
+    public function getSpeed(): float {
+        return $this->speed;
+    }
+
 
     public function initEntity() {
         parent::initEntity();

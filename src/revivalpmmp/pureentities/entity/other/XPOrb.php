@@ -18,7 +18,7 @@
 namespace revivalpmmp\pureentities\entity\other;
 
 use pocketmine\entity\Entity;
-use pocketmine\network\protocol\AddEntityPacket;
+use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\sound\ExpPickupSound;

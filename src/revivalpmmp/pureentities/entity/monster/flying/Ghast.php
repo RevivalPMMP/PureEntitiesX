@@ -38,9 +38,10 @@ class Ghast extends FlyingMonster implements ProjectileSource {
     public $width = 4.5;
     public $length = 4.5;
     public $height = 4.5;
+    public $speed = 1.2;
 
     public function getSpeed(): float {
-        return 1.2;
+        return $this->speed;
     }
 
     public function initEntity() {

@@ -33,9 +33,10 @@ class Enderman extends WalkingMonster {
     public $height = 2.875;
     public $width = 1.094;
     public $length = 0.5;
+    public $speed = 1.21;
 
     public function getSpeed(): float {
-        return 1.21;
+        return $this->speed;
     }
 
     public function initEntity() {

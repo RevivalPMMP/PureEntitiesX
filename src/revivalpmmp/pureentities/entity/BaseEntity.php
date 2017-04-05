@@ -20,6 +20,7 @@ namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use revivalpmmp\pureentities\components\IdlingComponent;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\Monster;
@@ -32,7 +33,6 @@ use pocketmine\level\Level;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\features\IntfTameable;
@@ -53,6 +53,7 @@ abstract class BaseEntity extends Creature {
     protected $fireProof = false;
     private $maxJumpHeight = 1; // default: 1 block jump height - this should be 2 for horses e.g.
     protected $checkTargetSkipTicks = 1; // default: no skip
+    public $speed = 1.0;
 
     /**
      * @var int
@@ -140,7 +141,7 @@ abstract class BaseEntity extends Creature {
     }
 
     public function getSpeed(): float {
-        return 1;
+        return $this->speed;
     }
 
     /**

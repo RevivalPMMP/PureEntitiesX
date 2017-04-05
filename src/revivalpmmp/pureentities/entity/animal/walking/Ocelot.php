@@ -30,9 +30,10 @@ class Ocelot extends WalkingAnimal {
     public $width = 0.6;
     public $length = 0.8;
     public $height = 0.8;
+    public $speed = 1.4;
 
     public function getSpeed(): float {
-        return 1.4;
+        return $this->speed;
     }
 
     public function getName() {

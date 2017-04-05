@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\item\GoldSword;
@@ -26,7 +27,6 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
 use pocketmine\entity\Creature;
-use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -40,9 +40,10 @@ class PigZombie extends WalkingMonster {
     public $width = 1.031;
     public $length = 1.125;
     public $eyeHeight = 1.62;
+    public $speed = 1.15;
 
     public function getSpeed(): float {
-        return 1.15;
+        return $this->speed;
     }
 
     public function initEntity() {

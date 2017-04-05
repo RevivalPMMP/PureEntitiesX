@@ -31,6 +31,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     public $height = 1.875;
     public $width = 0.891;
     public $length = 1.781;
+    public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
 
@@ -45,6 +46,10 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         parent::initEntity();
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
+    }
+
+    public function getSpeed(): float {
+        return $this->speed;
     }
 
     public function getName() {

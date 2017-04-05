@@ -196,11 +196,12 @@ abstract class BaseSpawner {
      * @param int $entityid
      * @param Level $level
      * @param string $type
+     * @param bool $isBaby
      * @return bool
      */
-    protected function spawnEntityToLevel(Position $pos, int $entityid, Level $level, string $type): bool {
+    protected function spawnEntityToLevel(Position $pos, int $entityid, Level $level, string $type, bool $isBaby = false): bool {
         $pos->y += self::HEIGHTS[$entityid];
-        return PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityid, $level, $type) !== null;
+        return PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityid, $level, $type, $isBaby) !== null;
     }
 
     /**

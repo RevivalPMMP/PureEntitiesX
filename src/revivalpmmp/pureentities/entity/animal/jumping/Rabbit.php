@@ -27,9 +27,10 @@ class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
     public $height = 0.5;
     public $width = 0.5;
     public $length = 0.5;
+    public $speed = 1.2;
 
     public function getSpeed(): float {
-        return 1.2;
+        return $this->speed;
     }
 
     public function getName() {

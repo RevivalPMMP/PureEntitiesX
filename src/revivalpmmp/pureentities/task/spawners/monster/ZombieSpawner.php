@@ -64,8 +64,9 @@ class ZombieSpawner extends BaseSpawner {
                 $this->checkPlayerDistance($player, $pos)
             ) { // distance to player has to be at least a configurable amount of blocks (atm 8!)
                 for ($i = 0; $i < $herdSize; $i++) {
-                    $this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Monster");
-                    PureEntities::logOutput($this->getClassNameShort() . ": scheduleCreatureSpawn (pos: $pos)", PureEntities::NORM);
+                    $isBaby = mt_rand(0, 100) <= 5; // a 5 percent chance to spawn a baby zombie
+                    $this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Monster", $isBaby);
+                    PureEntities::logOutput($this->getClassNameShort() . ": scheduleCreatureSpawn (pos: $pos, baby: $isBaby)", PureEntities::NORM);
                 }
                 return true;
             }

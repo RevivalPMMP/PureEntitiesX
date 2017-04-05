@@ -33,6 +33,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     public $length = 0.5;
     public $height = 0.8;
     public $eyeHeight = 0.6;
+    public $speed = 1.0;
 
     // egg laying specific configuration (an egg is layed by a chicken each 6000-120000 ticks)
     private $dropEggTimer = 0;
@@ -57,6 +58,10 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         parent::initEntity();
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
+    }
+
+    public function getSpeed(): float {
+        return $this->speed;
     }
 
     public function saveNBT() {

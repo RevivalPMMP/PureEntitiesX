@@ -31,6 +31,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     public $height = 0.5;
     public $width = 0.5;
     public $length = 0.5;
+    public $speed = 1.2;
 
     private $feedableItems = array(
         Item::CARROT,
@@ -82,7 +83,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     }
 
     public function getSpeed(): float {
-        return 1.2;
+        return $this->speed;
     }
 
     public function getName() {

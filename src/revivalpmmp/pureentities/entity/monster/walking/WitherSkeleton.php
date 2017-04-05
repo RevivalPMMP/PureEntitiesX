@@ -18,13 +18,13 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\item\StoneSword;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
-use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
@@ -34,6 +34,11 @@ class WitherSkeleton extends WalkingMonster {
     public $height = 2;
     public $width = 0.781;
     public $length = 0.875;
+    public $speed = 1.0;
+
+    public function getSpeed(): float {
+        return $this->speed;
+    }
 
     public function getName() {
         return "Wither Skeleton";

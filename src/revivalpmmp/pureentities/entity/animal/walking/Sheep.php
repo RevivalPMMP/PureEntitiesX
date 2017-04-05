@@ -25,7 +25,7 @@ use pocketmine\block\Grass;
 use pocketmine\block\TallGrass;
 use pocketmine\entity\Entity;
 use pocketmine\item\ItemIds;
-use pocketmine\network\protocol\EntityEventPacket;
+use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
@@ -68,6 +68,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
     public $length = 1.484;
     public $width = 0.719;
     public $height = 1.406;
+    public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
 
@@ -151,6 +152,10 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      */
     public function getFeedableItems() {
         return $this->feedableItems;
+    }
+
+    public function getSpeed(): float {
+        return $this->speed;
     }
 
     public function checkTarget(bool $checkSkip = true) {

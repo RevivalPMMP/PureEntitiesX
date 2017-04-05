@@ -21,7 +21,7 @@ namespace revivalpmmp\pureentities\components;
 
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\network\protocol\EntityEventPacket;
+use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\features\IntfCanBreed;
@@ -110,6 +110,20 @@ class BreedingComponent {
     private $adultWidth = -1;
 
     /**
+     * Is initialized from entity, when it's constructed
+     *
+     * @var int
+     */
+    private $adultLength = -1;
+
+    /**
+     * Is initialited from entity, when it's constructed
+     *
+     * @var float
+     */
+    private $adultSpeed = 0.0;
+
+    /**
      * @var bool
      */
     private $emitLoveParticles = false;
@@ -119,9 +133,14 @@ class BreedingComponent {
     private $inLove = 0;
 
     public function __construct(Entity $belongsTo) {
+        /**
+         * @var $belongsTo Entity|BaseEntity
+         */
         $this->entity = $belongsTo;
         $this->adultHeight = $belongsTo->height;
         $this->adultWidth = $belongsTo->width;
+        $this->adultLength = $belongsTo->length;
+        $this->adultSpeed = $belongsTo->getSpeed();
         $this->emitLoveParticles = PluginConfiguration::getInstance()->getEmitLoveParticlesCostantly();
     }
 
@@ -223,24 +242,28 @@ class BreedingComponent {
         $this->age = $age; // all under zero is baby
         if ($age < 0) {
             // we don't want to set the data property each time (because it's transmitted each time to the client)
-            if ($this->entity->getDataProperty(Entity::DATA_SCALE) > 0.5) {
-                $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 0.5); // this is a workaround?!
+            if ($this->entity->getScale() > 0.5) {
+                $this->entity->setScale(0.5); // scale entity (and bounding box) to 0.5
             }
             if (!$this->entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY)) {
                 $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY, true); // set baby
                 // we also need to adjust the height and width of the entity
                 $this->entity->height = $this->adultHeight / 2; // because we scale 0.5
                 $this->entity->width = $this->adultWidth / 2; // because we scale 0.5
+                $this->entity->length = $this->adultLength / 2; // because we scale 0.5
+                $this->entity->speed = $this->adultSpeed * 1.5; // because baby entities are faster
             }
         } else {
-            if ($this->entity->getDataProperty(Entity::DATA_SCALE) < 1.0) {
-                $this->entity->setDataProperty(Entity::DATA_SCALE, Entity::DATA_TYPE_FLOAT, 1.0); // set as an adult entity
+            if ($this->entity->getScale() < 1.0) {
+                $this->entity->setScale(1.0); // scale entity (and bounding box) to 1.0 - now it's grown up
             }
             if ($this->entity->getDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY)) {
                 $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_BABY, false); // set adult
                 // reset entity sizes
                 $this->entity->height = $this->adultHeight;
                 $this->entity->width = $this->adultWidth;
+                $this->entity->length = $this->adultLength;
+                $this->entity->speed = $this->adultSpeed;
             }
             // forget the parent and reset baseTarget immediately
             $this->setParent(null);

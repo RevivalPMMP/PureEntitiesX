@@ -37,6 +37,7 @@ class Creeper extends WalkingMonster implements Explosive {
     public $width = 0.6;
     public $length = 0.6;
     public $height = 1.7;
+    public $speed = 0.9;
 
     private $bombTime = 0;
 
@@ -48,7 +49,7 @@ class Creeper extends WalkingMonster implements Explosive {
     private $powered = 0;
 
     public function getSpeed(): float {
-        return 0.9;
+        return $this->speed;
     }
 
     public function initEntity() {

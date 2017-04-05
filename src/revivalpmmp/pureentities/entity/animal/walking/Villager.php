@@ -27,9 +27,10 @@ class Villager extends WalkingAnimal {
     public $width = 0.938;
     public $length = 0.609;
     public $height = 2;
+    public $speed = 1.1;
 
     public function getSpeed(): float {
-        return 1.1;
+        return $this->speed;
     }
 
     public function getName() {

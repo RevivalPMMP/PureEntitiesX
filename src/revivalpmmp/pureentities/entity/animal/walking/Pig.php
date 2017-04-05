@@ -32,6 +32,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
     public $width = 0.625;
     public $height = 1;
     public $length = 1.5;
+    public $speed = 1.0;
 
     private $feedableItems = array(
         Item::CARROT,
@@ -52,6 +53,10 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
 
     public function getName() {
         return "Pig";
+    }
+
+    public function getSpeed(): float {
+        return $this->speed;
     }
 
     public function saveNBT() {

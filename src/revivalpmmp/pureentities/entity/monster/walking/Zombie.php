@@ -19,6 +19,7 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\item\ItemIds;
+use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
@@ -28,15 +29,17 @@ use pocketmine\event\Timings;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\PureEntities;
 
-class Zombie extends WalkingMonster implements IntfCanEquip {
+class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     const NETWORK_ID = Data::ZOMBIE;
 
     public $width = 1.031;
     public $length = 0.891;
     public $height = 2;
+    public $speed = 1.1;
 
     /**
      * @var MobEquipment
@@ -44,12 +47,22 @@ class Zombie extends WalkingMonster implements IntfCanEquip {
     private $mobEquipment;
 
     /**
+     * Not a complete list yet ...
+     *
      * @var array
      */
     private $pickUpLoot = [ItemIds::IRON_SWORD, ItemIds::IRON_SHOVEL];
 
+    /**
+     * Is needed for breeding functionality, but here we use it only as an
+     * ageable component.
+     *
+     * @var BreedingComponent
+     */
+    private $breedableClass;
+
     public function getSpeed(): float {
-        return 1.1;
+        return $this->speed;
     }
 
     public function initEntity() {
@@ -58,6 +71,35 @@ class Zombie extends WalkingMonster implements IntfCanEquip {
 
         $this->mobEquipment = new MobEquipment($this);
         $this->mobEquipment->init();
+
+        $this->breedableClass = new BreedingComponent($this);
+        $this->breedableClass->init();
+    }
+
+    /**
+     * Returns the breedable class or NULL if not configured
+     *
+     * @return BreedingComponent
+     */
+    public function getBreedingComponent() {
+        return $this->breedableClass;
+    }
+
+    /**
+     * Returns the appropiate NetworkID associated with this entity
+     * @return int
+     */
+    public function getNetworkId() {
+        return self::NETWORK_ID;
+    }
+
+    /**
+     * Returns the items that can be fed to the entity
+     *
+     * @return array
+     */
+    public function getFeedableItems() {
+        return []; // return an empty array - a zombie is not feedable
     }
 
     public function getName() {

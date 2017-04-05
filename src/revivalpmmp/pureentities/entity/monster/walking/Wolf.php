@@ -22,7 +22,7 @@ use pocketmine\item\Item;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\protocol\EntityEventPacket;
+use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\jumping\Rabbit;
@@ -46,6 +46,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     public $height = 0.969;
     public $width = 0.5;
     public $length = 1.594;
+    public $speed = 1.2;
 
     const RED = 14;
 
@@ -116,7 +117,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     private $ownerName = null;
 
     public function getSpeed(): float {
-        return 1.2;
+        return $this->speed;
     }
 
     public function initEntity() {

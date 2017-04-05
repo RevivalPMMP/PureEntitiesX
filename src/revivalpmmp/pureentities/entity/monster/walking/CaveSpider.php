@@ -32,9 +32,10 @@ class CaveSpider extends WalkingMonster {
     public $width = 1.438;
     public $length = 1.188;
     public $height = 0.547;
+    public $speed = 1.3;
 
     public function getSpeed(): float {
-        return 1.3;
+        return $this->speed;
     }
 
     public function initEntity() {

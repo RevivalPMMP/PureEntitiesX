@@ -35,6 +35,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     public $height = 1.562;
     public $length = 1.5;
     public $eyeHeight = 1.2;
+    public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
 
@@ -56,6 +57,9 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         $this->breedableClass->saveNBT();
     }
 
+    public function getSpeed(): float {
+        return $this->speed;
+    }
 
     public function getName() {
         return "Cow";

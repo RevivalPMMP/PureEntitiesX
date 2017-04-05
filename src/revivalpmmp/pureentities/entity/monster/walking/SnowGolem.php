@@ -45,6 +45,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
     public $height = 1.875;
     public $width = 1.281;
     public $length = 0.688;
+    public $speed = 1.0;
 
     const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
 
@@ -63,6 +64,10 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
         $this->setFriendly(true);
         $this->loadFromNBT();
         $this->setSheared($this->isSheared()); // set data from NBT
+    }
+
+    public function getSpeed(): float {
+        return $this->speed;
     }
 
     public function getName() {
