@@ -42,7 +42,7 @@ You are welcome to use actual data from PureEntitiesX (Mob Widths, Heights, Item
 
 Download the Zip folder under the Releases tab for V#.0-beta and extract the Phar. Alternatively, you can download the scource code, or new development builds from Poggit.
 
-It still has some bugs, but it is still very usable, and we will work to get them resolved ASAP. 
+For More information on Poggit, see the Paragraph on it below.
 
 ## Pocketmine Mob AI
 
@@ -54,5 +54,7 @@ Protect an Area from Mob Spawns:
 
 The PureEntitiesX API allows you to disable/enable Mob spawning in certain areas. See and download our monster protection addon plugin over here: https://github.com/RevivalPMMP/PEXProtection
 
+## Poggit
 
+We use Poggit to share our Latest Builds! Keep in mind that they may not all be stable, so use our release build from https://poggit.pmmp.io/p/PureEntitiesX if you want to stay stable! Feel free to also drop a review while you are there, because they help us know how you like the plugin.
 

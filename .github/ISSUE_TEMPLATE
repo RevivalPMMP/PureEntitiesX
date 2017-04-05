@@ -1,7 +1,7 @@
 <!-- replace the ' ' with 'x' in the brackets -->
-- [ ] This issue isn't duplicated - you can check if it is by using the search bar located at the top left hand corner and select "Issues" on the left.
-- [ ] This issue includes appropriate markdown for sections - e.g. code blocks for crash dumps.
-- [ ] This issue is understandable - feel free to use your native language to write issues if you are not comfortable with English.
+- [x] This issue isn't duplicated - you can check if it is by using the search bar located at the top left hand corner and select "Issues" on the left.
+- [x] This issue includes appropriate markdown for sections - e.g. code blocks for crash dumps.
+- [x] This issue is understandable - feel free to use your native language to write issues if you are not comfortable with English.
 
 <!-- ISSUE DESCRIPTION - write a SHORT title about what problem you're having. -->
 ## Issue description
