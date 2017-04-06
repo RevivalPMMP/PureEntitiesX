@@ -15,7 +15,7 @@ website: https://github.com/RevivalPMMP/PureEntitiesX
 commands:
   pesummon:
     description: Summons a creature
-    usage: "/pesummon <mob-name> <optional:playername> <optional:isBaby[true|false]>"
+    usage: "/pesummon <mob-name> [playername] [isBaby(true|false)]"
     permission: pureentities.command.pesummon
   peremove:
     description: Removes all entities from the current level

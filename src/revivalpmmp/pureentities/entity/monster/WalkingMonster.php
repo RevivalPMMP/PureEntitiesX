@@ -67,29 +67,29 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         $this->attackEntity($player);
     }
 
-    /*    public function checkTarget(bool $checkSkip = true) {
-            if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
-                // breeding implementation (as only walking entities can breed atm)
-                if ($this instanceof IntfTameable) {
-                    if ($this->isTamed()) { // breeding extension only applies to tamed monsters
-                        if ($this instanceof IntfCanBreed && $this->getBreedingComponent() !== null) {
-                            if ($this->getBreedingComponent()->getInLove() <= 0) { // when the entity is NOT in love, but tamed, it should follow the player!!!
-                                $target = $this->getBaseTarget();
-                                if (!$this->isTargetMonsterOrAnimal() or !$target->isAlive()) {
-                                    // set target to owner ...
-                                    $player = $this->getOwner();
-                                    if ($player !== null and $player->isOnline()) {
-                                        $this->setBaseTarget($player);
-                                    }
+    public function checkTarget(bool $checkSkip = true) {
+        if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
+            // breeding implementation (as only walking entities can breed atm)
+            if ($this instanceof IntfTameable) {
+                if ($this->isTamed()) { // breeding extension only applies to tamed monsters
+                    if ($this instanceof IntfCanBreed && $this->getBreedingComponent() !== null) {
+                        if ($this->getBreedingComponent()->getInLove() <= 0) { // when the entity is NOT in love, but tamed, it should follow the player!!!
+                            $target = $this->getBaseTarget();
+                            if (!$this->isTargetMonsterOrAnimal() or !$target->isAlive()) {
+                                // set target to owner ...
+                                $player = $this->getOwner();
+                                if ($player !== null and $player->isOnline()) {
+                                    $this->setBaseTarget($player);
                                 }
                             }
                         }
                     }
                 }
-
-                return parent::checkTarget(false);
             }
-        }*/
+
+            return parent::checkTarget(false);
+        }
+    }
 
     public function getDamage(int $difficulty = null): float {
         return mt_rand($this->getMinDamage($difficulty), $this->getMaxDamage($difficulty));

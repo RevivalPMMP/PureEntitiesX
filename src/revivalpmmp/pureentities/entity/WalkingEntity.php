@@ -218,74 +218,36 @@ abstract class WalkingEntity extends BaseEntity {
 
         PureEntities::logOutput("$this: checkJump(): position is [x:" . $this->x . "] [y:" . $this->y . "] [z:" . $this->z . "]");
 
-        $blockInFront = $this->getBlockInFrontOfPosition();
-        if ($blockInFront != null) {
-            PureEntities::logOutput("$this: checkJump(): block in front is $blockInFront");
+        $blockInFront = $this->getTargetBlock(2); // just for correction use 2 blocks ...
+        if ($blockInFront != null and !$blockInFront->canPassThrough() and $this->getMaxJumpHeight() > 0) {
             // we cannot pass through the block that is directly in front of us
-            if (!$blockInFront->canPassThrough() and $this->getMaxJumpHeight() > 0) { // it's possible that an entity can't jump?! better check!
-                // check if we can get through the upper of the block directly in front of the entity
-                if ($blockInFront->getSide(Block::SIDE_UP)->canPassThrough() && $blockInFront->getSide(Block::SIDE_UP, 2)->canPassThrough()) {
-                    if ($blockInFront instanceof Fence || $blockInFront instanceof FenceGate) { // cannot pass fence or fence gate ...
-                        $this->motionY = $this->gravity;
-                        PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
-                    } else if ($blockInFront instanceof Slab or $blockInFront instanceof Stair) { // on stairs entities shouldnt jump THAT high
-                        $this->motionY = $this->gravity * 4;
-                        PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
-                    } else if ($this->motionY <= ($this->gravity * 8)) {
-                        PureEntities::logOutput("$this: checkJump(): set motion to gravity * 8!", PureEntities::DEBUG);
-                        $this->motionY = $this->gravity * 8;
-                    } else {
-                        PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
-                        $this->motionY += $this->gravity * 0.25;
-                    }
-                    return true;
+            $upperBlock = $this->getLevel()->getBlock($blockInFront->add(0, 1, 0));
+            $secondUpperBlock = $this->getLevel()->getBlock($blockInFront->add(0, 2, 0));
+            PureEntities::logOutput("$this: checkJump(): block in front is $blockInFront, upperBlock is $upperBlock, secondUpperblock is $secondUpperBlock");
+            // check if we can get through the upper of the block directly in front of the entity
+            if ($upperBlock->canPassThrough() && $secondUpperBlock->canPassThrough()) {
+                if ($blockInFront instanceof Fence || $blockInFront instanceof FenceGate) { // cannot pass fence or fence gate ...
+                    $this->motionY = $this->gravity;
+                    PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
+                } else if ($blockInFront instanceof Slab or $blockInFront instanceof Stair) { // on stairs entities shouldnt jump THAT high
+                    $this->motionY = $this->gravity * 4;
+                    PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
+                } else if ($this->motionY <= ($this->gravity * 8)) {
+                    PureEntities::logOutput("$this: checkJump(): set motion to gravity * 8!", PureEntities::DEBUG);
+                    $this->motionY = $this->gravity * 8;
                 } else {
-                    PureEntities::logOutput("$this: checkJump(): cannot pass throug the upper blocks!", PureEntities::DEBUG);
+                    PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
+                    $this->motionY += $this->gravity * 0.25;
                 }
+                return true;
             } else {
-                PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $blockInFront->canPassThrough() . "] " .
-                    "[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $blockInFront . "]", PureEntities::DEBUG);
+                PureEntities::logOutput("$this: checkJump(): cannot pass throug the upper blocks!", PureEntities::DEBUG);
             }
+        } else {
+            PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $blockInFront->canPassThrough() . "] " .
+                "[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $blockInFront . "]", PureEntities::DEBUG);
         }
         return false;
-    }
-
-    /**
-     * Returns the block in front of the entity, taking entity width into account. This is a very "special"
-     * version of a block iterator. Sometimes when we take the normal position - entities are overlapping blocks
-     * and therefore sometimes we get a wrong block. This method takes this into account (somehow ...)
-     *
-     * @return null|Block
-     */
-    protected function getBlockInFrontOfPosition() {
-        if ($this->getDirection() === null) {
-            PureEntities::logOutput("$this: getBlockInFrontOfPosition(): no direction given ...");
-            return null;
-        }
-
-        $pos = $this->getPosition();
-        $directionBlock = null;
-
-        switch ($this->getDirection()) {
-            case 2: // north
-                $directionBlock = $this->level->getBlock($pos->add(-1, 0, 0));
-                $pos->x = $pos->x + ($this->length / 2) - 1;
-                break;
-            case 0: // south
-                $directionBlock = $this->level->getBlock($pos->add(1, 0, 0));
-                $pos->x = $pos->x - ($this->length / 2) + 1;
-                break;
-            case 1: // west
-                $directionBlock = $this->level->getBlock($pos->add(0, 0, +1));
-                $pos->z = $pos->z + ($this->length / 2) - 1;
-                break;
-            case 3: // east
-                $directionBlock = $this->level->getBlock($pos->add(0, 0, -1));
-                $pos->z = $pos->z - ($this->length / 2) + 1;
-                break;
-        }
-        PureEntities::logOutput("$this: getBlockInFrontOfPosition: after correct myPos is [x" . $pos->x . "] [z:" . $pos->z . "] [directionBlock:$directionBlock]");
-        return $directionBlock;
     }
 
     /**

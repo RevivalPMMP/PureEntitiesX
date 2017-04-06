@@ -38,8 +38,8 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\protocol\Info;
-use pocketmine\network\protocol\InteractPacket;
+use pocketmine\network\mcpe\protocol\InteractPacket;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\tile\Tile;
@@ -107,7 +107,7 @@ class EventListener implements Listener {
         $packet = $event->getPacket();
         $player = $event->getPlayer();
         $return = false;
-        if ($packet->pid() === Info::INTERACT_PACKET) {
+        if ($packet->pid() === ProtocolInfo::INTERACT_PACKET) {
             if ($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
                 $entity = $player->level->getEntity($packet->target);
                 if ($entity instanceof IntfShearable and
