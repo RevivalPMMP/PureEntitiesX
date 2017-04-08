@@ -21,7 +21,7 @@ namespace revivalpmmp\pureentities\components;
 
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\network\mcpe\protocol\EntityEventPacket;
+use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\features\IntfCanBreed;
