@@ -25,8 +25,9 @@ use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfCanPanic;
 
-class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
+class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::CHICKEN;
 
     public $width = 1;
@@ -62,6 +63,14 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
 
     public function getSpeed(): float {
         return $this->speed;
+    }
+
+    public function getNormalSpeed(): float {
+        return 1.0;
+    }
+
+    function getPanicSpeed(): float {
+        return 1.2;
     }
 
     public function saveNBT() {

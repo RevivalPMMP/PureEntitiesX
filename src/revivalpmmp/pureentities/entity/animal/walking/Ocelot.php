@@ -23,17 +23,26 @@ use pocketmine\Player;
 use pocketmine\item\Item;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\features\IntfCanPanic;
 
-class Ocelot extends WalkingAnimal {
+class Ocelot extends WalkingAnimal implements IntfCanPanic {
     const NETWORK_ID = Data::OCELOT;
 
     public $width = 0.6;
     public $length = 0.8;
     public $height = 0.8;
-    public $speed = 1.4;
+    public $speed = 1.2;
 
     public function getSpeed(): float {
         return $this->speed;
+    }
+
+    public function getNormalSpeed(): float {
+        return 1.2;
+    }
+
+    public function getPanicSpeed(): float {
+        return 1.4;
     }
 
     public function getName() {

@@ -1,5 +1,7 @@
 <?php
 
+namespace revivalpmmp\pureentities\features;
+
 /*  PureEntitiesX: Mob AI Plugin for PMMP
     Copyright (C) 2017 RevivalPMMP
 
@@ -16,30 +18,26 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
-
-namespace revivalpmmp\pureentities\features;
-
 /**
- * Interface IntfCanBreed
+ * Interface IntfCanPanic
  *
- * Interface to be implemented by entities that can breed or can be a baby.
+ * This interface needs to be implemented by entities that can have panic when getting attacked.
  *
  * @package revivalpmmp\pureentities\features
  */
-interface IntfCanBreed extends IntfFeedable {
+interface IntfCanPanic {
 
     /**
-     * Has to return the Breedable class initiated within entity
+     * Should return the speed when in panic
      *
-     * @return mixed
+     * @return float
      */
-    public function getBreedingComponent();
+    public function getPanicSpeed(): float;
 
     /**
-     * Has to return the network id for the associated entity
+     * Should return the normal speed (of adult) of the entity
      *
-     * @return mixed
+     * @return float
      */
-    public function getNetworkId();
-
+    public function getNormalSpeed(): float;
 }

@@ -29,6 +29,10 @@ class AutoDespawnTask extends PluginTask {
 
     private $plugin;
 
+    const NO_PLAYER_CHECK = 2;
+    const IN_RANGE = 1;
+    const OUT_OF_RANGE = 3;
+
     public function __construct(PureEntities $plugin) {
         parent::__construct($plugin);
         $this->plugin = $plugin;
@@ -44,27 +48,25 @@ class AutoDespawnTask extends PluginTask {
                  * @var $entity IntfTameable|BaseEntity
                  */
                 if (!$isTameable or ($isTameable and !$entity->isTamed())) { // do NOT despawn tamed entities!
-                    $despawnable[$entity->getId()] = 2;
+                    $despawnable[$entity->getId()] = self::NO_PLAYER_CHECK;
                     foreach ($level->getPlayers() as $player) {
-                        if ($player->distance($entity) <= 32 && $this->plugin->getConfig()->get("auto-despawn") == true) {
-                            $despawnable[$entity->getId()] = 1;
+                        if ($player->distance($entity) <= 32) {
+                            $despawnable[$entity->getId()] = self::IN_RANGE;
                         } elseif ($player->distance($entity) >= 128) {
-                            $despawnable[$entity->getId()] = 3;
+                            $despawnable[$entity->getId()] = self::OUT_OF_RANGE; // 3 means that it's more than 128 blocks away
                         }
                     }
-                    if ($despawnable[$entity->getId()] === 2) {
+                    if ($despawnable[$entity->getId()] === self::NO_PLAYER_CHECK) { // no player range check for this entity
                         $probability = mt_rand(1, 100);
                         if ($probability === 1) {
                             if ($entity instanceof Monster) {
-                                PureEntities::logOutput("AutoDespawnTask: close monster entity (id: " . $entity->getId() . ", name:" . $entity->getNameTag() . ")", PureEntities::DEBUG);
+                                PureEntities::logOutput("AutoDespawnTask: close entity (id: " . $entity->getId() . ", name:" . $entity->getNameTag() . ")", PureEntities::DEBUG);
                                 $entity->close();
                             }
                         }
-                    } elseif ($despawnable[$entity->getId()] === 3) {
-                        if ($entity instanceof Animal || $entity instanceof Monster) {
-                            PureEntities::logOutput("AutoDespawnTask: close animal/monster entity (id: " . $entity->getId() . ", name:" . $entity->getNameTag() . ")", PureEntities::DEBUG);
-                            $entity->close();
-                        }
+                    } elseif ($despawnable[$entity->getId()] === self::OUT_OF_RANGE && ($entity instanceof Animal || $entity instanceof Monster)) {
+                        PureEntities::logOutput("AutoDespawnTask: close entity (id: " . $entity->getId() . ", name:" . $entity->getNameTag() . ")", PureEntities::DEBUG);
+                        $entity->close();
                     }
                 }
 

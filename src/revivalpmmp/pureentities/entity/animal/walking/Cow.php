@@ -24,11 +24,12 @@ use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 
-class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
+class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::COW;
 
     public $width = 0.75;
@@ -59,6 +60,14 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
 
     public function getSpeed(): float {
         return $this->speed;
+    }
+
+    public function getPanicSpeed(): float {
+        return 1.2;
+    }
+
+    public function getNormalSpeed(): float {
+        return 1.0;
     }
 
     public function getName() {

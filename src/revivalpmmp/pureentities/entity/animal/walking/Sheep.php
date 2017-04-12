@@ -34,12 +34,13 @@ use pocketmine\nbt\tag\ByteTag;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
-class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable {
+class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable, IntfCanPanic {
     const NETWORK_ID = Data::SHEEP;
 
     const DATA_COLOR_INFO = 16;
@@ -156,6 +157,14 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 
     public function getSpeed(): float {
         return $this->speed;
+    }
+
+    public function getNormalSpeed(): float {
+        return 1.0;
+    }
+
+    public function getPanicSpeed(): float {
+        return 1.2;
     }
 
     public function checkTarget(bool $checkSkip = true) {

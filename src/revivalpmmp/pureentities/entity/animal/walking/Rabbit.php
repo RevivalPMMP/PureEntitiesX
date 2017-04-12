@@ -24,14 +24,15 @@ use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfCanPanic;
 
-class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
+class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = 18;
 
     public $height = 0.5;
     public $width = 0.5;
     public $length = 0.5;
-    public $speed = 1.2;
+    public $speed = 1.1;
 
     private $feedableItems = array(
         Item::CARROT,
@@ -84,6 +85,14 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
 
     public function getSpeed(): float {
         return $this->speed;
+    }
+
+    public function getNormalSpeed(): float {
+        return 1.1;
+    }
+
+    public function getPanicSpeed(): float {
+        return 1.3;
     }
 
     public function getName() {

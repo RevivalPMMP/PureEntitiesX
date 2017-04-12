@@ -188,6 +188,9 @@ abstract class WalkingEntity extends BaseEntity {
     }
 
     /**
+     * This method checks the jumping for the entity. It should only be called when isCollidedHorizontally is set to
+     * true on the entity.
+     *
      * @param int $dx
      * @param int $dz
      *
@@ -218,18 +221,24 @@ abstract class WalkingEntity extends BaseEntity {
 
         PureEntities::logOutput("$this: checkJump(): position is [x:" . $this->x . "] [y:" . $this->y . "] [z:" . $this->z . "]");
 
-        $blockInFront = $this->getTargetBlock(2); // just for correction use 2 blocks ...
-        if ($blockInFront != null and !$blockInFront->canPassThrough() and $this->getMaxJumpHeight() > 0) {
-            // we cannot pass through the block that is directly in front of us
-            $upperBlock = $this->getLevel()->getBlock($blockInFront->add(0, 1, 0));
-            $secondUpperBlock = $this->getLevel()->getBlock($blockInFront->add(0, 2, 0));
-            PureEntities::logOutput("$this: checkJump(): block in front is $blockInFront, upperBlock is $upperBlock, secondUpperblock is $secondUpperBlock");
+        // sometimes entities overlap blocks and the current position is already the next block in front ...
+        // they overlap especially when following an entity - you can see it when the entity (e.g. creeper) is looking
+        // in your direction but cannot jump (is stuck). Then the next line should apply
+        $blockingBlock = $this->getLevel()->getBlock($this->getPosition());
+        if ($blockingBlock->canPassThrough()) { // when we can pass through the current block then the next block is blocking the way
+            $blockingBlock = $this->getTargetBlock(2); // just for correction use 2 blocks ...
+        }
+        if ($blockingBlock != null and !$blockingBlock->canPassThrough() and $this->getMaxJumpHeight() > 0) {
+            // we cannot pass through the block that is directly in front of entity - check if jumping is possible
+            $upperBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 1, 0));
+            $secondUpperBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 2, 0));
+            PureEntities::logOutput("$this: checkJump(): block in front is $blockingBlock, upperBlock is $upperBlock, secondUpperblock is $secondUpperBlock");
             // check if we can get through the upper of the block directly in front of the entity
             if ($upperBlock->canPassThrough() && $secondUpperBlock->canPassThrough()) {
-                if ($blockInFront instanceof Fence || $blockInFront instanceof FenceGate) { // cannot pass fence or fence gate ...
+                if ($blockingBlock instanceof Fence || $blockingBlock instanceof FenceGate) { // cannot pass fence or fence gate ...
                     $this->motionY = $this->gravity;
                     PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
-                } else if ($blockInFront instanceof Slab or $blockInFront instanceof Stair) { // on stairs entities shouldnt jump THAT high
+                } else if ($blockingBlock instanceof Slab or $blockingBlock instanceof Stair) { // on stairs entities shouldnt jump THAT high
                     $this->motionY = $this->gravity * 4;
                     PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
                 } else if ($this->motionY <= ($this->gravity * 8)) {
@@ -244,8 +253,8 @@ abstract class WalkingEntity extends BaseEntity {
                 PureEntities::logOutput("$this: checkJump(): cannot pass throug the upper blocks!", PureEntities::DEBUG);
             }
         } else {
-            PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $blockInFront->canPassThrough() . "] " .
-                "[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $blockInFront . "]", PureEntities::DEBUG);
+            PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $blockingBlock->canPassThrough() . "] " .
+                "[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $blockingBlock . "]", PureEntities::DEBUG);
         }
         return false;
     }

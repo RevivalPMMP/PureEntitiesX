@@ -9,6 +9,11 @@ spawn-task:
 despawn-task:
   trigger-ticks: 500
 
+# configuration of panic mode for some entities
+panic:
+  enabled: true
+  ticks: 100 # how long is an entity in panic mode
+
 # task definitions - to have full functionality, enable all!
 tasks:
   spawn: true # set to true to enable spawn/unspawn tasks

@@ -48,6 +48,8 @@ class PluginConfiguration {
     private $enableAsyncTasks = true; // enable async tasks for setting owner of tamed and setting mob equipment
     private $enableLookingTasks = true; // enable looking tasks (like shear, tame etc. pp) and enderman looking task
     private $enableNBT = true; // enable load/store of NBT
+    private $enablePanic = true; // enable or disable panic mode for entities
+    private $panicTicks = 100; // how long is an entity in panic mode?
 
     // idle settings
     private $idleChance = 20;
@@ -91,9 +93,12 @@ class PluginConfiguration {
         $this->xpEnabled = $pluginBase->getConfig()->getNested("xp.enabled", false); // default: xp system not enabled
 
         $this->idleChance = $pluginBase->getConfig()->getNested("idle.chance", 20); // default: 20 percent idle chance
-        $this->idleChance = $pluginBase->getConfig()->getNested("idle.min-idle", 100); // default: 100 ticks
-        $this->idleChance = $pluginBase->getConfig()->getNested("idle.max-idle", 500); // default: 500 ticks
-        $this->idleChance = $pluginBase->getConfig()->getNested("idle.time-between-idle", 60); // default: 60 seconds
+        $this->idleMin = $pluginBase->getConfig()->getNested("idle.min-idle", 100); // default: 100 ticks
+        $this->idleMax = $pluginBase->getConfig()->getNested("idle.max-idle", 500); // default: 500 ticks
+        $this->idleTimeBetween = $pluginBase->getConfig()->getNested("idle.time-between-idle", 60); // default: 60 seconds
+
+        $this->enablePanic = $pluginBase->getConfig()->getNested("panic.enabled", true); // default: enabled
+        $this->panicTicks = $pluginBase->getConfig()->getNested("panic.ticks", 100); // default: 100 ticks
 
         // print effective configuration!
         $pluginBase->getServer()->getLogger()->notice("[PureEntitiesX] Configuration loaded:" .
@@ -104,7 +109,8 @@ class PluginConfiguration {
             " [blockOfInterestTicks:" . $this->blockOfInterestTicks . "] [checkTargetSkipTicks:" . $this->checkTargetSkipTicks . "] [pickupLootTicks:" . $this->pickupLootTicks . "]" .
             " [interactiveButtonCorrection:" . $this->interactiveButtonCorrection . "] [useBlockLight:" . $this->useBlockLightForSpawn . "] [useSkyLight:" . $this->useSkyLightForSpawn . "]" .
             " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "] [xpEnabled:" . $this->xpEnabled . "]" .
-            " [idleChance:" . $this->idleChance . "] [idleMin:" . $this->idleMin . "] [idleMax:" . $this->idleMax . "] [idleTimeBetween:" . $this->idleTimeBetween . "secs]");
+            " [idleChance:" . $this->idleChance . "] [idleMin:" . $this->idleMin . "] [idleMax:" . $this->idleMax . "] [idleTimeBetween:" . $this->idleTimeBetween . "secs]" .
+            " [panicEnabled:" . $this->enablePanic . "] [panicTicks:" . $this->panicTicks . "]");
 
         self::$instance = $this;
     }
@@ -262,6 +268,19 @@ class PluginConfiguration {
         return $this->enableNBT;
     }
 
+    /**
+     * @return bool|mixed
+     */
+    public function getEnablePanic() {
+        return $this->enablePanic;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getPanicTicks() {
+        return $this->panicTicks;
+    }
 
 
 }
