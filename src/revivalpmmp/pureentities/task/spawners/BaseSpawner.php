@@ -212,7 +212,10 @@ abstract class BaseSpawner {
      * @return int
      */
     protected function getBlockLightAt(Player $player, Position $pos) {
-        return $player->getLevel()->getBlockLightAt($pos->x, $pos->y, $pos->z);
+        if ($player !== null) {
+            return $player->getLevel()->getBlockLightAt($pos->x, $pos->y, $pos->z);
+        }
+        return -1; // unknown
     }
 
     /**
@@ -223,7 +226,10 @@ abstract class BaseSpawner {
      * @return int
      */
     protected function getSkyLightAt(Player $player, Position $pos) {
-        return $player->getLevel()->getBlockSkyLightAt($pos->x, $pos->y, $pos->z);
+        if ($player !== null) {
+            return $player->getLevel()->getBlockSkyLightAt($pos->x, $pos->y, $pos->z);
+        }
+        return -1; // unknown
     }
 
     /**
