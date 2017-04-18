@@ -185,7 +185,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
     public function getDrops() {
         $drops = [];
         if ($this->isLootDropAllowed() and !$this->isSheared() && !$this->getBreedingComponent()->isBaby()) {
-            $drops = [Item::get(Item::WOOL, self::getColor(), mt_rand(0, 2))];
+            // http://minecraft.gamepedia.com/Sheep - drop 1 wool when not a baby and died
+            array_push($drops, Item::get(Item::WOOL, self::getColor(), 1));
         }
         return $drops;
     }
@@ -209,10 +210,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
         if ($this->isSheared()) { // already sheared
             return false;
         } else { // not sheared yet
-            // drop correct wool color by calling getDrops of the entity (the entity knows what to drop!)
-            foreach ($this->getDrops() as $drop) {
-                $player->getLevel()->dropItem($this, $drop);
-            }
+            // drop correct wool color - we cannot use getDrops as we've not damaged the entity before!
+            $player->getLevel()->dropItem($this, Item::get(Item::WOOL, self::getColor(), mt_rand(1, 3)));
             // set the sheep sheared
             $this->setSheared(true);
             // reset button text to empty string
