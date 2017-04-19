@@ -18,7 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
+use pocketmine\network\protocol\MobEquipmentPacket;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Projectile;

@@ -20,7 +20,7 @@ namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use pocketmine\network\protocol\AddEntityPacket;
 use revivalpmmp\pureentities\components\IdlingComponent;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\Monster;

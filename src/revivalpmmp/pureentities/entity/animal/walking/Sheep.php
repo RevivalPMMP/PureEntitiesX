@@ -25,7 +25,7 @@ use pocketmine\block\Grass;
 use pocketmine\block\TallGrass;
 use pocketmine\entity\Entity;
 use pocketmine\item\ItemIds;
-use pocketmine\network\mcpe\protocol\EntityEventPacket;
+use pocketmine\network\protocol\EntityEventPacket;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;

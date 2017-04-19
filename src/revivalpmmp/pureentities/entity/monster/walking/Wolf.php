@@ -22,7 +22,7 @@ use pocketmine\item\Item;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\mcpe\protocol\EntityEventPacket;
+use pocketmine\network\protocol\EntityEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\jumping\Rabbit;
