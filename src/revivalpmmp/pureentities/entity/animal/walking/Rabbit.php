@@ -19,17 +19,20 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
-use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfCanPanic;
 
-class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
+class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = 18;
 
-    public $width = 0.5;
     public $height = 0.5;
+    public $width = 0.5;
+    public $length = 0.5;
+    public $speed = 1.1;
 
     private $feedableItems = array(
         Item::CARROT,
@@ -39,22 +42,27 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     /**
      * Is needed for breeding functionality
      *
-     * @var BreedingExtension
+     * @var BreedingComponent
      */
     private $breedableClass;
 
     public function initEntity() {
         parent::initEntity();
-        $this->breedableClass = new BreedingExtension($this);
+        $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
+    }
+
+    public function saveNBT() {
+        parent::saveNBT();
+        $this->breedableClass->saveNBT();
     }
 
     /**
      * Returns the breedable class or NULL if not configured
      *
-     * @return BreedingExtension
+     * @return BreedingComponent
      */
-    public function getBreedingExtension() {
+    public function getBreedingComponent() {
         return $this->breedableClass;
     }
 
@@ -76,7 +84,15 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     }
 
     public function getSpeed(): float {
-        return 1.2;
+        return $this->speed;
+    }
+
+    public function getNormalSpeed(): float {
+        return 1.1;
+    }
+
+    public function getPanicSpeed(): float {
+        return 1.3;
     }
 
     public function getName() {
@@ -85,16 +101,17 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
 
     public function getDrops() {
         $drops = [];
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::RABBIT_HIDE, 0, mt_rand(0, 1)));
+            if ($this->isOnFire()) {
+                array_push($drops, Item::get(Item::COOKED_RABBIT, 0, mt_rand(0, 1)));
+            } else {
+                array_push($drops, Item::get(Item::RAW_RABBIT, 0, mt_rand(0, 1)));
+            }
 
-        array_push($drops, Item::get(Item::RABBIT_HIDE, 0, mt_rand(0, 1)));
-        if ($this->isOnFire()) {
-            array_push($drops, Item::get(Item::COOKED_RABBIT, 0, mt_rand(0, 1)));
-        } else {
-            array_push($drops, Item::get(Item::RAW_RABBIT, 0, mt_rand(0, 1)));
-        }
-
-        if (mt_rand(0, 100) <= 10) { // at 10 percent chance, rabbits drop rabbit's foot
-            array_push($drops, Item::get(Item::RABBIT_FOOT, 0, 1));
+            if (mt_rand(0, 100) <= 10) { // at 10 percent chance, rabbits drop rabbit's foot
+                array_push($drops, Item::get(Item::RABBIT_FOOT, 0, 1));
+            }
         }
 
         return $drops;
@@ -103,5 +120,13 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     public function getMaxHealth() {
         return 3;
     }
+
+    public function getKillExperience(): int {
+        if ($this->getBreedingComponent()->isBaby()) {
+            return mt_rand(1, 4);
+        }
+        return mt_rand(1, 3);
+    }
+
 
 }

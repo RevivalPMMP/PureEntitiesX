@@ -26,8 +26,14 @@ class Bat extends FlyingAnimal {
     //TODO implement
     const NETWORK_ID = Data::BAT;
 
-    public $width = 0.3;
-    public $height = 0.3;
+    public $width = 0.469;
+    public $length = 0.484;
+    public $height = 0.5;
+    public $speed = 1.0;
+
+    public function getSpeed(): float {
+        return $this->speed;
+    }
 
     public function getName() {
         return "Bat";

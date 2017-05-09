@@ -21,6 +21,7 @@ namespace revivalpmmp\pureentities;
 use pocketmine\entity\Entity;
 use pocketmine\Player;
 use pocketmine\utils\BlockIterator;
+use revivalpmmp\pureentities\utils\PeTimings;
 
 /**
  * This class is useful when it comes to interaction with entities.
@@ -60,31 +61,37 @@ class InteractionHelper {
      * @return mixed|null|Entity    either NULL if no entity is found or an instance of the entity
      */
     public static function getEntityPlayerLookingAt(Player $player, int $maxDistance, bool $useCorrection = false) {
+        PeTimings::startTiming("getEntityPlayerLookingAt [distance:$maxDistance]");
         /**
          * @var Entity
          */
         $entity = null;
 
-        $nearbyEntities = $player->getLevel()->getNearbyEntities($player->boundingBox->grow($maxDistance, $maxDistance, $maxDistance), $player);
+        // just a fix because player MAY not be fully initialized
+        if ($player->temporalVector !== null) {
+            $nearbyEntities = $player->getLevel()->getNearbyEntities($player->boundingBox->grow($maxDistance, $maxDistance, $maxDistance), $player);
 
-        // get all blocks in looking direction until the max interact distance is reached (it's possible that startblock isn't found!)
-        try {
-            $itr = new BlockIterator($player->level, $player->getPosition(), $player->getDirectionVector(), $player->getEyeHeight(), $maxDistance);
-        } catch (InvalidStateException $e) {
-            // nothing to log here!
-        }
-        if ($itr !== null) {
-            $block = null;
-            $entity = null;
-            while ($itr->valid()) {
-                $itr->next();
-                $block = $itr->current();
-                $entity = self::getEntityAtPosition($nearbyEntities, $block->x, $block->y, $block->z, $useCorrection);
-                if ($entity !== null) {
-                    break;
+            // get all blocks in looking direction until the max interact distance is reached (it's possible that startblock isn't found!)
+            try {
+                $itr = new BlockIterator($player->level, $player->getPosition(), $player->getDirectionVector(), $player->getEyeHeight(), $maxDistance);
+                if ($itr !== null) {
+                    $block = null;
+                    $entity = null;
+                    while ($itr->valid()) {
+                        $itr->next();
+                        $block = $itr->current();
+                        $entity = self::getEntityAtPosition($nearbyEntities, $block->x, $block->y, $block->z, $useCorrection);
+                        if ($entity !== null) {
+                            break;
+                        }
+                    }
                 }
+            } catch (\InvalidStateException $e) {
+                // nothing to log here!
             }
         }
+
+        PeTimings::stopTiming("getEntityPlayerLookingAt [distance:$maxDistance]", true);
 
         return $entity;
     }

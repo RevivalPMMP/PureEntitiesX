@@ -21,6 +21,9 @@ namespace revivalpmmp\pureentities\features;
 
 /**
  * Interface IntfCanBreed
+ *
+ * Interface to be implemented by entities that can breed or can be a baby.
+ *
  * @package revivalpmmp\pureentities\features
  */
 interface IntfCanBreed extends IntfFeedable {
@@ -30,7 +33,7 @@ interface IntfCanBreed extends IntfFeedable {
      *
      * @return mixed
      */
-    public function getBreedingExtension();
+    public function getBreedingComponent();
 
     /**
      * Has to return the network id for the associated entity

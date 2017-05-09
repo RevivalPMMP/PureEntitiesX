@@ -31,10 +31,12 @@ class Husk extends WalkingMonster implements Ageable {
     const NETWORK_ID = Data::HUSK;
 
     public $width = 1.031;
+    public $length = 0.891;
     public $height = 2;
+    public $speed = 1.1;
 
     public function getSpeed(): float {
-        return 1.1;
+        return $this->speed;
     }
 
     public function initEntity() {
@@ -76,7 +78,7 @@ class Husk extends WalkingMonster implements Ageable {
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
-            $effect = Effect::getEffect(17)->setDuration(1800)->setAmplifier(1)->setVisible(true);
+            $effect = Effect::getEffect(17)->setDuration(1800)->setAmplifier(1);
             $player->addEffect($effect);
 
             $this->checkTamedMobsAttack($player);
@@ -85,17 +87,19 @@ class Husk extends WalkingMonster implements Ageable {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
-        switch (mt_rand(0, 5)) {
-            case 1:
-                array_push($drops, Item::get(Item::CARROT, 0, 1));
-                break;
-            case 2:
-                array_push($drops, Item::get(Item::POTATO, 0, 1));
-                break;
-            case 3:
-                array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
-                break;
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
+            switch (mt_rand(0, 5)) {
+                case 1:
+                    array_push($drops, Item::get(Item::CARROT, 0, 1));
+                    break;
+                case 2:
+                    array_push($drops, Item::get(Item::POTATO, 0, 1));
+                    break;
+                case 3:
+                    array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
+                    break;
+            }
         }
         return $drops;
     }
@@ -103,4 +107,10 @@ class Husk extends WalkingMonster implements Ageable {
     public function getMaxHealth() {
         return 20;
     }
+
+    public function getKillExperience(): int {
+        // babies spawn 12 exp - not for now - as it isn't implemented yet
+        return 5;
+    }
+
 }

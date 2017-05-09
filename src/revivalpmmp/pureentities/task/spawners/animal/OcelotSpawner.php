@@ -21,7 +21,7 @@ namespace revivalpmmp\pureentities\task\spawners\animal;
 
 use pocketmine\block\Grass;
 use pocketmine\level\generator\biome\Biome;
-use pocketmine\level\generator\normal\object\Tree;
+use pocketmine\level\generator\object\Tree;
 use pocketmine\level\Position;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\walking\Ocelot;

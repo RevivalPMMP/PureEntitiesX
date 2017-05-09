@@ -19,6 +19,9 @@
 namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use revivalpmmp\pureentities\components\IdlingComponent;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use pocketmine\entity\Creature;
@@ -30,10 +33,14 @@ use pocketmine\level\Level;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\network\protocol\AddEntityPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\entity\monster\walking\Wolf;
+use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
+use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\utils\TickCounter;
 
 abstract class BaseEntity extends Creature {
 
@@ -48,16 +55,46 @@ abstract class BaseEntity extends Creature {
     private $wallcheck = true;
     protected $fireProof = false;
     private $maxJumpHeight = 1; // default: 1 block jump height - this should be 2 for horses e.g.
+    protected $checkTargetSkipTicks = 1; // default: no skip
+    public $speed = 1.0;
+    /**
+     * @var null|TickCounter
+     */
+    protected $panicCounter = null;
 
     /**
      * @var int
      */
     private $checkTargetSkipCounter = 0;
 
+    /**
+     * @var IdlingComponent
+     */
+    protected $idlingComponent;
+
+    protected $panicEnabled = true;
+    protected $panicTicks = 100;
+
     public function __destruct() {
     }
 
+    public function __construct(Level $level, CompoundTag $nbt) {
+        $this->idlingComponent = new IdlingComponent($this);
+        $this->checkTargetSkipTicks = PluginConfiguration::getInstance()->getCheckTargetSkipTicks();
+        $this->panicEnabled = PluginConfiguration::getInstance()->getEnablePanic();
+        $this->panicTicks = PluginConfiguration::getInstance()->getPanicTicks();
+        parent::__construct($level, $nbt);
+    }
+
     public abstract function updateMove($tickDiff);
+
+    /**
+     * Should return the experience dropped by the entity when killed
+     * @return int
+     */
+    public function getKillExperience() : int {
+        return 0; // default no experience drops
+    }
 
     public function getSaveId() {
         $class = new \ReflectionClass(get_class($this));
@@ -100,6 +137,7 @@ abstract class BaseEntity extends Creature {
      */
     public function setBaseTarget($baseTarget) {
         if ($baseTarget !== $this->baseTarget) {
+            PureEntities::logOutput("$this: setBaseTarget to $baseTarget", PureEntities::DEBUG);
             $this->baseTarget = $baseTarget;
         }
     }
@@ -114,7 +152,7 @@ abstract class BaseEntity extends Creature {
     }
 
     public function getSpeed(): float {
-        return 1;
+        return $this->speed;
     }
 
     /**
@@ -127,20 +165,27 @@ abstract class BaseEntity extends Creature {
     public function initEntity() {
         parent::initEntity();
 
-        if (isset($this->namedtag->Movement)) {
-            $this->setMovement($this->namedtag["Movement"]);
-        }
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->namedtag->Movement)) {
+                $this->setMovement($this->namedtag["Movement"]);
+            }
 
-        if (isset($this->namedtag->WallCheck)) {
-            $this->setWallCheck($this->namedtag["WallCheck"]);
+            if (isset($this->namedtag->WallCheck)) {
+                $this->setWallCheck($this->namedtag["WallCheck"]);
+            }
         }
         $this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
+
+        $this->idlingComponent->loadFromNBT();
     }
 
     public function saveNBT() {
-        parent::saveNBT();
-        $this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
-        $this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::saveNBT();
+            $this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
+            $this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
+        }
+        $this->idlingComponent->saveNBT();
     }
 
     public function spawnTo(Player $player) {
@@ -189,8 +234,17 @@ abstract class BaseEntity extends Creature {
         return $bb !== null and $block->isSolid() and !$block->isTransparent() and $bb->intersectsWith($this->getBoundingBox());
     }
 
+    /**
+     * Entity gets attacked by another entity / explosion or something similar
+     *
+     * @param float $damage the damage coming in
+     * @param EntityDamageEvent $source the damage event
+     */
     public function attack($damage, EntityDamageEvent $source) {
         if ($this->isKnockback() > 0) return;
+
+        // "wake up" entity - it gets attacked!
+        $this->idlingComponent->stopIdling(1, true);
 
         parent::attack($damage, $source);
 
@@ -209,6 +263,12 @@ abstract class BaseEntity extends Creature {
             $this->motionY = $motion->y * 0.19;
         } else {
             $this->motionY = 0.6;
+        }
+
+        // panic mode - here we check if the entity can enter panic mode and so on
+        if ($this instanceof IntfCanPanic and $damager instanceof Player and !$this->isInPanic() and $this->panicEnabled) {
+            $this->setBaseTarget(new Vector3($this->x - ($damager->x * 10), $this->y - $damager->y, ($this->z - $damager->z * 10)));
+            $this->setInPanic(); // this should prevent to search for other targets and increase run speed
         }
 
         $this->checkAttackByTamedEntities($source);
@@ -236,6 +296,9 @@ abstract class BaseEntity extends Creature {
         if ($this->attackTime > 0) {
             $this->attackTime -= $tickDiff;
         }
+
+        // check panic tick
+        $this->panicTick($tickDiff);
 
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
@@ -281,13 +344,12 @@ abstract class BaseEntity extends Creature {
 
     /**
      * This is called while moving around. This is specially important for entities like sheep etc. pp
-     * which eat grass to grow their wool. They should return the block which is of interest to move
-     * the entity there.
+     * which eat grass to grow their wool. This method should check at which block the entity is currently
+     * staying / moving. If it is suitable - it should eat grass or something similar
      *
-     * @param array $blocksAround
      * @return bool|Block
      */
-    public function isAnyBlockOfInterest(array $blocksAround) {
+    public function isCurrentBlockOfInterest() {
         return false;
     }
 
@@ -318,6 +380,9 @@ abstract class BaseEntity extends Creature {
                             // this entity belongs to the player. other tamed mobs shouldnt attack!
                             continue;
                         }
+                        /**
+                         * @var $entity IntfTameable
+                         */
                         if ($entity->isSitting()) {
                             $entity->setSitting(false);
                         }
@@ -373,13 +438,83 @@ abstract class BaseEntity extends Creature {
      * @return bool
      */
     protected function isCheckTargetAllowedBySkip(): bool {
-        if ($this->checkTargetSkipCounter > PluginConfiguration::getInstance()->getCheckTargetSkipTicks()) {
+        if ($this->checkTargetSkipCounter > $this->checkTargetSkipTicks) {
             $this->checkTargetSkipCounter = 0;
             return true;
         } else {
             $this->checkTargetSkipCounter++;
             return false;
         }
+    }
+
+    /**
+     * Checks if dropping loot is allowed.
+     * @return bool true when allowed, false when not
+     */
+    protected function isLootDropAllowed(): bool {
+        $lastDamageEvent = $this->getLastDamageCause();
+        if ($lastDamageEvent !== null and $lastDamageEvent instanceof EntityDamageByEntityEvent) {
+            return $lastDamageEvent->getDamager() instanceof Player;
+        }
+        return false;
+    }
+
+    /**
+     * This has to be called by onUpdate / entityBaseTick
+     *
+     * @param int $tickDiff
+     * @return bool true if the entity is still in panic
+     */
+    public function panicTick(int $tickDiff = 1): bool {
+        if ($this->isInPanic()) {
+            PureEntities::logOutput("$this: is in panic. Checking if expired.");
+            if ($this->panicCounter->isTicksExpired($tickDiff)) {
+                PureEntities::logOutput("$this: panic expired. Resetting entity status.");
+                $this->unsetInPanic();
+                return false; // not in panic anymore
+            }
+            PureEntities::logOutput("$this: still in panic.");
+            return true; // still in panic
+        }
+        PureEntities::logOutput("$this: no in panic.");
+        return false; // no in panic
+    }
+
+    /**
+     * Checks if this entity is in panic mode (flee mode)
+     *
+     * @return bool
+     */
+    public function isInPanic() {
+        return $this->panicCounter !== null;
+    }
+
+    /**
+     * Sets an entity in panic mode.
+     */
+    public function setInPanic() {
+        $this->panicCounter = new TickCounter($this->panicTicks); // x ticks in panic
+        /**
+         * @var $this IntfCanPanic
+         */
+        if (!$this instanceof IntfCanBreed or ($this instanceof IntfCanBreed && !$this->getBreedingComponent()->isBaby())) {
+            $this->speed = $this->getPanicSpeed();
+        }
+        $this->moveTime = $this->panicTicks; // move for x ticks
+        PureEntities::logOutput("$this: in panic now [speed:" . $this->speed . "] [duration:" . $this->panicTicks . "]");
+    }
+
+    /**
+     * Unsets panic for an entity
+     */
+    public function unsetInPanic() {
+        $this->panicCounter = null;
+        /**
+         * @var $this IntfCanPanic
+         */
+        $this->speed = $this->getNormalSpeed();
+        $this->setBaseTarget(null);
+        PureEntities::logOutput("$this: unset panic now [speed:" . $this->speed . "]");
     }
 
 

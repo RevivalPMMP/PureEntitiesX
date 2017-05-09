@@ -30,9 +30,11 @@ class MagmaCube extends JumpingMonster {
 
     public $width = 1.2;
     public $height = 1.2;
+    public $length = 1.2;
+    public $speed = 0.8;
 
     public function getSpeed(): float {
-        return 0.8;
+        return $this->speed;
     }
 
     public function initEntity() {
@@ -58,15 +60,23 @@ class MagmaCube extends JumpingMonster {
 
     public function getDrops() {
         $drops = [];
-        switch (mt_rand(0, 1)) {
-            case 0:
-                $drops[] = Item::get(Item::NETHERRACK, 0, 1);
-                break;
-            case 1:
-                $drops[] = Item::get(Item::MAGMA_CREAM, 0, 1);
-                break;
+        if ($this->isLootDropAllowed()) {
+            switch (mt_rand(0, 1)) {
+                case 0:
+                    $drops[] = Item::get(Item::NETHERRACK, 0, 1);
+                    break;
+                case 1:
+                    $drops[] = Item::get(Item::MAGMA_CREAM, 0, 1);
+                    break;
+            }
         }
         return $drops;
     }
+
+    public function getKillExperience(): int {
+        // normally it would be set by small/medium/big sized - but as we have it not now - i'll make it more static
+        return mt_rand(3, 6);
+    }
+
 
 }

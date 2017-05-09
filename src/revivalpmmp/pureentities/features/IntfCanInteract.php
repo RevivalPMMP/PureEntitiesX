@@ -22,6 +22,13 @@ namespace revivalpmmp\pureentities\features;
 
 use pocketmine\Player;
 
+/**
+ * Interface IntfCanInteract
+ *
+ * Interface to be implemented by entities that the player can interact with
+ *
+ * @package revivalpmmp\pureentities\features
+ */
 interface IntfCanInteract {
 
     public function showButton(Player $player);

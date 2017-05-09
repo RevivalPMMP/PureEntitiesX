@@ -18,7 +18,9 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\Player;
+use pocketmine\item\ItemIds;
+use revivalpmmp\pureentities\components\BreedingComponent;
+use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -27,22 +29,77 @@ use pocketmine\event\Timings;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\PureEntities;
 
-class Zombie extends WalkingMonster {
+class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     const NETWORK_ID = Data::ZOMBIE;
 
-    public $width = 0.72;
-    public $height = 1.8;
+    public $width = 1.031;
+    public $length = 0.891;
+    public $height = 2;
+    public $speed = 1.1;
+
+    /**
+     * @var MobEquipment
+     */
+    private $mobEquipment;
+
+    /**
+     * Not a complete list yet ...
+     *
+     * @var array
+     */
+    private $pickUpLoot = [ItemIds::IRON_SWORD, ItemIds::IRON_SHOVEL];
+
+    /**
+     * Is needed for breeding functionality, but here we use it only as an
+     * ageable component.
+     *
+     * @var BreedingComponent
+     */
+    private $breedableClass;
 
     public function getSpeed(): float {
-        return 1.1;
+        return $this->speed;
     }
 
     public function initEntity() {
         parent::initEntity();
         $this->setDamage([0, 2, 3, 4]);
+
+        $this->mobEquipment = new MobEquipment($this);
+        $this->mobEquipment->init();
+
+        $this->breedableClass = new BreedingComponent($this);
+        $this->breedableClass->init();
+    }
+
+    /**
+     * Returns the breedable class or NULL if not configured
+     *
+     * @return BreedingComponent
+     */
+    public function getBreedingComponent() {
+        return $this->breedableClass;
+    }
+
+    /**
+     * Returns the appropiate NetworkID associated with this entity
+     * @return int
+     */
+    public function getNetworkId() {
+        return self::NETWORK_ID;
+    }
+
+    /**
+     * Returns the items that can be fed to the entity
+     *
+     * @return array
+     */
+    public function getFeedableItems() {
+        return []; // return an empty array - a zombie is not feedable
     }
 
     public function getName() {
@@ -65,11 +122,45 @@ class Zombie extends WalkingMonster {
         }
     }
 
+    /**
+     * Zombie gets attacked. We need to recalculate the damage done with reducing the damage by armor type.
+     *
+     * @param float $damage
+     * @param EntityDamageEvent $source
+     * @return mixed
+     */
+    public function attack($damage, EntityDamageEvent $source) {
+        PureEntities::logOutput("$this: attacked with original damage of $damage", PureEntities::DEBUG);
+        $reduceDamagePercent = 0;
+        if ($this->getMobEquipment() !== null) {
+            $reduceDamagePercent = $this->getMobEquipment()->getArmorDamagePercentToReduce();
+        }
+        if ($reduceDamagePercent > 0) {
+            $reduceBy = $damage * $reduceDamagePercent / 100;
+            PureEntities::logOutput("$this: reduce damage by $reduceBy", PureEntities::DEBUG);
+            $damage = $damage - $reduceBy;
+        }
+
+        PureEntities::logOutput("$this: attacked with final damage of $damage", PureEntities::DEBUG);
+
+        return parent::attack($damage, $source);
+    }
+
+    /**
+     * This zombie attacks a player
+     *
+     * @param Entity $player
+     */
     public function attackEntity(Entity $player) {
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
             $this->attackDelay = 0;
-
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
+            // maybe this needs some rework ... as it should be calculated within the event class and take
+            // mob's weapon into account. for now, i just add the damage from the weapon the mob wears
+            $damage = $this->getDamage();
+            if ($this->getMobEquipment() !== null) {
+                $damage = $damage + $this->getMobEquipment()->getWeaponDamageToAdd();
+            }
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $damage);
             $player->attack($ev->getFinalDamage(), $ev);
 
             $this->checkTamedMobsAttack($player);
@@ -78,6 +169,8 @@ class Zombie extends WalkingMonster {
 
     public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
         Timings::$timerEntityBaseTick->startTiming();
+
+        $this->getMobEquipment()->entityBaseTick($tickDiff);
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
@@ -88,29 +181,57 @@ class Zombie extends WalkingMonster {
         ) {
             $this->setOnFire(100);
         }
-
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
-        switch (mt_rand(0, 5)) {
-            case 1:
-                array_push($drops, Item::get(Item::CARROT, 0, 1));
-                break;
-            case 2:
-                array_push($drops, Item::get(Item::POTATO, 0, 1));
-                break;
-            case 3:
-                array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
-                break;
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
+            switch (mt_rand(0, 5)) {
+                case 1:
+                    array_push($drops, Item::get(Item::CARROT, 0, 1));
+                    break;
+                case 2:
+                    array_push($drops, Item::get(Item::POTATO, 0, 1));
+                    break;
+                case 3:
+                    array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
+                    break;
+            }
+
+            // add equipment with a chance of 9% (drop chance)
+            $this->getMobEquipment()->addLoot($drops);
         }
+
         return $drops;
     }
 
     public function getMaxHealth() {
         return 20;
     }
+
+    public function getKillExperience(): int {
+        // adult: 5, baby: 12
+        return 5;
+    }
+
+
+    // -------------------- equipment methods --------------------
+
+    /**
+     * @return MobEquipment
+     */
+    public function getMobEquipment(): MobEquipment {
+        return $this->mobEquipment;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPickupLoot(): array {
+        return $this->pickUpLoot;
+    }
+
 }

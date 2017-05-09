@@ -42,9 +42,16 @@ use revivalpmmp\pureentities\data\Data;
 class Blaze extends FlyingMonster implements ProjectileSource {
     const NETWORK_ID = Data::BLAZE;
 
-    public $width = 0.72;
-    public $height = 1.8;
+    public $height = 1.5;
+    public $width = 1.25;
+    public $length = 0.906;
     public $gravity = 0.04;
+    public $speed = 1.0;
+
+    public function getSpeed(): float {
+        return $this->speed;
+    }
+
 
     public function initEntity() {
         parent::initEntity();
@@ -234,7 +241,16 @@ class Blaze extends FlyingMonster implements ProjectileSource {
     }
 
     public function getDrops() {
-        return [Item::get(Item::BLAZE_ROD, 0, mt_rand(0, 1))];
+        if ($this->isLootDropAllowed()) {
+            return [Item::get(Item::BLAZE_ROD, 0, mt_rand(0, 1))];
+        } else {
+            return [];
+        }
     }
+
+    public function getKillExperience(): int {
+        return 10;
+    }
+
 
 }

@@ -25,7 +25,6 @@ use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\entity\Creature;
-use revivalpmmp\pureentities\PureEntities;
 
 abstract class FlyingEntity extends BaseEntity {
 

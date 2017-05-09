@@ -22,6 +22,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
+use pocketmine\Server;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\BaseEntity;
@@ -62,7 +63,6 @@ use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\task\AutoDespawnTask;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
-
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
@@ -75,8 +75,10 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+use revivalpmmp\pureentities\task\EndermanLookingTask;
 use revivalpmmp\pureentities\task\InteractionTask;
 use revivalpmmp\pureentities\tile\Spawner;
+use revivalpmmp\pureentities\utils\MobEquipper;
 
 class PureEntities extends PluginBase implements CommandExecutor {
 
@@ -100,6 +102,11 @@ class PureEntities extends PluginBase implements CommandExecutor {
     const BUTTON_TEXT_DYE = "Dye";
 
     private static $registeredClasses = [];
+
+    /**
+     * @var bool
+     */
+    private static $loggingEnabled = false;
 
     /**
      * Returns the plugin instance to get access to config e.g.
@@ -181,14 +188,21 @@ class PureEntities extends PluginBase implements CommandExecutor {
     }
 
     public function onEnable() {
+        new PluginConfiguration($this); // create plugin configuration
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
+        if (PluginConfiguration::getInstance()->getEnableSpawning()) {
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
+        }
+        if (PluginConfiguration::getInstance()->getEnableLookingTasks()) {
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
+            $this->getServer()->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
+        }
+
         $this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
         $this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
 
-        new PluginConfiguration($this); // create plugin configuration
+        PureEntities::$loggingEnabled = PluginConfiguration::getInstance()->getLogEnabled();
     }
 
     /**
@@ -224,7 +238,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
     }
 
     public function onDisable() {
-        $this->getServer()->getLogger()->notice("Disabled!");
+        $this->getServer()->getLogger()->notice("[PureEntitiesX] Disabled!");
     }
 
     /**
@@ -251,18 +265,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 new FloatTag("", $source instanceof Location ? $source->pitch : 0)
             ]),
         ]);
-        if (PluginConfiguration::getInstance()->isRunningPmmp()) {
-            return Entity::createEntity($type, $source->getLevel(), $nbt, ...$args);
-        } else {
-            $chunk = $source->getLevel()->getChunk($source->x >> 4, $source->z >> 4, true);
-            if (!$chunk->isGenerated()) {
-                $chunk->setGenerated();
-            }
-            if (!$chunk->isPopulated()) {
-                $chunk->setPopulated();
-            }
-            return Entity::createEntity($type, $chunk, $nbt, ...$args);
-        }
+        return Entity::createEntity($type, $source->getLevel(), $nbt, ...$args);
     }
 
     /**
@@ -271,23 +274,22 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param Level $level
      * @param string $type
      * @param bool $baby
-     * @param Entity $parentEntity
-     * @param Player $owner
-     *
-     * @return boolean
+     * @param Entity|null $parentEntity
+     * @param Player|null $owner
+     * @return null|Entity
      */
     public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null,
                                           Player $owner = null) {
         $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
         if ($event->isCancelled()) {
-            return false;
+            return null;
         } else {
             $entity = self::create($entityid, $pos);
             if ($entity !== null) {
-                if ($entity instanceof IntfCanBreed and $baby and $entity->getBreedingExtension() !== false) {
-                    $entity->getBreedingExtension()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
+                if ($entity instanceof IntfCanBreed and $baby and $entity->getBreedingComponent() !== false) {
+                    $entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
                     if ($parentEntity != null) {
-                        $entity->getBreedingExtension()->setParent($parentEntity);
+                        $entity->getBreedingComponent()->setParent($parentEntity);
                     }
                 }
                 // new: a baby's parent (like a wolf) may belong to a player - if so, the baby is also owned by the player!
@@ -297,10 +299,16 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 }
                 PureEntities::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", PureEntities::DEBUG);
                 $entity->spawnToAll();
-                return true;
+
+                // additionally: mob equipment
+                if ($entity instanceof BaseEntity) {
+                    MobEquipper::equipMob($entity);
+                }
+
+                return $entity;
             }
             self::logOutput("Cannot create entity [entityId:$entityid]", self::WARN);
-            return false;
+            return null;
         }
     }
 
@@ -310,27 +318,29 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param int $type the type of output to log
      * @return int|bool         returns false on failure
      */
-    public static function logOutput(string $logline, int $type) {
-        switch ($type) {
-            case self::DEBUG:
-                if (strcmp(self::$loglevel, "debug") == 0) {
-                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                }
-                break;
-            case self::WARN:
-                file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                break;
-            case self::NORM:
-                file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                break;
-            default:
-                if (strcmp(self::$loglevel, "debug") == 0) {
-                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                } elseif (strcmp(self::$loglevel, "warn") == 0) {
+    public static function logOutput(string $logline, int $type = PureEntities::DEBUG) {
+        if (PureEntities::$loggingEnabled) {
+            switch ($type) {
+                case self::DEBUG:
+                    if (strcmp(self::$loglevel, "debug") == 0) {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    }
+                    break;
+                case self::WARN:
                     file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                } else {
+                    break;
+                case self::NORM:
                     file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
-                }
+                    break;
+                default:
+                    if (strcmp(self::$loglevel, "debug") == 0) {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    } elseif (strcmp(self::$loglevel, "warn") == 0) {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    } else {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    }
+            }
         }
         return true;
     }
@@ -396,32 +406,48 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return bool
      */
     public function onCommand(CommandSender $sender, Command $command, $label, array $args) {
+        $commandSuccessul = false;
+
         switch ($command->getName()) {
             case "peremove":
-                $playerName = $sender->getName();
-                $player = $this->getServer()->getPlayer($playerName);
-                if ($player !== null and $player->isOnline()) {
-                    foreach ($player->getLevel()->getEntities() as $entity) {
-                        if ($entity instanceof BaseEntity) {
+                $counterLivingEntities = 0;
+                $counterOtherEntities = 0;
+                $entitiesRemoved = [];
+                foreach (Server::getInstance()->getLevels() as $level) {
+                    foreach ($level->getEntities() as $entity) {
+                        if (!$entity instanceof Player) {
                             $entity->close();
+                            $entitiesRemoved[] = $entity;
+                            if ($entity instanceof BaseEntity) {
+                                $counterLivingEntities++;
+                            } else {
+                                $counterOtherEntities++;
+                            }
                         }
                     }
-                    $sender->sendMessage("Removed all entities (Animals/Monsters)");
-                    return true;
-                } else {
-                    $sender->sendMessage("Can only be done ingame by a player with op status");
                 }
+                $sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
+                PureEntities::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", PureEntities::NORM);
+                foreach ($entitiesRemoved as $entity) {
+                    $name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
+                    PureEntities::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", PureEntities::NORM);
+                }
+                $commandSuccessul = true;
                 break;
             case "pesummon":
-                if (count($args) == 1 or count($args) == 2) {
+                if (count($args) >= 1 or count($args) <= 3) {
                     $playerName = count($args) == 1 ? $sender->getName() : $args[1];
+                    $isBaby = false;
+                    if (count($args) == 3) {
+                        $isBaby = strcmp(strtolower($args[2]), "true") == 0;
+                    }
                     foreach ($this->getServer()->getOnlinePlayers() as $player) {
                         if (strcasecmp($player->getName(), $playerName) == 0) {
                             // find a mob with the name issued
                             $mobName = strtolower($args[0]);
                             foreach (self::$registeredClasses as $registeredClass) {
                                 if (strcmp($mobName, strtolower($this->getShortClassName($registeredClass))) == 0) {
-                                    self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster");
+                                    self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster", $isBaby);
                                     $sender->sendMessage("Spawned $mobName");
                                     return true;
                                 }
@@ -431,14 +457,14 @@ class PureEntities extends PluginBase implements CommandExecutor {
                         }
                     }
                 } else {
-                    $sender->sendMessage("Need a mob name!");
-                    return true;
+                    $sender->sendMessage("Usage: pesummon <mobname> <opt:player_name> <opt:baby>");
+                    $commandSuccessul = true;
                 }
                 break;
             default:
                 break;
         }
-        return false;
+        return $commandSuccessul;
     }
 
     /**

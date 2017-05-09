@@ -31,11 +31,13 @@ use revivalpmmp\pureentities\data\Data;
 class IronGolem extends WalkingMonster {
     const NETWORK_ID = Data::IRON_GOLEM;
 
-    public $width = 1.9;
-    public $height = 2.1;
+    public $height = 2.688;
+    public $width = 1.625;
+    public $length = 0.906;
+    public $speed = 0.8;
 
     public function getSpeed(): float {
-        return 0.8;
+        return $this->speed;
     }
 
     public function initEntity() {
@@ -73,8 +75,10 @@ class IronGolem extends WalkingMonster {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));
-        array_push($drops, Item::get(Item::POPPY, 0, mt_rand(0, 2)));
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));
+            array_push($drops, Item::get(Item::POPPY, 0, mt_rand(0, 2)));
+        }
         return $drops;
     }
 

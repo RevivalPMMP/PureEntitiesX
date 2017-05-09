@@ -19,8 +19,10 @@
 namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
+use pocketmine\block\Slab;
+use pocketmine\block\Stair;
+use pocketmine\entity\Item;
 use pocketmine\Player;
-use revivalpmmp\pureentities\data\BlockSides;
 use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use pocketmine\block\Liquid;
@@ -30,14 +32,18 @@ use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\features\IntfTameable;
-use revivalpmmp\pureentities\PluginConfiguration;
+use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\utils\PeTimings;
 
 abstract class WalkingEntity extends BaseEntity {
 
     protected function checkTarget(bool $checkSkip = true) {
         if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
+            PeTimings::startTiming("WalkingAnimal: checkTarget()");
             if ($this->isKnockback()) {
+                PeTimings::stopTiming("WalkingAnimal: checkTarget()");
                 return;
             }
 
@@ -74,77 +80,17 @@ abstract class WalkingEntity extends BaseEntity {
             }
 
             if ($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->isAlive()) {
+                PeTimings::stopTiming("WalkingAnimal: checkTarget()", true);
                 return;
             }
 
-            if ($this->moveTime <= 0 or !($this->getBaseTarget() instanceof Vector3)) {
-                $x = mt_rand(20, 100);
-                $z = mt_rand(20, 100);
-                $this->moveTime = mt_rand(300, 1200);
-                $this->setBaseTarget($this->add(mt_rand(0, 1) ? $x : -$x, 0, mt_rand(0, 1) ? $z : -$z));
-            }
-        }
-    }
-
-    /**
-     * @param int $dx
-     * @param int $dz
-     *
-     * @return bool
-     */
-    protected function checkJump($dx, $dz) {
-        if ($this->motionY == $this->gravity * 2) { // swimming
-            return $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int)$this->y, Math::floorFloat($this->z))) instanceof Liquid;
-        } else { // dive up?
-            if ($this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int)($this->y + 0.8), Math::floorFloat($this->z))) instanceof Liquid) {
-                $this->motionY = $this->gravity * 2; // set swimming (rather walking on water ;))
-                return true;
-            }
-        }
-
-        if (!$this->isOnGround() or $this->stayTime > 0) {
-            return false;
-        }
-
-        if ($this->getDirection() === null) {
-            return false;
-        }
-
-        $that = $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x + $dx), (int)$this->y, Math::floorFloat($this->z + $dz)));
-        $block = $that->getSide(BlockSides::getSides()[$this->getDirection()]);
-        // we cannot pass through the block that is directly in front of us
-        if (!$block->canPassThrough() and $this->getMaxJumpHeight() > 0) { // it's possible that an entity can't jump?! better check!
-            // check if we can get through the upper of the block directly in front of the entity
-            if ($block->getSide(Block::SIDE_UP)->canPassThrough() && $that->getSide(Block::SIDE_UP, 2)->canPassThrough()) {
-                if ($block instanceof Fence || $block instanceof FenceGate) { // cannot pass fence or fence gate ...
-                    $this->motionY = $this->gravity;
-                } else if ($this->motionY <= ($this->gravity * 8)) {
-                    $this->motionY = $this->gravity * 8;
-                } else {
-                    $this->motionY += $this->gravity * 0.25;
+            if (($this->moveTime <= 0 or !($this->getBaseTarget() instanceof Vector3)) and $this->motionY == 0) {
+                if (!$this->idlingComponent->checkAndSetIdling()) {
+                    $this->findRandomLocation();
                 }
-                return true;
             }
+            PeTimings::stopTiming("WalkingAnimal: checkTarget()", true);
         }
-        return false;
-
-    }
-
-    /**
-     * This function checks if upper blocks of the given block can be passed through. This
-     * method brings in jumpHeight of the entitiy (normal entities can only jump one block, horses
-     * e.g. jump 2 blocks ...)
-     *
-     * @param Block $block the block the check starts with
-     * @return bool true if upper blocks can be passed through
-     */
-    private function canPassThroughUpperBlocks(Block $block): bool {
-        for ($y = 1; $y <= $this->getMaxJumpHeight(); $y++) {
-            if (!$block->getSide(Block::SIDE_UP, ($y + 1))->canPassThrough()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     /**
@@ -164,22 +110,27 @@ abstract class WalkingEntity extends BaseEntity {
             return null;
         }
 
+        if ($this->idlingComponent->isIdling() and !$this->idlingComponent->stopIdling($tickDiff)) {
+            $this->idlingComponent->doSomeIdleStuff($tickDiff);
+            return null;
+        }
+
         $before = $this->getBaseTarget();
         $this->checkTarget();
-        if ($this->getBaseTarget() instanceof Creature or $this->getBaseTarget() instanceof Block or $before !== $this->getBaseTarget()) {
+        if ($this->getBaseTarget() instanceof Creature or $this->getBaseTarget() instanceof Block or $before !== $this->getBaseTarget() and
+            $this->getBaseTarget() !== null
+        ) {
             $x = $this->getBaseTarget()->x - $this->x;
             $y = $this->getBaseTarget()->y - $this->y;
             $z = $this->getBaseTarget()->z - $this->z;
 
-            $distance = sqrt(pow($this->x - $this->getBaseTarget()->x, 2) + pow($this->z - $this->getBaseTarget()->z, 2));
+            $distance = $this->distanceSquared($this->getBaseTarget());
 
-            if ($this->getBaseTarget() instanceof Block and $distance <= 1.5) {
-                $this->blockOfInterestReached($this->getBaseTarget());
-            } else if ($this instanceof IntfTameable and
-                $this->getBaseTarget() instanceof Player
-                and $this->isFriendly()
-                and $this->isTamed()
-                and $distance <= 6
+            if ($this instanceof IntfTameable and
+                $this->getBaseTarget() instanceof Player and
+                $this->isFriendly() and
+                $this->isTamed() and
+                $distance <= 6
             ) { // before moving nearer to the player, check if distance
                 // this entity is tamed and the target is the owner - hold distance 4 blocks
                 $this->stayTime = 50; // rest for 50 ticks before moving on ...
@@ -196,6 +147,11 @@ abstract class WalkingEntity extends BaseEntity {
                 $this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
             }
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
+        } else if ($this->getBaseTarget() instanceof Item and $this instanceof IntfCanEquip) { // mob equipment
+            $distance = $this->distanceSquared($this->getBaseTarget());
+            if ($distance <= 1.5) {
+                $this->getMobEquipment()->itemReached($this->getBaseTarget());
+            }
         }
 
         $dx = $this->motionX * $tickDiff;
@@ -208,10 +164,10 @@ abstract class WalkingEntity extends BaseEntity {
             $this->stayTime -= $tickDiff;
             $this->move(0, $this->motionY * $tickDiff, 0);
         } else {
-            $be = new Vector2($this->x + $dx, $this->z + $dz);
+            $futureLocation = new Vector2($this->x + $dx, $this->z + $dz);
             $this->move($dx, $this->motionY * $tickDiff, $dz);
-            $af = new Vector2($this->x, $this->z);
-            if (($be->x != $af->x || $be->y != $af->y) && !$isJump) {
+            $myLocation = new Vector2($this->x, $this->z);
+            if (($futureLocation->x != $myLocation->x || $futureLocation->y != $myLocation->y) && !$isJump) {
                 $this->moveTime -= 90 * $tickDiff;
             }
         }
@@ -232,11 +188,75 @@ abstract class WalkingEntity extends BaseEntity {
     }
 
     /**
-     * Implement this for entities who have interest in blocks
-     * @param Block $block the block that has been reached
+     * This method checks the jumping for the entity. It should only be called when isCollidedHorizontally is set to
+     * true on the entity.
+     *
+     * @param int $dx
+     * @param int $dz
+     *
+     * @return bool
      */
-    protected function blockOfInterestReached($block) {
-        // nothing important here. look e.g. Sheep.class
+    protected function checkJump($dx, $dz) {
+        PureEntities::logOutput("$this: entering checkJump [dx:$dx] [dz:$dz]");
+        if ($this->motionY == $this->gravity * 2) { // swimming
+            PureEntities::logOutput("$this: checkJump(): motionY == gravity*2");
+            return $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int)$this->y, Math::floorFloat($this->z))) instanceof Liquid;
+        } else { // dive up?
+            if ($this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int)($this->y + 0.8), Math::floorFloat($this->z))) instanceof Liquid) {
+                PureEntities::logOutput("$this: checkJump(): instanceof liquid");
+                $this->motionY = $this->gravity * 2; // set swimming (rather walking on water ;))
+                return true;
+            }
+        }
+
+        if ($this->motionY > 0.1 or $this->stayTime > 0) { // when entites are "hunting" they sometimes have a really small y motion (lesser than 0.1) so we've to take this into account
+            PureEntities::logOutput("$this: checkJump(): onGround:" . $this->isOnGround() . ", stayTime:" . $this->stayTime . ", motionY:" . $this->motionY);
+            return false;
+        }
+
+        if ($this->getDirection() === null) { // without a direction jump calculation is not possible!
+            PureEntities::logOutput("$this: checkJump(): no direction given ...");
+            return false;
+        }
+
+        PureEntities::logOutput("$this: checkJump(): position is [x:" . $this->x . "] [y:" . $this->y . "] [z:" . $this->z . "]");
+
+        // sometimes entities overlap blocks and the current position is already the next block in front ...
+        // they overlap especially when following an entity - you can see it when the entity (e.g. creeper) is looking
+        // in your direction but cannot jump (is stuck). Then the next line should apply
+        $blockingBlock = $this->getLevel()->getBlock($this->getPosition());
+        if ($blockingBlock->canPassThrough()) { // when we can pass through the current block then the next block is blocking the way
+            $blockingBlock = $this->getTargetBlock(2); // just for correction use 2 blocks ...
+        }
+        if ($blockingBlock != null and !$blockingBlock->canPassThrough() and $this->getMaxJumpHeight() > 0) {
+            // we cannot pass through the block that is directly in front of entity - check if jumping is possible
+            $upperBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 1, 0));
+            $secondUpperBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 2, 0));
+            PureEntities::logOutput("$this: checkJump(): block in front is $blockingBlock, upperBlock is $upperBlock, secondUpperblock is $secondUpperBlock");
+            // check if we can get through the upper of the block directly in front of the entity
+            if ($upperBlock->canPassThrough() && $secondUpperBlock->canPassThrough()) {
+                if ($blockingBlock instanceof Fence || $blockingBlock instanceof FenceGate) { // cannot pass fence or fence gate ...
+                    $this->motionY = $this->gravity;
+                    PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
+                } else if ($blockingBlock instanceof Slab or $blockingBlock instanceof Stair) { // on stairs entities shouldnt jump THAT high
+                    $this->motionY = $this->gravity * 4;
+                    PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
+                } else if ($this->motionY <= ($this->gravity * 8)) {
+                    PureEntities::logOutput("$this: checkJump(): set motion to gravity * 8!", PureEntities::DEBUG);
+                    $this->motionY = $this->gravity * 8;
+                } else {
+                    PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
+                    $this->motionY += $this->gravity * 0.25;
+                }
+                return true;
+            } else {
+                PureEntities::logOutput("$this: checkJump(): cannot pass throug the upper blocks!", PureEntities::DEBUG);
+            }
+        } else {
+            PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $blockingBlock->canPassThrough() . "] " .
+                "[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $blockingBlock . "]", PureEntities::DEBUG);
+        }
+        return false;
     }
 
     /**
@@ -247,6 +267,24 @@ abstract class WalkingEntity extends BaseEntity {
      */
     protected function isFollowingPlayer(Creature $creature): bool {
         return $this->getBaseTarget() !== null and $this->getBaseTarget() instanceof Player and $this->getBaseTarget()->getId() === $creature->getId();
+    }
+
+    /**
+     * Finds the next random location starting from current x/y/z and sets it as base target
+     */
+    public function findRandomLocation() {
+        PureEntities::logOutput("$this(findRandomLocation): entering");
+        $x = mt_rand(20, 100);
+        $z = mt_rand(20, 100);
+        $this->moveTime = mt_rand(300, 1200);
+
+        // set a real y coordinate ...
+        $yPos = PureEntities::getSuitableHeightPosition($x, $this->y, $z, $this->getLevel());
+
+        $this->setBaseTarget(new Vector3(
+            mt_rand(0, 1) ? $this->x + $x : $this->x - $x,
+            $yPos !== null ? $yPos->y : $this->y,
+            mt_rand(0, 1) ? $this->z + $z : $this->z - $z));
     }
 
 

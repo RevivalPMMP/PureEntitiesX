@@ -18,20 +18,27 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\item\StoneSword;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
-use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
 class WitherSkeleton extends WalkingMonster {
     const NETWORK_ID = Data::WITHER_SKELETON;
-    public $width = 0.65;
-    public $height = 1.8;
+
+    public $height = 2;
+    public $width = 0.781;
+    public $length = 0.875;
+    public $speed = 1.0;
+
+    public function getSpeed(): float {
+        return $this->speed;
+    }
 
     public function getName() {
         return "Wither Skeleton";
@@ -83,12 +90,14 @@ class WitherSkeleton extends WalkingMonster {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));
-        array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
-        switch (mt_rand(0, 8)) {
-            case 1:
-                array_push($drops, Item::get(Item::MOB_HEAD, 1, mt_rand(0, 2)));
-                break;
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));
+            array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
+            switch (mt_rand(0, 8)) {
+                case 1:
+                    array_push($drops, Item::get(Item::MOB_HEAD, 1, mt_rand(0, 2)));
+                    break;
+            }
         }
         return $drops;
     }
@@ -96,4 +105,9 @@ class WitherSkeleton extends WalkingMonster {
     public function getMaxHealth() {
         return 20;
     }
+
+    public function getKillExperience(): int {
+        return 5;
+    }
+
 }

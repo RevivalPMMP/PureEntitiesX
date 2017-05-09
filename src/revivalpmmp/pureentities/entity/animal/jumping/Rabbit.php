@@ -19,19 +19,18 @@
 namespace revivalpmmp\pureentities\entity\animal\jumping;
 
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use pocketmine\item\Item;
-use pocketmine\Player;
-use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
 class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
     const NETWORK_ID = Data::RABBIT;
 
-    public $width = 0.5;
     public $height = 0.5;
+    public $width = 0.5;
+    public $length = 0.5;
+    public $speed = 1.2;
 
     public function getSpeed(): float {
-        return 1.2;
+        return $this->speed;
     }
 
     public function getName() {
@@ -47,6 +46,11 @@ class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
 
     public function getDrops() {
         return [];
+    }
+
+    public function getKillExperience(): int {
+        // breeding drop 1-4 (not implemented yet)
+        return mt_rand(1, 3);
     }
 
 }

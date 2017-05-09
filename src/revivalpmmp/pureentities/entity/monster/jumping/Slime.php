@@ -32,9 +32,11 @@ class Slime extends JumpingMonster {
 
     public $width = 1.2;
     public $height = 1.2;
+    public $length = 1.2;
+    public $speed = 0.8;
 
     public function getSpeed(): float {
-        return 0.8;
+        return $this->speed;
     }
 
     public function getName() {
@@ -66,10 +68,20 @@ class Slime extends JumpingMonster {
     }
 
     public function getDrops() {
-        return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
+        if ($this->isLootDropAllowed()) {
+            return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
+        } else {
+            return [];
+        }
     }
 
     public function getMaxHealth() {
         return 4;
     }
+
+    public function getKillExperience(): int {
+        // normally big, small, tiny
+        return mt_rand(1, 4);
+    }
+
 }

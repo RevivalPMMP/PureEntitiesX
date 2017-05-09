@@ -18,7 +18,6 @@
 
 namespace revivalpmmp\pureentities\entity\monster\flying;
 
-use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\entity\monster\FlyingMonster;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
@@ -36,11 +35,13 @@ use revivalpmmp\pureentities\data\Data;
 class Ghast extends FlyingMonster implements ProjectileSource {
     const NETWORK_ID = Data::GHAST;
 
-    public $width = 4;
-    public $height = 4;
+    public $width = 4.5;
+    public $length = 4.5;
+    public $height = 4.5;
+    public $speed = 1.2;
 
     public function getSpeed(): float {
-        return 1.2;
+        return $this->speed;
     }
 
     public function initEntity() {
@@ -96,11 +97,20 @@ class Ghast extends FlyingMonster implements ProjectileSource {
     }
 
     public function getDrops() {
-        return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
+        if ($this->isLootDropAllowed()) {
+            return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
+        } else {
+            return [];
+        }
     }
 
     public function getMaxHealth() {
         return 10;
     }
+
+    public function getKillExperience(): int {
+        return 5;
+    }
+
 
 }

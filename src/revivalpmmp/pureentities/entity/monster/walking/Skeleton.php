@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Projectile;
@@ -33,15 +34,20 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
-use pocketmine\network\protocol\MobEquipmentPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
 class Skeleton extends WalkingMonster implements ProjectileSource {
     const NETWORK_ID = Data::SKELETON;
 
-    public $width = 0.65;
-    public $height = 1.8;
+    public $height = 2;
+    public $width = 0.781;
+    public $length = 0.875;
+    public $speed = 1.0;
+
+    public function getSpeed(): float {
+        return $this->speed;
+    }
 
     public function getName() {
         return "Skeleton";
@@ -72,7 +78,7 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
             ]);
 
             /** @var Projectile $arrow */
-            $arrow = Entity::createEntity("Arrow", $this->chunk, $nbt, $this);
+            $arrow = Entity::createEntity("Arrow", $this->getLevel(), $nbt, $this);
 
             $ev = new EntityShootBowEvent($this, Item::get(Item::ARROW, 0, 1), $arrow, $f);
             $this->server->getPluginManager()->callEvent($ev);
@@ -124,13 +130,20 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));
-        array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));
+            array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
+        }
         return $drops;
     }
 
     public function getMaxHealth() {
         return 20;
     }
+
+    public function getKillExperience(): int {
+        return 5;
+    }
+
 
 }

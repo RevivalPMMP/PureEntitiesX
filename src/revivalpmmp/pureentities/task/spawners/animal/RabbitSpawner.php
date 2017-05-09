@@ -70,7 +70,7 @@ class RabbitSpawner extends BaseSpawner {
 
                 // spawn the rest as baby (not implemented yet)
                 for ($i = 0; $i < ($herdSize - 1); $i++) {
-                    $this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Animal");
+                    $this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Animal", true);
                     PureEntities::logOutput($this->getClassNameShort() . ": scheduleCreatureSpawn (pos: $pos) as baby", PureEntities::NORM);
                 }
                 return true;

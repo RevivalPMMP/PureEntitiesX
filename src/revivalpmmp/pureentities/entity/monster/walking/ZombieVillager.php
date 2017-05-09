@@ -30,11 +30,13 @@ use revivalpmmp\pureentities\data\Data;
 class ZombieVillager extends WalkingMonster {
     const NETWORK_ID = Data::ZOMBIE_VILLAGER;
 
-    public $width = 0.72;
-    public $height = 1.8;
+    public $width = 1.031;
+    public $length = 0.891;
+    public $height = 2.125;
+    public $speed = 1.1;
 
     public function getSpeed(): float {
-        return 1.1;
+        return $this->speed;
     }
 
     public function initEntity() {
@@ -76,17 +78,19 @@ class ZombieVillager extends WalkingMonster {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
-        switch (mt_rand(0, 5)) {
-            case 1:
-                array_push($drops, Item::get(Item::CARROT, 0, 1));
-                break;
-            case 2:
-                array_push($drops, Item::get(Item::POTATO, 0, 1));
-                break;
-            case 3:
-                array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
-                break;
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
+            switch (mt_rand(0, 5)) {
+                case 1:
+                    array_push($drops, Item::get(Item::CARROT, 0, 1));
+                    break;
+                case 2:
+                    array_push($drops, Item::get(Item::POTATO, 0, 1));
+                    break;
+                case 3:
+                    array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
+                    break;
+            }
         }
         return $drops;
     }
@@ -94,5 +98,11 @@ class ZombieVillager extends WalkingMonster {
     public function getMaxHealth() {
         return 20;
     }
+
+    public function getKillExperience(): int {
+        // adult: 5, baby: 12
+        return 5;
+    }
+
 
 }

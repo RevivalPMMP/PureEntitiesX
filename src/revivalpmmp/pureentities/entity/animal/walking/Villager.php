@@ -24,11 +24,13 @@ use revivalpmmp\pureentities\data\Data;
 class Villager extends WalkingAnimal {
     const NETWORK_ID = Data::VILLAGER;
 
-    public $width = 0.72;
-    public $height = 1.8;
+    public $width = 0.938;
+    public $length = 0.609;
+    public $height = 2;
+    public $speed = 1.1;
 
     public function getSpeed(): float {
-        return 1.1;
+        return $this->speed;
     }
 
     public function getName() {
@@ -42,4 +44,9 @@ class Villager extends WalkingAnimal {
     public function getMaxHealth() {
         return 10;
     }
+
+    public function getKillExperience(): int {
+        return mt_rand(3, 6);
+    }
+
 }

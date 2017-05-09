@@ -196,11 +196,12 @@ abstract class BaseSpawner {
      * @param int $entityid
      * @param Level $level
      * @param string $type
+     * @param bool $isBaby
      * @return bool
      */
-    protected function spawnEntityToLevel(Position $pos, int $entityid, Level $level, string $type): bool {
+    protected function spawnEntityToLevel(Position $pos, int $entityid, Level $level, string $type, bool $isBaby = false): bool {
         $pos->y += self::HEIGHTS[$entityid];
-        return PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityid, $level, $type);
+        return PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityid, $level, $type, $isBaby) !== null;
     }
 
     /**
@@ -211,7 +212,10 @@ abstract class BaseSpawner {
      * @return int
      */
     protected function getBlockLightAt(Player $player, Position $pos) {
-        return $player->getLevel()->getBlockLightAt($pos->x, $pos->y, $pos->z);
+        if ($player !== null) {
+            return $player->getLevel()->getBlockLightAt($pos->x, $pos->y, $pos->z);
+        }
+        return -1; // unknown
     }
 
     /**
@@ -222,7 +226,10 @@ abstract class BaseSpawner {
      * @return int
      */
     protected function getSkyLightAt(Player $player, Position $pos) {
-        return $player->getLevel()->getBlockSkyLightAt($pos->x, $pos->y, $pos->z);
+        if ($player !== null) {
+            return $player->getLevel()->getBlockSkyLightAt($pos->x, $pos->y, $pos->z);
+        }
+        return -1; // unknown
     }
 
     /**

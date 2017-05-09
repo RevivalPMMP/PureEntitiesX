@@ -72,8 +72,8 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
             // breeding implementation (as only walking entities can breed atm)
             if ($this instanceof IntfTameable) {
                 if ($this->isTamed()) { // breeding extension only applies to tamed monsters
-                    if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
-                        if ($this->getBreedingExtension()->getInLove() <= 0) { // when the entity is NOT in love, but tamed, it should follow the player!!!
+                    if ($this instanceof IntfCanBreed && $this->getBreedingComponent() !== null) {
+                        if ($this->getBreedingComponent()->getInLove() <= 0) { // when the entity is NOT in love, but tamed, it should follow the player!!!
                             $target = $this->getBaseTarget();
                             if (!$this->isTargetMonsterOrAnimal() or !$target->isAlive()) {
                                 // set target to owner ...
@@ -186,6 +186,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                 } elseif (
                     $target instanceof Vector3
                     && (($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
+                    && $this->motionY == 0
                 ) {
                     $this->moveTime = 0;
                 }
@@ -195,7 +196,8 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                 $this->checkAndAttackEntity($target);
             } elseif (
                 $target instanceof Vector3
-                && (($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
+                && $this->distanceSquared($target) <= 1
+                && $this->motionY == 0
             ) {
                 $this->moveTime = 0;
             }
@@ -231,11 +233,11 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         }
 
         // tick the breeding extension if it's available
-        if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
+        if ($this instanceof IntfCanBreed && $this->getBreedingComponent() !== null) {
             // we should also check for any blocks of interest for the entity
-            $this->getBreedingExtension()->checkInLove();
+            $this->getBreedingComponent()->checkInLove();
             // tick the breedable class embedded
-            $this->getBreedingExtension()->tick();
+            $this->getBreedingComponent()->tick();
         }
 
         Timings::$timerEntityBaseTick->stopTiming();
@@ -327,7 +329,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                                     // reset base target when it was player before (follow by holding wheat)
                                     if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
                                         // reset base target!
-                                        $this->setBaseTarget($this->getBreedingExtension()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
+                                        $this->setBaseTarget($this->getBreedingComponent()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
                                     }
                                 }
                             }

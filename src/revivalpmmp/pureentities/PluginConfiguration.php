@@ -18,8 +18,6 @@
 
 namespace revivalpmmp\pureentities;
 
-use pocketmine\Server;
-
 
 /**
  * Class PluginConfiguration
@@ -41,12 +39,23 @@ class PluginConfiguration {
     private $useBlockLightForSpawn = false; // determines if the spawner classes should use block light instead of time on server
     private $useSkyLightForSpawn = false; // determines if the spawner classes should use skylight instead of time on server
     private $emitLoveParticlesCostantly = false; // determines if love particles are emitted constantly for entities that are in love mode
+    private $tamedTeleportBlocks = 12; // minimum distance to player when tamed entities start to teleport to their ownes
+    private $tamedPlayerMaxDistance = 10; // default: until the player is not x blocks away the tamed entities are walking around aimlessly
+    private $xpEnabled = false; // default is false!
+    private $pickupLootTicks = 10; // default: 10
+    private $logEnabled = false; // enable or disable file logging
+    private $enableSpawning = true; // enable spawning of entities
+    private $enableAsyncTasks = true; // enable async tasks for setting owner of tamed and setting mob equipment
+    private $enableLookingTasks = true; // enable looking tasks (like shear, tame etc. pp) and enderman looking task
+    private $enableNBT = true; // enable load/store of NBT
+    private $enablePanic = true; // enable or disable panic mode for entities
+    private $panicTicks = 100; // how long is an entity in panic mode?
 
-
-    /**
-     * @var string
-     */
-    private $serverCodeName = null;
+    // idle settings
+    private $idleChance = 20;
+    private $idleMin = 100;
+    private $idleMax = 500;
+    private $idleTimeBetween = 60;
 
     /**
      * Returns the plugin instance to get access to config e.g.
@@ -58,26 +67,50 @@ class PluginConfiguration {
 
     public function __construct(PureEntities $pluginBase) {
 
+        $this->enableSpawning = $pluginBase->getConfig()->getNested("tasks.spawn", true);
+        $this->enableAsyncTasks = $pluginBase->getConfig()->getNested("tasks.async", true);
+        $this->enableLookingTasks = $pluginBase->getConfig()->getNested("tasks.looking", true);
+
         // read some more config which we need internally (read once, give access to them via this class!)
         $this->maxFindPartnerDistance = $pluginBase->getConfig()->getNested("distances.find-partner", 49);
         $this->maxInteractDistance = $pluginBase->getConfig()->getNested("distances.interact", 4);
+        $this->tamedTeleportBlocks = $pluginBase->getConfig()->getNested("distances.tamed-teleport", 12);
+        $this->tamedPlayerMaxDistance = $pluginBase->getConfig()->getNested("distances.tamed-follow-player", 10);
+
         $this->blockOfInterestTicks = $pluginBase->getConfig()->getNested("ticks.block-interest", 300);
 
         $this->checkTargetSkipTicks = $pluginBase->getConfig()->getNested("performance.check-target-tick-skip", 1); // default: do not skip ticks asking checkTarget method
         $this->interactiveButtonCorrection = $pluginBase->getConfig()->getNested("performance.check-interactive-correction", false); // default: do not check other blocks for the entity for button display
+        $this->pickupLootTicks = $pluginBase->getConfig()->getNested("performance.check-pickup-loot", 10); // default: check every 10 ticks for picking up loot
+        $this->logEnabled = $pluginBase->getConfig()->getNested("performance.enable-logging", false); // default: false - do not use logging
+        $this->enableNBT = $pluginBase->getConfig()->getNested("performance.enable-nbt-storage", true); // default: enable storage and loading of NBT
 
         $this->useBlockLightForSpawn = $pluginBase->getConfig()->getNested("spawn-task.use-block-light", false); // default: do not use block light
         $this->useSkyLightForSpawn = $pluginBase->getConfig()->getNested("spawn-task.use-sky-light", false); // default: do not use block light
 
         $this->emitLoveParticlesCostantly = $pluginBase->getConfig()->getNested("breeding.emit-love-particles-constantly", false); // default: do not emit love particles constantly
 
-        // print effective configuration!
-        $pluginBase->getServer()->getLogger()->notice("Distances configured: [findPartner:" . $this->maxFindPartnerDistance . "] [interact:" . $this->maxInteractDistance . "]" .
-            " [blockOfInterestTicks:" . $this->blockOfInterestTicks . "] [checkTargetSkipTicks:" . $this->checkTargetSkipTicks . "]" .
-            " [interactiveButtonCorrection:" . $this->interactiveButtonCorrection . "] [useBlockLight:" . $this->useBlockLightForSpawn . "] [useSkyLight:" . $this->useSkyLightForSpawn . "]" .
-            " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "]");
+        $this->xpEnabled = $pluginBase->getConfig()->getNested("xp.enabled", false); // default: xp system not enabled
 
-        $this->serverCodeName = Server::getInstance()->getCodename();
+        $this->idleChance = $pluginBase->getConfig()->getNested("idle.chance", 20); // default: 20 percent idle chance
+        $this->idleMin = $pluginBase->getConfig()->getNested("idle.min-idle", 100); // default: 100 ticks
+        $this->idleMax = $pluginBase->getConfig()->getNested("idle.max-idle", 500); // default: 500 ticks
+        $this->idleTimeBetween = $pluginBase->getConfig()->getNested("idle.time-between-idle", 60); // default: 60 seconds
+
+        $this->enablePanic = $pluginBase->getConfig()->getNested("panic.enabled", true); // default: enabled
+        $this->panicTicks = $pluginBase->getConfig()->getNested("panic.ticks", 100); // default: 100 ticks
+
+        // print effective configuration!
+        $pluginBase->getServer()->getLogger()->notice("[PureEntitiesX] Configuration loaded:" .
+            " [enableNBT:" . $this->enableNBT . "]" .
+            " [enableSpawn:" . $this->enableSpawning . "] [enableAsyncTasks:" . $this->enableAsyncTasks . "] [enableLookingTasks:" . $this->enableLookingTasks . "]" .
+            " [loggingEnabled:" . $this->logEnabled . "] [findPartnerDistance:" . $this->maxFindPartnerDistance . "] [interactDistance:" . $this->maxInteractDistance . "]" .
+            " [teleportTamedDistance:" . $this->tamedTeleportBlocks . "] [tamedFollowDistance:" . $this->tamedPlayerMaxDistance . "]" .
+            " [blockOfInterestTicks:" . $this->blockOfInterestTicks . "] [checkTargetSkipTicks:" . $this->checkTargetSkipTicks . "] [pickupLootTicks:" . $this->pickupLootTicks . "]" .
+            " [interactiveButtonCorrection:" . $this->interactiveButtonCorrection . "] [useBlockLight:" . $this->useBlockLightForSpawn . "] [useSkyLight:" . $this->useSkyLightForSpawn . "]" .
+            " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "] [xpEnabled:" . $this->xpEnabled . "]" .
+            " [idleChance:" . $this->idleChance . "] [idleMin:" . $this->idleMin . "] [idleMax:" . $this->idleMax . "] [idleTimeBetween:" . $this->idleTimeBetween . "secs]" .
+            " [panicEnabled:" . $this->enablePanic . "] [panicTicks:" . $this->panicTicks . "]");
 
         self::$instance = $this;
     }
@@ -145,16 +178,108 @@ class PluginConfiguration {
     }
 
     /**
-     * A very "uiuiui" check. It just checks if the codename is "Unleashed" - then it's running pocketmine, otherwise
-     * it's running another fork/spoon. But in future we shouldn't rely on this method.
-     *
-     * @return bool
+     * @return int|mixed
      */
-    public function isRunningPmmp(): bool {
-        if (strcasecmp("unleashed", $this->serverCodeName) === 0) {
-            return true;
-        }
-        return false;
+    public function getTamedTeleportBlocks() {
+        return $this->tamedTeleportBlocks;
+    }
+
+    /**
+     * @return bool|mixed
+     */
+    public function getXpEnabled() {
+        return $this->xpEnabled;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getPickupLootTicks() {
+        return $this->pickupLootTicks;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getTamedPlayerMaxDistance() {
+        return $this->tamedPlayerMaxDistance;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getIdleChance() {
+        return $this->idleChance;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdleMin(): int {
+        return $this->idleMin;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdleMax(): int {
+        return $this->idleMax;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdleTimeBetween(): int {
+        return $this->idleTimeBetween;
+    }
+
+    /**
+     * @return bool|mixed
+     */
+    public function getLogEnabled() {
+        return $this->logEnabled;
+    }
+
+    /**
+     * @return bool|mixed
+     */
+    public function getEnableSpawning() {
+        return $this->enableSpawning;
+    }
+
+    /**
+     * @return bool|mixed
+     */
+    public function getEnableAsyncTasks() {
+        return $this->enableAsyncTasks;
+    }
+
+    /**
+     * @return bool|mixed
+     */
+    public function getEnableLookingTasks() {
+        return $this->enableLookingTasks;
+    }
+
+    /**
+     * @return bool|mixed
+     */
+    public function getEnableNBT() {
+        return $this->enableNBT;
+    }
+
+    /**
+     * @return bool|mixed
+     */
+    public function getEnablePanic() {
+        return $this->enablePanic;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    public function getPanicTicks() {
+        return $this->panicTicks;
     }
 
 

@@ -29,11 +29,13 @@ use revivalpmmp\pureentities\data\Data;
 class CaveSpider extends WalkingMonster {
     const NETWORK_ID = Data::CAVE_SPIDER;
 
-    public $width = 0.9;
-    public $height = 0.8;
+    public $width = 1.438;
+    public $length = 1.188;
+    public $height = 0.547;
+    public $speed = 1.3;
 
     public function getSpeed(): float {
-        return 1.3;
+        return $this->speed;
     }
 
     public function initEntity() {
@@ -58,11 +60,13 @@ class CaveSpider extends WalkingMonster {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
-        switch (mt_rand(0, 2)) {
-            case 0:
-                array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
-                break;
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
+            switch (mt_rand(0, 2)) {
+                case 0:
+                    array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
+                    break;
+            }
         }
         return $drops;
     }
@@ -70,5 +74,10 @@ class CaveSpider extends WalkingMonster {
     public function getMaxHealth() {
         return 12;
     }
+
+    public function getKillExperience(): int {
+        return 5;
+    }
+
 
 }

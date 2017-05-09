@@ -18,19 +18,22 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
-use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfCanPanic;
 
-class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanInteract {
+class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::PIG;
 
-    public $width = 1.45;
-    public $height = 1.12;
+    public $width = 0.625;
+    public $height = 1;
+    public $length = 1.5;
+    public $speed = 1.0;
 
     private $feedableItems = array(
         Item::CARROT,
@@ -39,13 +42,13 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
     /**
      * Is needed for breeding functionality
      *
-     * @var BreedingExtension
+     * @var BreedingComponent
      */
     private $breedableClass;
 
     public function initEntity() {
         parent::initEntity();
-        $this->breedableClass = new BreedingExtension($this);
+        $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
     }
 
@@ -53,12 +56,29 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
         return "Pig";
     }
 
+    public function getSpeed(): float {
+        return $this->speed;
+    }
+
+    public function getNormalSpeed(): float {
+        return 1.0;
+    }
+
+    public function getPanicSpeed(): float {
+        return 1.2;
+    }
+
+    public function saveNBT() {
+        parent::saveNBT();
+        $this->breedableClass->saveNBT();
+    }
+
     /**
      * Returns the breedable class or NULL if not configured
      *
-     * @return BreedingExtension
+     * @return BreedingComponent
      */
-    public function getBreedingExtension() {
+    public function getBreedingComponent() {
         return $this->breedableClass;
     }
 
@@ -80,15 +100,35 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
     }
 
     public function getDrops() {
-        if ($this->isOnFire()) {
-            return [Item::get(Item::COOKED_PORKCHOP, 0, mt_rand(1, 3))];
+        if ($this->isLootDropAllowed()) {
+            if ($this->isOnFire()) {
+                return [Item::get(Item::COOKED_PORKCHOP, 0, mt_rand(1, 3))];
+            } else {
+                return [Item::get(Item::RAW_PORKCHOP, 0, mt_rand(1, 3))];
+            }
         } else {
-            return [Item::get(Item::RAW_PORKCHOP, 0, mt_rand(1, 3))];
+            return [];
         }
     }
 
     public function getMaxHealth() {
         return 10;
     }
+
+    public function getKillExperience(): int {
+        if ($this->getBreedingComponent()->isBaby()) {
+            return mt_rand(1, 7);
+        }
+        return mt_rand(1, 3);
+    }
+
+    /**
+     * Just for Bluelight ...
+     * @return null
+     */
+    public function getRidePosition() {
+        return null;
+    }
+
 
 }

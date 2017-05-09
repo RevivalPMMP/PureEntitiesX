@@ -22,18 +22,23 @@ use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
 use pocketmine\Player;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
 class Mule extends WalkingAnimal implements Rideable {
     const NETWORK_ID = Data::MULE;
 
-    public $width = 1.3;
-    public $height = 1.4;
+    public $width = 0.75;
+    public $height = 1.562;
+    public $length = 1.2;
+    public $speed = 1.0;
 
     public function getName() {
         return "Mule";
+    }
+
+    public function getSpeed(): float {
+        return $this->speed;
     }
 
     public function targetOption(Creature $creature, float $distance): bool {
@@ -44,11 +49,29 @@ class Mule extends WalkingAnimal implements Rideable {
     }
 
     public function getDrops() {
-        return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
+        if ($this->isLootDropAllowed()) {
+            return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
+        } else {
+            return [];
+        }
     }
 
     public function getMaxHealth() {
         return 15;
     }
+
+    public function getKillExperience(): int {
+        return mt_rand(1, 3);
+    }
+
+    /**
+     * Just for Bluelight ...
+     * @return null
+     */
+    public function getRidePosition() {
+        return null;
+    }
+
+
 
 }

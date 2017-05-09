@@ -18,9 +18,9 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
-use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanInteract;
@@ -28,34 +28,45 @@ use revivalpmmp\pureentities\features\IntfCanInteract;
 class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::MOOSHROOM;
 
-    public $width = 1.45;
-    public $height = 1.12;
+    public $height = 1.875;
+    public $width = 0.891;
+    public $length = 1.781;
+    public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
 
     /**
      * Is needed for breeding functionality
      *
-     * @var BreedingExtension
+     * @var BreedingComponent
      */
     private $breedableClass;
 
     public function initEntity() {
         parent::initEntity();
-        $this->breedableClass = new BreedingExtension($this);
+        $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
+    }
+
+    public function getSpeed(): float {
+        return $this->speed;
     }
 
     public function getName() {
         return "Mooshroom";
     }
 
+    public function saveNBT() {
+        parent::saveNBT();
+        $this->breedableClass->saveNBT();
+    }
+
     /**
      * Returns the breedable class or NULL if not configured
      *
-     * @return BreedingExtension
+     * @return BreedingComponent
      */
-    public function getBreedingExtension() {
+    public function getBreedingComponent() {
         return $this->breedableClass;
     }
 
@@ -78,11 +89,13 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
-        if ($this->isOnFire()) {
-            array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
-        } else {
-            array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
+            if ($this->isOnFire()) {
+                array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
+            } else {
+                array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
+            }
         }
         return $drops;
     }
@@ -90,4 +103,12 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     public function getMaxHealth() {
         return 10;
     }
+
+    public function getKillExperience(): int {
+        if ($this->getBreedingComponent()->isBaby()) {
+            return mt_rand(1, 7);
+        }
+        return mt_rand(1, 3);
+    }
+
 }

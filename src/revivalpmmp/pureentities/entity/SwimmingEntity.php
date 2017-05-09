@@ -22,7 +22,6 @@ use revivalpmmp\pureentities\entity\animal\Animal;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
-use revivalpmmp\pureentities\PureEntities;
 
 abstract class SwimmingEntity extends BaseEntity {
 

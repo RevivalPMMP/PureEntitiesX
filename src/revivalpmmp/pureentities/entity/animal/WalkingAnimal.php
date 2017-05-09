@@ -18,7 +18,6 @@
 
 namespace revivalpmmp\pureentities\entity\animal;
 
-use pocketmine\block\Block;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\WalkingEntity;
@@ -62,17 +61,25 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         }
 
         // tick the breeding extension if it's available
-        if ($this instanceof IntfCanBreed && $this->getBreedingExtension() !== null) {
+        if ($this instanceof IntfCanBreed && $this->getBreedingComponent() !== null) {
             // we should also check for any blocks of interest for the entity
-            $this->getBreedingExtension()->checkInLove();
+            $this->getBreedingComponent()->checkInLove();
             // tick the breedable class embedded
-            $this->getBreedingExtension()->tick();
+            $this->getBreedingComponent()->tick();
         }
 
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
     }
 
+    /**
+     * This method is called from the server framework for each entity. This is our main
+     * entry point when it comes to tracing how all that stuff works. With each server
+     * tick each entity is ticked by calling this entry method.
+     *
+     * @param $currentTick
+     * @return bool
+     */
     public function onUpdate($currentTick) {
         if (!$this->isAlive()) {
             if (++$this->deadTicks >= 23) {
@@ -89,14 +96,14 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         $target = $this->updateMove($tickDiff);
         if ($target instanceof Player) {
             if ($this->distance($target) <= 2) {
-                $this->pitch = 22;
+                $this->pitch = 22; // pitch is the angle for looking up or down while yaw is looking left/right
                 $this->x = $this->lastX;
                 $this->y = $this->lastY;
                 $this->z = $this->lastZ;
             }
         } elseif (
             $target instanceof Vector3
-            && $this->distance($target) <= 1
+            && $this->distanceSquared($target) <= 1
         ) {
             $this->moveTime = 0;
         }
@@ -106,21 +113,17 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
     /**
      * Does the check for interesting blocks and sets the baseTarget if an interesting block is found
      */
-    protected function checkBlockOfInterest() {
+    protected function getCurrentBlock() {
+        $block = null;
         // no creature is the target, so we can check if there's any interesting block for the entity
         if ($this->blockInterestTime > 0) { // we take a look at interesting blocks only each 300 ticks!
             $this->blockInterestTime--;
-        } else { // it's time to check for any interesting block around ...
-            if ($this->getBaseTarget() instanceof Block) { // check if we have a block target and the target is not closed. if so, we have our target!
-                return;
-            }
+        } else { // it's time to check for any interesting block the entity is on
             $this->blockInterestTime = PluginConfiguration::getInstance()->getBlockOfInterestTicks();
-            $block = $this->isAnyBlockOfInterest($this->getBlocksFlatAround(4)); // check only 4 blocks - to spare computing time?!
-            if ($block != false) {
-                // we found our target let's move to it!
-                $this->setBaseTarget($block);
-            }
+            $temporalVector = new Vector3($this->x, $this->y - $this->height / 2, $this->z);
+            $block = $this->level->getBlock($temporalVector);
         }
+        return $block;
     }
 
 
@@ -167,14 +170,14 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
                         // check if the sheep is able to follow - but only on a distance of 6 blocks
                         $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance();
                         // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
-                        if (!$targetOption and $this->isFollowingPlayer($creature) and !$this->getBreedingExtension()->isBaby()) {
-                            $this->setBaseTarget($this->getBreedingExtension()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
+                        if (!$targetOption and $this->isFollowingPlayer($creature) and !$this->getBreedingComponent()->isBaby()) {
+                            $this->setBaseTarget($this->getBreedingComponent()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
                         }
                     } else {
                         // reset base target when it was player before (follow by holding wheat)
                         if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
                             // reset base target!
-                            $this->setBaseTarget($this->getBreedingExtension()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
+                            $this->setBaseTarget($this->getBreedingComponent()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
                         }
                     }
                 }

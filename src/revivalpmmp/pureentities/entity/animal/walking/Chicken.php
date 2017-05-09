@@ -19,20 +19,23 @@
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
 use pocketmine\level\sound\PopSound;
-use pocketmine\network\protocol\EntityEventPacket;
+use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
-use revivalpmmp\pureentities\features\BreedingExtension;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfCanPanic;
 
-class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
+class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::CHICKEN;
 
-    public $width = 0.4;
-    public $height = 0.7;
-    public $eyeHeight = 0.7;
+    public $width = 1;
+    public $length = 0.5;
+    public $height = 0.8;
+    public $eyeHeight = 0.6;
+    public $speed = 1.0;
+    public $gravity = 0.04; // floating chickens
 
     // egg laying specific configuration (an egg is layed by a chicken each 6000-120000 ticks)
     private $dropEggTimer = 0;
@@ -49,14 +52,31 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     /**
      * Is needed for breeding functionality
      *
-     * @var BreedingExtension
+     * @var BreedingComponent
      */
     private $breedableClass;
 
     public function initEntity() {
         parent::initEntity();
-        $this->breedableClass = new BreedingExtension($this);
+        $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
+    }
+
+    public function getSpeed(): float {
+        return $this->speed;
+    }
+
+    public function getNormalSpeed(): float {
+        return 1.0;
+    }
+
+    function getPanicSpeed(): float {
+        return 1.2;
+    }
+
+    public function saveNBT() {
+        parent::saveNBT();
+        $this->breedableClass->saveNBT();
     }
 
     public function getName() {
@@ -66,9 +86,9 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     /**
      * Returns the breedable class or NULL if not configured
      *
-     * @return BreedingExtension
+     * @return BreedingComponent
      */
-    public function getBreedingExtension() {
+    public function getBreedingComponent() {
         return $this->breedableClass;
     }
 
@@ -92,13 +112,15 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     public function getDrops() {
         $drops = [];
 
-        // only adult chicken drop something ...
-        if ($this->breedableClass != null && $this->breedableClass->isBaby()) {
-            array_push($drops, Item::get(Item::FEATHER, 0, mt_rand(0, 2)));
-            if ($this->isOnFire()) {
-                array_push($drops, Item::get(Item::COOKED_CHICKEN, 0, 1));
-            } else {
-                array_push($drops, Item::get(Item::RAW_CHICKEN, 0, 1));
+        if ($this->isLootDropAllowed()) {
+            // only adult chicken drop something ...
+            if ($this->breedableClass != null && $this->breedableClass->isBaby()) {
+                array_push($drops, Item::get(Item::FEATHER, 0, mt_rand(0, 2)));
+                if ($this->isOnFire()) {
+                    array_push($drops, Item::get(Item::COOKED_CHICKEN, 0, 1));
+                } else {
+                    array_push($drops, Item::get(Item::RAW_CHICKEN, 0, 1));
+                }
             }
         }
         return $drops;
@@ -132,5 +154,13 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         $this->dropEggTimer = 0;
         $this->dropEggTime = 0;
     }
+
+    public function getKillExperience(): int {
+        if ($this->getBreedingComponent()->isBaby()) {
+            return mt_rand(1, 7);
+        }
+        return mt_rand(1, 3);
+    }
+
 
 }

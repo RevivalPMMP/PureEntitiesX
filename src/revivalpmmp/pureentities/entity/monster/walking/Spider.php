@@ -29,11 +29,13 @@ use revivalpmmp\pureentities\data\Data;
 class Spider extends WalkingMonster {
     const NETWORK_ID = Data::SPIDER;
 
-    public $width = 1.3;
-    public $height = 1.12;
+    public $width = 2.062;
+    public $length = 1.703;
+    public $height = 0.781;
+    public $speed = 1.13;
 
     public function getSpeed(): float {
-        return 1.13;
+        return $this->speed;
     }
 
     public function initEntity() {
@@ -59,11 +61,13 @@ class Spider extends WalkingMonster {
 
     public function getDrops() {
         $drops = [];
-        array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
-        switch (mt_rand(0, 2)) {
-            case 0:
-                array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
-                break;
+        if ($this->isLootDropAllowed()) {
+            array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
+            switch (mt_rand(0, 2)) {
+                case 0:
+                    array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
+                    break;
+            }
         }
         return $drops;
     }
@@ -71,5 +75,10 @@ class Spider extends WalkingMonster {
     public function getMaxHealth() {
         return 16;
     }
+
+    public function getKillExperience(): int {
+        return 5;
+    }
+
 
 }
