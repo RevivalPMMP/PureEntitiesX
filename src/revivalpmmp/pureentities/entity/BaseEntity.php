@@ -20,6 +20,7 @@ namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use revivalpmmp\pureentities\components\IdlingComponent;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
@@ -75,6 +76,8 @@ abstract class BaseEntity extends Creature {
     protected $panicEnabled = true;
     protected $panicTicks = 100;
 
+    protected $maxAge = 0;
+
     public function __destruct() {
     }
 
@@ -83,6 +86,7 @@ abstract class BaseEntity extends Creature {
         $this->checkTargetSkipTicks = PluginConfiguration::getInstance()->getCheckTargetSkipTicks();
         $this->panicEnabled = PluginConfiguration::getInstance()->getEnablePanic();
         $this->panicTicks = PluginConfiguration::getInstance()->getPanicTicks();
+        $this->maxAge = PluginConfiguration::getInstance()->getMaxAge();
         parent::__construct($level, $nbt);
     }
 
@@ -173,8 +177,13 @@ abstract class BaseEntity extends Creature {
             if (isset($this->namedtag->WallCheck)) {
                 $this->setWallCheck($this->namedtag["WallCheck"]);
             }
+
+            if (isset($this->namedtag->AgeInTicks)) {
+                $this->age = $this->namedtag->AgeInTicks;
+            }
         }
         $this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
+
 
         $this->idlingComponent->loadFromNBT();
     }
@@ -184,6 +193,7 @@ abstract class BaseEntity extends Creature {
             parent::saveNBT();
             $this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
             $this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
+            $this->namedtag->AgeInTicks = new IntTag("AgeInTicks", $this->age);
         }
         $this->idlingComponent->saveNBT();
     }
@@ -300,8 +310,29 @@ abstract class BaseEntity extends Creature {
         // check panic tick
         $this->panicTick($tickDiff);
 
+        // check if it needs to despawn
+        if ($this->checkDespawn()) {
+            return false;
+        }
+
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
+    }
+
+    /**
+     * This method checks if an entity should despawn - if so, the entity is closed
+     * @return bool
+     */
+    private function checkDespawn(): boolean {
+        // when entity is at least x ticks old and it's not tamed, we should remove it
+        if ($this->age > $this->maxAge and
+            (!$this instanceof IntfTameable or ($this instanceof IntfTameable and !$this->isTamed()))
+        ) {
+            PureEntities::logOutput("Despawn entity " . $this->getName(), PureEntities::NORM);
+            $this->close();
+            return true;
+        }
+        return false;
     }
 
     public function move($dx, $dy, $dz): bool {

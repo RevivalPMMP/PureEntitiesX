@@ -60,7 +60,6 @@ use revivalpmmp\pureentities\entity\projectile\FireBall;
 use revivalpmmp\pureentities\event\EventListener;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfTameable;
-use revivalpmmp\pureentities\task\AutoDespawnTask;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 use pocketmine\entity\Entity;
@@ -191,7 +190,6 @@ class PureEntities extends PluginBase implements CommandExecutor {
         new PluginConfiguration($this); // create plugin configuration
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
         if (PluginConfiguration::getInstance()->getEnableSpawning()) {
-            $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoDespawnTask($this), $this->getConfig()->getNested("despawn-task.trigger-ticks", 1000));
             $this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
         }
         if (PluginConfiguration::getInstance()->getEnableLookingTasks()) {

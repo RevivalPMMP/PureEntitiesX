@@ -6,8 +6,9 @@ spawn-task:
   use-block-light: false
   use-sky-light: false
 
-despawn-task:
-  trigger-ticks: 500
+# after how many ticks an entity gets despawned (if not tamed)
+despawn:
+  after-ticks: 72000
 
 # configuration of panic mode for some entities
 panic:

@@ -50,6 +50,7 @@ class PluginConfiguration {
     private $enableNBT = true; // enable load/store of NBT
     private $enablePanic = true; // enable or disable panic mode for entities
     private $panicTicks = 100; // how long is an entity in panic mode?
+    private $maxAge = 72000; // 1 hour (if 20 ticks = 1 second)
 
     // idle settings
     private $idleChance = 20;
@@ -100,6 +101,8 @@ class PluginConfiguration {
         $this->enablePanic = $pluginBase->getConfig()->getNested("panic.enabled", true); // default: enabled
         $this->panicTicks = $pluginBase->getConfig()->getNested("panic.ticks", 100); // default: 100 ticks
 
+        $this->maxAge = $pluginBase->getConfig()->getNested("despawn.after-ticks", 72000); // default: 72000 ticks
+
         // print effective configuration!
         $pluginBase->getServer()->getLogger()->notice("[PureEntitiesX] Configuration loaded:" .
             " [enableNBT:" . $this->enableNBT . "]" .
@@ -110,7 +113,7 @@ class PluginConfiguration {
             " [interactiveButtonCorrection:" . $this->interactiveButtonCorrection . "] [useBlockLight:" . $this->useBlockLightForSpawn . "] [useSkyLight:" . $this->useSkyLightForSpawn . "]" .
             " [emitLoveParticles:" . $this->emitLoveParticlesCostantly . "] [xpEnabled:" . $this->xpEnabled . "]" .
             " [idleChance:" . $this->idleChance . "] [idleMin:" . $this->idleMin . "] [idleMax:" . $this->idleMax . "] [idleTimeBetween:" . $this->idleTimeBetween . "secs]" .
-            " [panicEnabled:" . $this->enablePanic . "] [panicTicks:" . $this->panicTicks . "]");
+            " [panicEnabled:" . $this->enablePanic . "] [panicTicks:" . $this->panicTicks . "] [entityMaxAge:" . $this->maxAge . "]");
 
         self::$instance = $this;
     }
@@ -281,6 +284,15 @@ class PluginConfiguration {
     public function getPanicTicks() {
         return $this->panicTicks;
     }
+
+    /**
+     * @return int|mixed
+     */
+    public function getMaxAge() {
+        return $this->maxAge;
+    }
+
+
 
 
 }
