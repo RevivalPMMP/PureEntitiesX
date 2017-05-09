@@ -435,7 +435,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 $commandSuccessul = true;
                 break;
             case "pesummon":
-                if (count($args) == 1 or count($args) == 2 or count($args) == 3) {
+                if (count($args) >= 1 or count($args) <= 3) {
                     $playerName = count($args) == 1 ? $sender->getName() : $args[1];
                     $isBaby = false;
                     if (count($args) == 3) {
@@ -457,7 +457,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                         }
                     }
                 } else {
-                    $sender->sendMessage("Need a mob name!");
+                    $sender->sendMessage("Usage: pesummon <mobname> <opt:player_name> <opt:baby>");
                     $commandSuccessul = true;
                 }
                 break;
