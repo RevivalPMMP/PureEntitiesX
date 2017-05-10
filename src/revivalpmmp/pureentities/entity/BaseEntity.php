@@ -179,7 +179,7 @@ abstract class BaseEntity extends Creature {
             }
 
             if (isset($this->namedtag->AgeInTicks)) {
-                $this->age = $this->namedtag->AgeInTicks;
+                $this->age = $this->namedtag["AgeInTicks"];
             }
         }
         $this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
@@ -323,7 +323,7 @@ abstract class BaseEntity extends Creature {
      * This method checks if an entity should despawn - if so, the entity is closed
      * @return bool
      */
-    private function checkDespawn(): boolean {
+    private function checkDespawn(): bool {
         // when entity is at least x ticks old and it's not tamed, we should remove it
         if ($this->age > $this->maxAge and
             (!$this instanceof IntfTameable or ($this instanceof IntfTameable and !$this->isTamed()))
