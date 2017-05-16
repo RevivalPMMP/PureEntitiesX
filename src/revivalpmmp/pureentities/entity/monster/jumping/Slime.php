@@ -26,6 +26,7 @@ use pocketmine\item\Item;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Slime extends JumpingMonster {
     const NETWORK_ID = Data::SLIME;
@@ -49,11 +50,17 @@ class Slime extends JumpingMonster {
         $this->setDamage([0, 2, 2, 3]);
     }
 
+    /**
+     * Attack a player
+     *
+     * @param Entity $player
+     */
     public function attackEntity(Entity $player) {
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
             $this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
             $player->attack($ev->getFinalDamage(), $ev);
 
             $this->checkTamedMobsAttack($player);

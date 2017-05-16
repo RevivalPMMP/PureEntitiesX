@@ -203,8 +203,13 @@ class Blaze extends FlyingMonster implements ProjectileSource {
         return $this->getBaseTarget();
     }
 
+    /**
+     * Attack the player
+     *
+     * @param Entity $player
+     */
     public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 20 && mt_rand(1, 32) < 4 && $this->distance($player) <= 18) {
+        if ($this->attackDelay > 20 && $this->distance($player) <= 18) {
             $this->attackDelay = 0;
 
             $f = 1.2;

@@ -39,6 +39,7 @@ use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::WOLF;
@@ -348,7 +349,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 1.6) {
             $this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
             $player->attack($ev->getFinalDamage(), $ev);
 
             $this->checkTamedMobsAttack($player);

@@ -32,6 +32,7 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     const NETWORK_ID = Data::ZOMBIE;
@@ -160,7 +161,8 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
             if ($this->getMobEquipment() !== null) {
                 $damage = $damage + $this->getMobEquipment()->getWeaponDamageToAdd();
             }
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $damage);
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+                MobDamageCalculator::calculateFinalDamage($player, $damage));
             $player->attack($ev->getFinalDamage(), $ev);
 
             $this->checkTamedMobsAttack($player);
