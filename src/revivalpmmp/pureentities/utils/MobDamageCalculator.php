@@ -82,27 +82,44 @@ class MobDamageCalculator {
             if ($armorItems !== null and sizeof($armorItems) > 0) {
                 // complete damage reduction in percent
                 $reductionInPercent = 0;
+                $enchantEpf = 0; // for items enchanted max capped to 20 (EPF = Enchantment Protection Factor)
 
                 // check each worn armor
                 foreach ($armorItems as $armorItem) {
                     /**
                      * @var $armorItem Item
                      */
-                    $enchantments = $armorItem->getEnchantments();
-                    if ($enchantments !== null and sizeof($enchantments) > 0) {
-                        // TODO: implement
-                    }
                     $reduction = self::$REDUCTION_DEFINITIONS[$armorItem->getId()];
                     if ($reduction !== null and $reduction > 0) {
                         $reductionInPercent += $reduction;
                     }
+
+                    $enchantments = $armorItem->getEnchantments();
+                    if ($enchantments !== null and sizeof($enchantments) > 0) {
+                        foreach ($enchantments as $enchantment) {
+                            if ($enchantment->getId() === Enchantment::TYPE_ARMOR_PROTECTION) {
+                                $enchantEpf += $enchantment->getLevel(); // see http://minecraft.gamepedia.com/Armor#Enchantments
+                            }
+                        }
+                    }
                 }
 
+                $totalDamage = $damageFromEntity;
                 // reduce damage by x percent - depending on which armor is worn by player
                 if ($reductionInPercent > 0) {
-                    PureEntities::logOutput("MobDamageCalculator: damage by entity reduced by $reductionInPercent");
-                    return $damageFromEntity - ($damageFromEntity * $reductionInPercent / 100);
+                    PureEntities::logOutput("MobDamageCalculator: damage of entity reduced by $reductionInPercent by armor weared");
+                    $totalDamage = $totalDamage - ($totalDamage * $reductionInPercent / 100);
                 }
+                // now check enchantments
+                if ($enchantEpf > 0) {
+                    if ($enchantEpf > 20) {
+                        $enchantEpf = 20;
+                    }
+                    PureEntities::logOutput("MobDamageCalculator: damage of entity will be reduced by $enchantEpf EPF points.");
+                    $totalDamage = $totalDamage * (1 - $enchantEpf / 25);
+                }
+                PureEntities::logOutput("MobDamageCalculator: full calculated damage: $totalDamage, original damage: $damageFromEntity");
+                return $totalDamage;
             }
         }
 
