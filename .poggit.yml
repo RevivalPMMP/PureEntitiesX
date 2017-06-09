@@ -5,6 +5,7 @@ branches:
 - Jumping-Rabbits
 - MobEvents
 - RideableMobs
+- damage-reduction
 projects:
   PureEntitiesX:
     path: ""
