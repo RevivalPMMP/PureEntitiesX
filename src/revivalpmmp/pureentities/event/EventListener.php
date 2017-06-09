@@ -108,6 +108,9 @@ class EventListener implements Listener {
         $player = $event->getPlayer();
         $return = false;
         if ($packet->pid() === ProtocolInfo::INTERACT_PACKET) {
+            /**
+             * @var $packet InteractPacket
+             */
             if ($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
                 $entity = $player->level->getEntity($packet->target);
                 if ($entity instanceof IntfShearable and
