@@ -95,10 +95,10 @@ class PigZombie extends WalkingMonster {
         parent::spawnTo($player);
 
         $pk = new MobEquipmentPacket();
-        $pk->eid = $this->getId();
+        $pk->entityRuntimeId = $this->getId();
         $pk->item = new GoldSword();
-        $pk->slot = 10;
-        $pk->selectedSlot = 10;
+        $pk->inventorySlot = 10;
+        $pk->hotbarSlot = 10;
         $player->dataPacket($pk);
     }
 

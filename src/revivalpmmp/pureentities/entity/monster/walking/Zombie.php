@@ -144,7 +144,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
 
         PureEntities::logOutput("$this: attacked with final damage of $damage", PureEntities::DEBUG);
 
-        return parent::attack($damage, $source);
+        parent::attack($damage, $source);
     }
 
     /**

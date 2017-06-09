@@ -304,7 +304,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
         foreach ($this->getLevel()->getPlayers() as $player) { // don't know if this is the correct one :/
             if ($player->distance($this) <= 49) {
                 $pk = new EntityEventPacket();
-                $pk->eid = $this->getId();
+                $pk->entityRuntimeId = $this->getId();
                 $pk->event = EntityEventPacket::EAT_GRASS_ANIMATION;
                 $player->dataPacket($pk);
             }

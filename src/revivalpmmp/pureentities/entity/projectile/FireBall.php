@@ -79,7 +79,7 @@ class FireBall extends Projectile {
             if ($this->isCollided and $this->canExplode) {
                 $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
                 if (!$ev->isCancelled()) {
-                    $explosion = new Explosion($this, $ev->getForce(), $this->shootingEntity);
+                    $explosion = new Explosion($this, $ev->getForce(), $this->getOwningEntity());
                     if ($ev->isBlockBreaking()) {
                         $explosion->explodeA();
                     }
@@ -97,7 +97,7 @@ class FireBall extends Projectile {
     public function spawnTo(Player $player) {
         $pk = new AddEntityPacket();
         $pk->type = self::NETWORK_ID;
-        $pk->eid = $this->getId();
+        $pk->entityRuntimeId = $this->getId();
         $pk->x = $this->x;
         $pk->y = $this->y;
         $pk->z = $this->z;

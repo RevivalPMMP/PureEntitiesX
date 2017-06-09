@@ -141,7 +141,7 @@ class XPOrb extends Entity {
 		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NO_AI, true);
 		$pk = new AddEntityPacket();
 		$pk->type = XPOrb::NETWORK_ID;
-		$pk->eid = $this->getId();
+        $pk->entityRuntimeId = $this->getId();
 		$pk->x = $this->x;
 		$pk->y = $this->y;
 		$pk->z = $this->z;
