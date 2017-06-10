@@ -139,7 +139,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
     }
 
     /**
-     * Returns the appropiate NetworkID associated with this entity
+     * Returns the appropriate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
@@ -172,8 +172,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
             if ($this->isSheared()) {
                 $currentBlock = $this->getCurrentBlock();
                 if ($currentBlock !== null and
-                    ($currentBlock instanceof Grass or $currentBlock instanceof TallGrass or strcmp($currentBlock->getName(), "Double Tallgrass") == 0)
-                ) { // only grass blocks are eatable by sheeps)
+                    ($currentBlock instanceof Grass or $currentBlock instanceof TallGrass or strcmp($currentBlock->getName(), "Double Tall Grass") == 0)
+                ) { // only grass blocks are eatable by sheep)
                     $this->blockOfInterestReached($currentBlock);
                 }
             }
@@ -192,7 +192,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
     }
 
     /**
-     * The initEntity method of parent uses this function to get the max healthand set in NBT
+     * The initEntity method of parent uses this function to get the max health and set in NBT
      *
      * @return int
      */
@@ -292,8 +292,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
     }
 
     /**
-     * When a sheep is sheared, it tries to eat gras. This method signalizes, that the entity reached
-     * a gras block or something that can be eaten.
+     * When a sheep is sheared, it tries to eat grass. This method signalizes, that the entity reached
+     * a grass block or something that can be eaten.
      *
      * @param Block $block
      */
@@ -309,7 +309,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
                 $player->dataPacket($pk);
             }
         }
-        // after the eat gras has been played, we reset the block through air
+        // after the eat grass has been played, we reset the block through air
         if ($block->getId() == Block::GRASS or $block->getId() == Block::TALL_GRASS) { // grass blocks are replaced by dirt blocks ...
             $this->getLevel()->setBlock($block, new Dirt());
         } else {

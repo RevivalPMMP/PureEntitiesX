@@ -32,7 +32,7 @@ use revivalpmmp\pureentities\utils\TickCounter;
 /**
  * Class IdlingComponent
  *
- * This component class is implemented in BaseEntity to have support for idling entities. This class capsulates all
+ * This component class is implemented in BaseEntity to have support for idling entities. This class encapsulates all
  * the stuff we need to deal with idling entities.
  *
  * @package revivalpmmp\pureentities\components
@@ -151,12 +151,12 @@ class IdlingComponent {
      * of getting attacked by someone e.g.)
      *
      * @param int $tickDiff
-     * @param bool $immediatly
+     * @param bool $immediately
      * @return bool true when the entity idle status was set to false
      */
-    public function stopIdling(int $tickDiff = 1, bool $immediatly = false): bool {
+    public function stopIdling(int $tickDiff = 1, bool $immediately = false): bool {
         $wokeUp = false;
-        if ($this->idling and ($this->idlingTickCounter->isTicksExpired($tickDiff) or $immediatly)) {
+        if ($this->idling and ($this->idlingTickCounter->isTicksExpired($tickDiff) or $immediately)) {
             $this->idling = false;
             $this->baseEntity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_IDLING, false);
             $wokeUp = true;

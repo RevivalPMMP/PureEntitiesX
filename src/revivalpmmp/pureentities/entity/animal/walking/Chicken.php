@@ -37,7 +37,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
     public $speed = 1.0;
     public $gravity = 0.04; // floating chickens
 
-    // egg laying specific configuration (an egg is layed by a chicken each 6000-120000 ticks)
+    // egg laying specific configuration (an egg is laid by a chicken each 6000-120000 ticks)
     private $dropEggTimer = 0;
     private $dropEggTime = 0;
     const DROP_EGG_DELAY_MIN = 6000;
@@ -93,7 +93,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
     }
 
     /**
-     * Returns the appropiate NetworkID associated with this entity
+     * Returns the appropriate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
