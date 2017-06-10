@@ -46,6 +46,8 @@ class MobDamageCalculator {
      * @var array
      */
     private static $REDUCTION_DEFINITIONS = array(
+        # no armor
+        ItemIds::AIR => 0, # no armor points
         # helmets
         ItemIds::LEATHER_CAP => 4, # 1 armor point
         ItemIds::GOLD_HELMET => 8, # 2 armor points
