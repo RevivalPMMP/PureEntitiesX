@@ -106,8 +106,8 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
         $pk = new MobEquipmentPacket();
         $pk->entityRuntimeId = $this->getId();
         $pk->item = new Bow();
-        $pk->slot = 10;
-        $pk->selectedSlot = 10;
+        $pk->inventorySlot = 10;
+        $pk->hotbarSlot = 10;
         $player->dataPacket($pk);
     }
 

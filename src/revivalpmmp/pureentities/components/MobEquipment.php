@@ -640,8 +640,8 @@ class MobEquipment {
         $pk = new MobEquipmentPacket();
         $pk->entityRuntimeId = $this->entity->getId();
         $pk->item = $this->mainHand !== null ? $this->mainHand : Item::get(ItemIds::AIR);
-        $pk->slot = 0;
-        $pk->selectedSlot = 0;
+        $pk->inventorySlot = 0;
+        $pk->hotbarSlot = 0;
         return $pk;
     }
 
