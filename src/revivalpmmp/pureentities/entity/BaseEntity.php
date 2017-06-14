@@ -204,7 +204,7 @@ abstract class BaseEntity extends Creature {
             && isset($player->usedChunks[Level::chunkHash($this->chunk->getX(), $this->chunk->getZ())])
         ) {
             $pk = new AddEntityPacket();
-            $pk->eid = $this->getID();
+            $pk->entityRuntimeId = $this->getID();
             $pk->type = static::NETWORK_ID;
             $pk->x = $this->x;
             $pk->y = $this->y;

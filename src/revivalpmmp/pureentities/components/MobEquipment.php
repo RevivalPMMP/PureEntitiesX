@@ -624,7 +624,7 @@ class MobEquipment {
 
     private function createArmorEquipPacket () : MobArmorEquipmentPacket {
         $pk = new MobArmorEquipmentPacket();
-        $pk->eid = $this->entity->getId();
+        $pk->entityRuntimeId = $this->entity->getId();
         $pk->slots = [
             $this->helmet !== null ? $this->helmet : Item::get(ItemIds::AIR),
             $this->chestplate !== null ? $this->chestplate : Item::get(ItemIds::AIR),
@@ -638,7 +638,7 @@ class MobEquipment {
 
     private function createHandItemsEquipPacket () : MobEquipmentPacket {
         $pk = new MobEquipmentPacket();
-        $pk->eid = $this->entity->getId();
+        $pk->entityRuntimeId = $this->entity->getId();
         $pk->item = $this->mainHand !== null ? $this->mainHand : Item::get(ItemIds::AIR);
         $pk->slot = 0;
         $pk->selectedSlot = 0;
