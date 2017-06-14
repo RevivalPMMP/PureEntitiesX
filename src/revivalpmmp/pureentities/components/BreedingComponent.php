@@ -343,7 +343,7 @@ class BreedingComponent {
                 foreach ($this->entity->getLevel()->getPlayers() as $player) { // don't know if this is the correct one :/
                     if ($player->distance($this->entity) <= 49) {
                         $pk = new EntityEventPacket();
-                        $pk->eid = $this->entity->getId();
+                        $pk->entityRuntimeId = $this->entity->getId();
                         $pk->event = EntityEventPacket::TAME_SUCCESS; // i think this plays the "heart" animation
                         $player->dataPacket($pk);
                     }
@@ -450,7 +450,7 @@ class BreedingComponent {
     public function feed(Player $player): bool {
         if ($this->getAge() > 0) {
             $pk = new EntityEventPacket();
-            $pk->eid = $this->entity->getId();
+            $pk->entityRuntimeId = $this->entity->getId();
             $pk->event = EntityEventPacket::TAME_FAIL; // this "plays" fail animation on entity
             $player->dataPacket($pk);
             return false;
@@ -465,7 +465,7 @@ class BreedingComponent {
             // checkTarget method recognizes the "inlove" and tries to find a partner
             // when feeding was successful and entity is in love mode emit heart particles (only once for now)
             $pk = new EntityEventPacket();
-            $pk->eid = $this->entity->getId();
+            $pk->entityRuntimeId = $this->entity->getId();
             $pk->event = EntityEventPacket::TAME_SUCCESS; // i think this plays the "heart" animation
             $player->dataPacket($pk);
         }

@@ -381,7 +381,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         }
         if ($tameSuccess) {
             $pk = new EntityEventPacket();
-            $pk->eid = $this->getId();
+            $pk->entityRuntimeId = $this->getId();
             $pk->event = EntityEventPacket::TAME_SUCCESS; // this "plays" success animation on entity
             $player->dataPacket($pk);
 
@@ -393,7 +393,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
         } else {
             $pk = new EntityEventPacket();
-            $pk->eid = $this->getId();
+            $pk->entityRuntimeId = $this->getId();
             $pk->event = EntityEventPacket::TAME_FAIL; // this "plays" fail animation on entity
             $player->dataPacket($pk);
         }
