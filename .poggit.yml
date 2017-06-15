@@ -1,10 +1,4 @@
 --- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX
-branches:
-- master
-- kniffo80-dev
-- Jumping-Rabbits
-- MobEvents
-- RideableMobs
 projects:
   PureEntitiesX:
     path: ""

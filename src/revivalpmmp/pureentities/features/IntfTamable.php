@@ -21,7 +21,7 @@ namespace revivalpmmp\pureentities\features;
 
 use pocketmine\Player;
 
-interface IntfTameable {
+interface IntfTamable {
 
     public function setTamed(bool $tamed);
 

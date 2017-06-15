@@ -38,7 +38,7 @@ class GhastSpawner extends BaseSpawner {
 
     public function spawn(Position $pos, Player $player): bool {
         if ($this->spawnAllowedByProbability()) { // first check if spawn would be allowed, if not the other method calls make no sense at all
-            $block = $pos->level->getBlock($pos); // because we get the air block, we need to substract 1 from the y position
+            $block = $pos->level->getBlock($pos); // because we get the air block, we need to subtract 1 from the y position
             $biomeId = $pos->level->getBiomeId($pos->x, $pos->z);
 
             PureEntities::logOutput($this->getClassNameShort() .
@@ -47,7 +47,7 @@ class GhastSpawner extends BaseSpawner {
                 "], spawnAllowedByEntityCount: " . $this->spawnAllowedByEntityCount($pos->getLevel()) .
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
                 PureEntities::DEBUG);
-            if ($biomeId == Biome::HELL and // is this nether? hmmmm ...
+            if ($biomeId == Biome::HELL and
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect entity count in level
                 $block->isSolid() and // block must be solid
                 $this->checkPlayerDistance($player, $pos)

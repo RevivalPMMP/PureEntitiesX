@@ -46,6 +46,8 @@ class MobDamageCalculator {
      * @var array
      */
     private static $REDUCTION_DEFINITIONS = array(
+        # no armor
+        ItemIds::AIR => 0, # no armor points
         # helmets
         ItemIds::LEATHER_CAP => 4, # 1 armor point
         ItemIds::GOLD_HELMET => 8, # 2 armor points
@@ -73,7 +75,7 @@ class MobDamageCalculator {
      *
      * @param Entity $player the player to be checked
      * @param float $damageFromEntity the final damage from the entity
-     * @return float the final damage calculated with respect to armor etc. pp weared by player
+     * @return float the final damage calculated with respect to armor etc. pp worn by player
      */
     public static function calculateFinalDamage(Entity $player, float $damageFromEntity): float {
         if ($player instanceof Player and $player->getInventory() !== null) {
@@ -111,7 +113,7 @@ class MobDamageCalculator {
                 $totalDamage = $damageFromEntity;
                 // reduce damage by x percent - depending on which armor is worn by player
                 if ($reductionInPercent > 0) {
-                    PureEntities::logOutput("MobDamageCalculator: damage of entity reduced by $reductionInPercent by armor weared");
+                    PureEntities::logOutput("MobDamageCalculator: damage of entity reduced by $reductionInPercent by armor worn");
                     $totalDamage = $totalDamage - ($totalDamage * $reductionInPercent / 100);
                 }
                 // now check enchantments

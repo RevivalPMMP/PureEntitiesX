@@ -65,7 +65,7 @@ use revivalpmmp\pureentities\PureEntities;
  */
 abstract class BaseSpawner {
 
-    // stores all heights of mobs for spwaning reasons
+    // stores all heights of mobs for spawning reasons
     const HEIGHTS = array(
         Bat::NETWORK_ID => 0.3,
         Squid::NETWORK_ID => 0.95,

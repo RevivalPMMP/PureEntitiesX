@@ -67,7 +67,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
     }
 
     /**
-     * Returns the appropiate NetworkID associated with this entity
+     * Returns the appropriate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {

@@ -204,7 +204,7 @@ class MobEquipment {
     public function setHelmet($helmet) {
         if ($this->helmet !== $helmet) {
             $this->helmet = $helmet;
-            $this->recalculateArmorDamageReducement();
+            $this->recalculateArmorDamageReduction();
             $this->storeToNBT();
             $this->sendArmorUpdateToAllClients();
         }
@@ -223,7 +223,7 @@ class MobEquipment {
     public function setBoots($boots) {
         if ($this->boots !== $boots) {
             $this->boots = $boots;
-            $this->recalculateArmorDamageReducement();
+            $this->recalculateArmorDamageReduction();
             $this->storeToNBT();
             $this->sendArmorUpdateToAllClients();
         }
@@ -243,7 +243,7 @@ class MobEquipment {
     public function setLeggings($leggings) {
         if ($this->leggings !== $leggings) {
             $this->leggings = $leggings;
-            $this->recalculateArmorDamageReducement();
+            $this->recalculateArmorDamageReduction();
             $this->storeToNBT();
             $this->sendArmorUpdateToAllClients();
         }
@@ -262,7 +262,7 @@ class MobEquipment {
     public function setChestplate($chestplate) {
         if ($this->chestplate !== $chestplate) {
             $this->chestplate = $chestplate;
-            $this->recalculateArmorDamageReducement();
+            $this->recalculateArmorDamageReduction();
             $this->storeToNBT();
             $this->sendArmorUpdateToAllClients();
         }
@@ -324,14 +324,14 @@ class MobEquipment {
     }
 
     /**
-     * This method adds loot to the given drops array by checking with a 9% chance if anything is weared. If so,
+     * This method adds loot to the given drops array by checking with a 9% chance if anything is worn. If so,
      * the drop array will be extended by the equipment the entity wears
      *
      * @param $existingDrops array the existing drops containing none or any item already
      */
     public function addLoot(array $existingDrops) {
         // Some monsters can spawn with a sword, and have a 8.5% (9.5% with Looting I, 10.5% with Looting II and 11.5% with Looting III)
-        // see: http://minecraft.gamepedia.com/Sword (section: mosbs)
+        // see: http://minecraft.gamepedia.com/Sword (section: mobs)
         if (mt_rand(0, 100) <= 9) {
             // drop all equipment
             if ($this->mainHand !== null && $this->mainHand->getId() !== ItemIds::AIR) {
@@ -383,7 +383,7 @@ class MobEquipment {
     /**
      * Recalculate the damage reduction in percent for all armor worn by entity
      */
-    private function recalculateArmorDamageReducement() {
+    private function recalculateArmorDamageReduction() {
         $this->damageReductionInPercent = $this->getChestplateArmorPoints() + $this->getBootsArmorPoints() + $this->getHelmetArmorPoints() +
             $this->getLeggingsArmorPoints();
     }
@@ -601,7 +601,7 @@ class MobEquipment {
                     $this->mainHand = Item::get($itemId);
                 }
             }
-            $this->recalculateArmorDamageReducement();
+            $this->recalculateArmorDamageReduction();
             $this->recalculateDamageIncreaseByWeapon();
         }
     }

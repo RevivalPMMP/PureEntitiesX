@@ -100,9 +100,9 @@ class InteractionHelper {
      * Returns the entity at the given position from the array of nearby entities
      *
      * @param array $nearbyEntities an array of entity which are close to the player
-     * @param int $x the x corrdinate to search for any of the given entites coordinates to match
-     * @param int $y the y corrdinate to search for any of the given entites coordinates to match
-     * @param int $z the z corrdinate to search for any of the given entites coordinates to match
+     * @param int $x the x coordinate to search for any of the given entities coordinates to match
+     * @param int $y the y coordinate to search for any of the given entities coordinates to match
+     * @param int $z the z coordinate to search for any of the given entities coordinates to match
      * @param bool $useCorrection set this to true if the matching should be extended by -1 / +1 (in x, y, z directions)
      * @return mixed|null|Entity        NULL when none of the given entities matched or the first entity matching found
      */

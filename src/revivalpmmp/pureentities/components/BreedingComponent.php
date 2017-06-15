@@ -25,7 +25,7 @@ use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\features\IntfCanBreed;
-use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\features\IntfTamable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
@@ -117,7 +117,7 @@ class BreedingComponent {
     private $adultLength = -1;
 
     /**
-     * Is initialited from entity, when it's constructed
+     * Is initialized from entity, when it's constructed
      *
      * @var float
      */
@@ -141,7 +141,7 @@ class BreedingComponent {
         $this->adultWidth = $belongsTo->width;
         $this->adultLength = $belongsTo->length;
         $this->adultSpeed = $belongsTo->getSpeed();
-        $this->emitLoveParticles = PluginConfiguration::getInstance()->getEmitLoveParticlesCostantly();
+        $this->emitLoveParticles = PluginConfiguration::getInstance()->getEmitLoveParticlesConstantly();
     }
 
     public function loadFromNBT() {
@@ -234,7 +234,7 @@ class BreedingComponent {
     /**
      * Sets the age of the entity. Setting this to a number lesser 0 means it's a baby and
      * it also defines how many ticks it takes to grow up to an adult (e.g.: -1000 means it takes 1000 ticks until the
-     * entity is grown up - can be speed up with WEAT)
+     * entity is grown up - can be sped up with wheat)
      *
      * @param int $age
      */
@@ -303,7 +303,7 @@ class BreedingComponent {
     public function setInLove(int $inLoveTicks) {
         $this->inLove = $inLoveTicks;
         if ($this->getInLove() > 0) {
-            $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INLOVE, true); // set client "inlove"
+            $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INLOVE, true); // set client "in love"
         } else {
             $this->entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INLOVE, false); // send client not "in love" anymore
         }
@@ -403,7 +403,7 @@ class BreedingComponent {
      * @param Entity $partner
      */
     private function breed(Entity $partner) {
-        // yeah we found ourselfes - now breed and reset target
+        // yeah we found ourselves - now breed and reset target
         $this->resetBreedStatus();
         /**
          * @var $partner Entity|BaseEntity|IntfCanBreed
@@ -411,7 +411,7 @@ class BreedingComponent {
         $partner->getBreedingComponent()->resetBreedStatus();
         // spawn a baby entity which may be owned by a player
         $owner = null;
-        if ($this->entity instanceof IntfTameable) {
+        if ($this->entity instanceof IntfTamable) {
             $owner = $this->entity->getOwner();
         }
         PureEntities::getInstance()->scheduleCreatureSpawn($this->entity, $this->entity->getNetworkId(), $this->entity->getLevel(),
@@ -455,14 +455,14 @@ class BreedingComponent {
             $player->dataPacket($pk);
             return false;
         }
-        if ($this->isBaby()) { // when a baby gets fed with weat, it grows up a little faster
+        if ($this->isBaby()) { // when a baby gets fed with wheat, it grows up a little faster
             $age = $this->getAge();
             $age += self::FEED_INCREASE_AGE;
             $this->setAge($age);
         } else {
             // this makes the entity fall in love - and search for a partner ...
             $this->setInLove(self::DEFAULT_IN_LOVE_TICKS);
-            // checkTarget method recognizes the "inlove" and tries to find a partner
+            // checkTarget method recognizes the "in love" and tries to find a partner
             // when feeding was successful and entity is in love mode emit heart particles (only once for now)
             $pk = new EntityEventPacket();
             $pk->entityRuntimeId = $this->entity->getId();

@@ -52,7 +52,7 @@ use revivalpmmp\pureentities\entity\other\XPOrb;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\features\IntfShearable;
-use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\features\IntfTamable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
@@ -133,7 +133,7 @@ class EventListener implements Listener {
                     if ($itemInHand != null) {
                         $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
                     }
-                } else if ($entity instanceof IntfTameable and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
+                } else if ($entity instanceof IntfTamable and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame", PureEntities::DEBUG);
                     $return = $entity->tame($player);
                 } else if ($entity instanceof Wolf) {
@@ -252,7 +252,7 @@ class EventListener implements Listener {
             ) {
                 Server::getInstance()->getScheduler()->scheduleDelayedTask(new ShowMobEquipmentTask(
                     PureEntities::getInstance(), $ev->getPlayer()), 20); // send mob equipment after 20 ticks
-            } else if ($entity->isAlive() and $entity instanceof IntfTameable and $entity->getOwner() === null and PluginConfiguration::getInstance()->getEnableAsyncTasks()) {
+            } else if ($entity->isAlive() and $entity instanceof IntfTamable and $entity->getOwner() === null and PluginConfiguration::getInstance()->getEnableAsyncTasks()) {
                 // sometimes tamed wolves don't get their owner back when the player logs back in again. so we
                 // need to do that at this point to be SURE that the wolf when respawned belongs to the correct player
                 Server::getInstance()->getScheduler()->scheduleDelayedTask(new SetTamedOwnerTask(
@@ -270,7 +270,7 @@ class EventListener implements Listener {
     public function playerQuit(PlayerQuitEvent $ev) {
         PureEntities::logOutput("[EventListener] playerQuit: " . $ev->getPlayer()->getName(), PureEntities::DEBUG);
         foreach ($ev->getPlayer()->getLevel()->getEntities() as $entity) {
-            if ($entity instanceof IntfTameable and $entity->getOwner() !== null and
+            if ($entity instanceof IntfTamable and $entity->getOwner() !== null and
                 strcasecmp($entity->getOwner()->getName(), $ev->getPlayer()->getName()) == 0
             ) {
                 $entity->teleport($ev->getPlayer());

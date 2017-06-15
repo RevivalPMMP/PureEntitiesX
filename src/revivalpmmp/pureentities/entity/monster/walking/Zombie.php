@@ -87,7 +87,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     }
 
     /**
-     * Returns the appropiate NetworkID associated with this entity
+     * Returns the appropriate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
@@ -128,7 +128,6 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
      *
      * @param float $damage
      * @param EntityDamageEvent $source
-     * @return mixed
      */
     public function attack($damage, EntityDamageEvent $source) {
         PureEntities::logOutput("$this: attacked with original damage of $damage", PureEntities::DEBUG);
