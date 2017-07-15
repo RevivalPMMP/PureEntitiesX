@@ -96,7 +96,7 @@ class Spawner extends Spawnable {
         $this->scheduleUpdate();
     }
 
-    public function onUpdate() {
+    public function onUpdate() : bool{
         if ($this->closed) {
             return false;
         }
@@ -145,7 +145,7 @@ class Spawner extends Spawnable {
         }
     }
 
-    public function getSpawnCompound() {
+    public function getSpawnCompound() : CompoundTag {
         return new CompoundTag("", [
             new StringTag("id", Tile::MOB_SPAWNER),
             new IntTag("EntityId", $this->entityId)

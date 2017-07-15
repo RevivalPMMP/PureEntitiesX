@@ -145,7 +145,7 @@ class Creeper extends WalkingMonster implements Explosive {
         // the creeper doesn't attack - it simply explodes
     }
 
-    public function getDrops() {
+    public function getDrops() : array{
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
         } else {

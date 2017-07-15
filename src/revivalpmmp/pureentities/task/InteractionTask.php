@@ -51,7 +51,7 @@ class InteractionTask extends PluginTask {
      *
      * @param int $currentTick
      */
-    public function onRun($currentTick) {
+    public function onRun(int $currentTick) {
         foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
             $entity = InteractionHelper::getEntityPlayerLookingAt($player, PluginConfiguration::getInstance()->getMaxInteractDistance(),
                 PluginConfiguration::getInstance()->isInteractiveButtonCorrection());

@@ -133,7 +133,7 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
         return $hasUpdate;
     }
 
-    public function getDrops() {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));
