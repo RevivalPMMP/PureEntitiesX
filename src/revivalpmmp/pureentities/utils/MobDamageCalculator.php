@@ -91,18 +91,22 @@ class MobDamageCalculator {
                     /**
                      * @var $armorItem Item
                      */
-                    $reduction = self::$REDUCTION_DEFINITIONS[$armorItem->getId()];
-                    if ($reduction !== null and $reduction > 0) {
-                        $reductionInPercent += $reduction;
-                    }
+                    if (array_key_exists($armorItem->getId(), self::$REDUCTION_DEFINITIONS)) { // bugfix: there are some armor items out which are not defined here
+                        $reduction = self::$REDUCTION_DEFINITIONS[$armorItem->getId()];
+                        if ($reduction !== null and $reduction > 0) {
+                            $reductionInPercent += $reduction;
+                        }
 
-                    $enchantments = $armorItem->getEnchantments();
-                    if ($enchantments !== null and sizeof($enchantments) > 0) {
-                        foreach ($enchantments as $enchantment) {
-                            if ($enchantment->getId() === Enchantment::TYPE_ARMOR_PROTECTION) {
-                                $enchantEpf += $enchantment->getLevel(); // see http://minecraft.gamepedia.com/Armor#Enchantments
+                        $enchantments = $armorItem->getEnchantments();
+                        if ($enchantments !== null and sizeof($enchantments) > 0) {
+                            foreach ($enchantments as $enchantment) {
+                                if ($enchantment->getId() === Enchantment::TYPE_ARMOR_PROTECTION) {
+                                    $enchantEpf += $enchantment->getLevel(); // see http://minecraft.gamepedia.com/Armor#Enchantments
+                                }
                             }
                         }
+                    } else {
+                        PureEntities::logOutput("MobDamageCalculator: undefined armor item set: $armorItem", PureEntities::WARN);
                     }
                 }
 
