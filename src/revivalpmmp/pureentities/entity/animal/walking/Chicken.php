@@ -109,7 +109,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
         return $this->feedableItems;
     }
 
-    public function getDrops() {
+    public function getDrops() : array {
         $drops = [];
 
         if ($this->isLootDropAllowed()) {

@@ -91,7 +91,7 @@ class MobDamageCalculator {
                     /**
                      * @var $armorItem Item
                      */
-                    if (array_key_exists($armorItem->getId(), self::$REDUCTION_DEFINITIONS)) { // bugfix: there are some armor items out which are not defined here
+                    if (array_key_exists($armorItem->getId(), self::$REDUCTION_DEFINITIONS)) { // TODO: there are some armor items out which are not defined here
                         $reduction = self::$REDUCTION_DEFINITIONS[$armorItem->getId()];
                         if ($reduction !== null and $reduction > 0) {
                             $reductionInPercent += $reduction;

@@ -116,7 +116,7 @@ class XPOrb extends Entity {
                         $target->recalculateXpProgress(); #  PMMP only
                     }elseif($this->getLevel()->getServer()->getName() == "ClearSky-PocketMine-MP"){
                         $target->setTotalXp($target->getXpProgress() + $this->getExperience());
-                    }else{
+                    }else{ //Genesys spoons
                         $target->addXp($this->getExperience());
                         $target->resetXpCooldown();
                     }

@@ -56,7 +56,7 @@ class AutoSpawnTask extends PluginTask {
         $this->prepareSpawnerClasses();
     }
 
-    public function onRun($currentTick) {
+    public function onRun(int $currentTick) {
         PureEntities::logOutput("AutoSpawnTask: onRun ($currentTick)", PureEntities::DEBUG);
 
         foreach ($this->plugin->getServer()->getLevels() as $level) {

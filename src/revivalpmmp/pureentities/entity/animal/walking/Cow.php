@@ -100,7 +100,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
         return $this->feedableItems;
     }
 
-    public function getDrops() {
+    public function getDrops() : array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));

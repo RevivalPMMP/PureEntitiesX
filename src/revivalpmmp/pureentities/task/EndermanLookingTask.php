@@ -53,7 +53,7 @@ class EndermanLookingTask extends PluginTask {
      *
      * @param int $currentTick
      */
-    public function onRun($currentTick) {
+    public function onRun(int $currentTick) {
         foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
             $entity = InteractionHelper::getEntityPlayerLookingAt($player, 64, $this->isInteractiveButtonCorrectionSet);
             PureEntities::logOutput("EndermanLookingTask: $player is looking at $entity", PureEntities::DEBUG);

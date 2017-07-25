@@ -66,7 +66,7 @@ class Enderman extends WalkingMonster {
         }
     }
 
-    public function getDrops() {
+    public function getDrops() : array {
         /*if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             return [Item::get(368, 0, 1)];
         }*/

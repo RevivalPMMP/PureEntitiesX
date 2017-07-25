@@ -356,7 +356,7 @@ class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanI
         }
     }
 
-    public function getDrops() {
+    public function getDrops() : array {
         return [];
     }
 
