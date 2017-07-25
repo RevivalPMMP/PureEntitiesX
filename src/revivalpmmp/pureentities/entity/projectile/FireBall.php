@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\projectile;
 
+use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\nbt\tag\CompoundTag;
@@ -27,7 +28,6 @@ use pocketmine\entity\Projectile;
 use pocketmine\entity\Entity;
 use pocketmine\level\Explosion;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\event\ExplosionPrimeEvent;
 
 class FireBall extends Projectile {
     const NETWORK_ID = Data::FIRE_BALL;
