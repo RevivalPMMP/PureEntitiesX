@@ -1,6 +1,6 @@
 # Default Config File for PureEntitiesX
 
-# set how often the spawn and despawn task will be trigered
+# set how often the spawn and despawn task will be triggered
 spawn-task:
   trigger-ticks: 300
   use-block-light: false
@@ -17,8 +17,8 @@ panic:
 
 # task definitions - to have full functionality, enable all!
 tasks:
-  spawn: true # set to true to enable spawn/unspawn tasks
-  async: true # set to true for mob equipment working and relogging tamed entities working
+  spawn: true # set to true to enable spawn/despawn tasks
+  async: true # set to true for mob equipment working and re-log tamed entities working
   looking: true # set to true to enable entity interaction and enderman looking detection e.g.
 
 # when set to true the creeper will explode and also destroy blocks
