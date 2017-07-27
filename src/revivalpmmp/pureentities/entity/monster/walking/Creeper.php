@@ -94,11 +94,12 @@ class Creeper extends WalkingMonster implements Explosive {
     }
 
     public function explode() {
-        $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
+        $ev = new ExplosionPrimeEvent($this, 2.8);
+        $ev->setBlockBreaking($this->explodeBlocks);
+        $this->server->getPluginManager()->callEvent($ev);
 
         if (!$ev->isCancelled()) {
             $explosion = new Explosion($this, $ev->getForce(), $this);
-            $ev->setBlockBreaking($this->explodeBlocks); // this is configuration!
             if ($ev->isBlockBreaking()) {
                 $explosion->explodeA();
             }

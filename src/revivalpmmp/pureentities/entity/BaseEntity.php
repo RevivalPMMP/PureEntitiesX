@@ -289,6 +289,11 @@ abstract class BaseEntity extends Creature {
     }
 
     public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
+	    if(!$this->level instanceof Level){
+		    $error = "The level reference of {$this->__toString()} has been set to {$this->level}";
+		    PureEntities::getInstance()->getLogger()->debug($error);
+		    PureEntities::logOutput($error,PureEntities::WARN);
+	    }
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = Entity::entityBaseTick($tickDiff);

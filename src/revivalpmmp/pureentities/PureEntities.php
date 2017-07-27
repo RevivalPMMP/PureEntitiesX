@@ -434,7 +434,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 break;
             case "pesummon":
                 if (count($args) >= 1 or count($args) <= 3) {
-                    $playerName = count($args) == 1 ? $sender->getName() : $args[1];
+                    $playerName = count($args) >= 2 ? $sender->getName() : $args[1];
                     $isBaby = false;
                     if (count($args) == 3) {
                         $isBaby = strcmp(strtolower($args[2]), "true") == 0;
