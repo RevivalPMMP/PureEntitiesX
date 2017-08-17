@@ -18,8 +18,10 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\block\Block;
 use pocketmine\block\Pumpkin;
 use pocketmine\entity\Creature;
+use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
@@ -66,7 +68,16 @@ class Enderman extends WalkingMonster {
         }
     }
 
-    public function getDrops() : array {
+    public function onUpdate($currentTick) : bool {
+    	$id = $this->level->getBlock($this->getSide(Vector3::SIDE_DOWN))->getId();
+    	if($id === Block::STILL_WATER or $id === Block::WATER or $id === Block::LAVA or $id === Block::STILL_LAVA) {
+    		$vec = self::asVector3()->add(mt_rand(-15,15), 0, mt_rand(-15,15));
+    		$y = $this->level->getHighestBlockAt($vec->x, $vec->z);
+    		$this->teleport($vec->add(0,$y)); // TODO: get more accurate distances
+	    }
+	    return parent::onUpdate($currentTick);
+    }
+	public function getDrops() : array {
         /*if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             return [Item::get(368, 0, 1)];
         }*/

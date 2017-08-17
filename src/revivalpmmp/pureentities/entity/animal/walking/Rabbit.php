@@ -95,7 +95,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
         return 1.3;
     }
 
-    public function getName() {
+    public function getName() : string {
         return "Rabbit";
     }
 

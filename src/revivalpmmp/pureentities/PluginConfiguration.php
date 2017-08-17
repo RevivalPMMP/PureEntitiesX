@@ -291,8 +291,4 @@ class PluginConfiguration {
     public function getMaxAge() {
         return $this->maxAge;
     }
-
-
-
-
 }

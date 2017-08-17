@@ -22,6 +22,7 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\PluginConfiguration;
+use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\sound\ExpPickupSound;
 
 class XPOrb extends Entity {
@@ -47,7 +48,7 @@ class XPOrb extends Entity {
         }
     }
 
-    public function onUpdate($currentTick){
+    public function onUpdate(int $currentTick) : bool {
         if($this->closed){
             return false;
         }
@@ -110,15 +111,17 @@ class XPOrb extends Entity {
                 if($this->getExperience() > 0){
                     if ($this->getLevel() !== null) {
                         $this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
-                    }
-                    if($this->getLevel()->getServer()->getName() == "PocketMine") {
-                        $target->namedtag->XpTotal = new IntTag("XpTotal", $this->getExperience()); # PMMP only
-                        $target->recalculateXpProgress(); #  PMMP only
-                    }elseif($this->getLevel()->getServer()->getName() == "ClearSky-PocketMine-MP"){
-                        $target->setTotalXp($target->getXpProgress() + $this->getExperience());
-                    }else{ //Genesys spoons
-                        $target->addXp($this->getExperience());
-                        $target->resetXpCooldown();
+	                    if($this->getLevel()->getServer()->getName() == "PocketMine") {
+		                    $target->namedtag->XpTotal = new IntTag("XpTotal", $this->getExperience()); # PMMP only
+		                    $target->recalculateXpProgress(); #  PMMP only
+	                    }elseif($this->getLevel()->getServer()->getName() == "ClearSky-PocketMine-MP"){
+		                    $target->setTotalXp($target->getXpProgress() + $this->getExperience());
+	                    }else{ //Genesis spoons
+		                    $target->addXp($this->getExperience());
+		                    $target->resetXpCooldown();
+	                    }
+                    }else{
+                    	PureEntities::logOutput("Exp level is null!",PureEntities::WARN);
                     }
                 }
             }
@@ -133,7 +136,7 @@ class XPOrb extends Entity {
         return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
     }
 
-    public function canCollideWith(Entity $entity){
+    public function canCollideWith(Entity $entity) : bool {
         return false;
     }
 

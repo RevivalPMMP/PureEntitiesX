@@ -45,7 +45,7 @@ class Ocelot extends WalkingAnimal implements IntfCanPanic {
         return 1.4;
     }
 
-    public function getName() {
+    public function getName() : string {
         return "Ocelot";
     }
 

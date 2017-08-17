@@ -118,7 +118,7 @@ class HorseSpawner extends BaseSpawner {
         }
         $count = 0;
         foreach ($level->getEntities() as $entity) { // check all entities in given level
-            if ($entity->isAlive() and !$entity->closed and
+            if ($entity->isAlive() and !$entity->isClosed() and
                 ($entity::NETWORK_ID == Horse::NETWORK_ID or $entity::NETWORK_ID == Donkey::NETWORK_ID or $entity::NETWORK_ID == Mule::NETWORK_ID)
             ) { // count only alive, not closed and desired entities
                 $count++;

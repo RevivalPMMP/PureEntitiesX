@@ -46,7 +46,7 @@ class ZombieVillager extends WalkingMonster {
         $this->setDamage([0, 3, 4, 6]);
     }
 
-    public function getName() {
+    public function getName() : string {
         return "ZombieVillager";
     }
 
@@ -66,7 +66,7 @@ class ZombieVillager extends WalkingMonster {
         }
     }
 
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
+    public function entityBaseTick(int $tickDiff = 1, $EnchantL = 0) : bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);

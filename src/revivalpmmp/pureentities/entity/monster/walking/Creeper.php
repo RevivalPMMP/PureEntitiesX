@@ -19,6 +19,7 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\event\entity\ExplosionPrimeEvent;
+use pocketmine\network\mcpe\protocol\LevelEventPacket;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
@@ -40,6 +41,7 @@ class Creeper extends WalkingMonster implements Explosive {
     public $speed = 0.9;
 
     private $bombTime = 0;
+    public $ignited = false;
 
     private $explodeBlocks = false;
 
@@ -89,7 +91,7 @@ class Creeper extends WalkingMonster implements Explosive {
         }
     }
 
-    public function getName() {
+    public function getName() : string {
         return "Creeper";
     }
 
@@ -108,42 +110,51 @@ class Creeper extends WalkingMonster implements Explosive {
         }
     }
 
-    public function onUpdate($currentTick) {
-        $tickDiff = $currentTick - $this->lastUpdate;
+    public function onUpdate(int $currentTick) : bool {
+	    $tickDiff = $currentTick - $this->lastUpdate;
 
-        if ($this->getBaseTarget() !== null) {
-            $x = $this->getBaseTarget()->x - $this->x;
-            $y = $this->getBaseTarget()->y - $this->y;
-            $z = $this->getBaseTarget()->z - $this->z;
+	    if($this->getBaseTarget() !== null){
+		    $x = $this->getBaseTarget()->x - $this->x;
+		    $y = $this->getBaseTarget()->y - $this->y;
+		    $z = $this->getBaseTarget()->z - $this->z;
 
-            $diff = abs($x) + abs($z);
+		    $diff = abs($x) + abs($z);
 
-            if ($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->distanceSquared($this) <= 4.5) {
-                $this->bombTime += $tickDiff;
-                if ($this->bombTime >= 64 && $this->isAlive()) {
-                    $this->explode();
-                    return false;
-                }
-            } else {
-                $this->bombTime -= $tickDiff;
-                if ($this->bombTime < 0) {
-                    $this->bombTime = 0;
-                }
+		    if(($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->distanceSquared($this) <= 4.5) or $this->ignited){
+			    $this->bombTime += $tickDiff;
+			    if($this->bombTime >= 64 && $this->isAlive()){
+				    $this->explode();
+				    return false;
+			    }
+		    }else{
+			    $this->bombTime -= $tickDiff;
+			    if($this->bombTime < 0){
+				    $this->bombTime = 0;
+			    }
 
-                $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
-                $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
-            }
-            if ($diff > 0) {
-                $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
-            }
-            $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
-        }
+			    $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
+			    $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
+		    }
+		    if($diff > 0){
+			    $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
+		    }
+		    $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
+	    }
 
-        return parent::onUpdate($currentTick);
+	    return parent::onUpdate($currentTick);
     }
 
     public function attackEntity(Entity $player) {
-        // the creeper doesn't attack - it simply explodes
+	    //TODO: show creeper with fuse
+	    /*
+	    $this->level->broadcastLevelEvent($this, LevelEventPacket::EVENT_SOUND_IGNITE);
+	    foreach($this->getViewers() as $player) {
+	    	$pk = new LevelEventPacket();
+	    	$pk->evid = LevelEventPacket::EVENT_; // TODO show blinking here
+			$player->dataPacket($pk);
+	    }
+	    */
+	    return;
     }
 
     public function getDrops() : array {

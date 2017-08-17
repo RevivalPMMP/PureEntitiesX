@@ -238,7 +238,7 @@ abstract class BaseEntity extends Creature {
         $this->level->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $this->x, $this->y, $this->z, $this->yaw, $this->pitch);
     }
 
-    public function isInsideOfSolid() {
+    public function isInsideOfSolid() : bool {
         $block = $this->level->getBlock($this->temporalVector->setComponents(Math::floorFloat($this->x), Math::floorFloat($this->y + $this->height - 0.18), Math::floorFloat($this->z)));
         $bb = $block->getBoundingBox();
         return $bb !== null and $block->isSolid() and !$block->isTransparent() and $bb->intersectsWith($this->getBoundingBox());
@@ -284,11 +284,11 @@ abstract class BaseEntity extends Creature {
         $this->checkAttackByTamedEntities($source);
     }
 
-    public function knockBack(Entity $attacker, $damage, $x, $z, $base = 0.4) {
+    public function knockBack(Entity $attacker, float $damage, float $x, float $z, float $base = 0.4) {
 
     }
 
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
+    public function entityBaseTick(int $tickDiff = 1, $EnchantL = 0) : bool{
 	    if(!$this->level instanceof Level){
 		    $error = "The level reference of {$this->__toString()} has been set to {$this->level}";
 		    PureEntities::getInstance()->getLogger()->debug($error);
@@ -340,7 +340,7 @@ abstract class BaseEntity extends Creature {
         return false;
     }
 
-    public function move($dx, $dy, $dz): bool {
+    public function move(float $dx, float $dy, float $dz): bool {
         Timings::$entityMoveTimer->startTiming();
 
         $movX = $dx;

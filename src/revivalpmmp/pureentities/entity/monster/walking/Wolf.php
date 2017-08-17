@@ -183,7 +183,7 @@ class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanI
     }
 
 
-    public function getName() {
+    public function getName() : string {
         return "Wolf";
     }
 
@@ -195,7 +195,7 @@ class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanI
      * @param int $EnchantL
      * @return bool
      */
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
+    public function entityBaseTick(int $tickDiff = 1, $EnchantL = 0) : bool {
         $this->checkFollowOwner();
         return parent::entityBaseTick($tickDiff, $EnchantL);
     }

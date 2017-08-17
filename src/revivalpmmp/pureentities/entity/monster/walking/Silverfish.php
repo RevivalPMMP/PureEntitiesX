@@ -44,7 +44,7 @@ class Silverfish extends WalkingMonster {
         $this->setDamage([0, 1, 1, 1]);
     }
 
-    public function getName() {
+    public function getName() : string {
         return "Silverfish";
     }
 

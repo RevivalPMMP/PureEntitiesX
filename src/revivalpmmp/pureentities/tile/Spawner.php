@@ -145,11 +145,11 @@ class Spawner extends Spawnable {
         }
     }
 
-    public function getSpawnCompound() : CompoundTag {
-        return new CompoundTag("", [
-            new StringTag("id", Tile::MOB_SPAWNER),
-            new IntTag("EntityId", $this->entityId)
-        ]);
+    public function addAdditionalSpawnData(CompoundTag $nbt){
+    	$arr = $nbt->getValue();
+    	$arr[] = new StringTag("id", Tile::MOB_SPAWNER);
+    	$arr[] = new IntTag("EntityId", $this->entityId);
+    	$nbt->setValue($arr);
     }
 
     public function setSpawnEntityType(int $entityId) {

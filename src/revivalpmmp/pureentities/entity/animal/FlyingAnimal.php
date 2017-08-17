@@ -44,7 +44,7 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal {
         return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
     }
 
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
+    public function entityBaseTick(int $tickDiff = 1, $EnchantL = 0) : bool{
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
@@ -66,7 +66,7 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal {
         return $hasUpdate;
     }
 
-    public function onUpdate($currentTick) {
+    public function onUpdate(int $currentTick) : bool{
         if (!$this->isAlive()) {
             if (++$this->deadTicks >= 23) {
                 $this->close();

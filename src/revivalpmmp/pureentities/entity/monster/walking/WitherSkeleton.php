@@ -41,7 +41,7 @@ class WitherSkeleton extends WalkingMonster {
         return $this->speed;
     }
 
-    public function getName() {
+    public function getName() : string {
         return "Wither Skeleton";
     }
 

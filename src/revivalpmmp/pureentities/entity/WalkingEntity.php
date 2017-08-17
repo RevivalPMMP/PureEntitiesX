@@ -19,8 +19,8 @@
 namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
-use pocketmine\block\Slab;
 use pocketmine\block\Stair;
+use pocketmine\block\WoodenSlab;
 use pocketmine\entity\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\Animal;
@@ -239,7 +239,7 @@ abstract class WalkingEntity extends BaseEntity {
                 if ($blockingBlock instanceof Fence || $blockingBlock instanceof FenceGate) { // cannot pass fence or fence gate ...
                     $this->motionY = $this->gravity;
                     PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
-                } else if ($blockingBlock instanceof Slab or $blockingBlock instanceof Stair) { // on stairs entities shouldn't jump THAT high
+                } else if ($blockingBlock instanceof WoodenSlab or $blockingBlock instanceof Stair) { // on stairs entities shouldn't jump THAT high
                     $this->motionY = $this->gravity * 4;
                     PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
                 } else if ($this->motionY <= ($this->gravity * 8)) {

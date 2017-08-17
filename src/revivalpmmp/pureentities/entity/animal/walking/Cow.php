@@ -70,7 +70,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
         return 1.0;
     }
 
-    public function getName() {
+    public function getName() : string {
         return "Cow";
     }
 

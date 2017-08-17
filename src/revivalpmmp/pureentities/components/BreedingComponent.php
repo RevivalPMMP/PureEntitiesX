@@ -483,7 +483,7 @@ class BreedingComponent {
         if ($this->isBaby() and
             $this->getParent() !== null and
             $this->getParent()->isAlive() and
-            !$this->getParent()->closed and
+            !$this->getParent()->isClosed() and
             ($this->entity->getBaseTarget() === null or !$this->entity->getBaseTarget() instanceof Player)
         ) {
             $this->entity->setBaseTarget($this->getParent());

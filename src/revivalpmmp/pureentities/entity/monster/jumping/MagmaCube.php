@@ -45,7 +45,7 @@ class MagmaCube extends JumpingMonster {
         $this->setDamage([0, 3, 4, 6]);
     }
 
-    public function getName() {
+    public function getName() : string {
         return "MagmaCube";
     }
 

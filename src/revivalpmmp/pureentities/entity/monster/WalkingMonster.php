@@ -19,8 +19,10 @@
 namespace revivalpmmp\pureentities\entity\monster;
 
 use pocketmine\entity\Creature;
+use pocketmine\entity\Living;
 use pocketmine\item\ItemIds;
 use revivalpmmp\pureentities\entity\animal\Animal;
+use revivalpmmp\pureentities\entity\monster\walking\Creeper;
 use revivalpmmp\pureentities\entity\monster\walking\Enderman;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\entity\WalkingEntity;
@@ -55,9 +57,9 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
      * checks if the entity is tamed and the attacked entity is the owner. If so, the method will do
      * nothing. Otherwise, the attackEntity method is called which has to be implemented by each monster entity.
      *
-     * @param Entity $player
+     * @param Living $player
      */
-    public function checkAndAttackEntity(Entity $player) {
+    public function checkAndAttackEntity(Living $player) {
         if ($this instanceof IntfTamable and $this->isTamed()) {
             if ($player instanceof Player and strcasecmp($player->getName(), $this->getOwner()->getName()) === 0) {
                 // a tamed entity doesn't attack it's owner!
@@ -159,7 +161,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         }
     }
 
-    public function onUpdate($currentTick) {
+    public function onUpdate(int $currentTick) : bool {
         if ($this->server->getDifficulty() < 1) {
             $this->close();
             return false;
@@ -180,7 +182,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         $target = $this->updateMove($tickDiff);
         if ($this->isFriendly()) {
             if (!($target instanceof Player)) {
-                if ($target instanceof Entity && $target->distanceSquared($this) <= $this->attackDistance) {
+                if ($target instanceof Living && $target->distanceSquared($this) <= $this->attackDistance) {
                     $this->checkAndAttackEntity($target);
                 } elseif (
                     $target instanceof Vector3
@@ -191,7 +193,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                 }
             }
         } else {
-            if ($target instanceof Entity && $target->distanceSquared($this) <= $this->attackDistance) {
+            if ($target instanceof Living && $target->distanceSquared($this) <= $this->attackDistance) {
                 $this->checkAndAttackEntity($target);
             } elseif (
                 $target instanceof Vector3
@@ -204,7 +206,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         return true;
     }
 
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
+    public function entityBaseTick(int $tickDiff = 1, $EnchantL = 0) : bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
@@ -298,6 +300,15 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                 }
 
             }
+        }else{
+        	if($player->getInventory() != null) {
+		        $itemInHand = $player->getInventory()->getItemInHand()->getId();
+		        if($this instanceof Creeper) {
+		        	if($itemInHand === ItemIds::FLINT_AND_STEEL) {
+		        		$this->ignited = true;
+			        }
+		        }
+	        }
         }
     }
 

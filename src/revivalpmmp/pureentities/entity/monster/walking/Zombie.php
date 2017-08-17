@@ -103,7 +103,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         return []; // return an empty array - a zombie is not feedable
     }
 
-    public function getName() {
+    public function getName() : string {
         return "Zombie";
     }
 
@@ -168,7 +168,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         }
     }
 
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
+    public function entityBaseTick(int $tickDiff = 1, $EnchantL = 0) : bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $this->getMobEquipment()->entityBaseTick($tickDiff);

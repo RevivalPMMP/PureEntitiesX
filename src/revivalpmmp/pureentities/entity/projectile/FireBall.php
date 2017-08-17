@@ -57,7 +57,7 @@ class FireBall extends Projectile {
         $this->canExplode = $bool;
     }
 
-    public function onUpdate($currentTick) {
+    public function onUpdate(int $currentTick) : bool {
         if ($this->closed) {
             return false;
         }

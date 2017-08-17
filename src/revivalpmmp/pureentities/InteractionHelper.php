@@ -142,5 +142,4 @@ class InteractionHelper {
         }
         return null;
     }
-
 }

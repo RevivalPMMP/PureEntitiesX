@@ -52,7 +52,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         return $this->speed;
     }
 
-    public function getName() {
+    public function getName() : string {
         return "Mooshroom";
     }
 

@@ -19,6 +19,7 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\entity\Effect;
+use pocketmine\entity\Living;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Ageable;
 use pocketmine\entity\Entity;
@@ -49,11 +50,11 @@ class Husk extends WalkingMonster implements Ageable {
         $this->setDamage([0, 3, 4, 6]);
     }
 
-    public function getName() {
+    public function getName() :string {
         return "Husk";
     }
 
-    public function isBaby() {
+    public function isBaby() : bool {
         return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
     }
 
@@ -76,7 +77,7 @@ class Husk extends WalkingMonster implements Ageable {
     /**
      * Attack player
      *
-     * @param Entity $player
+     * @param Living $player
      */
     public function attackEntity(Entity $player) {
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {

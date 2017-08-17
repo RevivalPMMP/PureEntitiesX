@@ -100,6 +100,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
     const BUTTON_TEXT_SIT = "Sit";
     const BUTTON_TEXT_DYE = "Dye";
 
+    /** @var \stdClass[] $registeredClasses */
     private static $registeredClasses = [];
 
     /**
@@ -433,11 +434,11 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 $commandSuccessful = true;
                 break;
             case "pesummon":
-                if (count($args) >= 1 or count($args) <= 3) {
-                    $playerName = count($args) >= 2 ? $sender->getName() : $args[1];
+                if (count($args) >= 1 and count($args) <= 3) {
+                    $playerName = count($args) === 3 ? $sender->getName() : $args[2];
                     $isBaby = false;
-                    if (count($args) == 3) {
-                        $isBaby = strcmp(strtolower($args[2]), "true") == 0;
+                    if (count($args) >= 2) {
+                        $isBaby = strcmp(strtolower($args[1]), "true") == 0;
                     }
                     foreach ($this->getServer()->getOnlinePlayers() as $player) {
                         if (strcasecmp($player->getName(), $playerName) == 0) {
@@ -446,17 +447,16 @@ class PureEntities extends PluginBase implements CommandExecutor {
                             foreach (self::$registeredClasses as $registeredClass) {
                                 if (strcmp($mobName, strtolower($this->getShortClassName($registeredClass))) == 0) {
                                     self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster", $isBaby);
-                                    $sender->sendMessage("Spawned $mobName");
+                                    $sender->sendMessage("Spawned {$args[0]}");
                                     return true;
                                 }
                             }
-                            $sender->sendMessage("Entity not found: $mobName");
+                            $sender->sendMessage("Entity not found: {$args[0]}");
                             return true;
                         }
                     }
                 } else {
-                    $sender->sendMessage("Usage: pesummon <mobname> <opt:player_name> <opt:baby>");
-                    $commandSuccessful = true;
+                    $commandSuccessful = false;
                 }
                 break;
             default:
