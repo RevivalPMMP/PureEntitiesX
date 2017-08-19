@@ -14,9 +14,9 @@
 
 <!-- CLIENT INFORMATION - what is the plugin version, PHP version, and server build you're running? -->
 ## Client information
-PocketMine-MP Version: 0.16/1.0 (delete as nescessary)
-Plugin Version: (insert commit label here)
-PHP version: 7.0.13 (default)
+PocketMine-MP Version: (insert commit hash here)
+Plugin Version: (insert commit hash here)
+PHP version: 7.0.14 (default)
 <!-- OPTIONAL INFORMATION - use this section for posting crash dumps, backtraces or other files(please use code markdown!) -->
 ## Optional information
 ...
