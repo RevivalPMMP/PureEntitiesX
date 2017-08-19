@@ -44,7 +44,7 @@ class Spider extends WalkingMonster {
         $this->setDamage([0, 2, 2, 3]);
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Spider";
     }
 
@@ -59,7 +59,7 @@ class Spider extends WalkingMonster {
         }
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));

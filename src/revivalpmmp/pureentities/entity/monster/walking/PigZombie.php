@@ -66,7 +66,7 @@ class PigZombie extends WalkingMonster {
         }
     }
 
-    public function getName() {
+    public function getName(): string {
         return "PigZombie";
     }
 
@@ -112,7 +112,7 @@ class PigZombie extends WalkingMonster {
         }
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 1)));

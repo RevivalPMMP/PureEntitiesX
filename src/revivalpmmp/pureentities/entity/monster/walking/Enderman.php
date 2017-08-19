@@ -45,7 +45,7 @@ class Enderman extends WalkingMonster {
         $this->setDamage([0, 4, 7, 10]);
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Enderman";
     }
 
@@ -59,7 +59,7 @@ class Enderman extends WalkingMonster {
         }
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         /*if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             return [Item::get(368, 0, 1)];
         }*/

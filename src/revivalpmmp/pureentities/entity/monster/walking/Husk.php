@@ -48,11 +48,11 @@ class Husk extends WalkingMonster implements Ageable {
         $this->setDamage([0, 3, 4, 6]);
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Husk";
     }
 
-    public function isBaby() {
+    public function isBaby(): bool {
         return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
     }
 
@@ -85,7 +85,7 @@ class Husk extends WalkingMonster implements Ageable {
         }
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));

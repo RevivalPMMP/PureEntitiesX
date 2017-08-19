@@ -94,7 +94,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      */
     private $color = Sheep::WHITE; // default: white
 
-    public function getName() {
+    public function getName(): string {
         return "Sheep";
     }
 
@@ -182,7 +182,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
         }
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed() and !$this->isSheared() && !$this->getBreedingComponent()->isBaby()) {
             // http://minecraft.gamepedia.com/Sheep - drop 1 wool when not a baby and died

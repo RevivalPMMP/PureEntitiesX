@@ -40,7 +40,7 @@ class WitherSkeleton extends WalkingMonster {
         return $this->speed;
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Wither Skeleton";
     }
 
@@ -88,7 +88,7 @@ class WitherSkeleton extends WalkingMonster {
         }
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));

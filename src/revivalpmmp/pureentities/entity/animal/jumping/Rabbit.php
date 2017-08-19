@@ -33,7 +33,7 @@ class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
         return $this->speed;
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Rabbit";
     }
 
@@ -44,7 +44,7 @@ class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
         $this->setHealth(3);
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         return [];
     }
 

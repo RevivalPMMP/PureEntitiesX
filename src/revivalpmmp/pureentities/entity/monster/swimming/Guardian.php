@@ -30,7 +30,7 @@ class Guardian extends SwimmingMonster implements Monster {
         parent::attackEntity($player);
     }
 
-    public function getName() {
+    public function getName(): string {
         return "ElderGuardian";
     }
 

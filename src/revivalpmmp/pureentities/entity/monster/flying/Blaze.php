@@ -60,7 +60,7 @@ class Blaze extends FlyingMonster implements ProjectileSource {
         $this->setDamage([0, 0, 0, 0]);
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Blaze";
     }
 
@@ -240,7 +240,7 @@ class Blaze extends FlyingMonster implements ProjectileSource {
         }
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::BLAZE_ROD, 0, mt_rand(0, 1))];
         } else {

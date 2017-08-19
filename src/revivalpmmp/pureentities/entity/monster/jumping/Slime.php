@@ -39,7 +39,7 @@ class Slime extends JumpingMonster {
         return $this->speed;
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Slime";
     }
 
@@ -67,7 +67,7 @@ class Slime extends JumpingMonster {
         return false;
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
         } else {

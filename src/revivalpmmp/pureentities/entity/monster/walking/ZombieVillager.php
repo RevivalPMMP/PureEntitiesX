@@ -45,7 +45,7 @@ class ZombieVillager extends WalkingMonster {
         $this->setDamage([0, 3, 4, 6]);
     }
 
-    public function getName() {
+    public function getName(): string {
         return "ZombieVillager";
     }
 
@@ -59,7 +59,7 @@ class ZombieVillager extends WalkingMonster {
         }
     }
 
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
+    public function entityBaseTick(int $tickDiff = 1): bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
@@ -76,7 +76,7 @@ class ZombieVillager extends WalkingMonster {
         return $hasUpdate;
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));

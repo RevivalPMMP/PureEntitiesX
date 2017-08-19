@@ -79,7 +79,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
         $this->breedableClass->saveNBT();
     }
 
-    public function getName() {
+    public function getName() : string {
         return "Chicken";
     }
 
@@ -109,7 +109,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
         return $this->feedableItems;
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         $drops = [];
 
         if ($this->isLootDropAllowed()) {
@@ -132,7 +132,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 
 
     // ----- functionality to lay an eg ... -------------
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
+    public function entityBaseTick(int $tickDiff = 1): bool {
         if ($this->dropEggTime === 0) {
             $this->dropEggTime = mt_rand(self::DROP_EGG_DELAY_MIN, self::DROP_EGG_DELAY_MAX);
         }
@@ -144,6 +144,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
         }
 
         parent::entityBaseTick($tickDiff);
+        return true;
     }
 
     private function layEgg() {

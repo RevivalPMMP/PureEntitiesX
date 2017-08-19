@@ -33,7 +33,7 @@ class Horse extends WalkingAnimal implements Rideable {
     public $length = 1.2;
     public $speed = 1.0;
 
-    public function getName() {
+    public function getName(): string {
         return "Horse";
     }
 
@@ -48,7 +48,7 @@ class Horse extends WalkingAnimal implements Rideable {
         return false;
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
         } else {

@@ -50,7 +50,7 @@ class IronGolem extends WalkingMonster {
         $this->setMinDamage([0, 7, 7, 7]);
     }
 
-    public function getName() {
+    public function getName(): string {
         return "IronGolem";
     }
 
@@ -73,7 +73,7 @@ class IronGolem extends WalkingMonster {
         return false;
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));

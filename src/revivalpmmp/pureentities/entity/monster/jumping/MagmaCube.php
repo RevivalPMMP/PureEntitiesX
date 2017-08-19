@@ -44,7 +44,7 @@ class MagmaCube extends JumpingMonster {
         $this->setDamage([0, 3, 4, 6]);
     }
 
-    public function getName() {
+    public function getName(): string {
         return "MagmaCube";
     }
 
@@ -58,7 +58,7 @@ class MagmaCube extends JumpingMonster {
         }
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             switch (mt_rand(0, 1)) {

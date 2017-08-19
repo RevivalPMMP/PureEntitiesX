@@ -33,11 +33,11 @@ class Villager extends WalkingAnimal {
         return $this->speed;
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Villager";
     }
 
-    public function getDrops() {
+    public function getDrops(): array {
         return [];
     }
 
