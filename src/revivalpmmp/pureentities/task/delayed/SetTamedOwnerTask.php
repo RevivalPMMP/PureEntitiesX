@@ -62,7 +62,7 @@ class SetTamedOwnerTask extends PluginTask {
      *
      * @param $currentTick
      */
-    public function onRun($currentTick) {
+    public function onRun(int $currentTick) {
         $this->tameableEntity->mapOwner();
     }
 
