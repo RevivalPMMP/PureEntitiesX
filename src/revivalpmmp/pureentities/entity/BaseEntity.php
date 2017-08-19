@@ -225,17 +225,12 @@ abstract class BaseEntity extends Creature {
             || $this->lastYaw !== $this->yaw
             || $this->lastPitch !== $this->pitch
         ) {
-            $oriX = $this->lastX;
-            $oriY = $this->lastY;
-            $oriZ = $this->lastZ;
             $this->lastX = $this->x;
             $this->lastY = $this->y;
             $this->lastZ = $this->z;
             $this->lastYaw = $this->yaw;
             $this->lastPitch = $this->pitch;
-            $motion = new Vector3($this->x - $oriX, $this->y - $oriY, $this->z - $oriZ);
-            //$this->setMotion($motion);
-            //$this->level->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $this->x, $this->y, $this->z, $this->yaw, $this->pitch);
+            $this->broadcastMovement();
         }
     }
 
