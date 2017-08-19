@@ -247,7 +247,7 @@ class EventListener implements Listener {
     public function playerJoin (PlayerJoinEvent $ev) {
         PureEntities::logOutput("[EventListener] playerJoin: " . $ev->getPlayer()->getName(), PureEntities::DEBUG);
         foreach ($ev->getPlayer()->getLevel()->getEntities() as $entity) {
-            if ($entity->isAlive() and !$entity->closed and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster and
+            if ($entity->isAlive() and !$entity->isClosed() and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster and
                 PluginConfiguration::getInstance()->getEnableAsyncTasks()
             ) {
                 Server::getInstance()->getScheduler()->scheduleDelayedTask(new ShowMobEquipmentTask(

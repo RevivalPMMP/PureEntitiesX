@@ -145,13 +145,6 @@ class Spawner extends Spawnable {
         }
     }
 
-    public function getSpawnCompound() : CompoundTag {
-        return new CompoundTag("", [
-            new StringTag("id", Tile::MOB_SPAWNER),
-            new IntTag("EntityId", $this->entityId)
-        ]);
-    }
-
     public function setSpawnEntityType(int $entityId) {
         $this->entityId = $entityId;
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
@@ -194,6 +187,11 @@ class Spawner extends Spawnable {
 
     public function setMaxNearbyEntities(int $count) {
         $this->maxNearbyEntities = $count;
+    }
+
+    public function addAdditionalSpawnData(CompoundTag $nbt) {
+        $nbt["id"] = Tile::MOB_SPAWNER;
+        $nbt["EntityId"] = $this->entityId;
     }
 
 }

@@ -45,7 +45,7 @@ class Spider extends WalkingMonster {
         $this->setDamage([0, 2, 2, 3]);
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Spider";
     }
 

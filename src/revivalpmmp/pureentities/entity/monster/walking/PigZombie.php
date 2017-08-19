@@ -67,7 +67,7 @@ class PigZombie extends WalkingMonster {
         }
     }
 
-    public function getName() {
+    public function getName(): string {
         return "PigZombie";
     }
 

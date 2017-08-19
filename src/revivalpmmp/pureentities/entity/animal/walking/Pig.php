@@ -52,7 +52,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
         $this->breedableClass->init();
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Pig";
     }
 

@@ -89,7 +89,7 @@ class Creeper extends WalkingMonster implements Explosive {
         }
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Creeper";
     }
 
@@ -107,7 +107,7 @@ class Creeper extends WalkingMonster implements Explosive {
         }
     }
 
-    public function onUpdate($currentTick) {
+   public function onUpdate(int $currentTick): bool {
         $tickDiff = $currentTick - $this->lastUpdate;
 
         if ($this->getBaseTarget() !== null) {

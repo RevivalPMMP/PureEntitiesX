@@ -96,7 +96,7 @@ class PigZombieSpawner extends BaseSpawner {
         }
         $count = 0;
         foreach ($level->getEntities() as $entity) { // check all entities in given level
-            if ($entity->isAlive() and !$entity->closed and $entity::NETWORK_ID == $this->getEntityNetworkId()) { // count only alive, not closed and desired entities
+            if ($entity->isAlive() and !$entity->isClosed() and $entity::NETWORK_ID == $this->getEntityNetworkId()) { // count only alive, not closed and desired entities
                 $count++;
             }
         }

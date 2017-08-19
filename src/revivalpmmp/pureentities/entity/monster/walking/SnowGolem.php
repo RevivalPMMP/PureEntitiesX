@@ -70,7 +70,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
         return $this->speed;
     }
 
-    public function getName() {
+    public function getName(): string {
         return "SnowGolem";
     }
 

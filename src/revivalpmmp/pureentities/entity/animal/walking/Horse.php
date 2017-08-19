@@ -33,7 +33,7 @@ class Horse extends WalkingAnimal implements Rideable {
     public $length = 1.2;
     public $speed = 1.0;
 
-    public function getName() {
+    public function getName(): string {
         return "Horse";
     }
 

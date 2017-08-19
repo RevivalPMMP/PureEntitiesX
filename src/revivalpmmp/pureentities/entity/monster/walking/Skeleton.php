@@ -49,7 +49,7 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
         return $this->speed;
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Skeleton";
     }
 
@@ -116,7 +116,7 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
         $player->dataPacket($pk);
     }
 
-    public function entityBaseTick($tickDiff = 1, $EnchantL = 0) {
+    public function entityBaseTick(int $tickDiff = 1) : bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);

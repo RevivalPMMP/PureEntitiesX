@@ -40,7 +40,7 @@ class Slime extends JumpingMonster {
         return $this->speed;
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Slime";
     }
 

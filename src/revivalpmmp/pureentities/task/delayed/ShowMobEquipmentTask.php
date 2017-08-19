@@ -64,7 +64,7 @@ class ShowMobEquipmentTask extends PluginTask  {
      */
     public function onRun(int $currentTick) {
         foreach ($this->playerJoined->getLevel()->getEntities() as $entity) {
-            if ($entity->isAlive() and !$entity->closed and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster) {
+            if ($entity->isAlive() and !$entity->isClosed() and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster) {
                 $entity->getMobEquipment()->sendEquipmentUpdate($this->playerJoined);
             }
         }

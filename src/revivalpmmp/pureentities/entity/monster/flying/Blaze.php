@@ -60,7 +60,7 @@ class Blaze extends FlyingMonster implements ProjectileSource {
         $this->setDamage([0, 0, 0, 0]);
     }
 
-    public function getName() {
+    public function getName(): string {
         return "Blaze";
     }
 

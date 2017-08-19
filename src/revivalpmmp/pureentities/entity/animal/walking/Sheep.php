@@ -94,7 +94,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      */
     private $color = Sheep::WHITE; // default: white
 
-    public function getName() {
+    public function getName(): string {
         return "Sheep";
     }
 
