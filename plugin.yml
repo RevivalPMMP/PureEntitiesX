@@ -6,7 +6,7 @@ api: [3.0.0-ALPHA7]
 load: STARTUP
 authors: ["milk0417", "RevivalPMMP"]
 description: Implement all MCPE entities into your worlds
-website: https://github.com/RevivalPMMP/PureEntitiesX
+website: https://github.com/poggit-orphanage/PureEntitiesX
 
 commands:
   pesummon:
