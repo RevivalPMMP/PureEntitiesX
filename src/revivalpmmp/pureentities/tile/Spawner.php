@@ -190,7 +190,7 @@ class Spawner extends Spawnable {
     }
 
     public function addAdditionalSpawnData(CompoundTag $nbt) {
-        $nbt["id"] = Tile::MOB_SPAWNER;
+        //$nbt["id"] = Tile::MOB_SPAWNER;
         $nbt["EntityId"] = $this->entityId;
     }
 

@@ -206,12 +206,8 @@ abstract class BaseEntity extends Creature {
             $pk = new AddEntityPacket();
             $pk->entityRuntimeId = $this->getID();
             $pk->type = static::NETWORK_ID;
-            $pk->x = $this->x;
-            $pk->y = $this->y;
-            $pk->z = $this->z;
-            $pk->speedX = 0;
-            $pk->speedY = 0;
-            $pk->speedZ = 0;
+            $pk->position = new Vector3($this->getX(), $this->getY(), $this->getZ());
+            $pk->motion = new Vector3(0, 0, 0);
             $pk->yaw = $this->yaw;
             $pk->pitch = $this->pitch;
             $pk->metadata = $this->dataProperties;
@@ -229,13 +225,18 @@ abstract class BaseEntity extends Creature {
             || $this->lastYaw !== $this->yaw
             || $this->lastPitch !== $this->pitch
         ) {
+            $oriX = $this->lastX;
+            $oriY = $this->lastY;
+            $oriZ = $this->lastZ;
             $this->lastX = $this->x;
             $this->lastY = $this->y;
             $this->lastZ = $this->z;
             $this->lastYaw = $this->yaw;
             $this->lastPitch = $this->pitch;
+            $motion = new Vector3($this->x - $oriX, $this->y - $oriY, $this->z - $oriZ);
+            //$this->setMotion($motion);
+            //$this->level->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $this->x, $this->y, $this->z, $this->yaw, $this->pitch);
         }
-        //$this->level->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $this->x, $this->y, $this->z, $this->yaw, $this->pitch);
     }
 
     public function isInsideOfSolid() : bool{
