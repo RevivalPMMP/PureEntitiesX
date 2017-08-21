@@ -48,7 +48,7 @@ class Enderman extends WalkingMonster {
         $this->setDamage([0, 4, 7, 10]);
     }
 
-    public function getName() {
+    public function getName() : string {
         return "Enderman";
     }
 
@@ -68,7 +68,7 @@ class Enderman extends WalkingMonster {
         }
     }
 
-    public function onUpdate($currentTick) : bool {
+    public function onUpdate(int $currentTick) : bool {
     	$id = $this->level->getBlock($this->getSide(Vector3::SIDE_DOWN))->getId();
     	if($id === Block::STILL_WATER or $id === Block::WATER or $id === Block::LAVA or $id === Block::STILL_LAVA) {
     		$vec = self::asVector3()->add(mt_rand(-15,15), 0, mt_rand(-15,15));
