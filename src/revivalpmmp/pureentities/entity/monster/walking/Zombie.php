@@ -129,7 +129,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
      * @param float $damage
      * @param EntityDamageEvent $source
      */
-    public function attack($damage, EntityDamageEvent $source) {
+    public function attack(EntityDamageEvent $source) {
         PureEntities::logOutput("$this: attacked with original damage of $damage", PureEntities::DEBUG);
         $reduceDamagePercent = 0;
         if ($this->getMobEquipment() !== null) {
@@ -143,7 +143,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
 
         PureEntities::logOutput("$this: attacked with final damage of $damage", PureEntities::DEBUG);
 
-        parent::attack($damage, $source);
+        parent::attack($source);
     }
 
     /**
@@ -162,7 +162,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
             }
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
                 MobDamageCalculator::calculateFinalDamage($player, $damage));
-            $player->attack($ev->getFinalDamage(), $ev);
+            $player->attack($ev);
 
             $this->checkTamedMobsAttack($player);
         }

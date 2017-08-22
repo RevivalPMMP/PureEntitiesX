@@ -127,7 +127,7 @@ class Blaze extends FlyingMonster implements ProjectileSource {
         }
 
         $block = $this->level->getBlock($this->add($dx, 0, $dz));
-        if ($block instanceof Slab || $block instanceof Stair) {
+        if ($block instanceof StoneSlab || $block instanceof Stair) {
             $this->motionY = 0.5;
             return true;
         }

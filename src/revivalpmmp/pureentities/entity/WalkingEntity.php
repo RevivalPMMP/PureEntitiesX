@@ -19,7 +19,7 @@
 namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
-use pocketmine\block\Slab;
+use pocketmine\block\StoneSlab;
 use pocketmine\block\Stair;
 use pocketmine\entity\Item;
 use pocketmine\Player;
@@ -33,7 +33,7 @@ use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\features\IntfCanEquip;
-use revivalpmmp\pureentities\features\IntfTamable;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\PeTimings;
 
@@ -126,7 +126,7 @@ abstract class WalkingEntity extends BaseEntity {
 
             $distance = $this->distanceSquared($this->getBaseTarget());
 
-            if ($this instanceof IntfTamable and
+            if ($this instanceof IntfTameable and
                 $this->getBaseTarget() instanceof Player and
                 $this->isFriendly() and
                 $this->isTamed() and
@@ -239,7 +239,7 @@ abstract class WalkingEntity extends BaseEntity {
                 if ($blockingBlock instanceof Fence || $blockingBlock instanceof FenceGate) { // cannot pass fence or fence gate ...
                     $this->motionY = $this->gravity;
                     PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
-                } else if ($blockingBlock instanceof Slab or $blockingBlock instanceof Stair) { // on stairs entities shouldn't jump THAT high
+                } else if ($blockingBlock instanceof StoneSlab or $blockingBlock instanceof Stair) { // on stairs entities shouldn't jump THAT high
                     $this->motionY = $this->gravity * 4;
                     PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
                 } else if ($this->motionY <= ($this->gravity * 8)) {

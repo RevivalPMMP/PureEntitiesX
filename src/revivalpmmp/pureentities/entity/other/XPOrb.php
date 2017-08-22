@@ -133,7 +133,7 @@ class XPOrb extends Entity {
         return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
     }
 
-	public function canCollideWith(Entity $entity){
+	public function canCollideWith(Entity $entity): bool {
 		return false;
 	}
 	

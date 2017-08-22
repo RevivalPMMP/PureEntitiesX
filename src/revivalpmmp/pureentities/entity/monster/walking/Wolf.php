@@ -35,13 +35,13 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
-use revivalpmmp\pureentities\features\IntfTamable;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanInteract {
+class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::WOLF;
 
     public $height = 0.969;
@@ -319,8 +319,8 @@ class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanI
      * @param float $damage
      * @param EntityDamageEvent $source
      */
-    public function attack($damage, EntityDamageEvent $source) {
-        parent::attack($damage, $source);
+    public function attack(EntityDamageEvent $source) {
+        parent::attack($source);
 
         if (!$source->isCancelled()) {
             // when this is tamed and the owner attacks, the wolf doesn't get angry
@@ -350,7 +350,7 @@ class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanI
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
                 MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
-            $player->attack($ev->getFinalDamage(), $ev);
+            $player->attack($ev);
 
             $this->checkTamedMobsAttack($player);
         }
