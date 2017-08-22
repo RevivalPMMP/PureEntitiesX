@@ -32,6 +32,7 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     const NETWORK_ID = Data::ZOMBIE;
@@ -86,7 +87,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     }
 
     /**
-     * Returns the appropiate NetworkID associated with this entity
+     * Returns the appropriate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
@@ -127,7 +128,6 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
      *
      * @param float $damage
      * @param EntityDamageEvent $source
-     * @return mixed
      */
     public function attack($damage, EntityDamageEvent $source) {
         PureEntities::logOutput("$this: attacked with original damage of $damage", PureEntities::DEBUG);
@@ -143,7 +143,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
 
         PureEntities::logOutput("$this: attacked with final damage of $damage", PureEntities::DEBUG);
 
-        return parent::attack($damage, $source);
+        parent::attack($damage, $source);
     }
 
     /**
@@ -160,7 +160,8 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
             if ($this->getMobEquipment() !== null) {
                 $damage = $damage + $this->getMobEquipment()->getWeaponDamageToAdd();
             }
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $damage);
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+                MobDamageCalculator::calculateFinalDamage($player, $damage));
             $player->attack($ev->getFinalDamage(), $ev);
 
             $this->checkTamedMobsAttack($player);

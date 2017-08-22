@@ -40,7 +40,7 @@ class OcelotSpawner extends BaseSpawner {
     public function spawn(Position $pos, Player $player): bool {
 
         if ($this->spawnAllowedByProbability()) { // first check if spawn would be allowed, if not the other method calls make no sense at all
-            $block = $pos->level->getBlock($pos); // because we get the air block, we need to substract 1 from the y position
+            $block = $pos->level->getBlock($pos); // because we get the air block, we need to subtract 1 from the y position
             $biomeId = $pos->level->getBiomeId($pos->x, $pos->z);
 
             PureEntities::logOutput($this->getClassNameShort() . ": aboveSeaLevel: " . $this->isAboveSeaLevel($pos) . ", block is instanceof Grass or Tree" . ($block instanceof Grass or $block instanceof Tree) .
@@ -49,7 +49,7 @@ class OcelotSpawner extends BaseSpawner {
                 PureEntities::DEBUG);
 
             if ($this->isAboveSeaLevel($pos) and // spawns only above sea level
-                ($block instanceof Grass || $block instanceof Tree) and // and only on gras blocks or leaf block (we don't have leaf blocks atm, so we use tree!)
+                ($block instanceof Grass || $block instanceof Tree) and // and only on grass blocks or leaf block (we don't have leaf blocks atm, so we use tree!)
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level
                 $this->checkPlayerDistance($player, $pos) and // distance to player has to be at least a configurable amount of blocks (atm 8!)
                 $biomeId == Biome::FOREST

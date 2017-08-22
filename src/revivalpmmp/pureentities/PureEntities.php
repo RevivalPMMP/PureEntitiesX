@@ -204,7 +204,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
     }
 
     /**
-     * Checks if configuation is available. This function also checks if the config file available
+     * Checks if configuration is available. This function also checks if the config file available
      * is really filled - if not it will create a new config from the internal resource folder
      */
     private function checkConfig() {
@@ -285,7 +285,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
             $entity = self::create($entityid, $pos);
             if ($entity !== null) {
                 if ($entity instanceof IntfCanBreed and $baby and $entity->getBreedingComponent() !== false) {
-                    $entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
+                    $entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheep)
                     if ($parentEntity != null) {
                         $entity->getBreedingComponent()->setParent($parentEntity);
                     }
@@ -404,7 +404,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return bool
      */
     public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
-        $commandSuccessul = false;
+        $commandSuccessful = false;
 
         switch ($command->getName()) {
             case "peremove":
@@ -430,7 +430,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     $name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
                     PureEntities::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", PureEntities::NORM);
                 }
-                $commandSuccessul = true;
+                $commandSuccessful = true;
                 break;
             case "pesummon":
                 if (count($args) >= 1 or count($args) <= 3) {
@@ -456,13 +456,13 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     }
                 } else {
                     $sender->sendMessage("Usage: pesummon <mobname> <opt:player_name> <opt:baby>");
-                    $commandSuccessul = true;
+                    $commandSuccessful = true;
                 }
                 break;
             default:
                 break;
         }
-        return $commandSuccessul;
+        return $commandSuccessful;
     }
 
     /**

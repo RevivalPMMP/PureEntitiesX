@@ -53,8 +53,13 @@ class Stray extends WalkingMonster implements ProjectileSource {
         return "Stray";
     }
 
+    /**
+     * Attack a player
+     *
+     * @param Entity $player
+     */
     public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55) {
+        if ($this->attackDelay > 30 && $this->distanceSquared($player) <= 55) {
             $this->attackDelay = 0;
 
             $f = 1.2;

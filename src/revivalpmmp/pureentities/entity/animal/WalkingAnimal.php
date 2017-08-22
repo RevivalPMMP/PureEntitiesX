@@ -169,7 +169,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
                     if (in_array($creature->getInventory()->getItemInHand()->getId(), $feedableItems)) {
                         // check if the sheep is able to follow - but only on a distance of 6 blocks
                         $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance();
-                        // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
+                        // sheep only follow when <= 5 blocks away. otherwise, forget the player as target!
                         if (!$targetOption and $this->isFollowingPlayer($creature) and !$this->getBreedingComponent()->isBaby()) {
                             $this->setBaseTarget($this->getBreedingComponent()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
                         }
