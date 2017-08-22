@@ -35,12 +35,12 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
-use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\features\IntfTamable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 
-class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCanInteract {
+class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::WOLF;
 
     public $height = 0.969;
@@ -156,7 +156,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     }
 
     /**
-     * Returns the appropiate NetworkID associated with this entity
+     * Returns the appropriate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
@@ -191,12 +191,11 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * wolf is tamed and has to teleport to the owner when more than 12 blocks away)
      *
      * @param int $tickDiff
-     * @param int $EnchantL
      * @return bool
      */
     public function entityBaseTick(int $tickDiff = 1): bool {
         $this->checkFollowOwner();
-        return parent::entityBaseTick($tickDiff, $EnchantL);
+        return parent::entityBaseTick($tickDiff);
     }
 
     /**
@@ -213,12 +212,12 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
                         $entity->isAlive()
                     ) {
                         $this->setBaseTarget($entity); // set the given entity as target ...
-                        return;
+						return parent::checkTarget($checkSkip);
                     }
                 }
             }
-            return parent::checkTarget(false);
         }
+		return parent::checkTarget($checkSkip);
     }
 
     /**
@@ -315,12 +314,10 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     /**
      * Wolf gets attacked ...
      *
-     * @param float $damage
      * @param EntityDamageEvent $source
-     * @return mixed
      */
-    public function attack($damage, EntityDamageEvent $source) {
-        parent::attack($damage, $source);
+    public function attack(EntityDamageEvent $source) {
+        parent::attack($source);
 
         if (!$source->isCancelled()) {
             // when this is tamed and the owner attacks, the wolf doesn't get angry
@@ -349,7 +346,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
             $this->attackDelay = 0;
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
-            $player->attack($ev->getFinalDamage(), $ev);
+            $player->attack($ev);
 
             $this->checkTamedMobsAttack($player);
         }
@@ -374,7 +371,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * @return bool
      */
     public function tame(Player $player): bool {
-        $tameSuccess = mt_rand(0, 2) === 0; // 1/3 chance of taiming succeeds
+        $tameSuccess = mt_rand(0, 2) === 0; // 1/3 chance of taming succeeds
         $itemInHand = $player->getInventory()->getItemInHand();
         if ($itemInHand != null) {
             $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);

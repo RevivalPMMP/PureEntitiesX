@@ -82,7 +82,7 @@ class WitherSkeleton extends WalkingMonster {
             $this->attackDelay = 0;
 
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
-            $player->attack($ev->getFinalDamage(), $ev);
+            $player->attack($ev);
 
             $this->checkTamedMobsAttack($player);
         }

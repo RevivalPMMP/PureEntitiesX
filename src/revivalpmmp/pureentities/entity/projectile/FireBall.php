@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\projectile;
 
+use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\nbt\tag\CompoundTag;
@@ -27,7 +28,6 @@ use pocketmine\entity\Projectile;
 use pocketmine\entity\Entity;
 use pocketmine\level\Explosion;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\event\ExplosionPrimeEvent;
 
 class FireBall extends Projectile {
     const NETWORK_ID = Data::FIRE_BALL;
@@ -79,7 +79,7 @@ class FireBall extends Projectile {
             if ($this->isCollided and $this->canExplode) {
                 $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
                 if (!$ev->isCancelled()) {
-                    $explosion = new Explosion($this, $ev->getForce(), $this->shootingEntity);
+                    $explosion = new Explosion($this, $ev->getForce(), $this->getOwningEntity());
                     if ($ev->isBlockBreaking()) {
                         $explosion->explodeA();
                     }

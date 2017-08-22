@@ -53,7 +53,7 @@ class Enderman extends WalkingMonster {
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 1) {
             $this->attackDelay = 0;
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
-            $player->attack($ev->getFinalDamage(), $ev);
+            $player->attack($ev);
 
             $this->checkTamedMobsAttack($player);
         }
@@ -63,7 +63,7 @@ class Enderman extends WalkingMonster {
         /*if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             return [Item::get(368, 0, 1)];
         }*/
-        # It doesn't seem like ender pearls exist in PocketMine, this was probably what caused the Endermen to despawn instead of dying
+        # It doesn't seem like enderpearls exist in PocketMine, this was probably what caused the Endermen to despawn instead of dying
         return [];
     }
 

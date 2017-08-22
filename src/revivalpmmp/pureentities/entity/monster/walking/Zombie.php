@@ -86,7 +86,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     }
 
     /**
-     * Returns the appropiate NetworkID associated with this entity
+     * Returns the appropriate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
@@ -125,11 +125,11 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     /**
      * Zombie gets attacked. We need to recalculate the damage done with reducing the damage by armor type.
      *
-     * @param float $damage
      * @param EntityDamageEvent $source
      * @return mixed
      */
-    public function attack($damage, EntityDamageEvent $source) {
+    public function attack(EntityDamageEvent $source) {
+    	$damage = $source->getDamage();
         PureEntities::logOutput("$this: attacked with original damage of $damage", PureEntities::DEBUG);
         $reduceDamagePercent = 0;
         if ($this->getMobEquipment() !== null) {
@@ -143,7 +143,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
 
         PureEntities::logOutput("$this: attacked with final damage of $damage", PureEntities::DEBUG);
 
-        return parent::attack($damage, $source);
+        return parent::attack($source);
     }
 
     /**
@@ -161,7 +161,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
                 $damage = $damage + $this->getMobEquipment()->getWeaponDamageToAdd();
             }
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $damage);
-            $player->attack($ev->getFinalDamage(), $ev);
+            $player->attack($ev);
 
             $this->checkTamedMobsAttack($player);
         }

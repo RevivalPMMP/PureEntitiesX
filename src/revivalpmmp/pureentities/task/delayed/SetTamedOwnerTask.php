@@ -20,7 +20,7 @@ namespace revivalpmmp\pureentities\task\delayed;
 
 
 use pocketmine\scheduler\PluginTask;
-use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\features\IntfTamable;
 use revivalpmmp\pureentities\PureEntities;
 
 /**
@@ -40,19 +40,19 @@ class SetTamedOwnerTask extends PluginTask {
     private $plugin;
 
     /**
-     * @var IntfTameable
+     * @var IntfTamable
      */
-    private $tameableEntity;
+    private $tamableEntity;
 
     /**
      * ShowMobEquipmentTask constructor.
      * @param PureEntities $plugin
-     * @param IntfTameable $tameableEntity
+     * @param IntfTamable $tamableEntity
      */
-    public function __construct(PureEntities $plugin, IntfTameable $tameableEntity) {
+    public function __construct(PureEntities $plugin, IntfTamable $tamableEntity) {
         parent::__construct($plugin);
         $this->plugin = $plugin;
-        $this->tameableEntity = $tameableEntity;
+        $this->tamableEntity = $tamableEntity;
     }
 
     /**
@@ -63,7 +63,7 @@ class SetTamedOwnerTask extends PluginTask {
      * @param $currentTick
      */
     public function onRun(int $currentTick) {
-        $this->tameableEntity->mapOwner();
+        $this->tamableEntity->mapOwner();
     }
 
 }

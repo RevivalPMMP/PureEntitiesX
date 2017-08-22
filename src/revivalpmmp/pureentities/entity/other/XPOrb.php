@@ -1,23 +1,24 @@
 <?php
 /*  PureEntitiesX: Mob AI Plugin for PMMP
-    Copyright (C) 2017 RevivalPMMP
+	Copyright (C) 2017 RevivalPMMP
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 namespace revivalpmmp\pureentities\entity\other;
 
 use pocketmine\entity\Entity;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -39,11 +40,11 @@ class XPOrb extends Entity {
 
 	public function initEntity(){
 		parent::initEntity();
-        if (PluginConfiguration::getInstance()->getEnableNBT()) {
-            if (isset($this->namedtag->Experience)) {
-                $this->experience = $this->namedtag["Experience"];
-            } else $this->close();
-        }
+		if (PluginConfiguration::getInstance()->getEnableNBT()) {
+			if (isset($this->namedtag->Experience)) {
+				$this->experience = $this->namedtag->Experience->getValue();
+			} else $this->close();
+		}
 	}
 
 	public function onUpdate(int $currentTick): bool {
@@ -77,7 +78,7 @@ class XPOrb extends Entity {
 				}
 			} 
 		}
-		
+		/** @var Player $target */
 		if($target !== null){
 			$moveSpeed = 0.7;
 			$motX = ($target->getX() - $this->x) / 8;
@@ -104,15 +105,16 @@ class XPOrb extends Entity {
 			}
 
 			if($minDistance <= 1.3){
-                $this->kill();
-                $this->close();
-                if($this->getExperience() > 0){
-                    if ($this->getLevel() !== null) {
-                        $this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
-                    }
-                    $target->addXp($this->getExperience());
-                    $target->resetXpCooldown();
-                }
+				$this->kill();
+				$this->close();
+				if($this->getExperience() > 0){
+					if ($this->getLevel() !== null) {
+						$this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
+					}
+					$currentExp = $target->namedtag->XpTotal->getValue();
+					$target->namedtag->XpTotal = new IntTag("XpTotal", $currentExp + $this->getExperience());
+					$target->recalculateXpProgress();
+				}
 			}
 		}
 
@@ -125,7 +127,7 @@ class XPOrb extends Entity {
 		return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
 	}
 
-	public function canCollideWith(Entity $entity){
+	public function canCollideWith(Entity $entity) : bool {
 		return false;
 	}
 	

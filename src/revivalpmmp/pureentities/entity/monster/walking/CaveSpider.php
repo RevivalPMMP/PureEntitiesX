@@ -51,8 +51,8 @@ class CaveSpider extends WalkingMonster {
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 1.32) {
             $this->attackDelay = 0;
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
-            $player->attack($ev->getFinalDamage(), $ev);
-            $player->addEffect(Effect::getEffect(Effect::POISON));
+            $player->attack($ev);
+			Effect::getEffect(Effect::POISON)->applyEffect($player);
 
             $this->checkTamedMobsAttack($player);
         }
