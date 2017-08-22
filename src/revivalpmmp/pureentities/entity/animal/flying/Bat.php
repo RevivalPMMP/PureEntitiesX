@@ -35,7 +35,7 @@ class Bat extends FlyingAnimal {
         return $this->speed;
     }
 
-    public function getName() : string {
+    public function getName(): string {
         return "Bat";
     }
 
@@ -43,7 +43,7 @@ class Bat extends FlyingAnimal {
         return false;
     }
 
-    public function getDrops() : array {
+    public function getDrops(): array {
         return [];
     }
 

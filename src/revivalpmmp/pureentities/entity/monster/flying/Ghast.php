@@ -51,7 +51,7 @@ class Ghast extends FlyingMonster implements ProjectileSource {
         $this->setDamage([0, 0, 0, 0]);
     }
 
-    public function getName() : string {
+    public function getName(): string {
         return "Ghast";
     }
 
@@ -59,13 +59,8 @@ class Ghast extends FlyingMonster implements ProjectileSource {
         return (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 10000;
     }
 
-    /**
-     * Attack a player
-     *
-     * @param Entity $player
-     */
     public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 30 && $this->distance($player) <= 100) {
+        if ($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distance($player) <= 100) {
             $this->attackDelay = 0;
 
             $f = 2;
@@ -101,7 +96,7 @@ class Ghast extends FlyingMonster implements ProjectileSource {
         }
     }
 
-    public function getDrops() : array {
+    public function getDrops(): array {
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
         } else {

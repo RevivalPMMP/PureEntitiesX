@@ -42,7 +42,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         return 0.7;
     }
 
-    public function entityBaseTick(int $tickDiff = 1, $EnchantL = 0) : bool {
+    public function entityBaseTick(int $tickDiff = 1): bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
@@ -80,7 +80,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
      * @param $currentTick
      * @return bool
      */
-    public function onUpdate(int $currentTick) : bool {
+    public function onUpdate(int $currentTick): bool {
         if (!$this->isAlive()) {
             if (++$this->deadTicks >= 23) {
                 $this->close();
@@ -169,7 +169,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
                     if (in_array($creature->getInventory()->getItemInHand()->getId(), $feedableItems)) {
                         // check if the sheep is able to follow - but only on a distance of 6 blocks
                         $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance();
-                        // sheep only follow when <= 5 blocks away. otherwise, forget the player as target!
+                        // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
                         if (!$targetOption and $this->isFollowingPlayer($creature) and !$this->getBreedingComponent()->isBaby()) {
                             $this->setBaseTarget($this->getBreedingComponent()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
                         }

@@ -96,7 +96,7 @@ class Spawner extends Spawnable {
         $this->scheduleUpdate();
     }
 
-    public function onUpdate() : bool {
+    public function onUpdate(): bool {
         if ($this->closed) {
             return false;
         }
@@ -112,6 +112,7 @@ class Spawner extends Spawnable {
                         $isValid = true;
                     }
                     $list[] = $entity;
+                    break;
                 }
             }
 
@@ -143,13 +144,6 @@ class Spawner extends Spawnable {
             $this->namedtag->RequiredPlayerRange = new ShortTag("RequiredPlayerRange", $this->requiredPlayerRange);
             $this->namedtag->SpawnData = new CompoundTag("SpawnData", [new IntTag("EntityId", $this->entityId)]);
         }
-    }
-
-    public function addAdditionalSpawnData(CompoundTag $nbt){
-    	$arr = $nbt->getValue();
-    	$arr[] = new StringTag("id", Tile::MOB_SPAWNER);
-    	$arr[] = new IntTag("EntityId", $this->entityId);
-    	$nbt->setValue($arr);
     }
 
     public function setSpawnEntityType(int $entityId) {
@@ -194,6 +188,10 @@ class Spawner extends Spawnable {
 
     public function setMaxNearbyEntities(int $count) {
         $this->maxNearbyEntities = $count;
+    }
+
+    public function addAdditionalSpawnData(CompoundTag $nbt) {
+        $nbt["EntityId"] = $this->entityId;
     }
 
 }

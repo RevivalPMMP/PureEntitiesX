@@ -1,4 +1,4 @@
---- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX
+--- # Poggit-CI Manifest. Open the CI at https://github.com/poggit-orphanage/PureEntitiesX
 projects:
   PureEntitiesX:
     path: ""

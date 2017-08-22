@@ -30,7 +30,6 @@ use pocketmine\entity\Creature;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\PluginConfiguration;
-use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class PigZombie extends WalkingMonster {
     const NETWORK_ID = Data::PIG_ZOMBIE;
@@ -67,7 +66,7 @@ class PigZombie extends WalkingMonster {
         }
     }
 
-    public function getName() : string {
+    public function getName(): string {
         return "PigZombie";
     }
 
@@ -102,24 +101,18 @@ class PigZombie extends WalkingMonster {
         $player->dataPacket($pk);
     }
 
-    /**
-     * Attack the player
-     *
-     * @param Entity $player
-     */
     public function attackEntity(Entity $player) {
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 1.44) {
             $this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
 
             $this->checkTamedMobsAttack($player);
         }
     }
 
-    public function getDrops() : array {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 1)));

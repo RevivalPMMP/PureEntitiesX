@@ -1,20 +1,20 @@
 name: PureEntitiesX
 main: revivalpmmp\pureentities\PureEntities
-version: 0.2.3_dev
+version: 0.2.3
 api: [3.0.0-ALPHA7]
 
 load: STARTUP
 authors: ["milk0417", "RevivalPMMP"]
-description: "Implement all MCPE entities into your worlds"
+description: Implement all MCPE entities into your worlds
 website: https://github.com/RevivalPMMP/PureEntitiesX
 
 commands:
   pesummon:
-    description: "Summons a creature"
-    usage: "/pesummon <mob-name> [player] [isBaby(true|false)]"
+    description: Summons a creature
+    usage: "/pesummon <mob-name> [playername] [isBaby(true|false)]"
     permission: pureentities.command.pesummon
   peremove:
-    description: "Removes all entities from the current level"
+    description: Removes all entities from the current level
     usage: "/peremove"
     permission: pureentities.command.peremove
 
@@ -23,13 +23,13 @@ permissions:
   default: op
   description: "Allows using all the PureEntities commands"
   children:
-   pureentities.command:
+    pureentities.command:
     default: op
     description: "Allows using all the PureEntities commands"
     children:
-     pureentities.command.pesummon:
-      default: op
-      description: "Allows spawning mobs"
-     pureentities.command.peremove:
-      default: op
-      description: "Allows remove of all entities in current level"
+      pureentities.command.pesummon:
+        default: op
+        description: "Allows spawning mobs"
+      pureentities.command.peremove:
+        default: op
+        description: "Allows remove of all entities in current level"

@@ -52,7 +52,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
         $this->breedableClass->init();
     }
 
-    public function getName() : string {
+    public function getName(): string {
         return "Pig";
     }
 
@@ -83,7 +83,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
     }
 
     /**
-     * Returns the appropriate NetworkID associated with this entity
+     * Returns the appropiate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
@@ -99,7 +99,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
         return $this->feedableItems;
     }
 
-    public function getDrops() : array {
+    public function getDrops(): array {
         if ($this->isLootDropAllowed()) {
             if ($this->isOnFire()) {
                 return [Item::get(Item::COOKED_PORKCHOP, 0, mt_rand(1, 3))];

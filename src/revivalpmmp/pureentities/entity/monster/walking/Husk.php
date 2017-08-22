@@ -19,7 +19,6 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\entity\Effect;
-use pocketmine\entity\Living;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Ageable;
 use pocketmine\entity\Entity;
@@ -27,7 +26,6 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Husk extends WalkingMonster implements Ageable {
     const NETWORK_ID = Data::HUSK;
@@ -50,11 +48,11 @@ class Husk extends WalkingMonster implements Ageable {
         $this->setDamage([0, 3, 4, 6]);
     }
 
-    public function getName() :string {
+    public function getName(): string {
         return "Husk";
     }
 
-    public function isBaby() : bool {
+    public function isBaby(): bool {
         return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
     }
 
@@ -74,17 +72,11 @@ class Husk extends WalkingMonster implements Ageable {
         }
     }
 
-    /**
-     * Attack player
-     *
-     * @param Living $player
-     */
     public function attackEntity(Entity $player) {
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
             $this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
             $effect = Effect::getEffect(17)->setDuration(1800)->setAmplifier(1);
             $player->addEffect($effect);
@@ -93,7 +85,7 @@ class Husk extends WalkingMonster implements Ageable {
         }
     }
 
-    public function getDrops() : array {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));

@@ -27,7 +27,6 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class WitherSkeleton extends WalkingMonster {
     const NETWORK_ID = Data::WITHER_SKELETON;
@@ -41,7 +40,7 @@ class WitherSkeleton extends WalkingMonster {
         return $this->speed;
     }
 
-    public function getName() : string {
+    public function getName(): string {
         return "Wither Skeleton";
     }
 
@@ -78,24 +77,18 @@ class WitherSkeleton extends WalkingMonster {
         $player->dataPacket($pk);
     }
 
-    /**
-     * Attack a player
-     *
-     * @param Entity $player
-     */
     public function attackEntity(Entity $player) {
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
             $this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
             $player->attack($ev->getFinalDamage(), $ev);
 
             $this->checkTamedMobsAttack($player);
         }
     }
 
-    public function getDrops() : array {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));

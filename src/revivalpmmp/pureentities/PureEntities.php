@@ -59,7 +59,7 @@ use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
 use revivalpmmp\pureentities\event\EventListener;
 use revivalpmmp\pureentities\features\IntfCanBreed;
-use revivalpmmp\pureentities\features\IntfTamable;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 use pocketmine\entity\Entity;
@@ -100,7 +100,6 @@ class PureEntities extends PluginBase implements CommandExecutor {
     const BUTTON_TEXT_SIT = "Sit";
     const BUTTON_TEXT_DYE = "Dye";
 
-    /** @var \stdClass[] $registeredClasses */
     private static $registeredClasses = [];
 
     /**
@@ -205,7 +204,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
     }
 
     /**
-     * Checks if configuration is available. This function also checks if the config file available
+     * Checks if configuation is available. This function also checks if the config file available
      * is really filled - if not it will create a new config from the internal resource folder
      */
     private function checkConfig() {
@@ -286,13 +285,13 @@ class PureEntities extends PluginBase implements CommandExecutor {
             $entity = self::create($entityid, $pos);
             if ($entity !== null) {
                 if ($entity instanceof IntfCanBreed and $baby and $entity->getBreedingComponent() !== false) {
-                    $entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheep)
+                    $entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
                     if ($parentEntity != null) {
                         $entity->getBreedingComponent()->setParent($parentEntity);
                     }
                 }
                 // new: a baby's parent (like a wolf) may belong to a player - if so, the baby is also owned by the player!
-                if ($owner !== null && $entity instanceof IntfTamable) {
+                if ($owner !== null && $entity instanceof IntfTameable) {
                     $entity->setTamed(true);
                     $entity->setOwner($owner);
                 }
@@ -404,8 +403,8 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param array $args
      * @return bool
      */
-    public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool {
-        $commandSuccessful = false;
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
+        $commandSuccessul = false;
 
         switch ($command->getName()) {
             case "peremove":
@@ -431,14 +430,14 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     $name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
                     PureEntities::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", PureEntities::NORM);
                 }
-                $commandSuccessful = true;
+                $commandSuccessul = true;
                 break;
             case "pesummon":
-                if (count($args) >= 1 and count($args) <= 3) {
-                    $playerName = count($args) === 3 ? $sender->getName() : $args[2];
+                if (count($args) >= 1 or count($args) <= 3) {
+                    $playerName = count($args) == 1 ? $sender->getName() : $args[1];
                     $isBaby = false;
-                    if (count($args) >= 2) {
-                        $isBaby = strcmp(strtolower($args[1]), "true") == 0;
+                    if (count($args) == 3) {
+                        $isBaby = strcmp(strtolower($args[2]), "true") == 0;
                     }
                     foreach ($this->getServer()->getOnlinePlayers() as $player) {
                         if (strcasecmp($player->getName(), $playerName) == 0) {
@@ -447,22 +446,23 @@ class PureEntities extends PluginBase implements CommandExecutor {
                             foreach (self::$registeredClasses as $registeredClass) {
                                 if (strcmp($mobName, strtolower($this->getShortClassName($registeredClass))) == 0) {
                                     self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster", $isBaby);
-                                    $sender->sendMessage("Spawned {$args[0]}");
+                                    $sender->sendMessage("Spawned $mobName");
                                     return true;
                                 }
                             }
-                            $sender->sendMessage("Entity not found: {$args[0]}");
+                            $sender->sendMessage("Entity not found: $mobName");
                             return true;
                         }
                     }
                 } else {
-                    $commandSuccessful = false;
+                    $sender->sendMessage("Usage: pesummon <mobname> <opt:player_name> <opt:baby>");
+                    $commandSuccessul = true;
                 }
                 break;
             default:
                 break;
         }
-        return $commandSuccessful;
+        return $commandSuccessul;
     }
 
     /**

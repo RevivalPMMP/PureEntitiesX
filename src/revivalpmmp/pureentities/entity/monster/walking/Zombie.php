@@ -32,7 +32,6 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     const NETWORK_ID = Data::ZOMBIE;
@@ -87,7 +86,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     }
 
     /**
-     * Returns the appropriate NetworkID associated with this entity
+     * Returns the appropiate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
@@ -103,7 +102,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         return []; // return an empty array - a zombie is not feedable
     }
 
-    public function getName() : string {
+    public function getName(): string {
         return "Zombie";
     }
 
@@ -128,6 +127,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
      *
      * @param float $damage
      * @param EntityDamageEvent $source
+     * @return mixed
      */
     public function attack($damage, EntityDamageEvent $source) {
         PureEntities::logOutput("$this: attacked with original damage of $damage", PureEntities::DEBUG);
@@ -143,7 +143,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
 
         PureEntities::logOutput("$this: attacked with final damage of $damage", PureEntities::DEBUG);
 
-        parent::attack($damage, $source);
+        return parent::attack($damage, $source);
     }
 
     /**
@@ -160,15 +160,14 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
             if ($this->getMobEquipment() !== null) {
                 $damage = $damage + $this->getMobEquipment()->getWeaponDamageToAdd();
             }
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $damage));
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $damage);
             $player->attack($ev->getFinalDamage(), $ev);
 
             $this->checkTamedMobsAttack($player);
         }
     }
 
-    public function entityBaseTick(int $tickDiff = 1, $EnchantL = 0) : bool {
+    public function entityBaseTick(int $tickDiff = 1): bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $this->getMobEquipment()->entityBaseTick($tickDiff);
@@ -186,7 +185,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         return $hasUpdate;
     }
 
-    public function getDrops() : array {
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
