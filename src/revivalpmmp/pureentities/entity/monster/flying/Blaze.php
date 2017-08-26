@@ -24,7 +24,7 @@ use revivalpmmp\pureentities\entity\monster\FlyingMonster;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\block\Liquid;
-use pocketmine\block\Slab;
+use pocketmine\block\StoneSlab;
 use pocketmine\block\Stair;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
@@ -127,7 +127,7 @@ class Blaze extends FlyingMonster implements ProjectileSource {
         }
 
         $block = $this->level->getBlock($this->add($dx, 0, $dz));
-        if ($block instanceof Slab || $block instanceof Stair) {
+        if ($block instanceof StoneSlab || $block instanceof Stair) {
             $this->motionY = 0.5;
             return true;
         }

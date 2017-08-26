@@ -243,7 +243,6 @@ abstract class BaseEntity extends Creature {
     /**
      * Entity gets attacked by another entity / explosion or something similar
      *
-     * @param float $damage the damage coming in
      * @param EntityDamageEvent $source the damage event
      */
     public function attack(EntityDamageEvent $source) {

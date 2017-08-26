@@ -60,8 +60,7 @@ class Enderman extends WalkingMonster {
             $this->attackDelay = 0;
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
                 MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
-            $player->attack($ev->getFinalDamage(), $ev);
-
+            $player->attack($ev);
             $this->checkTamedMobsAttack($player);
         }
     }

@@ -126,7 +126,6 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     /**
      * Zombie gets attacked. We need to recalculate the damage done with reducing the damage by armor type.
      *
-     * @param float $damage
      * @param EntityDamageEvent $source
      */
     public function attack(EntityDamageEvent $source) {
@@ -163,7 +162,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
             }
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
                 MobDamageCalculator::calculateFinalDamage($player, $damage));
-            $player->attack($ev->getFinalDamage(), $ev);
+            $player->attack($ev);
 
             $this->checkTamedMobsAttack($player);
         }
