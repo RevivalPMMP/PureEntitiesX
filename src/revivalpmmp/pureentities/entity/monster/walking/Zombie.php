@@ -130,6 +130,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
      * @param EntityDamageEvent $source
      */
     public function attack(EntityDamageEvent $source) {
+        $damage = $this->getDamage();
         PureEntities::logOutput("$this: attacked with original damage of $damage", PureEntities::DEBUG);
         $reduceDamagePercent = 0;
         if ($this->getMobEquipment() !== null) {
