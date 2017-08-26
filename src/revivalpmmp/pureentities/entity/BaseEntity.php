@@ -221,21 +221,8 @@ abstract class BaseEntity extends Creature {
         }
     }
 
-    public function updateMovement() {
-        if (
-            $this->lastX !== $this->x
-            || $this->lastY !== $this->y
-            || $this->lastZ !== $this->z
-            || $this->lastYaw !== $this->yaw
-            || $this->lastPitch !== $this->pitch
-        ) {
-            $this->lastX = $this->x;
-            $this->lastY = $this->y;
-            $this->lastZ = $this->z;
-            $this->lastYaw = $this->yaw;
-            $this->lastPitch = $this->pitch;
-        }
-        $this->level->addEntityMovement($this->chunk->getX(), $this->chunk->getZ(), $this->id, $this->x, $this->y, $this->z, $this->yaw, $this->pitch);
+    public function updateMovement(){
+        parent::updateMovement();
     }
 
     public function isInsideOfSolid(): bool {
