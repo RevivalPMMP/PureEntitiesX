@@ -192,12 +192,11 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * wolf is tamed and has to teleport to the owner when more than 12 blocks away)
      *
      * @param int $tickDiff
-     * @param int $EnchantL
      * @return bool
      */
     public function entityBaseTick(int $tickDiff = 1): bool {
         $this->checkFollowOwner();
-        return parent::entityBaseTick($tickDiff, $EnchantL);
+        return parent::entityBaseTick($tickDiff);
     }
 
     /**
@@ -316,7 +315,6 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     /**
      * Wolf gets attacked ...
      *
-     * @param float $damage
      * @param EntityDamageEvent $source
      */
     public function attack(EntityDamageEvent $source) {

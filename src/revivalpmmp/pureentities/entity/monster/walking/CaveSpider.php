@@ -59,7 +59,7 @@ class CaveSpider extends WalkingMonster {
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
                 MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
             $player->attack($ev);
-            $player->addEffect(Effect::getEffect(Effect::POISON));
+            Effect::getEffect(Effect::POISON)->applyEffect($player);
 
             $this->checkTamedMobsAttack($player);
         }

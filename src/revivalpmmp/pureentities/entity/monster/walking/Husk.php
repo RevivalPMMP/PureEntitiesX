@@ -86,7 +86,7 @@ class Husk extends WalkingMonster implements Ageable {
                 MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
             $player->attack($ev);
             $effect = Effect::getEffect(17)->setDuration(1800)->setAmplifier(1);
-            $player->addEffect($effect);
+            $effect->applyEffect($player);
 
             $this->checkTamedMobsAttack($player);
         }
