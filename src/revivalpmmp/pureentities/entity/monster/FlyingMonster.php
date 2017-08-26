@@ -146,7 +146,7 @@ abstract class FlyingMonster extends FlyingEntity implements Monster {
             if ($airTicks <= -20) {
                 $airTicks = 0;
                 $ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
-                $this->attack($ev->getFinalDamage(), $ev);
+                $this->attack($ev);
             }
             $this->setDataProperty(self::DATA_AIR, self::DATA_TYPE_SHORT, $airTicks);
         } else {

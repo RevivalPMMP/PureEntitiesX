@@ -213,7 +213,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         if ($this instanceof Enderman) {
             if ($this->level->getBlock(new Vector3(Math::floorFloat($this->x), (int)$this->y, Math::floorFloat($this->z))) instanceof Water) {
                 $ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
-                $this->attack($ev->getFinalDamage(), $ev);
+                $this->attack($ev);
                 $this->move(mt_rand(-20, 20), mt_rand(-20, 20), mt_rand(-20, 20));
             }
         } else {
@@ -223,7 +223,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                 if ($airTicks <= -20) {
                     $airTicks = 0;
                     $ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
-                    $this->attack($ev->getFinalDamage(), $ev);
+                    $this->attack($ev);
                 }
                 $this->setDataProperty(self::DATA_AIR, self::DATA_TYPE_SHORT, $airTicks);
             } else {

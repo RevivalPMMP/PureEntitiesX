@@ -246,13 +246,13 @@ abstract class BaseEntity extends Creature {
      * @param float $damage the damage coming in
      * @param EntityDamageEvent $source the damage event
      */
-    public function attack($damage, EntityDamageEvent $source) {
+    public function attack(EntityDamageEvent $source) {
         if ($this->isKnockback() > 0) return;
 
         // "wake up" entity - it gets attacked!
         $this->idlingComponent->stopIdling(1, true);
 
-        parent::attack($damage, $source);
+        parent::attack($source);
 
         if ($source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)) {
             return;
@@ -292,7 +292,7 @@ abstract class BaseEntity extends Creature {
         if ($this->isInsideOfSolid()) {
             $hasUpdate = true;
             $ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_SUFFOCATION, 1);
-            $this->attack($ev->getFinalDamage(), $ev);
+            $this->attack($ev);
         }
 
         if ($this->moveTime > 0) {
