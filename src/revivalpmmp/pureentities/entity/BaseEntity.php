@@ -352,7 +352,7 @@ abstract class BaseEntity extends Creature {
     }
 
     public function targetOption(Creature $creature, float $distance): bool {
-        return $this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 81;
+        return $this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->isClosed() && $distance <= 81;
     }
 
     /**

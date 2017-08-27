@@ -59,7 +59,7 @@ class FireBall extends Projectile {
     }
 
    public function onUpdate(int $currentTick): bool {
-        if ($this->closed) {
+        if ($this->isClosed()) {
             return false;
         }
 

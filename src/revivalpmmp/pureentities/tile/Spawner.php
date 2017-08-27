@@ -20,13 +20,11 @@ namespace revivalpmmp\pureentities\tile;
 
 use pocketmine\level\Level;
 use pocketmine\Player;
-use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ShortTag;
-use pocketmine\nbt\tag\StringTag;
 use pocketmine\tile\Spawnable;
 use revivalpmmp\pureentities\task\spawners\BaseSpawner;
 

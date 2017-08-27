@@ -112,13 +112,6 @@ class BreedingComponent {
     /**
      * Is initialized from entity, when it's constructed
      *
-     * @var int
-     */
-    private $adultLength = -1;
-
-    /**
-     * Is initialized from entity, when it's constructed
-     *
      * @var float
      */
     private $adultSpeed = 0.0;
@@ -139,7 +132,6 @@ class BreedingComponent {
         $this->entity = $belongsTo;
         $this->adultHeight = $belongsTo->height;
         $this->adultWidth = $belongsTo->width;
-        $this->adultLength = $belongsTo->length;
         $this->adultSpeed = $belongsTo->getSpeed();
         $this->emitLoveParticles = PluginConfiguration::getInstance()->getEmitLoveParticlesConstantly();
     }
@@ -250,7 +242,6 @@ class BreedingComponent {
                 // we also need to adjust the height and width of the entity
                 $this->entity->height = $this->adultHeight / 2; // because we scale 0.5
                 $this->entity->width = $this->adultWidth / 2; // because we scale 0.5
-                $this->entity->length = $this->adultLength / 2; // because we scale 0.5
                 $this->entity->speed = $this->adultSpeed * 1.5; // because baby entities are faster
             }
         } else {
@@ -262,7 +253,6 @@ class BreedingComponent {
                 // reset entity sizes
                 $this->entity->height = $this->adultHeight;
                 $this->entity->width = $this->adultWidth;
-                $this->entity->length = $this->adultLength;
                 $this->entity->speed = $this->adultSpeed;
             }
             // forget the parent and reset baseTarget immediately
@@ -483,7 +473,7 @@ class BreedingComponent {
         if ($this->isBaby() and
             $this->getParent() !== null and
             $this->getParent()->isAlive() and
-            !$this->getParent()->closed and
+            !$this->getParent()->isClosed() and
             ($this->entity->getBaseTarget() === null or !$this->entity->getBaseTarget() instanceof Player)
         ) {
             $this->entity->setBaseTarget($this->getParent());

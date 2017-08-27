@@ -43,7 +43,7 @@ class Donkey extends WalkingAnimal implements Rideable {
 
     public function targetOption(Creature $creature, float $distance): bool {
         if ($creature instanceof Player) {
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
+            return $creature->spawned && $creature->isAlive() && !$creature->isClosed() && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
         }
         return false;
     }
