@@ -111,15 +111,8 @@ class XPOrb extends Entity {
                     if ($this->getLevel() !== null) {
                         $this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
                     }
-                    if($this->getLevel()->getServer()->getName() == "PocketMine") {
-                        $target->namedtag->XpTotal = new IntTag("XpTotal", $this->getExperience()); # PMMP only
-                        $target->recalculateXpProgress(); #  PMMP only
-                    }elseif($this->getLevel()->getServer()->getName() == "ClearSky-PocketMine-MP"){
-                        $target->setTotalXp($target->getXpProgress() + $this->getExperience());
-                    }else{
-                        $target->addXp($this->getExperience());
-                        $target->resetXpCooldown();
-                    }
+                        $target->namedtag->XpTotal = new IntTag("XpTotal", $this->getExperience());
+                        $target->recalculateXpProgress();
                 }
 			}
 		}

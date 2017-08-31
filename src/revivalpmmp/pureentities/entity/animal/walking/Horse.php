@@ -56,7 +56,7 @@ class Horse extends WalkingAnimal implements Rideable {
         }
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 20;
     }
 

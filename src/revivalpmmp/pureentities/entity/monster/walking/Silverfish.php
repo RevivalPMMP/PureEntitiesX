@@ -69,7 +69,7 @@ class Silverfish extends WalkingMonster {
         return [];
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 8;
     }
 

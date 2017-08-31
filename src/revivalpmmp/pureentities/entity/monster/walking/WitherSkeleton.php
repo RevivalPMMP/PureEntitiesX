@@ -51,7 +51,7 @@ class WitherSkeleton extends WalkingMonster {
         $this->setDamage([0, 3, 4, 6]);
     }
 
-    public function setHealth($amount) {
+    public function setHealth(float $amount) {
         parent::setHealth($amount);
 
         if ($this->isAlive()) {
@@ -109,7 +109,7 @@ class WitherSkeleton extends WalkingMonster {
         return $drops;
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 20;
     }
 
