@@ -1,5 +1,8 @@
 # Default Config File for PureEntitiesX
 
+# set where entities can spawn - leave empty to allow spawning in any level
+enabledworlds: []
+
 # set how often the spawn and despawn task will be trigered
 spawn-task:
   trigger-ticks: 300

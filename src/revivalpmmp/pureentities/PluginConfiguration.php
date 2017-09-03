@@ -45,6 +45,7 @@ class PluginConfiguration {
     private $pickupLootTicks = 10; // default: 10
     private $logEnabled = false; // enable or disable file logging
     private $enableSpawning = true; // enable spawning of entities
+    private $enabledWorlds = [];
     private $enableAsyncTasks = true; // enable async tasks for setting owner of tamed and setting mob equipment
     private $enableLookingTasks = true; // enable looking tasks (like shear, tame etc. pp) and enderman looking task
     private $enableNBT = true; // enable load/store of NBT
@@ -68,6 +69,7 @@ class PluginConfiguration {
 
     public function __construct(PureEntities $pluginBase) {
 
+        $this->enabledWorlds = $pluginBase->getConfig()->get("enabledworlds", []);
         $this->enableSpawning = $pluginBase->getConfig()->getNested("tasks.spawn", true);
         $this->enableAsyncTasks = $pluginBase->getConfig()->getNested("tasks.async", true);
         $this->enableLookingTasks = $pluginBase->getConfig()->getNested("tasks.looking", true);
@@ -248,6 +250,13 @@ class PluginConfiguration {
      */
     public function getEnableSpawning() {
         return $this->enableSpawning;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEnabledWorlds() {
+        return $this->enabledWorlds;
     }
 
     /**
