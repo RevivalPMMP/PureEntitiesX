@@ -47,7 +47,7 @@ class Bat extends FlyingAnimal {
         return [];
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 6;
     }
 

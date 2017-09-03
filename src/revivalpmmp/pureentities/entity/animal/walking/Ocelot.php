@@ -60,7 +60,7 @@ class Ocelot extends WalkingAnimal implements IntfCanPanic {
         return [];
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 10;
     }
 

@@ -140,7 +140,7 @@ class Stray extends WalkingMonster implements ProjectileSource {
         return $drops;
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 20;
     }
 

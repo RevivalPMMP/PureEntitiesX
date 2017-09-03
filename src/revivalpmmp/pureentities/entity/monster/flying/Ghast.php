@@ -109,7 +109,7 @@ class Ghast extends FlyingMonster implements ProjectileSource {
         }
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 10;
     }
 

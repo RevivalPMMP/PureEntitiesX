@@ -100,7 +100,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         return $drops;
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 10;
     }
 

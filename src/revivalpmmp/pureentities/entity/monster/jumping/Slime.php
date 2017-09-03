@@ -82,7 +82,7 @@ class Slime extends JumpingMonster {
         }
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 4;
     }
 

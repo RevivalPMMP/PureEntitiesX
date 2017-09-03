@@ -107,7 +107,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         return "Zombie";
     }
 
-    public function setHealth($amount) {
+    public function setHealth(float $amount) {
         parent::setHealth($amount);
 
         if ($this->isAlive()) {
@@ -209,7 +209,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         return $drops;
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 20;
     }
 

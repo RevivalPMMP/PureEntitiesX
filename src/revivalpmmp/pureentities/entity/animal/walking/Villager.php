@@ -41,7 +41,7 @@ class Villager extends WalkingAnimal {
         return [];
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 10;
     }
 

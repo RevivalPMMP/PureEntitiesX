@@ -358,7 +358,7 @@ class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanI
         return [];
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 8; // but only for wild ones, tamed ones: 20
     }
 
