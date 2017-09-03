@@ -31,7 +31,7 @@ class ExplosionPrimeEvent extends EntityEvent implements Cancellable {
 
     protected $force;
     private $blockBreaking;
-    private $entity;
+    protected $entity;
 
     /**
      * @param Entity $entity
