@@ -196,7 +196,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      *
      * @return int
      */
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 8;
     }
 

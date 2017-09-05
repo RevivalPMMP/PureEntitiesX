@@ -153,7 +153,7 @@ class Creeper extends WalkingMonster implements Explosive {
         }
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 20;
     }
 

@@ -35,12 +35,13 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
-use revivalpmmp\pureentities\features\IntfTamable;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanInteract {
+class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::WOLF;
 
     public $height = 0.969;
@@ -199,25 +200,25 @@ class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanI
     }
 
     /**
-     * We need to override this function as the wolf is hunting for skeletons, rabbits and sheeps when not tamed and wild.
+     * We need to override this function as the wolf is hunting for skeletons, rabbits and sheep when not tamed and wild.
      * When tamed and no other target is set (or is following player) the tamed wolf attack only skeletons!
      * @param bool $checkSkip
      */
     public function checkTarget(bool $checkSkip = true) {
         if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
             if (!$this->isTamed() and !$this->getBaseTarget() instanceof Monster) {
-                // is there any entity around that is attackable (skeletons, rabbits, sheeps)
+                // is there any entity around that is attackable (skeletons, rabbits, sheep)
                 foreach ($this->getLevel()->getNearbyEntities($this->boundingBox->grow(10, 10, 10), $this) as $entity) {
                     if ($entity instanceof Skeleton or $entity instanceof Rabbit or $entity instanceof Sheep and
                         $entity->isAlive()
                     ) {
                         $this->setBaseTarget($entity); // set the given entity as target ...
-						return parent::checkTarget($checkSkip);
+                        return;
                     }
                 }
             }
+            parent::checkTarget(false);
         }
-		return parent::checkTarget($checkSkip);
     }
 
     /**
@@ -345,7 +346,8 @@ class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanI
         if ($this->attackDelay > 10 && $this->distanceSquared($player) < 1.6) {
             $this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK, $this->getDamage());
+            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
             $player->attack($ev);
 
             $this->checkTamedMobsAttack($player);
@@ -356,7 +358,7 @@ class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanI
         return [];
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 8; // but only for wild ones, tamed ones: 20
     }
 

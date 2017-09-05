@@ -1,19 +1,19 @@
 <?php
 /*  PureEntitiesX: Mob AI Plugin for PMMP
-	Copyright (C) 2017 RevivalPMMP
+    Copyright (C) 2017 RevivalPMMP
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>. */
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
 namespace revivalpmmp\pureentities\entity\other;
 
@@ -40,11 +40,11 @@ class XPOrb extends Entity {
 
 	public function initEntity(){
 		parent::initEntity();
-		if (PluginConfiguration::getInstance()->getEnableNBT()) {
-			if (isset($this->namedtag->Experience)) {
-				$this->experience = $this->namedtag->Experience->getValue();
-			} else $this->close();
-		}
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->namedtag->Experience)) {
+                $this->experience = $this->namedtag["Experience"];
+            } else $this->close();
+        }
 	}
 
 	public function onUpdate(int $currentTick): bool {
@@ -78,7 +78,7 @@ class XPOrb extends Entity {
 				}
 			} 
 		}
-		/** @var Player $target */
+		
 		if($target !== null){
 			$moveSpeed = 0.7;
 			$motX = ($target->getX() - $this->x) / 8;
@@ -105,29 +105,28 @@ class XPOrb extends Entity {
 			}
 
 			if($minDistance <= 1.3){
-				$this->kill();
-				$this->close();
-				if($this->getExperience() > 0){
-					if ($this->getLevel() !== null) {
-						$this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
-					}
-					$currentExp = $target->namedtag->XpTotal->getValue();
-					$target->namedtag->XpTotal = new IntTag("XpTotal", $currentExp + $this->getExperience());
-					$target->recalculateXpProgress();
-				}
+                $this->kill();
+                $this->close();
+                if($this->getExperience() > 0){
+                    if ($this->getLevel() !== null) {
+                        $this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
+                    }
+                        $target->namedtag->XpTotal = new IntTag("XpTotal", $this->getExperience());
+                        $target->recalculateXpProgress();
+                }
 			}
 		}
 
-		$this->move($this->motionX, $this->motionY, $this->motionZ);
-		
-		$this->updateMovement();
-		
-		$this->timings->stopTiming();
+        $this->move($this->motionX, $this->motionY, $this->motionZ);
 
-		return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
-	}
+        $this->updateMovement();
 
-	public function canCollideWith(Entity $entity) : bool {
+        $this->timings->stopTiming();
+
+        return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+    }
+
+	public function canCollideWith(Entity $entity): bool {
 		return false;
 	}
 	
@@ -139,19 +138,19 @@ class XPOrb extends Entity {
 		return $this->experience;
 	}
 
-	public function spawnTo(Player $player){
-		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NO_AI, true);
-		$pk = new AddEntityPacket();
-		$pk->type = XPOrb::NETWORK_ID;
-		$pk->entityRuntimeId = $this->getId();
-		$pk->x = $this->x;
-		$pk->y = $this->y;
-		$pk->z = $this->z;
-		$pk->speedX = $this->motionX;
-		$pk->speedY = $this->motionY;
-		$pk->speedZ = $this->motionZ;
-		$pk->metadata = $this->dataProperties;
-		$player->dataPacket($pk);
+    public function spawnTo(Player $player){
+        $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NO_AI, true);
+        $pk = new AddEntityPacket();
+        $pk->type = XPOrb::NETWORK_ID;
+        $pk->entityRuntimeId = $this->getId();
+        $pk->x = $this->x;
+        $pk->y = $this->y;
+        $pk->z = $this->z;
+        $pk->speedX = $this->motionX;
+        $pk->speedY = $this->motionY;
+        $pk->speedZ = $this->motionZ;
+        $pk->metadata = $this->dataProperties;
+        $player->dataPacket($pk);
 
 		parent::spawnTo($player);
 	}

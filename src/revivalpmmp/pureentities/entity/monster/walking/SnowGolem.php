@@ -122,7 +122,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
         }
     }
 
-    public function getMaxHealth() {
+    public function getMaxHealth() : int{
         return 4;
     }
 
