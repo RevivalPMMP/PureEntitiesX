@@ -4,4 +4,4 @@
 
 [![Poggit-CI](https://poggit.pmmp.io/ci.badge/poggit-orphanage/PureEntitiesX/PureEntitiesX)](https://poggit.pmmp.io/ci/poggit-orphanage/PureEntitiesX/PureEntitiesX)
 =====
-This Repository is inactive. Try the new one at https://github.com/poggit-orphanage/PureEntitiesX
+Currently being revived by 95CivinSi - Stay tuned for more updates
