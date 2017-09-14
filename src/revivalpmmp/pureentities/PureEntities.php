@@ -205,7 +205,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
 	        self::$logger = new CustomLogger(strcmp($level, self::DEBUG) === 0);
 	        self::$logger->registerClassLoader();
 	        self::$logger->registerStatic();
-	        ThreadManager::getInstance()->{spl_object_hash(self::$logger)} = self::$logger; // TODO find a better way
+	        ThreadManager::getInstance()->{spl_object_hash(self::$logger)} = self::$logger; // just in case the logger isn't shut down by the plugin
 	        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . $level);
         }
     }
