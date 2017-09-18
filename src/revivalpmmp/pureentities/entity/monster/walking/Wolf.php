@@ -35,13 +35,13 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
-use revivalpmmp\pureentities\features\IntfTamable;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Wolf extends WalkingMonster implements IntfTamable, IntfCanBreed, IntfCanInteract {
+class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::WOLF;
 
     public $height = 0.969;

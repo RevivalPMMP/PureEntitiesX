@@ -33,7 +33,7 @@ use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\features\IntfCanEquip;
-use revivalpmmp\pureentities\features\IntfTamable;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\PeTimings;
 
@@ -126,7 +126,7 @@ abstract class WalkingEntity extends BaseEntity {
 
             $distance = $this->distanceSquared($this->getBaseTarget());
 
-            if ($this instanceof IntfTamable and
+            if ($this instanceof IntfTameable and
                 $this->getBaseTarget() instanceof Player and
                 $this->isFriendly() and
                 $this->isTamed() and

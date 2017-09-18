@@ -38,7 +38,7 @@ use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanPanic;
-use revivalpmmp\pureentities\features\IntfTamable;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\TickCounter;
@@ -308,7 +308,7 @@ abstract class BaseEntity extends Creature {
     private function checkDespawn(): bool {
         // when entity is at least x ticks old and it's not tamed, we should remove it
         if ($this->age > $this->maxAge and
-            (!$this instanceof IntfTamable or ($this instanceof IntfTamable and !$this->isTamed()))
+            (!$this instanceof IntfTameable or ($this instanceof IntfTameable and !$this->isTamed()))
         ) {
             PureEntities::logOutput("Despawn entity " . $this->getName(), PureEntities::NORM);
             $this->close();
@@ -380,21 +380,21 @@ abstract class BaseEntity extends Creature {
             if ($attackedBy instanceof Player) {
                 // get all tamed entities in the world and search for those belonging to the player
                 foreach ($attackedBy->getLevel()->getEntities() as $entity) {
-                    if ($entity instanceof IntfTamable and
+                    if ($entity instanceof IntfTameable and
                         $entity->getOwner() !== null and
                         $entity->isTamed() and
                         strcasecmp($entity->getOwner()->getName(), $attackedBy->getName()) == 0 and
                         $entity instanceof BaseEntity and
                         !$entity->getBaseTarget() instanceof Monster
                     ) {
-                        if ($this instanceof IntfTamable and $this->isTamed() and
+                        if ($this instanceof IntfTameable and $this->isTamed() and
                             strcasecmp($this->getOwner()->getName(), $attackedBy->getName()) == 0
                         ) {
                             // this entity belongs to the player. other tamed mobs shouldn't attack!
                             continue;
                         }
                         /**
-                         * @var $entity IntfTamable
+                         * @var $entity IntfTameable
                          */
                         if ($entity->isSitting()) {
                             $entity->setSitting(false);
@@ -434,7 +434,7 @@ abstract class BaseEntity extends Creature {
     private function getTamedMobs(Player $player) {
         $tamedMobs = [];
         foreach ($player->getLevel()->getEntities() as $entity) {
-            if ($entity instanceof IntfTamable and
+            if ($entity instanceof IntfTameable and
                 $entity->isTamed() and
                 strcasecmp($entity->getOwner()->getName(), $player->getName()) === 0 and
                 $entity->isAlive()

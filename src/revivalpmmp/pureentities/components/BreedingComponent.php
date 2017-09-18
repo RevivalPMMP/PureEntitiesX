@@ -25,7 +25,7 @@ use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\features\IntfCanBreed;
-use revivalpmmp\pureentities\features\IntfTamable;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
@@ -401,7 +401,7 @@ class BreedingComponent {
         $partner->getBreedingComponent()->resetBreedStatus();
         // spawn a baby entity which may be owned by a player
         $owner = null;
-        if ($this->entity instanceof IntfTamable) {
+        if ($this->entity instanceof IntfTameable) {
             $owner = $this->entity->getOwner();
         }
         PureEntities::getInstance()->scheduleCreatureSpawn($this->entity, $this->entity->getNetworkId(), $this->entity->getLevel(),

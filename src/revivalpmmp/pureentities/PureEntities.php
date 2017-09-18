@@ -59,7 +59,7 @@ use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
 use revivalpmmp\pureentities\event\EventListener;
 use revivalpmmp\pureentities\features\IntfCanBreed;
-use revivalpmmp\pureentities\features\IntfTamable;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 use pocketmine\entity\Entity;
@@ -291,7 +291,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     }
                 }
                 // new: a baby's parent (like a wolf) may belong to a player - if so, the baby is also owned by the player!
-                if ($owner !== null && $entity instanceof IntfTamable) {
+                if ($owner !== null && $entity instanceof IntfTameable) {
                     $entity->setTamed(true);
                     $entity->setOwner($owner);
                 }
@@ -433,7 +433,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 $commandSuccessful = true;
                 break;
             case "pesummon":
-                if (count($args) >= 1 or count($args) <= 3) {
+                if (count($args) >= 1 and count($args) <= 3) {
                     $playerName = count($args) == 1 ? $sender->getName() : $args[1];
                     $isBaby = false;
                     if (count($args) == 3) {
