@@ -34,8 +34,7 @@ class Creeper extends WalkingMonster implements Explosive {
     const NETWORK_ID = Data::CREEPER;
     const DATA_POWERED = 19;
 
-    public $width = 0.6;
-    public $length = 0.6;
+    public $width = 0.7;
     public $height = 1.7;
     public $speed = 0.9;
 

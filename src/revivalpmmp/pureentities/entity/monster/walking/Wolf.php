@@ -45,8 +45,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     const NETWORK_ID = Data::WOLF;
 
     public $height = 0.969;
-    public $width = 0.5;
-    public $length = 1.594;
+    public $width = 1.2;
     public $speed = 1.2;
 
     const RED = 14;
