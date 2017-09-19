@@ -34,7 +34,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
     public $height = 0.8;
     public $eyeHeight = 0.6;
     public $speed = 1.0;
-    public $gravity = 0.04; // floating chickens
+    public $gravity = 0.08; // floating chickens
 
     // egg laying specific configuration (an egg is laid by a chicken each 6000-120000 ticks)
     private $dropEggTimer = 0;
