@@ -31,7 +31,6 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
 
     public $height = 0.5;
     public $width = 0.5;
-    public $length = 0.5;
     public $speed = 1.1;
 
     private $feedableItems = array(

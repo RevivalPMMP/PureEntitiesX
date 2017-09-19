@@ -28,8 +28,7 @@ use revivalpmmp\pureentities\features\IntfCanPanic;
 class Ocelot extends WalkingAnimal implements IntfCanPanic {
     const NETWORK_ID = Data::OCELOT;
 
-    public $width = 0.6;
-    public $length = 0.8;
+    public $width = 0.8;
     public $height = 0.8;
     public $speed = 1.2;
 

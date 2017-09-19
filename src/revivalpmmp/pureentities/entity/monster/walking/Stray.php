@@ -41,8 +41,7 @@ class Stray extends WalkingMonster implements ProjectileSource {
     const NETWORK_ID = Data::STRAY;
 
     public $height = 2;
-    public $width = 0.781;
-    public $length = 0.875;
+    public $width = 0.875;
     public $speed = 1.0;
 
     public function getSpeed(): float {
