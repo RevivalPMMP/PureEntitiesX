@@ -44,7 +44,6 @@ class Blaze extends FlyingMonster implements ProjectileSource {
 
     public $height = 1.5;
     public $width = 1.25;
-    public $length = 0.906;
     public $gravity = 0.04;
     public $speed = 1.0;
 
