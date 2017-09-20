@@ -47,7 +47,7 @@ class XPOrb extends Entity {
 	}
 
 	public function onUpdate(int $currentTick): bool {
-		if($this->closed){
+		if($this->isClosed()){
 			return false;
 		}
 		

@@ -323,7 +323,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                                 $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
                                 if ($hasFeedableItemsInHand) {
                                     // check if the entity is able to follow - but only on a distance of 6 blocks
-                                    $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed;
+                                    $targetOption = $creature->spawned && $creature->isAlive() && !$creature->isClosed();
                                 } else {
                                     // reset base target when it was player before (follow by holding wheat)
                                     if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
@@ -338,7 +338,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
             }
         } else {
             // when the entity is not friendly, it attacks the player!!!
-            $targetOption = ($this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 81);
+            $targetOption = ($this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->isClosed() && $distance <= 81);
         }
         return $targetOption;
     }
