@@ -50,7 +50,7 @@ class Ocelot extends WalkingAnimal implements IntfCanPanic {
 
     public function targetOption(Creature $creature, float $distance): bool {
         if ($creature instanceof Player) {
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::RAW_FISH && $distance <= 49;
+            return $creature->spawned && $creature->isAlive() && !$creature->isClosed() && $creature->getInventory()->getItemInHand()->getId() == Item::RAW_FISH && $distance <= 49;
         }
         return false;
     }
