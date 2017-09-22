@@ -48,6 +48,9 @@ abstract class BaseEntity extends Creature {
     public $stayTime = 0;
     protected $moveTime = 0;
 
+    /** @var float */
+    public $eyeHeight = null;
+
     /** @var Vector3|Entity */
     private $baseTarget = null;
 
@@ -88,6 +91,9 @@ abstract class BaseEntity extends Creature {
         $this->panicTicks = PluginConfiguration::getInstance()->getPanicTicks();
         $this->maxAge = PluginConfiguration::getInstance()->getMaxAge();
         parent::__construct($level, $nbt);
+        if($this->eyeHeight === null){
+            $this->eyeHeight = $this->height / 2 + 0.1;
+        }
     }
 
     public abstract function updateMove($tickDiff);
@@ -218,7 +224,9 @@ abstract class BaseEntity extends Creature {
     }
 
     public function updateMovement(){
-        parent::updateMovement();
+        if (!$this->isClosed()){
+            parent::updateMovement();
+        }
     }
 
     public function isInsideOfSolid() : bool{
@@ -233,16 +241,17 @@ abstract class BaseEntity extends Creature {
      * @param EntityDamageEvent $source the damage event
      */
     public function attack(EntityDamageEvent $source) {
+
+        if ($source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)) {
+            return;
+        }
+
         if ($this->isKnockback() > 0) return;
 
         // "wake up" entity - it gets attacked!
         $this->idlingComponent->stopIdling(1, true);
 
         parent::attack($source);
-
-        if ($source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)) {
-            return;
-        }
 
         $this->stayTime = 0;
         $this->moveTime = 0;

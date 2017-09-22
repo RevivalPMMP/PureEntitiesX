@@ -28,8 +28,8 @@ use revivalpmmp\pureentities\data\Data;
 class Horse extends WalkingAnimal implements Rideable {
     const NETWORK_ID = Data::HORSE;
 
-    public $width = 1.2;
-    public $height = 1.562;
+    public $width = 1;
+    public $height = 1.2;
     public $speed = 1.0;
 
     public function getName(): string {
