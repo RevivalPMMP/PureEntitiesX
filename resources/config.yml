@@ -1,6 +1,6 @@
 # Default Config File for PureEntitiesX
 
-# set where entities can spawn - leave empty to allow spawning in any level
+# set where entities can spawn e.g ["world", "flat"], or leave empty to allow entities to spawn in any level
 enabledworlds: []
 
 # set how often the spawn and despawn task will be trigered

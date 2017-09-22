@@ -33,7 +33,6 @@ class Slime extends JumpingMonster {
 
     public $width = 1.2;
     public $height = 1.2;
-    public $length = 1.2;
     public $speed = 0.8;
 
     public function getSpeed(): float {
