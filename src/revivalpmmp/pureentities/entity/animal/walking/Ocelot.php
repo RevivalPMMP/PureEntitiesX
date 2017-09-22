@@ -55,7 +55,7 @@ class Ocelot extends WalkingAnimal implements IntfCanPanic {
         return false;
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         return [];
     }
 

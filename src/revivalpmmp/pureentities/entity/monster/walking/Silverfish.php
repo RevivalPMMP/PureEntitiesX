@@ -64,7 +64,7 @@ class Silverfish extends WalkingMonster {
         }
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         return [];
     }
 

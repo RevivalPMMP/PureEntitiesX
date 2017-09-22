@@ -59,12 +59,11 @@ class CaveSpider extends WalkingMonster {
                 MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
             $player->attack($ev);
             Effect::getEffect(Effect::POISON)->applyEffect($player);
-
             $this->checkTamedMobsAttack($player);
         }
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));

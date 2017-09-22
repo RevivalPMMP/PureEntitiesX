@@ -139,7 +139,7 @@ abstract class WalkingEntity extends BaseEntity {
             if ($x ** 2 + $z ** 2 < 0.7) {
                 $this->motionX = 0;
                 $this->motionZ = 0;
-            } else {
+            } elseif ($diff > 0) {
                 $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                 $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
             }
@@ -240,11 +240,11 @@ abstract class WalkingEntity extends BaseEntity {
                     $this->motionY = $this->gravity;
                     PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
                 } else if ($blockingBlock instanceof StoneSlab or $blockingBlock instanceof Stair) { // on stairs entities shouldn't jump THAT high
-                    $this->motionY = $this->gravity * 3;
+                    $this->motionY = $this->gravity * 4;
                     PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
-                } else if ($this->motionY <= ($this->gravity * 2)) {
-                    PureEntities::logOutput("$this: checkJump(): set motion to gravity * 4!", PureEntities::DEBUG);
-                    $this->motionY = $this->gravity * 2;
+                } else if ($this->motionY < ($this->gravity * 3)) {
+                    PureEntities::logOutput("$this: checkJump(): set motion to gravity * 2!", PureEntities::DEBUG);
+                    $this->motionY = $this->gravity * 3;
                 } else {
                     PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
                     $this->motionY += $this->gravity * 0.25;

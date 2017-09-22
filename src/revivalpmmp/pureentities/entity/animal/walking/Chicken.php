@@ -34,7 +34,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
     public $height = 0.8;
     public $eyeHeight = 0.6;
     public $speed = 1.0;
-    public $gravity = 0.04; // floating chickens
+    public $gravity = 0.08; // floating chickens
 
     // egg laying specific configuration (an egg is laid by a chicken each 6000-120000 ticks)
     private $dropEggTimer = 0;
@@ -78,7 +78,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
         $this->breedableClass->saveNBT();
     }
 
-    public function getName() : string {
+    public function getName(): string {
         return "Chicken";
     }
 
@@ -108,7 +108,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
         return $this->feedableItems;
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
 
         if ($this->isLootDropAllowed()) {
@@ -131,7 +131,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 
 
     // ----- functionality to lay an eg ... -------------
-    public function entityBaseTick(int $tickDiff = 1): bool {
+    public function entityBaseTick(int $tickDiff = 1) : bool {
         if ($this->dropEggTime === 0) {
             $this->dropEggTime = mt_rand(self::DROP_EGG_DELAY_MIN, self::DROP_EGG_DELAY_MAX);
         }

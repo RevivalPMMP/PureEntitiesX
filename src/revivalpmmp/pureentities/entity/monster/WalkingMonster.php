@@ -86,8 +86,8 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                     }
                 }
             }
+            parent::checkTarget(false);
         }
-		return parent::checkTarget($checkSkip);
     }
 
     public function getDamage(int $difficulty = null): float {
@@ -159,7 +159,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         }
     }
 
-    public function onUpdate(int $currentTick): bool {
+    public function onUpdate(int $currentTick) : bool {
         if ($this->server->getDifficulty() < 1) {
             $this->close();
             return false;
@@ -204,7 +204,8 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         return true;
     }
 
-    public function entityBaseTick(int $tickDiff = 1): bool {
+    public function entityBaseTick(int $tickDiff = 1) : bool {
+        if ($this->isClosed()) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);

@@ -23,7 +23,6 @@ use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\Player;
 use pocketmine\Server;
-use pocketmine\ThreadManager;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\BaseEntity;
@@ -86,14 +85,12 @@ class PureEntities extends PluginBase implements CommandExecutor {
     private static $instance;
 
     /** @var string $loglevel */
-    private static $loglevel;
-    /** @var CustomLogger $logger */
-    private static $logger;
+    private static $loglevel; // please don't change back to int - makes no sense - string is more human readable
 
     // logging constants for method call 'logOutput'
-    const NORM = \LogLevel::INFO;
-    const WARN = \LogLevel::WARNING;
-    const DEBUG = \LogLevel::DEBUG;
+    const NORM = 0;
+    const WARN = 1;
+    const DEBUG = 2;
 
     // button texts ...
     const BUTTON_TEXT_SHEAR = "Shear";
@@ -115,8 +112,9 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return PureEntities the current instance of the plugin main class
      */
     public static function getInstance(): PureEntities {
-        return self::$instance;
+        return PureEntities::$instance;
     }
+
 
     public function onLoad() {
         self::$registeredClasses = [
@@ -176,13 +174,16 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
         Tile::registerTile(Spawner::class);
 
-        $this->saveDefaultConfig();
+        $this->checkConfig();
 
         $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
 
+        PureEntities::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", 0));
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . PureEntities::$loglevel);
+
         Color::init();
 
-        self::$instance = $this;
+        PureEntities::$instance = $this;
     }
 
     public function onEnable() {
@@ -199,19 +200,42 @@ class PureEntities extends PluginBase implements CommandExecutor {
         $this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
         $this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
 
-        $enabled = self::$loggingEnabled = PluginConfiguration::getInstance()->getLogEnabled();
-        if($enabled) {
-	        $level = self::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", self::NORM));
-	        self::$logger = new CustomLogger(strcmp($level, self::DEBUG) === 0);
-	        self::$logger->registerClassLoader();
-	        self::$logger->registerStatic();
-	        ThreadManager::getInstance()->{spl_object_hash(self::$logger)} = self::$logger; // just in case the logger isn't shut down by the plugin
-	        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . $level);
+        PureEntities::$loggingEnabled = PluginConfiguration::getInstance()->getLogEnabled();
+    }
+
+    /**
+     * Checks if configuration is available. This function also checks if the config file available
+     * is really filled - if not it will create a new config from the internal resource folder
+     */
+    private function checkConfig() {
+        // check if a config file exists. if not - use the default config (from resources) and put it into the local config file
+        if (!file_exists($this->getDataFolder() . "config.yml")) {
+            $this->saveDefaultPEConfig();
+        } else {
+            // check for empty file ...
+            if (filesize($this->getDataFolder() . "config.yml") == 0) {
+                $this->saveDefaultPEConfig();
+            }
         }
     }
 
+    /**
+     * Saves the default config found in resources to the disk for further usage!
+     */
+    private function saveDefaultPEConfig() {
+        $filehandle = $this->getResource("config.yml");
+        $content = stream_get_contents($filehandle);
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Storing default config to " . $this->getDataFolder() . "config.yml");
+        fclose($filehandle);
+
+        if (!file_exists($this->getDataFolder())) {
+            mkdir($this->getDataFolder(), 0777, true);
+        }
+
+        file_put_contents($this->getDataFolder() . "config.yml", $content);
+    }
+
     public function onDisable() {
-    	if (self::$logger !== null) self::$logger->quit();
         $this->getServer()->getLogger()->notice("[PureEntitiesX] Disabled!");
     }
 
@@ -252,7 +276,8 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param Player|null $owner
      * @return null|Entity
      */
-    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null, Player $owner = null) {
+    public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null,
+                                          Player $owner = null) {
         $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
         if ($event->isCancelled()) {
             return null;
@@ -260,7 +285,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
             $entity = self::create($entityid, $pos);
             if ($entity !== null) {
                 if ($entity instanceof IntfCanBreed and $baby and $entity->getBreedingComponent() !== false) {
-                    $entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
+                    $entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheep)
                     if ($parentEntity != null) {
                         $entity->getBreedingComponent()->setParent($parentEntity);
                     }
@@ -270,7 +295,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     $entity->setTamed(true);
                     $entity->setOwner($owner);
                 }
-                self::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", self::DEBUG);
+                PureEntities::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", PureEntities::DEBUG);
                 $entity->spawnToAll();
 
                 // additionally: mob equipment
@@ -288,26 +313,34 @@ class PureEntities extends PluginBase implements CommandExecutor {
     /**
      * Logs an output to the plugin's logfile ...
      * @param string $logline the output to be appended
-     * @param string $type the type of output to log
-     * @return bool returns false on failure
+     * @param int $type the type of output to log
+     * @return int|bool         returns false on failure
      */
-    public static function logOutput(string $logline, string $type = self::DEBUG) {
-        if (self::$loggingEnabled) {
+    public static function logOutput(string $logline, int $type = PureEntities::DEBUG) {
+        if (PureEntities::$loggingEnabled) {
             switch ($type) {
                 case self::DEBUG:
-                    self::$logger->debug($logline);
+                    if (strcmp(self::$loglevel, "debug") == 0) {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    }
                     break;
                 case self::WARN:
-                    self::$logger->warning($logline);
+                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
                     break;
                 case self::NORM:
-                default:
-                    self::$logger->info($logline);
+                    file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
                     break;
+                default:
+                    if (strcmp(self::$loglevel, "debug") == 0) {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[32m" . (date("j.n.Y G:i:s") . " [DEBUG] " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    } elseif (strcmp(self::$loglevel, "warn") == 0) {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[31m" . (date("j.n.Y G:i:s") . " [WARN]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    } else {
+                        file_put_contents('./pureentities_' . date("j.n.Y") . '.log', "\033[37m" . (date("j.n.Y G:i:s") . " [INFO]  " . $logline . "\033[0m\r\n"), FILE_APPEND);
+                    }
             }
-            return true;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -370,7 +403,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @param array $args
      * @return bool
      */
-    public function onCommand(CommandSender $sender, Command $command, string $label, array $args): bool {
+    public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
         $commandSuccessful = false;
 
         switch ($command->getName()) {
@@ -392,15 +425,15 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     }
                 }
                 $sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
-                self::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", self::NORM);
+                PureEntities::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", PureEntities::NORM);
                 foreach ($entitiesRemoved as $entity) {
                     $name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
-                    self::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", self::NORM);
+                    PureEntities::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", PureEntities::NORM);
                 }
                 $commandSuccessful = true;
                 break;
             case "pesummon":
-                if (count($args) >= 1 or count($args) <= 3) {
+                if (count($args) >= 1 and count($args) <= 3) {
                     $playerName = count($args) == 1 ? $sender->getName() : $args[1];
                     $isBaby = false;
                     if (count($args) == 3) {
@@ -448,3 +481,5 @@ class PureEntities extends PluginBase implements CommandExecutor {
         return $short;
     }
 }
+
+

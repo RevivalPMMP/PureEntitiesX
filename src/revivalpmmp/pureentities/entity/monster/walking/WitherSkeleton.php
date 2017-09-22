@@ -94,7 +94,7 @@ class WitherSkeleton extends WalkingMonster {
         }
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));

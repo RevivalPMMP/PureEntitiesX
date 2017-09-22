@@ -31,7 +31,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
 
     public $height = 0.5;
     public $width = 0.5;
-    public $speed = 1.1;
+    public $speed = 2;
 
     private $feedableItems = array(
         Item::CARROT,
@@ -98,7 +98,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
         return "Rabbit";
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::RABBIT_HIDE, 0, mt_rand(0, 1)));

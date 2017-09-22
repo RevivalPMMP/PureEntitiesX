@@ -167,7 +167,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         }
     }
 
-    public function entityBaseTick(int $tickDiff = 1): bool {
+    public function entityBaseTick(int $tickDiff = 1) : bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $this->getMobEquipment()->entityBaseTick($tickDiff);
@@ -185,7 +185,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         return $hasUpdate;
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));

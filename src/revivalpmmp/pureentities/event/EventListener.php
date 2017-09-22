@@ -111,7 +111,7 @@ class EventListener implements Listener {
             /**
              * @var $packet InteractPacket
              */
-            if ($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
+            if ($packet->action === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
                 $entity = $player->level->getEntity($packet->target);
                 if ($entity instanceof IntfShearable and
                     !$entity->isSheared() and
