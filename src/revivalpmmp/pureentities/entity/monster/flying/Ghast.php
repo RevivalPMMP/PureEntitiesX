@@ -36,6 +36,7 @@ class Ghast extends FlyingMonster implements ProjectileSource {
     const NETWORK_ID = Data::GHAST;
 
     public $width = 4.5;
+    public $length = 4.5;
     public $height = 4.5;
     public $speed = 1.2;
 

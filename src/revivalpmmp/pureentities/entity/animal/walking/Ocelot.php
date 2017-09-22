@@ -49,7 +49,8 @@ use revivalpmmp\pureentities\data\Data;
 class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::OCELOT;
 
-    public $width = 0.8;
+    public $width = 0.6;
+    public $length = 0.8;
     public $height = 0.8;
     public $speed = 1.2;
 

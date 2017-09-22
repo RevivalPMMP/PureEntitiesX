@@ -32,6 +32,7 @@ class Husk extends WalkingMonster implements Ageable {
     const NETWORK_ID = Data::HUSK;
 
     public $width = 1.031;
+    public $length = 0.891;
     public $height = 2;
     public $speed = 1.1;
 

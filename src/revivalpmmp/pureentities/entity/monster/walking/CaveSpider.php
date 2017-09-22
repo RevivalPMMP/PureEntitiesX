@@ -31,6 +31,7 @@ class CaveSpider extends WalkingMonster {
     const NETWORK_ID = Data::CAVE_SPIDER;
 
     public $width = 1.438;
+    public $length = 1.188;
     public $height = 0.547;
     public $speed = 1.3;
 

@@ -32,6 +32,7 @@ class ZombieVillager extends WalkingMonster {
     const NETWORK_ID = Data::ZOMBIE_VILLAGER;
 
     public $width = 1.031;
+    public $length = 0.891;
     public $height = 2.125;
     public $speed = 1.1;
 

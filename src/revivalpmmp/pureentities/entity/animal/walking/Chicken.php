@@ -31,6 +31,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
     const NETWORK_ID = Data::CHICKEN;
 
     public $width = 1;
+    public $length = 0.5;
     public $height = 0.8;
     public $eyeHeight = 0.6;
     public $speed = 1.0;
