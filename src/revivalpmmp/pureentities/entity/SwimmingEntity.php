@@ -79,7 +79,7 @@ abstract class SwimmingEntity extends BaseEntity {
      * @return null|Vector3
      */
     public function updateMove($tickDiff) {
-        if (!$this->isMovement()) {
+        if (!$this->isMovement() or $this->isClosed()) {
             return null;
         }
 

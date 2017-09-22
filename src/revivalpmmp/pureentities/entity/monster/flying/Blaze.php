@@ -134,7 +134,7 @@ class Blaze extends FlyingMonster implements ProjectileSource {
     }
 
     public function updateMove($tickDiff) {
-        if (!$this->isMovement()) {
+        if (!$this->isMovement() or $this->isClosed()) {
             return null;
         }
 

@@ -99,7 +99,7 @@ abstract class WalkingEntity extends BaseEntity {
      * @return null|Vector3
      */
     public function updateMove($tickDiff) {
-        if (!$this->isMovement()) {
+        if ($this->isClosed() or !$this->isMovement()) {
             return null;
         }
 
