@@ -136,12 +136,16 @@ class EventListener implements Listener {
                 } else if ($entity instanceof IntfTameable and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame", PureEntities::DEBUG);
                     $return = $entity->tame($player);
-                } else if ($entity instanceof Wolf) {
+                } else if ($entity instanceof IntfTameable) {
                     if (strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SIT) == 0) {
                         PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit", PureEntities::DEBUG);
-                        $entity->setSitting(!$entity->isSitting());
+                        $entity->setSitting(true);
                         $return = true;
-                    } else if (strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_DYE) == 0) {
+                    } else if (strcmp(InteractionHelper::getButtonText($player),PureEntities::BUTTON_TEXT_STAND) == 0) {
+                        PureEntities::logOutput("$entity: dataPacketReceiveEvent->stand", PureEntities::DEBUG);
+                        $entity->setSitting(false);
+                        $return = true;
+                    } else if ($entity instanceof Wolf and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_DYE) == 0) {
                         $color = Color::convert($player->getInventory()->getItemInHand()->getDamage());
                         PureEntities::logOutput("$entity: dataPacketReceiveEvent->dye with color: $color", PureEntities::DEBUG);
                         $entity->setCollarColor($color);

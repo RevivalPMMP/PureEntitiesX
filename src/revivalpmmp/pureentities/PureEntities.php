@@ -101,6 +101,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
     const BUTTON_TEXT_MILK = "Milk";
     const BUTTON_TEXT_TAME = "Tame";
     const BUTTON_TEXT_SIT = "Sit";
+    const BUTTON_TEXT_STAND = "Stand";
     const BUTTON_TEXT_DYE = "Dye";
 
     private static $registeredClasses = [];

@@ -29,6 +29,7 @@ use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfFeedable;
+use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
@@ -162,22 +163,27 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
      */
     public function targetOption(Creature $creature, float $distance): bool {
         $targetOption = false;
-        if ($this instanceof IntfCanBreed || $this instanceof IntfFeedable) {
-            if ($creature != null and $creature instanceof Player) { // a player requests the target option
-                if ($creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
-                    $feedableItems = $this->getFeedableItems();
-                    if (in_array($creature->getInventory()->getItemInHand()->getId(), $feedableItems)) {
-                        // check if the sheep is able to follow - but only on a distance of 6 blocks
-                        $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed && $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance();
-                        // sheeps only follow when <= 5 blocks away. otherwise, forget the player as target!
-                        if (!$targetOption and $this->isFollowingPlayer($creature) and !$this->getBreedingComponent()->isBaby()) {
-                            $this->setBaseTarget($this->getBreedingComponent()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
-                        }
-                    } else {
-                        // reset base target when it was player before (follow by holding wheat)
-                        if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
-                            // reset base target!
-                            $this->setBaseTarget($this->getBreedingComponent()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
+        if ($creature instanceof Player) { // a player requests the target option
+            if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+                $itemInHand = $creature->getInventory()->getItemInHand()->getId();
+                if ($this instanceof IntfTameable) {
+                    $tameFood = $this->getTameFoods();
+                    if (!$this->isTamed() and in_array($itemInHand, $tameFood) and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) {
+                        $targetOption = true;
+                    } else if ($this instanceof IntfCanBreed) {
+                        if ($this->isTamed() and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()) { // tamed - it can breed!!!
+                            $feedableItems = $this->getFeedableItems();
+                            $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
+                            if ($hasFeedableItemsInHand) {
+                                // check if the entity is able to follow - but only on a distance of 6 blocks
+                                $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed;
+                            } else {
+                                // reset base target when it was player before (follow by holding wheat)
+                                if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
+                                    // reset base target!
+                                    $this->setBaseTarget($this->getBreedingComponent()->getBreedPartner()); // reset base target to breed partner (or NULL, if there's none)
+                                }
+                            }
                         }
                     }
                 }
@@ -188,12 +194,57 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
 
     /**
      * The general showButton function is implemented here for entities that are walking animals
-     * and can interact with - we're working with interfaces here.
+     * and are interactive - we're working with interfaces here.  Priority is given to taming
+     * followed by breeding then feeding.
      *
      * @param Player $player
      */
     public function showButton(Player $player) {
-        if ($this instanceof IntfCanBreed || $this instanceof IntfFeedable) {
+        if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+            $itemInHand = $player->getInventory()->getItemInHand()->getId();
+            if ($this instanceof IntfTameable) {
+                $tameFood = $this->getTameFoods();
+                if (!$this->isTamed() and in_array($itemInHand, $tameFood)) {
+                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
+                } else if ($this instanceof IntfCanBreed) {
+                    if ($this->isTamed()) { // tamed - it can breed!!!
+                        $feedableItems = $this->getFeedableItems();
+                        $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
+                        if ($hasFeedableItemsInHand) {
+                            InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
+                        } else if (!$hasFeedableItemsInHand) { // When no feedable items in hand, offer sitting options.
+                            if ($this->isSitting()) {
+                                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
+                            } else {
+                                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
+                            }
+                        } else {
+                            InteractionHelper::displayButtonText("", $player);
+                        }
+                    } else { // not tamed - so feeding is not possible, also sit is not possible!
+                        InteractionHelper::displayButtonText("", $player);
+                    }
+                } else {
+                    InteractionHelper::displayButtonText("", $player);
+                }
+            } else {
+                InteractionHelper::displayButtonText("", $player);
+            }
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        /*if ($this instanceof IntfCanBreed || $this instanceof IntfFeedable) {
             if (in_array($player->getInventory()->getItemInHand()->getId(), $this->getFeedableItems())) {
                 InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
             } else {
@@ -201,7 +252,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
             }
         } else {
             InteractionHelper::displayButtonText("", $player);
-        }
+        }*/
     }
 
 
