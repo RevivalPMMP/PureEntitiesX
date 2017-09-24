@@ -43,11 +43,12 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
     }
 
     public function entityBaseTick(int $tickDiff = 1) : bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
-        if (!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
+        if ($this->getLevel() !== null && !$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
             $hasUpdate = true;
             $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
             if ($airTicks <= -20) {
@@ -81,7 +82,8 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
      * @return bool
      */
    public function onUpdate(int $currentTick): bool {
-        if (!$this->isAlive()) {
+       if ($this->isClosed() or $this->getLevel() == null) return false;
+       if (!$this->isAlive()) {
             if (++$this->deadTicks >= 23) {
                 $this->close();
                 return false;
