@@ -99,7 +99,7 @@ abstract class WalkingEntity extends BaseEntity {
      * @return null|Vector3
      */
     public function updateMove($tickDiff) {
-        if ($this->isClosed() or !$this->isMovement()) {
+        if ($this->isClosed() or $this->getLevel() == null or !$this->isMovement()) {
             return null;
         }
 
@@ -226,8 +226,13 @@ abstract class WalkingEntity extends BaseEntity {
         // they overlap especially when following an entity - you can see it when the entity (e.g. creeper) is looking
         // in your direction but cannot jump (is stuck). Then the next line should apply
         $blockingBlock = $this->getLevel()->getBlock($this->getPosition());
-        if ($blockingBlock->canPassThrough()) { // when we can pass through the current block then the next block is blocking the way
-            $blockingBlock = $this->getTargetBlock(2); // just for correction use 2 blocks ...
+        if($blockingBlock->canPassThrough()){ // when we can pass through the current block then the next block is blocking the way
+            try{
+                $blockingBlock = $this->getTargetBlock(2); // just for correction use 2 blocks ...
+            }catch(\InvalidStateException $ex){
+                PureEntities::logOutput("Caught InvalidStateException for getTargetBlock", PureEntities::DEBUG);
+                return false;
+            }
         }
         if ($blockingBlock != null and !$blockingBlock->canPassThrough() and $this->getMaxJumpHeight() > 0) {
             // we cannot pass through the block that is directly in front of entity - check if jumping is possible
