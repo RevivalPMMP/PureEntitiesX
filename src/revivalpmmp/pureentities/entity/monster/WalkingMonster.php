@@ -160,6 +160,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
     }
 
     public function onUpdate(int $currentTick) : bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         if ($this->server->getDifficulty() < 1) {
             $this->close();
             return false;

@@ -247,7 +247,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return Entity
      */
     public static function create($type, Position $source, ...$args) {
-        $nbt = new CompoundTag("", [
+        $nbt = new CompoundTag($type ?? "Unknown", [
             "Pos" => new ListTag("Pos", [
                 new DoubleTag("", $source->x),
                 new DoubleTag("", $source->y),
@@ -414,8 +414,8 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 foreach (Server::getInstance()->getLevels() as $level) {
                     foreach ($level->getEntities() as $entity) {
                         if (!$entity instanceof Player) {
+                            $entitiesRemoved[] = clone($entity);
                             $entity->close();
-                            $entitiesRemoved[] = $entity;
                             if ($entity instanceof BaseEntity) {
                                 $counterLivingEntities++;
                             } else {
@@ -427,13 +427,14 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 $sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
                 PureEntities::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", PureEntities::NORM);
                 foreach ($entitiesRemoved as $entity) {
-                    $name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
+                    $name = ($entity instanceof BaseEntity) ? $entity->getName() : $entity->__toString();
                     PureEntities::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", PureEntities::NORM);
                 }
+                unset($entitiesRemoved);
                 $commandSuccessful = true;
                 break;
             case "pesummon":
-                if (count($args) >= 1 and count($args) <= 3) {
+                if (($sender instanceof Player and count($args) >= 1 and count($args) <= 3) or (!$sender instanceof Player and count($args) > 1)) {
                     $playerName = count($args) == 1 ? $sender->getName() : $args[1];
                     $isBaby = false;
                     if (count($args) == 3) {
