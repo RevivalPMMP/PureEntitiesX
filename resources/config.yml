@@ -115,7 +115,7 @@ performance:
   check-interactive-correction: true # setting this to true the interactive button finding is a lot better but more unprecise and consumes more performance
   check-enderman-looking: 10 # how often does the plugin check if a player looks at an enderman
   check-pickup-loot: 10 # how often do entities look after things they can pick up (configure ticks between checks)
-  enable-logging: true # enable file logging (set to false for productive environments)
+  enable-logging: false # enable file logging (set to false for productive environments)
   enable-nbt-storage: true # enable to store to NBT - this has to be set to true to work properly
 
 # mob equipment configuration

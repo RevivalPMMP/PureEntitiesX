@@ -233,27 +233,6 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
 
         }
 
-
-
-
-
-
-
-
-
-
-
-
-        /*if ($this instanceof IntfCanBreed || $this instanceof IntfFeedable) {
-            if (in_array($player->getInventory()->getItemInHand()->getId(), $this->getFeedableItems())) {
-                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
-            } else {
-                InteractionHelper::displayButtonText("", $player);
-            }
-        } else {
-            InteractionHelper::displayButtonText("", $player);
-        }*/
     }
-
 
 }

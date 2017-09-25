@@ -38,7 +38,6 @@ use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 
 
-// TODO: Ocelot skin setting does not persist on server restart..
 // TODO: Add 'Begging Mode' for untamed ocelots.
 // TODO: Fix tamed ocelot response to Owner in combat (should avoid fights).
 // TODO: Consider changing $feedableItems, $tameItems, and $comfortObjects to constants.
@@ -251,7 +250,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
      */
     public function checkTarget(bool $checkSkip = true) {
         if (($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
-            if (!$this->isTamed() and !$this->getBaseTarget() instanceof Monster) {
+            if (!$this->isTamed() and !$this->getBaseTarget() instanceof Chicken) {
                 // is there any entity around that can be attacked (chickens)
                 // Need to reconsider this method and test response when multiple matches are within
                 // the bounding box across multiple checks.  Ocelots should be able to 'stalk' a target
@@ -268,7 +267,8 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
     }
 
     /**
-     * We need to override this method. When ocelot is sitting, the entity shouldn't move!
+     * We need to override this method. When a tameable entity is sitting, the entity shouldn't move
+     * except to face its owner when the owner is close.
      *
      * @param int $tickDiff
      * @return null|\pocketmine\math\Vector3
@@ -293,6 +293,10 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
             }
             if (isset($this->namedtag->Sitting)) {
                 $this->setSitting($this->namedtag[self::NBT_KEY_SITTING] === 1);
+
+                // Until an appropriate NBT key can be attached to this, if the entity is sitting when loaded,
+                // commandedToSit will be set to true so that it doesn't teleport to it's owner by accident.
+                $this->setCommandedToSit($this->isSitting());
             }
             if (isset($this->namedtag->OwnerName)) {
                 $this->ownerName = $this->namedtag[self::NBT_SERVER_KEY_OWNER_NAME];
@@ -326,6 +330,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
      }
 
     public function targetOption(Creature $creature, float $distance): bool {
+
         if ($creature instanceof Player) {
             return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::RAW_FISH && $distance <= 49;
         }
@@ -440,12 +445,26 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
     }
 
     /**
-     * Returns if the wolf is sitting or not
+     * Returns if the entity is sitting or not
      *
      * @return bool
      */
     public function isSitting(): bool {
         return $this->sitting;
+    }
+
+    /**
+     * This function is used to set the commandedToSit flag.
+     * This should only be called when the owner of a tame
+     * ocelot commands it to sit or gives it a command to stand
+     * when it did not seat itself.
+     *
+     * @param bool $command
+     */
+
+    public function setCommandedToSit(bool $command = true)
+    {
+     $this->commandedToSit = $command;
     }
 
     /**
@@ -522,8 +541,8 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 
     //This function needs to be in a parent class for tamed animals.
     private function getPositionNearOwner(): Vector3 {
-        $x = $this->getOwner()->x + (mt_rand(0, 1) == 0 ? -1 : 1);
-        $z = $this->getOwner()->z + (mt_rand(0, 1) == 0 ? -1 : 1);
+        $x = $this->getOwner()->x + (mt_rand(2, 3) * (mt_rand(0, 1) ==1 ?: -1));
+        $z = $this->getOwner()->z + (mt_rand(2, 3) * (mt_rand(0, 1) ==1 ?: -1));
         $pos = PureEntities::getInstance()->getSuitableHeightPosition($x, $this->getOwner()->y, $z, $this->getLevel());
         if ($pos !== null) {
             return new Vector3($x, $pos->y, $z);

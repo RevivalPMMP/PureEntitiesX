@@ -179,7 +179,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
         $this->saveDefaultConfig();
 
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'Unleashed'.");
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'REDACTED'.");
 
         Color::init();
 

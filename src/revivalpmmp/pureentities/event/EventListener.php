@@ -38,7 +38,8 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\mcpe\protocol\InteractPacket;
+use pocketmine\network\mcpe\protocol\InteractPacket;  // This may become unnecessary with continued updates.
+use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -107,50 +108,77 @@ class EventListener implements Listener {
         $packet = $event->getPacket();
         $player = $event->getPlayer();
         $return = false;
-        if ($packet->pid() === ProtocolInfo::INTERACT_PACKET) {
+        if ($packet->pid() === ProtocolInfo::INVENTORY_TRANSACTION_PACKET) {
             /**
-             * @var $packet InteractPacket
+             * @var $packet InventoryTransactionPacket
              */
-            if ($packet->action === InteractPacket::ACTION_RIGHT_CLICK) {
-                $entity = $player->level->getEntity($packet->target);
-                if ($entity instanceof IntfShearable and
-                    !$entity->isSheared() and
-                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SHEAR) == 0
-                ) {
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->shear", PureEntities::DEBUG);
-                    $return = $entity->shear($player);
-                } else if ($entity instanceof Cow and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_MILK) == 0) {
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->milk", PureEntities::DEBUG);
-                    $return = $entity->milk($player);
-                } else if ($entity instanceof IntfCanBreed and
-                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_FEED) == 0 and
-                    $entity->getBreedingComponent() !== false
-                ) { // normally, this shouldn't be needed (because IntfCanBreed needs this method! - that's why i don't like php that much!)
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->feed", PureEntities::DEBUG);
-                    $return = $entity->getBreedingComponent()->feed($player); // feed the sheep
-                    // decrease wheat in players hand
-                    $itemInHand = $player->getInventory()->getItemInHand();
-                    if ($itemInHand != null) {
-                        $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
-                    }
-                } else if ($entity instanceof IntfTameable and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame", PureEntities::DEBUG);
-                    $return = $entity->tame($player);
-                } else if ($entity instanceof IntfTameable) {
-                    if (strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SIT) == 0) {
+            if ($packet->transactionType === InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY) {
+                $entity = $player->level->getEntity($packet->trData->entityRuntimeId);
+                switch(InteractionHelper::getButtonText($player)) {
+                    case PureEntities::BUTTON_TEXT_SHEAR:
+                        /**
+                         * @var $entity IntfShearable
+                         */
+                        PureEntities::logOutput("$entity: dataPacketReceiveEvent->shear", PureEntities::DEBUG);
+                        $return = $entity->shear($player);
+                        break;
+                    case PureEntities::BUTTON_TEXT_MILK:
+                        /**
+                         * @var $entity Cow
+                         */
+                        PureEntities::logOutput("$entity: dataPacketReceiveEvent->milk", PureEntities::DEBUG);
+                        $return = $entity->milk($player);
+                        break;
+                    case PureEntities::BUTTON_TEXT_FEED:
+                        /**
+                         * @var $entity IntfCanBreed
+                         */
+                        PureEntities::logOutput("$entity: dataPacketReceiveEvent->feed", PureEntities::DEBUG);
+                        $return = $entity->getBreedingComponent()->feed($player); // feed the sheep
+                        // decrease wheat in players hand
+                        $itemInHand = $player->getInventory()->getItemInHand();
+                        if ($itemInHand != null) {
+                            $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
+                        }
+                        break;
+                    case PureEntities::BUTTON_TEXT_TAME:
+                        /**
+                         * @var $entity IntfTameable
+                         */
+                        PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame", PureEntities::DEBUG);
+                        $return = $entity->tame($player);
+                        break;
+                    case PureEntities::BUTTON_TEXT_SIT:
+                        /**
+                         * @var $entity IntfTameable
+                         */
                         PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit", PureEntities::DEBUG);
                         $entity->setSitting(true);
+                        if ($entity instanceof Ocelot) {
+                            $entity->setCommandedToSit(true);
+                        }
                         $return = true;
-                    } else if (strcmp(InteractionHelper::getButtonText($player),PureEntities::BUTTON_TEXT_STAND) == 0) {
+                        break;
+                    case PureEntities::BUTTON_TEXT_STAND:
+                        /**
+                         * @var $entity IntfTameable
+                         */
                         PureEntities::logOutput("$entity: dataPacketReceiveEvent->stand", PureEntities::DEBUG);
                         $entity->setSitting(false);
+                        if ($entity instanceof Ocelot) {
+                            $entity->setCommandedToSit(false);
+                        }
                         $return = true;
-                    } else if ($entity instanceof Wolf and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_DYE) == 0) {
+                        break;
+                    case PureEntities::BUTTON_TEXT_DYE:
+                        /**
+                         * @var $entity Wolf
+                         */
                         $color = Color::convert($player->getInventory()->getItemInHand()->getDamage());
                         PureEntities::logOutput("$entity: dataPacketReceiveEvent->dye with color: $color", PureEntities::DEBUG);
                         $entity->setCollarColor($color);
                         $return = true;
-                    }
+
                 }
             }
         }

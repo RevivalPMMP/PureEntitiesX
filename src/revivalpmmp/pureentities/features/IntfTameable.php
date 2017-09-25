@@ -68,5 +68,4 @@ interface IntfTameable {
      * @param bool $sit
      */
     public function setSitting(bool $sit=true);
-
 }

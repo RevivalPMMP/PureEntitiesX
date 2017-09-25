@@ -45,24 +45,31 @@ class RabbitSpawner extends BaseSpawner {
     public function spawn(Position $pos, Player $player): bool {
 
         if ($this->spawnAllowedByProbability()) {
-            $biomeId = $pos->level->getBiomeId($pos->x, $pos->z);
-
-            // how many horses to spawn (we spawn herds)
+            // how many rabbits to spawn (we spawn herds)
             $herdSize = mt_rand(2, 3);
 
+
+            $biomeId = $pos->level->getBiomeId($pos->x, $pos->z);
+
+            $spawnAllowedByEntityCount = $this->spawnAllowedByRabbitCount($pos->getLevel(), $herdSize);
+            $biomeOk = ($biomeId == Biome::DESERT or $biomeId == Biome::FOREST or $biomeId == Biome::TAIGA or $biomeId == Biome::PLAINS or $biomeId == Biome::BIRCH_FOREST or $biomeId == Biome::ICE_PLAINS);
+            $playerDistanceOk = $this->checkPlayerDistance($player, $pos);
+
             PureEntities::logOutput($this->getClassNameShort() . ": isDay: " . $this->isDay($pos->getLevel()) .
-                ", spawnAllowedByEntityCount: " . $this->spawnAllowedByRabbitCount($pos->getLevel(), $herdSize) .
-                ", biomeOk: " . ($biomeId == Biome::DESERT or $biomeId == Biome::FOREST or $biomeId == Biome::TAIGA or $biomeId == Biome::PLAINS or $biomeId == Biome::BIRCH_FOREST or $biomeId == Biome::ICE_PLAINS) .
-                ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos) .
+                ", spawnAllowedByEntityCount: " . $spawnAllowedByEntityCount .
+                ", biomeOk: " . $biomeOk .
+                ", playerDistanceOK: " . $playerDistanceOk .
                 ", herdSize: $herdSize", PureEntities::DEBUG);
 
 
             if ($this->isSpawnAllowedByBlockLight($player, $pos, -1, 9) and // check block light when enabled
                 $this->isDay($pos->level) and // spawn only at day
-                $this->spawnAllowedByRabbitCount($pos->level, $herdSize) and // check entity count for horse, donkey and mule
-                ($biomeId == Biome::DESERT or $biomeId == Biome::FOREST or $biomeId == Biome::TAIGA or $biomeId == Biome::PLAINS or $biomeId == Biome::BIRCH_FOREST or $biomeId == Biome::ICE_PLAINS) and // respect spawn biomes
-                $this->checkPlayerDistance($player, $pos)
-            ) { // player distance must be ok
+                $spawnAllowedByEntityCount and // check entity count for rabbits
+                $biomeOk and // respect spawn biomes
+                $playerDistanceOk) { // player distance must be ok
+
+                // Temporary debug test
+                PureEntities::logOutput("Conditional Check Passed. Calling spawnEntityToLevel with position $pos");
 
                 // spawn 1 adult rabbit and the rest is baby rabbit
                 $this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Animal");
@@ -74,6 +81,8 @@ class RabbitSpawner extends BaseSpawner {
                     PureEntities::logOutput($this->getClassNameShort() . ": scheduleCreatureSpawn (pos: $pos) as baby", PureEntities::NORM);
                 }
                 return true;
+            } else {
+                PureEntities::logOutput($this->getClassNameShort() . ": Spawn not allowed because of conditional check. (BlockLight, Daytime, Count, Biome, Player Distance)", PureEntities::DEBUG);
             }
 
         } else {
