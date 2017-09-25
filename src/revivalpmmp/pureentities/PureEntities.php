@@ -212,7 +212,9 @@ class PureEntities extends PluginBase implements CommandExecutor {
     }
 
     public function onDisable() {
-    	self::$logger->quit();
+        if (static::$loggingEnabled) {
+            self::$logger->quit();
+        }
         $this->getServer()->getLogger()->notice("[PureEntitiesX] Disabled!");
     }
 
