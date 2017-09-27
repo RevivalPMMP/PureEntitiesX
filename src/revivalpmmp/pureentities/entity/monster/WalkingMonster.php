@@ -266,7 +266,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
      */
     public function showButton(Player $player) {
         if ($this->isFriendly()) {
-            if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+            if ($player->getInventory() != null) { // sometimes, we get null on getInventory?!
                 $itemInHand = $player->getInventory()->getItemInHand()->getId();
                 if ($this instanceof IntfTameable) {
                     $tameFood = $this->getTameFoods();
@@ -276,6 +276,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                         $player->getInventory()->getItemInHand()->getDamage() > 0
                     ) { // normal dye won't work ...
                         InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_DYE, $player);
+                        PureEntities::logOutput("Button text set to Dye.", PureEntities::DEBUG);
                     } else if ($this instanceof IntfCanBreed) {
                         if ($this->isTamed()) { // tamed - it can breed!!!
                             $feedableItems = $this->getFeedableItems();

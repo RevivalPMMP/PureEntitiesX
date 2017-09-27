@@ -41,7 +41,7 @@ use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCanInteract {
+class Wolf extends WalkingMonster implements IntfTameable, IntfCanInteract {
     const NETWORK_ID = Data::WOLF;
 
     public $height = 0.969;

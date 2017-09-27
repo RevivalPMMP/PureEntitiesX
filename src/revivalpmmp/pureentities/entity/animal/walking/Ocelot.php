@@ -45,7 +45,7 @@ use revivalpmmp\pureentities\data\Data;
 
 
 
-class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
+class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::OCELOT;
 
     public $width = 0.6;
@@ -357,7 +357,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
     public function tame(Player $player): bool {
         // This shouldn't be necessary but just in case...
         if ($this->isTamed()) {
-            return null;
+            return false;
         }
 
         $tameSuccess = mt_rand(0, 2) === 0; // 1/3 chance of taming succeeds

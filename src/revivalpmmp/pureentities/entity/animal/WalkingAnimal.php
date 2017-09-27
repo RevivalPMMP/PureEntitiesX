@@ -19,6 +19,9 @@
 namespace revivalpmmp\pureentities\entity\animal;
 
 use pocketmine\entity\Creature;
+use pocketmine\item\Item;
+use pocketmine\Item\ItemIds;
+use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\WalkingEntity;
 use pocketmine\entity\Effect;
@@ -29,6 +32,7 @@ use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfFeedable;
+use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -202,37 +206,49 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
     public function showButton(Player $player) {
         if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
             $itemInHand = $player->getInventory()->getItemInHand()->getId();
+            // Redefining how to determine button circumstance.  There are several animals that are breedable
+            // without being tameable (ie. Sheep, Cows, Mooshroom, Pigs, Chicken)
+            PureEntities::logOutput("Player looking at $this");
+            PureEntities::logOutput("showButton: Item in Hand $itemInHand");
+
             if ($this instanceof IntfTameable) {
+                $feedableItems = $this->getFeedableItems();
+                $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
                 $tameFood = $this->getTameFoods();
                 if (!$this->isTamed() and in_array($itemInHand, $tameFood)) {
                     InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
-                } else if ($this instanceof IntfCanBreed) {
-                    if ($this->isTamed()) { // tamed - it can breed!!!
-                        $feedableItems = $this->getFeedableItems();
-                        $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
-                        if ($hasFeedableItemsInHand) {
-                            InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
-                        } else if (!$hasFeedableItemsInHand) { // When no feedable items in hand, offer sitting options.
-                            if ($this->isSitting()) {
-                                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
-                            } else {
-                                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
-                            }
-                        } else {
-                            InteractionHelper::displayButtonText("", $player);
-                        }
-                    } else { // not tamed - so feeding is not possible, also sit is not possible!
-                        InteractionHelper::displayButtonText("", $player);
+                    PureEntities::logOutput("Button text set to Tame.");
+                } else if (!$hasFeedableItemsInHand) { // When no feedable items in hand, offer sitting options.
+                    if ($this->isSitting()) {
+                        InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
+                        PureEntities::logOutput("Button text set to Stand.");
+                    } else {
+                        InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
+                        PureEntities::logOutput("Button text set to Sit.");
                     }
-                } else {
-                    InteractionHelper::displayButtonText("", $player);
                 }
-            } else {
+            } else if ($this instanceof IntfCanBreed or $this instanceof IntfTameable) {
+                $feedableItems = $this->getFeedableItems();
+                $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
+                if ($hasFeedableItemsInHand) {
+                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
+                    PureEntities::logOutput("Button text set to Feed.");
+                } else if ($this instanceof Sheep and $itemInHand == ItemIds::DYE and
+                    $player->getInventory()->getItemInHand()->getDamage() > 0
+                ) {
+                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_DYE, $player);
+                    PureEntities::logOutput("Button text set to Dye.");
+                }
+            } else if ($this instanceof IntfShearable and ($itemInHand === Item::SHEARS)) {
+                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $player);
+                PureEntities::logOutput("Button text set to Shear.");
+            } else { // No button type interactions necessary.
+                $damage = $player->getInventory()->getItemInHand()->getDamage();
+                PureEntities::logOutput("Player looking at $this with item in hand $itemInHand.");
+                PureEntities::logOutput("Item in hand damage $damage.");
                 InteractionHelper::displayButtonText("", $player);
             }
-
         }
-
     }
 
 }
