@@ -50,7 +50,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
     const RED = 14;
 
-    const NBT_KEY_COLLAR_COLOR = "CollarColor"; // 0 -14 (14 - RED)
+    const NBT_KEY_COLLAR_COLOR = "Color"; // 0 -14 (14 - RED)
     const NBT_KEY_OWNER_UUID = "OwnerUUID"; // string
     const NBT_KEY_SITTING = "Sitting"; // 1 or 0 (true/false)
     const NBT_KEY_ANGRY = "Angry"; // 0 - not angry, > 0 angry
@@ -247,13 +247,13 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     public function loadFromNBT() {
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             if (isset($this->namedtag->Angry)) {
-                $this->angryValue = (int)$this->namedtag[self::NBT_KEY_ANGRY];
+                $this->setAngry((int)$this->namedtag[self::NBT_KEY_ANGRY]);
             }
-            if (isset($this->namedtag->CollarColor)) {
-                $this->collarColor = $this->namedtag[self::NBT_KEY_COLLAR_COLOR];
+            if (isset($this->namedtag->Color)) {
+                $this->setCollarColor($this->namedtag[self::NBT_KEY_COLLAR_COLOR]);
             }
             if (isset($this->namedtag->Sitting)) {
-                $this->sitting = $this->namedtag[self::NBT_KEY_SITTING] === 1;
+                $this->setSitting($this->namedtag[self::NBT_KEY_SITTING] === 1);
             }
             if (isset($this->namedtag->OwnerName)) {
                 $this->ownerName = $this->namedtag[self::NBT_SERVER_KEY_OWNER_NAME];
@@ -271,6 +271,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         $this->breedableClass->saveNBT();
     }
 
+    // TODO: Determine cause of collar color being improperly applied.
+
     /**
      * Saves important variables to the NBT
      */
@@ -278,7 +280,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             parent::saveNBT();
             $this->namedtag->Angry = new IntTag(self::NBT_KEY_ANGRY, $this->angryValue);
-            $this->namedtag->CollarColor = new ByteTag(self::NBT_KEY_COLLAR_COLOR, $this->collarColor); // set collar color
+            $this->namedtag->Color = new IntTag(self::NBT_KEY_COLLAR_COLOR, $this->collarColor); // set collar color
             $this->namedtag->Sitting = new IntTag(self::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
             if ($this->getOwnerName() !== null) {
                 $this->namedtag->OwnerName = new StringTag(self::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
@@ -392,12 +394,15 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
             $this->setOwner($player);
             $this->setSitting(true);
             $this->setCollarColor(self::RED); // default color
+            PureEntities::logOutput("Wolf($this): is tamed with Collar Color $this->collarColor", PureEntities::DEBUG);
+
 
         } else {
             $pk = new EntityEventPacket();
             $pk->entityRuntimeId = $this->getId();
             $pk->event = EntityEventPacket::TAME_FAIL; // this "plays" fail animation on entity
             $player->dataPacket($pk);
+            PureEntities::logOutput("Wolf($this): is not tamed", PureEntities::DEBUG);
         }
         return $tameSuccess;
     }
@@ -407,13 +412,13 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      *
      * @param bool $tamed
      */
-    public function setTamed(bool $tamed) {
-        if ($tamed) {
+    public function setTamed(bool $option) {
+        if ($option) {
             $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED, true); // set tamed
         } else {
             $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED, false); // set not tamed
         }
-        $this->tamed = $tamed;
+        $this->tamed = $option;
     }
 
     /**
@@ -456,26 +461,13 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     }
 
     /**
-     * Set the wolf sitting or not
+     * Sets entity sitting or not.
+     *
      * @param bool $sit
      */
-    public function setSitting(bool $sit=null) {
-        PureEntities::logOutput("$this: setSitting called", PureEntities::DEBUG);
-
-        if (!($sit === null)) {
-            $this->sitting = $sit;
-            $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, $sit);
-        }
-
-        elseif ($this->sitting) {
-            $this->sitting = false;
-            $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, false);
-        }
-        else {
-            $this->sitting = true;
-            $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, true);
-        }
-
+    public function setSitting(bool $sit=true) {
+       $this->sitting = $sit;
+       $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, $sit);
     }
 
     /**
@@ -504,6 +496,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     public function setCollarColor($collarColor) {
         if ($this->isTamed()) {
             $this->collarColor = $collarColor;
+
+            // ID may be the reason for collar color bug.
             $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor); // collar color RED (because it's tamed!)
         }
     }
@@ -567,6 +561,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      *
      * @return Vector3|null the position near the owner
      */
+
+    //This function needs to be in a parent class for tamed animals.
     private function getPositionNearOwner(): Vector3 {
         $x = $this->getOwner()->x + (mt_rand(0, 1) == 0 ? -1 : 1);
         $z = $this->getOwner()->z + (mt_rand(0, 1) == 0 ? -1 : 1);
