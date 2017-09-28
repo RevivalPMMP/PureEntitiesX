@@ -32,7 +32,7 @@ use revivalpmmp\pureentities\data\Data;
 class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::COW;
 
-    public $width = 1.4;
+    public $width = 1.5;
     public $height = 1.2;
     public $eyeHeight = 1;
     public $speed = 1.0;

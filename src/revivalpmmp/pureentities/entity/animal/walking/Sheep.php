@@ -66,8 +66,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
     const NBT_KEY_SHEARED = "Sheared";
 
 
-    public $width = 1;
-    public $height = 0.5;
+    public $width = 1.2;
+    public $height = 0.6;
     public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
