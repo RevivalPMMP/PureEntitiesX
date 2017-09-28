@@ -99,9 +99,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         if ($target instanceof Player) {
             if ($this->distance($target) <= 2) {
                 $this->pitch = 22; // pitch is the angle for looking up or down while yaw is looking left/right
-                $this->x = $this->lastX;
-                $this->y = $this->lastY;
-                $this->z = $this->lastZ;
+                $this->setPosition(new Vector3($this->lastX, $this->lastY, $this->lastZ));
             }
         } elseif (
             $target instanceof Vector3
@@ -205,6 +203,4 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
             InteractionHelper::displayButtonText("", $player);
         }
     }
-
-
 }
