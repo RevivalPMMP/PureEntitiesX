@@ -224,7 +224,7 @@ abstract class BaseEntity extends Creature {
     }
 
     public function updateMovement(){
-        if (!$this->isClosed()){
+        if (!$this->isClosed() && $this->getLevel() !== null){
             parent::updateMovement();
         }
     }
@@ -242,7 +242,7 @@ abstract class BaseEntity extends Creature {
      */
     public function attack(EntityDamageEvent $source) {
 
-        if ($source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)) {
+        if ($this->isClosed() || $source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)) {
             return;
         }
 
@@ -498,7 +498,7 @@ abstract class BaseEntity extends Creature {
             PureEntities::logOutput("$this: still in panic.");
             return true; // still in panic
         }
-        PureEntities::logOutput("$this: no in panic.");
+        PureEntities::logOutput("$this: not in panic");
         return false; // no in panic
     }
 

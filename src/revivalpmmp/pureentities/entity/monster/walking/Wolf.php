@@ -193,6 +193,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * @return bool
      */
     public function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         $this->checkFollowOwner();
         return parent::entityBaseTick($tickDiff);
     }

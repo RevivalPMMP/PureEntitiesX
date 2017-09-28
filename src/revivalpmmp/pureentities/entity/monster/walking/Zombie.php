@@ -168,13 +168,14 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     }
 
     public function entityBaseTick(int $tickDiff = 1) : bool {
+        if ($this->isClosed()) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $this->getMobEquipment()->entityBaseTick($tickDiff);
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
-        $time = $this->getLevel()->getTime() % Level::TIME_FULL;
+        $time = $this->getLevel() !== null ? $this->getLevel()->getTime() % Level::TIME_FULL : Level::TIME_NIGHT;
         if (
             !$this->isOnFire()
             && ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)

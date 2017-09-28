@@ -116,6 +116,7 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
     }
 
     public function entityBaseTick(int $tickDiff = 1) : bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);

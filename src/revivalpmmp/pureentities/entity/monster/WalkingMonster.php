@@ -206,7 +206,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
     }
 
     public function entityBaseTick(int $tickDiff = 1) : bool {
-        if ($this->isClosed()) return false;
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
@@ -218,7 +218,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                 $this->attack($ev);
                 $this->move(mt_rand(-20, 20), mt_rand(-20, 20), mt_rand(-20, 20));
             }
-        } else {
+        } elseif($this->getLevel() !== null) {
             if (!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
                 $hasUpdate = true;
                 $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
