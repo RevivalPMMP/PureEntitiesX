@@ -34,7 +34,6 @@ class IronGolem extends WalkingMonster {
 
     public $height = 2.688;
     public $width = 1.625;
-    public $length = 0.906;
     public $speed = 0.8;
 
     public function getSpeed(): float {
@@ -80,7 +79,7 @@ class IronGolem extends WalkingMonster {
         return false;
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));

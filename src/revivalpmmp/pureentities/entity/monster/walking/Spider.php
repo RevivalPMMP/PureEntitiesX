@@ -31,7 +31,6 @@ class Spider extends WalkingMonster {
     const NETWORK_ID = Data::SPIDER;
 
     public $width = 2.062;
-    public $length = 1.703;
     public $height = 0.781;
     public $speed = 1.13;
 
@@ -66,7 +65,7 @@ class Spider extends WalkingMonster {
         }
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));

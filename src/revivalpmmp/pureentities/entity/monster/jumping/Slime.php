@@ -33,7 +33,6 @@ class Slime extends JumpingMonster {
 
     public $width = 1.2;
     public $height = 1.2;
-    public $length = 1.2;
     public $speed = 0.8;
 
     public function getSpeed(): float {
@@ -74,7 +73,7 @@ class Slime extends JumpingMonster {
         return false;
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
         } else {

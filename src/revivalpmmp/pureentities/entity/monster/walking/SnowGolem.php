@@ -44,7 +44,6 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 
     public $height = 1.875;
     public $width = 1.281;
-    public $length = 0.688;
     public $speed = 1.0;
 
     const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
@@ -74,8 +73,13 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
         return "SnowGolem";
     }
 
+    /**
+     * Attack the player
+     *
+     * @param Entity $player
+     */
     public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 23 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55) {
+        if ($this->attackDelay > 23 && $this->distanceSquared($player) <= 55) {
             $this->attackDelay = 0;
 
             $f = 1.2;
@@ -114,7 +118,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
         }
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::SNOWBALL, 0, mt_rand(0, 15))];
         } else {

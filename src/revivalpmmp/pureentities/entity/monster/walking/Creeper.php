@@ -34,8 +34,7 @@ class Creeper extends WalkingMonster implements Explosive {
     const NETWORK_ID = Data::CREEPER;
     const DATA_POWERED = 19;
 
-    public $width = 0.6;
-    public $length = 0.6;
+    public $width = 0.7;
     public $height = 1.7;
     public $speed = 0.9;
 
@@ -107,7 +106,7 @@ class Creeper extends WalkingMonster implements Explosive {
         }
     }
 
-    public function onUpdate(int $currentTick): bool {
+   public function onUpdate(int $currentTick): bool {
         $tickDiff = $currentTick - $this->lastUpdate;
 
         if ($this->getBaseTarget() !== null) {
@@ -128,11 +127,10 @@ class Creeper extends WalkingMonster implements Explosive {
                 if ($this->bombTime < 0) {
                     $this->bombTime = 0;
                 }
-
-                $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
-                $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
             }
             if ($diff > 0) {
+                $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
+                $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
                 $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
             }
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
@@ -145,7 +143,7 @@ class Creeper extends WalkingMonster implements Explosive {
         // the creeper doesn't attack - it simply explodes
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
         } else {

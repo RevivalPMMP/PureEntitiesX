@@ -49,8 +49,7 @@ use revivalpmmp\pureentities\data\Data;
 class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::OCELOT;
 
-    public $width = 0.6;
-    public $length = 0.8;
+    public $width = 0.8;
     public $height = 0.8;
     public $speed = 1.2;
 
@@ -327,12 +326,12 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 
     public function targetOption(Creature $creature, float $distance): bool {
         if ($creature instanceof Player) {
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::RAW_FISH && $distance <= 49;
+            return $creature->spawned && $creature->isAlive() && !$creature->isClosed() && $creature->getInventory()->getItemInHand()->getId() == Item::RAW_FISH && $distance <= 49;
         }
         return false;
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         return [];
     }
 

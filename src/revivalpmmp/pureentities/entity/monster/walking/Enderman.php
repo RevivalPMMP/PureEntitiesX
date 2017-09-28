@@ -33,7 +33,6 @@ class Enderman extends WalkingMonster {
 
     public $height = 2.875;
     public $width = 1.094;
-    public $length = 0.5;
     public $speed = 1.21;
 
     public function getSpeed(): float {
@@ -61,12 +60,11 @@ class Enderman extends WalkingMonster {
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
                 MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
             $player->attack($ev);
-
             $this->checkTamedMobsAttack($player);
         }
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         /*if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             return [Item::get(368, 0, 1)];
         }*/

@@ -28,9 +28,8 @@ use revivalpmmp\pureentities\data\Data;
 class Mule extends WalkingAnimal implements Rideable {
     const NETWORK_ID = Data::MULE;
 
-    public $width = 0.75;
+    public $width = 1.2;
     public $height = 1.562;
-    public $length = 1.2;
     public $speed = 1.0;
 
     public function getName(): string {
@@ -43,12 +42,12 @@ class Mule extends WalkingAnimal implements Rideable {
 
     public function targetOption(Creature $creature, float $distance): bool {
         if ($creature instanceof Player) {
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
+            return $creature->spawned && $creature->isAlive() && !$creature->isClosed() && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
         }
         return false;
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
         } else {

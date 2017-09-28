@@ -32,10 +32,9 @@ use revivalpmmp\pureentities\data\Data;
 class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::COW;
 
-    public $width = 0.75;
-    public $height = 1.562;
-    public $length = 1.5;
-    public $eyeHeight = 1.2;
+    public $width = 1.5;
+    public $height = 1.2;
+    public $eyeHeight = 1;
     public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
@@ -100,7 +99,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
         return $this->feedableItems;
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));

@@ -105,7 +105,7 @@ abstract class SwimmingMonster extends SwimmingEntity implements Monster {
         }
     }
 
-    public function onUpdate(int $currentTick): bool {
+   public function onUpdate(int $currentTick): bool {
         if ($this->server->getDifficulty() < 1) {
             $this->close();
             return false;
@@ -148,7 +148,8 @@ abstract class SwimmingMonster extends SwimmingEntity implements Monster {
         return true;
     }
 
-    public function entityBaseTick(int $tickDiff = 1): bool {
+    public function entityBaseTick(int $tickDiff = 1) : bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);

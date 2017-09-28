@@ -25,7 +25,6 @@ class Villager extends WalkingAnimal {
     const NETWORK_ID = Data::VILLAGER;
 
     public $width = 0.938;
-    public $length = 0.609;
     public $height = 2;
     public $speed = 1.1;
 
@@ -37,7 +36,7 @@ class Villager extends WalkingAnimal {
         return "Villager";
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         return [];
     }
 

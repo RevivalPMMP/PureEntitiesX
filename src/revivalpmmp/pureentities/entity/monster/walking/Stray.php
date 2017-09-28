@@ -41,8 +41,7 @@ class Stray extends WalkingMonster implements ProjectileSource {
     const NETWORK_ID = Data::STRAY;
 
     public $height = 2;
-    public $width = 0.781;
-    public $length = 0.875;
+    public $width = 0.875;
     public $speed = 1.0;
 
     public function getSpeed(): float {
@@ -53,6 +52,11 @@ class Stray extends WalkingMonster implements ProjectileSource {
         return "Stray";
     }
 
+    /**
+     * Attack a player
+     *
+     * @param Entity $player
+     */
     public function attackEntity(Entity $player) {
         if ($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55) {
             $this->attackDelay = 0;
@@ -109,7 +113,7 @@ class Stray extends WalkingMonster implements ProjectileSource {
         $player->dataPacket($pk);
     }
 
-    public function entityBaseTick(int $tickDiff = 1): bool {
+    public function entityBaseTick(int $tickDiff = 1) : bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
@@ -126,7 +130,7 @@ class Stray extends WalkingMonster implements ProjectileSource {
         return $hasUpdate;
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));

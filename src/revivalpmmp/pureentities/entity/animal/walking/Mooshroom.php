@@ -29,8 +29,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::MOOSHROOM;
 
     public $height = 1.875;
-    public $width = 0.891;
-    public $length = 1.781;
+    public $width = 1.781;
     public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
@@ -87,7 +86,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         return $this->feedableItems;
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));

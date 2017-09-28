@@ -95,7 +95,7 @@ class Spawner extends Spawnable {
     }
 
     public function onUpdate(): bool {
-        if ($this->closed) {
+        if ($this->isClosed()) {
             return false;
         }
 

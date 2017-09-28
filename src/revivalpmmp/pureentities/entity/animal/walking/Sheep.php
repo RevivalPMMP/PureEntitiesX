@@ -66,9 +66,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
     const NBT_KEY_SHEARED = "Sheared";
 
 
-    public $length = 1.484;
-    public $width = 0.719;
-    public $height = 1.406;
+    public $width = 1.2;
+    public $height = 0.6;
     public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
@@ -173,7 +172,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
                 $currentBlock = $this->getCurrentBlock();
                 if ($currentBlock !== null and
                     ($currentBlock instanceof Grass or $currentBlock instanceof TallGrass or strcmp($currentBlock->getName(), "Double Tallgrass") == 0)
-                ) { // only grass blocks are eatable by sheeps)
+                ) { // only grass blocks are eatable by sheep)
                     $this->blockOfInterestReached($currentBlock);
                 }
             }
@@ -182,7 +181,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
         }
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed() and !$this->isSheared() && !$this->getBreedingComponent()->isBaby()) {
             // http://minecraft.gamepedia.com/Sheep - drop 1 wool when not a baby and died

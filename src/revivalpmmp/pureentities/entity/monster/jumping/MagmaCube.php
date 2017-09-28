@@ -31,7 +31,6 @@ class MagmaCube extends JumpingMonster {
 
     public $width = 1.2;
     public $height = 1.2;
-    public $length = 1.2;
     public $speed = 0.8;
 
     public function getSpeed(): float {
@@ -65,7 +64,7 @@ class MagmaCube extends JumpingMonster {
         }
     }
 
-    public function getDrops(): array {
+    public function getDrops() : array{
         $drops = [];
         if ($this->isLootDropAllowed()) {
             switch (mt_rand(0, 1)) {
