@@ -121,7 +121,7 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
-        $time = $this->getLevel()->getTime() % Level::TIME_FULL;
+        $time = $this->getLevel() ? $this->getLevel()->getTime() % Level::TIME_FULL : Level::TIME_NIGHT;
         if (
             !$this->isOnFire()
             && ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)
