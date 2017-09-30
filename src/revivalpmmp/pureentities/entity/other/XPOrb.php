@@ -26,103 +26,96 @@ use revivalpmmp\pureentities\sound\ExpPickupSound;
 use pocketmine\math\Vector3;
 
 class XPOrb extends Entity {
-    const NETWORK_ID = 69;
+	const NETWORK_ID = 69;
 
-    public $width = 0.25;
-    public $height = 0.25;
+	public $width = 0.25;
+	public $height = 0.25;
 
-    protected $gravity = 0.04;
-    protected $drag = 0;
+	protected $gravity = 0.04;
+	protected $drag = 0;
 
-    protected $experience = 0;
+	protected $experience = 0;
 
-    protected $range = 6;
+	protected $range = 6;
 
-    public function initEntity() {
-        parent::initEntity();
+	public function initEntity(){
+		parent::initEntity();
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             if (isset($this->namedtag->Experience)) {
                 $this->experience = $this->namedtag["Experience"];
             } else $this->close();
         }
-    }
+	}
 
-    public function onUpdate(int $currentTick): bool {
-        if ($this->isClosed()) {
-            return false;
-        }
+	public function onUpdate(int $currentTick): bool {
+		if($this->isClosed()){
+			return false;
+		}
 
-        $tickDiff = $currentTick - $this->lastUpdate;
+		$tickDiff = $currentTick - $this->lastUpdate;
 
-        $this->lastUpdate = $currentTick;
+		$this->lastUpdate = $currentTick;
 
-        $this->timings->startTiming();
+		$this->timings->startTiming();
 
-        $hasUpdate = $this->entityBaseTick($tickDiff);
+		$hasUpdate = $this->entityBaseTick($tickDiff);
 
-        $this->age++;
+		$this->age++;
 
-        if ($this->age > 1200) {
-            $this->kill();
-            $this->close();
-            $hasUpdate = true;
-        }
+		if($this->age > 1200){
+			$this->kill();
+			$this->close();
+			$hasUpdate = true;
+		}
 
-        $minDistance = PHP_INT_MAX;
-        $target = null;
-        foreach ($this->getViewers() as $p) {
-            if (!$p->isSpectator() and $p->isAlive()) {
-                if (($dist = $p->distance($this)) < $minDistance and $dist < $this->range) {
-                    $target = $p;
-                    $minDistance = $dist;
-                }
-            }
-        }
+		$minDistance = PHP_INT_MAX;
+		$target = null;
+		foreach($this->getViewers() as $p){
+			if(!$p->isSpectator() and $p->isAlive()){
+				if(($dist = $p->distance($this)) < $minDistance and $dist < $this->range){
+					$target = $p;
+					$minDistance = $dist;
+				}
+			}
+		}
 
-        if ($target !== null) {
-            $moveSpeed = 0.7;
-            $motX = ($target->getX() - $this->x) / 8;
-            $motY = ($target->getY() + $target->getEyeHeight() - $this->y) / 8;
-            $motZ = ($target->getZ() - $this->z) / 8;
-            $motSqrt = sqrt($motX * $motX + $motY * $motY + $motZ * $motZ);
-            $motC = 1 - $motSqrt;
+		if($target !== null){
+			$moveSpeed = 0.7;
+			$motX = ($target->getX() - $this->x) / 8;
+			$motY = ($target->getY() + $target->getEyeHeight() - $this->y) / 8;
+			$motZ = ($target->getZ() - $this->z) / 8;
+			$motSqrt = sqrt($motX * $motX + $motY * $motY + $motZ * $motZ);
+			$motC = 1 - $motSqrt;
 
-            if ($motC > 0) {
-                $motC *= $motC;
-                $this->motionX = $motX / $motSqrt * $motC * $moveSpeed;
-                $this->motionY = $motY / $motSqrt * $motC * $moveSpeed;
-                $this->motionZ = $motZ / $motSqrt * $motC * $moveSpeed;
-            }
+			if($motC > 0){
+				$motC *= $motC;
+				$this->motionX = $motX / $motSqrt * $motC * $moveSpeed;
+				$this->motionY = $motY / $motSqrt * $motC * $moveSpeed;
+				$this->motionZ = $motZ / $motSqrt * $motC * $moveSpeed;
+			}
 
-            $this->motionY -= $this->gravity;
+			$this->motionY -= $this->gravity;
 
-            if ($this->checkObstruction($this->x, $this->y, $this->z)) {
-                $hasUpdate = true;
-            }
+			if($this->checkObstruction($this->x, $this->y, $this->z)){
+				$hasUpdate = true;
+			}
 
-            if ($this->isInsideOfSolid()) {
-                $this->setPosition($target);
-            }
+			if($this->isInsideOfSolid()){
+				$this->setPosition($target);
+			}
 
-            if ($minDistance <= 1.3) {
+			if($minDistance <= 1.3){
                 $this->kill();
                 $this->close();
-                if ($this->getExperience() > 0) {
+                if($this->getExperience() > 0){
                     if ($this->getLevel() !== null) {
                         $this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
                     }
-                    if ($this->getLevel()->getServer()->getName() == "PocketMine") {
-                        $target->namedtag->XpTotal = new IntTag("XpTotal", $this->getExperience()); # PMMP only
-                        $target->recalculateXpProgress(); #  PMMP only
-                    } elseif ($this->getLevel()->getServer()->getName() == "ClearSky-PocketMine-MP") {
-                        $target->setXpLevel($target->getXpProgress() + $this->getExperience());
-                    } else {
-                        $target->setXpLevel($target->getTotalXp() + $this->getExperience());
-                        //$target->resetXpCooldown();
-                    }
+                        $target->namedtag->XpTotal = new IntTag("XpTotal", $this->getExperience());
+                        $target->recalculateXpProgress();
                 }
-            }
-        }
+			}
+		}
 
         $this->move($this->motionX, $this->motionY, $this->motionZ);
 
@@ -133,19 +126,19 @@ class XPOrb extends Entity {
         return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
     }
 
-    public function canCollideWith(Entity $entity): bool {
-        return false;
-    }
+	public function canCollideWith(Entity $entity): bool {
+		return false;
+	}
 
-    public function setExperience($exp) {
-        $this->experience = $exp;
-    }
+	public function setExperience($exp){
+		$this->experience = $exp;
+	}
 
-    public function getExperience() {
-        return $this->experience;
-    }
+	public function getExperience(){
+		return $this->experience;
+	}
 
-    public function spawnTo(Player $player) {
+    public function spawnTo(Player $player){
         $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NO_AI, true);
         $pk = new AddEntityPacket();
         $pk->type = XPOrb::NETWORK_ID;
@@ -155,6 +148,6 @@ class XPOrb extends Entity {
         $pk->metadata = $this->dataProperties;
         $player->dataPacket($pk);
 
-        parent::spawnTo($player);
-    }
+		parent::spawnTo($player);
+	}
 }

@@ -284,8 +284,12 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                             $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
                             if ($hasFeedableItemsInHand) {
                                 InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
-                            } else if (!$hasFeedableItemsInHand) { // when no feedable things are in hand - we need to sit down the entity
-                                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
+                            } else if (!$hasFeedableItemsInHand) { // When no feedable items in hand, offer sitting options.
+                                if ($this->isSitting()) {
+                                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
+                                } else {
+                                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
+                                }
                             } else {
                                 InteractionHelper::displayButtonText("", $player);
                             }

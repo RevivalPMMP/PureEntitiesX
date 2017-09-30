@@ -58,11 +58,6 @@ class Ghast extends FlyingMonster implements ProjectileSource {
         return (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->isClosed() && $distance <= 10000;
     }
 
-    /**
-     * Attack a player
-     *
-     * @param Entity $player
-     */
     public function attackEntity(Entity $player) {
         if ($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distance($player) <= 100) {
             $this->attackDelay = 0;

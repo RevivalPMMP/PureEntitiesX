@@ -63,11 +63,10 @@ interface IntfTameable {
     public function isSitting(): bool;
 
     /**
-     * Sets entity sitting or not.  If no argument is passed
-     * the function will switch the current state.
+     * Sets entity sitting or not.
      *
      * @param bool $sit
      */
-    public function setSitting(bool $sit = null);
+    public function setSitting(bool $sit=true);
 
 }

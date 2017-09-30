@@ -27,7 +27,7 @@ use revivalpmmp\pureentities\PureEntities;
 /**
  * Class MobDamageCalculator
  *
- * A simple class the calculates the damage done to a player by respecting the armor the
+ * A simple class that calculates the damage done to a player by respecting the armor the
  * player is wearing (and later also enchantments). From the wiki:
  *
  * Defense points are each signified by half of a shirt of mail in the armor bar above the health bar.

@@ -142,8 +142,6 @@ abstract class WalkingEntity extends BaseEntity {
             } elseif ($diff > 0) {
                 $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                 $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
-            }
-            if ($diff > 0) {
                 $this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
             }
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
@@ -247,16 +245,17 @@ abstract class WalkingEntity extends BaseEntity {
                 } else if ($blockingBlock instanceof StoneSlab or $blockingBlock instanceof Stair) { // on stairs entities shouldn't jump THAT high
                     $this->motionY = $this->gravity * 4;
                     PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
-                } else if ($this->motionY < ($this->gravity * 3)) {
-                    PureEntities::logOutput("$this: checkJump(): set motion to gravity * 2!", PureEntities::DEBUG);
-                    $this->motionY = $this->gravity * 3;
+                } else if ($this->motionY < ($this->gravity * 3.2)) { // Magic
+                    PureEntities::logOutput("$this: checkJump(): set motion to gravity * 3.2!", PureEntities::DEBUG);
+                    $this->motionY = $this->gravity * 3.2;
                 } else {
                     PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
                     $this->motionY += $this->gravity * 0.25;
                 }
                 return true;
-            } else {
+            } elseif(!$upperBlock->canPassThrough()) {
                 PureEntities::logOutput("$this: checkJump(): cannot pass through the upper blocks!", PureEntities::DEBUG);
+                $this->yaw = $this->getYaw() + mt_rand(-120, 120) / 10;
             }
         } else {
             PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $blockingBlock->canPassThrough() . "] " .
