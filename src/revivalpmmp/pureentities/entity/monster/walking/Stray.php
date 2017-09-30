@@ -113,7 +113,7 @@ class Stray extends WalkingMonster implements ProjectileSource {
         $player->dataPacket($pk);
     }
 
-    public function entityBaseTick(int $tickDiff = 1) : bool {
+    public function entityBaseTick(int $tickDiff = 1): bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
@@ -130,7 +130,7 @@ class Stray extends WalkingMonster implements ProjectileSource {
         return $hasUpdate;
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));
@@ -139,7 +139,7 @@ class Stray extends WalkingMonster implements ProjectileSource {
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

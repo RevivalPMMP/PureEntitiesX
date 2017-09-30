@@ -73,7 +73,7 @@ class Slime extends JumpingMonster {
         return false;
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
         } else {
@@ -81,7 +81,7 @@ class Slime extends JumpingMonster {
         }
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 4;
     }
 

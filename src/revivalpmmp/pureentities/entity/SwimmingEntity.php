@@ -101,7 +101,7 @@ abstract class SwimmingEntity extends BaseEntity {
             if ($x ** 2 + $z ** 2 < 0.7) {
                 $this->motionX = 0;
                 $this->motionZ = 0;
-            } elseif($diff > 0) {
+            } elseif ($diff > 0) {
                 $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                 $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
                 $this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;

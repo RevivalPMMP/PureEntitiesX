@@ -35,7 +35,7 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task\delayed
  */
-class ShowMobEquipmentTask extends PluginTask  {
+class ShowMobEquipmentTask extends PluginTask {
 
     /**
      * @var PureEntities

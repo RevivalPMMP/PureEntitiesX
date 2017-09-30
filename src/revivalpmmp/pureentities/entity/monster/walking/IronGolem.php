@@ -79,7 +79,7 @@ class IronGolem extends WalkingMonster {
         return false;
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));
@@ -88,7 +88,7 @@ class IronGolem extends WalkingMonster {
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

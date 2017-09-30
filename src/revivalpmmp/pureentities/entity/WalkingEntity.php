@@ -226,10 +226,10 @@ abstract class WalkingEntity extends BaseEntity {
         // they overlap especially when following an entity - you can see it when the entity (e.g. creeper) is looking
         // in your direction but cannot jump (is stuck). Then the next line should apply
         $blockingBlock = $this->getLevel()->getBlock($this->getPosition());
-        if($blockingBlock->canPassThrough()){ // when we can pass through the current block then the next block is blocking the way
-            try{
+        if ($blockingBlock->canPassThrough()) { // when we can pass through the current block then the next block is blocking the way
+            try {
                 $blockingBlock = $this->getTargetBlock(2); // just for correction use 2 blocks ...
-            }catch(\InvalidStateException $ex){
+            } catch (\InvalidStateException $ex) {
                 PureEntities::logOutput("Caught InvalidStateException for getTargetBlock", PureEntities::DEBUG);
                 return false;
             }

@@ -43,7 +43,7 @@ class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
         $this->setHealth(3);
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         return [];
     }
 

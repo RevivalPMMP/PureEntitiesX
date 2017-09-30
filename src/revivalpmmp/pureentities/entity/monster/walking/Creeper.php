@@ -106,7 +106,7 @@ class Creeper extends WalkingMonster implements Explosive {
         }
     }
 
-   public function onUpdate(int $currentTick): bool {
+    public function onUpdate(int $currentTick): bool {
         $tickDiff = $currentTick - $this->lastUpdate;
 
         if ($this->getBaseTarget() !== null) {
@@ -143,7 +143,7 @@ class Creeper extends WalkingMonster implements Explosive {
         // the creeper doesn't attack - it simply explodes
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         if ($this->isLootDropAllowed()) {
             return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
         } else {
@@ -151,7 +151,7 @@ class Creeper extends WalkingMonster implements Explosive {
         }
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

@@ -64,7 +64,7 @@ class AutoSpawnTask extends PluginTask {
         PureEntities::logOutput("AutoSpawnTask: onRun ($currentTick)", PureEntities::DEBUG);
 
         foreach ($this->plugin->getServer()->getLevels() as $level) {
-            if (count($this->spawnerWorlds) > 0 and !in_array($level->getName(), $this->spawnerWorlds)){
+            if (count($this->spawnerWorlds) > 0 and !in_array($level->getName(), $this->spawnerWorlds)) {
                 continue;
             }
             if (count($level->getPlayers()) > 0) {

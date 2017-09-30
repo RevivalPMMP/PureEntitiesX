@@ -42,7 +42,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         return 0.7;
     }
 
-    public function entityBaseTick(int $tickDiff = 1) : bool {
+    public function entityBaseTick(int $tickDiff = 1): bool {
         if ($this->isClosed() or $this->getLevel() == null) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
@@ -81,9 +81,9 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
      * @param $currentTick
      * @return bool
      */
-   public function onUpdate(int $currentTick): bool {
-       if ($this->isClosed() or $this->getLevel() == null) return false;
-       if (!$this->isAlive()) {
+    public function onUpdate(int $currentTick): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
+        if (!$this->isAlive()) {
             if (++$this->deadTicks >= 23) {
                 $this->close();
                 return false;

@@ -91,7 +91,7 @@ class Husk extends WalkingMonster implements Ageable {
         }
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
@@ -110,7 +110,7 @@ class Husk extends WalkingMonster implements Ageable {
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

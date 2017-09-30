@@ -159,7 +159,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         }
     }
 
-    public function onUpdate(int $currentTick) : bool {
+    public function onUpdate(int $currentTick): bool {
         if ($this->isClosed() or $this->getLevel() == null) return false;
         if ($this->server->getDifficulty() < 1) {
             $this->close();
@@ -205,7 +205,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
         return true;
     }
 
-    public function entityBaseTick(int $tickDiff = 1) : bool {
+    public function entityBaseTick(int $tickDiff = 1): bool {
         if ($this->isClosed() or $this->getLevel() == null) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
@@ -218,7 +218,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                 $this->attack($ev);
                 $this->move(mt_rand(-20, 20), mt_rand(-20, 20), mt_rand(-20, 20));
             }
-        } elseif($this->getLevel() !== null) {
+        } elseif ($this->getLevel() !== null) {
             if (!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
                 $hasUpdate = true;
                 $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;

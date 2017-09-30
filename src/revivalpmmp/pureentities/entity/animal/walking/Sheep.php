@@ -181,7 +181,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
         }
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed() and !$this->isSheared() && !$this->getBreedingComponent()->isBaby()) {
             // http://minecraft.gamepedia.com/Sheep - drop 1 wool when not a baby and died
@@ -195,7 +195,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      *
      * @return int
      */
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 8;
     }
 

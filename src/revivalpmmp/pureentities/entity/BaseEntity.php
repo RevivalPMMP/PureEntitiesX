@@ -91,7 +91,7 @@ abstract class BaseEntity extends Creature {
         $this->panicTicks = PluginConfiguration::getInstance()->getPanicTicks();
         $this->maxAge = PluginConfiguration::getInstance()->getMaxAge();
         parent::__construct($level, $nbt);
-        if($this->eyeHeight === null){
+        if ($this->eyeHeight === null) {
             $this->eyeHeight = $this->height / 2 + 0.1;
         }
     }
@@ -102,7 +102,7 @@ abstract class BaseEntity extends Creature {
      * Should return the experience dropped by the entity when killed
      * @return int
      */
-    public function getKillExperience() : int {
+    public function getKillExperience(): int {
         return 0; // default no experience drops
     }
 
@@ -223,13 +223,13 @@ abstract class BaseEntity extends Creature {
         }
     }
 
-    public function updateMovement(){
-        if (!$this->isClosed() && $this->getLevel() !== null){
+    public function updateMovement() {
+        if (!$this->isClosed() && $this->getLevel() !== null) {
             parent::updateMovement();
         }
     }
 
-    public function isInsideOfSolid() : bool{
+    public function isInsideOfSolid(): bool {
         $block = $this->level->getBlock($this->temporalVector->setComponents(Math::floorFloat($this->x), Math::floorFloat($this->y + $this->height - 0.18), Math::floorFloat($this->z)));
         $bb = $block->getBoundingBox();
         return $bb !== null and $block->isSolid() and !$block->isTransparent() and $bb->intersectsWith($this->getBoundingBox());
@@ -279,7 +279,7 @@ abstract class BaseEntity extends Creature {
 
     }
 
-    public function entityBaseTick(int $tickDiff = 1) : bool {
+    public function entityBaseTick(int $tickDiff = 1): bool {
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = Entity::entityBaseTick($tickDiff);

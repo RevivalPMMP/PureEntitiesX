@@ -22,7 +22,7 @@ use pocketmine\level\sound\GenericSound;
 use pocketmine\math\Vector3;
 
 class ExpPickupSound extends GenericSound {
-	public function __construct(Vector3 $pos, $pitch = 0){
-		parent::__construct($pos, 1051, $pitch);
-	}
+    public function __construct(Vector3 $pos, $pitch = 0) {
+        parent::__construct($pos, 1051, $pitch);
+    }
 }

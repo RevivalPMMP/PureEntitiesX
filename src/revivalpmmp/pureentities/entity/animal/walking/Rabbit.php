@@ -98,7 +98,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
         return "Rabbit";
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::RABBIT_HIDE, 0, mt_rand(0, 1)));
@@ -116,7 +116,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 3;
     }
 

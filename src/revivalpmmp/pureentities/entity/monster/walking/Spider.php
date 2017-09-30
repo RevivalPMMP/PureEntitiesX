@@ -65,7 +65,7 @@ class Spider extends WalkingMonster {
         }
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
@@ -78,7 +78,7 @@ class Spider extends WalkingMonster {
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 16;
     }
 

@@ -357,7 +357,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         return [];
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 8; // but only for wild ones, tamed ones: 20
     }
 
@@ -459,19 +459,16 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * Set the wolf sitting or not
      * @param bool $sit
      */
-    public function setSitting(bool $sit=null) {
+    public function setSitting(bool $sit = null) {
         PureEntities::logOutput("$this: setSitting called", PureEntities::DEBUG);
 
         if (!($sit === null)) {
             $this->sitting = $sit;
             $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, $sit);
-        }
-
-        elseif ($this->sitting) {
+        } elseif ($this->sitting) {
             $this->sitting = false;
             $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, false);
-        }
-        else {
+        } else {
             $this->sitting = true;
             $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, true);
         }

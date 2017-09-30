@@ -36,11 +36,11 @@ class Villager extends WalkingAnimal {
         return "Villager";
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         return [];
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 10;
     }
 

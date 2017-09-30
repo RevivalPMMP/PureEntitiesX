@@ -64,7 +64,7 @@ class Enderman extends WalkingMonster {
         }
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         /*if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
             return [Item::get(368, 0, 1)];
         }*/
@@ -87,7 +87,7 @@ class Enderman extends WalkingMonster {
      *
      * @param Player $player
      */
-    public function playerLooksAt (Player $player) {
+    public function playerLooksAt(Player $player) {
         // if the player wears a pumpkin, the enderman doesn't attack the player
         if (!$player->getInventory()->getHelmet() instanceof Pumpkin) {
             $this->setBaseTarget($player);

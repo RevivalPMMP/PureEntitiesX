@@ -108,7 +108,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
         return $this->feedableItems;
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         $drops = [];
 
         if ($this->isLootDropAllowed()) {
@@ -125,13 +125,13 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 4;
     }
 
 
     // ----- functionality to lay an eg ... -------------
-    public function entityBaseTick(int $tickDiff = 1) : bool {
+    public function entityBaseTick(int $tickDiff = 1): bool {
         if ($this->dropEggTime === 0) {
             $this->dropEggTime = mt_rand(self::DROP_EGG_DELAY_MIN, self::DROP_EGG_DELAY_MAX);
         }

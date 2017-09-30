@@ -64,7 +64,7 @@ class MagmaCube extends JumpingMonster {
         }
     }
 
-    public function getDrops() : array{
+    public function getDrops(): array {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             switch (mt_rand(0, 1)) {

@@ -168,7 +168,7 @@ class MobEquipment {
     /**
      * Initializes the MobEquipment
      */
-    public function init () {
+    public function init() {
         $this->loadFromNBT();
     }
 
@@ -272,9 +272,9 @@ class MobEquipment {
      * This should be called as soon as a player enters the server / level to update the entities
      * holding any MobEquipment class.
      *
-     * @param Player $player    the player to send the data packet to
+     * @param Player $player the player to send the data packet to
      */
-    public function sendEquipmentUpdate (Player $player) {
+    public function sendEquipmentUpdate(Player $player) {
         if (isset($this->entity->namedtag->ArmorItems)) {
             PureEntities::logOutput("sendEquipmentUpdate: armor to " . $player->getName(), PureEntities::DEBUG);
             $player->dataPacket($this->createArmorEquipPacket());
@@ -536,7 +536,7 @@ class MobEquipment {
                 $this->getMainHand() instanceof DiamondSword);
     }
 
-    private function storeToNBT () {
+    private function storeToNBT() {
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             // feet, legs, chest, head - store armor content to NBT
             $armor[0] = new CompoundTag("0", [
@@ -572,7 +572,7 @@ class MobEquipment {
         }
     }
 
-    private function loadFromNBT () {
+    private function loadFromNBT() {
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             PureEntities::logOutput("MobEquipment: loadFromNBT for " . $this->entity, PureEntities::DEBUG);
             if (isset($this->entity->namedtag->ArmorItems)) {
@@ -609,7 +609,7 @@ class MobEquipment {
     /**
      * Sends all armor items equipment to the clients for the embedded entity
      */
-    public function sendArmorUpdateToAllClients () {
+    public function sendArmorUpdateToAllClients() {
         $pk = $this->createArmorEquipPacket();
         $this->sendPacketToPlayers($pk);
     }
@@ -617,12 +617,12 @@ class MobEquipment {
     /**
      * Sends all armor items equipment to the clients for the embedded entity
      */
-    public function sendHandItemsToAllClients () {
+    public function sendHandItemsToAllClients() {
         $pk = $this->createHandItemsEquipPacket();
         $this->sendPacketToPlayers($pk);
     }
 
-    private function createArmorEquipPacket () : MobArmorEquipmentPacket {
+    private function createArmorEquipPacket(): MobArmorEquipmentPacket {
         $pk = new MobArmorEquipmentPacket();
         $pk->entityRuntimeId = $this->entity->getId();
         $pk->slots = [
@@ -636,7 +636,7 @@ class MobEquipment {
         return $pk;
     }
 
-    private function createHandItemsEquipPacket () : MobEquipmentPacket {
+    private function createHandItemsEquipPacket(): MobEquipmentPacket {
         $pk = new MobEquipmentPacket();
         $pk->entityRuntimeId = $this->entity->getId();
         $pk->item = $this->mainHand !== null ? $this->mainHand : Item::get(ItemIds::AIR);
@@ -645,7 +645,7 @@ class MobEquipment {
         return $pk;
     }
 
-    private function sendPacketToPlayers (DataPacket $packet) {
+    private function sendPacketToPlayers(DataPacket $packet) {
         foreach ($this->entity->getLevel()->getServer()->getOnlinePlayers() as $player) {
             $player->dataPacket($packet);
         }
