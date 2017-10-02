@@ -5,6 +5,7 @@
     <option name="SPACE_BEFORE_COLON_IN_RETURN_TYPE" value="true" />
   </PHPCodeStyleSettings>
   <codeStyleSettings language="PHP">
+    <option name="BLANK_LINES_BEFORE_PACKAGE" value="0" />
     <option name="CLASS_BRACE_STYLE" value="1" />
     <option name="METHOD_BRACE_STYLE" value="1" />
     <option name="SPACE_AFTER_TYPE_CAST" value="true" />
