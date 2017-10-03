@@ -38,13 +38,16 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\mcpe\protocol\InteractPacket;
+use pocketmine\network\mcpe\protocol\InteractPacket;  // This may become unnecessary with continued updates.
+use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
+use revivalpmmp\pureentities\entity\animal\walking\Ocelot;
+use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
@@ -107,50 +110,61 @@ class EventListener implements Listener {
         $packet = $event->getPacket();
         $player = $event->getPlayer();
         $return = false;
-        if ($packet->pid() === ProtocolInfo::INTERACT_PACKET) {
+        if ($packet->pid() === ProtocolInfo::INVENTORY_TRANSACTION_PACKET) {
+
+            // TODO Clean this method up.
             /**
-             * @var $packet InteractPacket
+             * @var $packet InventoryTransactionPacket
              */
-            if ($packet->action === PlayerInteractEvent::RIGHT_CLICK_BLOCK) {
-                $entity = $player->level->getEntity($packet->target);
-                if ($entity instanceof IntfShearable and
-                    !$entity->isSheared() and
-                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SHEAR) == 0
-                ) {
+            $btnTxt = InteractionHelper::getButtonText($player);
+            if ($packet->transactionType === InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY) {
+                $entity = $player->level->getEntity($packet->trData->entityRuntimeId);
+                PureEntities::logOutput("$entity with button text $btnTxt",PureEntities::DEBUG);
+                if ($entity instanceof IntfShearable and !$entity->isSheared() and
+                    strcmp($btnTxt, PureEntities::BUTTON_TEXT_SHEAR) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->shear", PureEntities::DEBUG);
                     $return = $entity->shear($player);
-                } else if ($entity instanceof Cow and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_MILK) == 0) {
+                } else if ($entity instanceof Cow and strcmp($btnTxt, PureEntities::BUTTON_TEXT_MILK) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->milk", PureEntities::DEBUG);
                     $return = $entity->milk($player);
                 } else if ($entity instanceof IntfCanBreed and
-                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_FEED) == 0 and
+                    strcmp($btnTxt, PureEntities::BUTTON_TEXT_FEED) == 0 and
                     $entity->getBreedingComponent() !== false
-                ) { // normally, this shouldn't be needed (because IntfCanBreed needs this method! - that's why i don't like php that much!)
+                ) { // normally, this shouldn't be needed (because IntfCanBreed needs this method!
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->feed", PureEntities::DEBUG);
-                    $return = $entity->getBreedingComponent()->feed($player); // feed the sheep
-                    // decrease wheat in players hand
+                    $return = $entity->getBreedingComponent()->feed($player); // feed the entity
+                    // decrease food in players hand
                     $itemInHand = $player->getInventory()->getItemInHand();
                     if ($itemInHand != null) {
                         $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
                     }
-                } else if ($entity instanceof IntfTameable and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
+                } else if ($entity instanceof IntfTameable and !$entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_TAME) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame", PureEntities::DEBUG);
                     $return = $entity->tame($player);
-                } else if ($entity instanceof IntfTameable) {
-                    if (strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SIT) == 0) {
-                        PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit", PureEntities::DEBUG);
-                        $entity->setSitting(true);
-                        $return = true;
-                    } else if (strcmp(InteractionHelper::getButtonText($player),PureEntities::BUTTON_TEXT_STAND) == 0) {
-                        PureEntities::logOutput("$entity: dataPacketReceiveEvent->stand", PureEntities::DEBUG);
-                        $entity->setSitting(false);
-                        $return = true;
-                    } else if ($entity instanceof Wolf and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_DYE) == 0) {
+                } else if ($entity instanceof IntfTameable and $entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_SIT) == 0) {
+                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit", PureEntities::DEBUG);
+                    $entity->setSitting(true);
+                    if ($entity instanceof Ocelot) {
+                        $entity->setCommandedToSit(true);
+                    }
+                    $return = true;
+                } else if ($entity instanceof IntfTameable and $entity->isTamed() and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_STAND) == 0) {
+                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->stand", PureEntities::DEBUG);
+                    $entity->setSitting(false);
+                    if ($entity instanceof Ocelot) {
+                        $entity->setCommandedToSit(false);
+                    }
+                    $return = true;
+                } else if ((($entity instanceof Wolf) or ($entity instanceof Sheep)) and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_DYE) == 0) {
                         $color = Color::convert($player->getInventory()->getItemInHand()->getDamage());
                         PureEntities::logOutput("$entity: dataPacketReceiveEvent->dye with color: $color", PureEntities::DEBUG);
-                        $entity->setCollarColor($color);
+                        if ($entity instanceof Wolf) {
+                            $entity->setCollarColor($color);
+                        }
+                        elseif ($entity instanceof Sheep) {
+                            $entity->setColor($color);
+                        }
                         $return = true;
-                    }
                 }
             }
         }
@@ -238,7 +252,7 @@ class EventListener implements Listener {
     }
 
     /**
-     * This method is called when a player joins the server. We've to do different stuff here - especially
+     * This method is called when a player joins the server. We have to do different stuff here - especially
      * for mobs that are equipped - as this says we should do so: https://forums.pmmp.io/threads/mob-equipment.1212/
      *
      * Anyway it seems that when PlayerJoin event is called - the entity is not spawned to all players already. So

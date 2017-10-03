@@ -212,8 +212,8 @@ abstract class BaseEntity extends Creature {
             $pk = new AddEntityPacket();
             $pk->entityRuntimeId = $this->getID();
             $pk->type = static::NETWORK_ID;
-            $pk->position = new Vector3($this->getX(), $this->getY(), $this->getZ());
-            $pk->motion = new Vector3(0, 0, 0);
+            $pk->position = $this->asVector3();
+            $pk->motion = $this->getMotion();
             $pk->yaw = $this->yaw;
             $pk->pitch = $this->pitch;
             $pk->metadata = $this->dataProperties;

@@ -58,7 +58,7 @@ class InteractionTask extends PluginTask {
             PureEntities::logOutput("InteractionTask: $player is looking at $entity", PureEntities::DEBUG);
             if ($entity !== null and $entity instanceof IntfCanInteract) { // player is looking at an entity he can interact with
                 $entity->showButton($player);
-            } else { // the player doesn't look at an entity
+            } else { // the player isn't looking at an entity
                 InteractionHelper::displayButtonText("", $player);
             }
         }

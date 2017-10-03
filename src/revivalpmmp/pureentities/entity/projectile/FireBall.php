@@ -99,8 +99,8 @@ class FireBall extends Projectile {
         $pk = new AddEntityPacket();
         $pk->type = self::NETWORK_ID;
         $pk->entityRuntimeId = $this->getId();
-        $pk->position = new Vector3($this->getX(), $this->getY(), $this->getZ());
-        $pk->motion = new Vector3($this->motionX, $this->motionY, $this->motionZ);
+        $pk->position = $this->asVector3();
+        $pk->motion = $this->getMotion();
         $pk->metadata = $this->dataProperties;
         $player->dataPacket($pk);
 

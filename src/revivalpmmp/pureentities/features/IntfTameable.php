@@ -21,7 +21,7 @@ namespace revivalpmmp\pureentities\features;
 
 use pocketmine\Player;
 
-interface IntfTameable {
+interface IntfTameable{
 
     public function setTamed(bool $tamed);
 
@@ -68,5 +68,4 @@ interface IntfTameable {
      * @param bool $sit
      */
     public function setSitting(bool $sit=true);
-
 }
