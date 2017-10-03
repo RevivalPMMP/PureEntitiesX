@@ -89,8 +89,8 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                     }
                 }
             }
+            parent::checkTarget(false);
         }
-		return parent::checkTarget($checkSkip);
     }
 
     public function getDamage(int $difficulty = null): float {
@@ -163,6 +163,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
     }
 
     public function onUpdate(int $currentTick): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         if ($this->server->getDifficulty() < 1) {
             $this->close();
             return false;
@@ -208,6 +209,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
@@ -219,7 +221,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                 $this->attack($ev);
                 $this->move(mt_rand(-20, 20), mt_rand(-20, 20), mt_rand(-20, 20));
             }
-        } else {
+        } elseif ($this->getLevel() !== null) {
             if (!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
                 $hasUpdate = true;
                 $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
@@ -337,7 +339,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                                 $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
                                 if ($hasFeedableItemsInHand) {
                                     // check if the entity is able to follow - but only on a distance of 6 blocks
-                                    $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed;
+                                    $targetOption = $creature->spawned && $creature->isAlive() && !$creature->isClosed();
                                 } else {
                                     // reset base target when it was player before (follow by holding wheat)
                                     if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
@@ -352,7 +354,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
             }
         } else {
             // when the entity is not friendly, it attacks the player!!!
-            $targetOption = ($this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 81);
+            $targetOption = ($this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->isClosed() && $distance <= 81);
         }
         return $targetOption;
     }

@@ -119,6 +119,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
         return self::$instance;
     }
 
+
     public function onLoad() {
         self::$registeredClasses = [
             Stray::class,
@@ -226,7 +227,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
      * @return Entity
      */
     public static function create($type, Position $source, ...$args) {
-        $nbt = new CompoundTag("", [
+        $nbt = new CompoundTag($type ?? "Unknown", [
             "Pos" => new ListTag("Pos", [
                 new DoubleTag("", $source->x),
                 new DoubleTag("", $source->y),
@@ -263,7 +264,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
             $entity = self::create($entityid, $pos);
             if ($entity !== null) {
                 if ($entity instanceof IntfCanBreed and $baby and $entity->getBreedingComponent() !== false) {
-                    $entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheeps)
+                    $entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheep)
                     if ($parentEntity != null) {
                         $entity->getBreedingComponent()->setParent($parentEntity);
                     }
@@ -384,6 +385,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 foreach (Server::getInstance()->getLevels() as $level) {
                     foreach ($level->getEntities() as $entity) {
                         if (!$entity instanceof Player) {
+                            $entitiesRemoved[] = clone($entity);
                             $entity->close();
                             $entitiesRemoved[] = $entity;
                             if ($entity instanceof BaseEntity) {
@@ -400,10 +402,11 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     $name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
                     self::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", self::NORM);
                 }
+                unset($entitiesRemoved);
                 $commandSuccessful = true;
                 break;
             case "pesummon":
-                if (count($args) >= 1 or count($args) <= 3) {
+                if (($sender instanceof Player and count($args) >= 1 and count($args) <= 3) or (!$sender instanceof Player and count($args) > 1)) {
                     $playerName = count($args) == 1 ? $sender->getName() : $args[1];
                     $isBaby = false;
                     if (count($args) == 3) {

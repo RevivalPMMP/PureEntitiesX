@@ -235,7 +235,7 @@ class EventListener implements Listener {
      *
      * @param EntityDeathEvent $ev
      */
-    public function entityDeathEvent (EntityDeathEvent $ev) {
+    public function entityDeathEvent(EntityDeathEvent $ev) {
         if (PluginConfiguration::getInstance()->getXpEnabled()) {
             $entityDamaged = $ev->getEntity();
             if ($entityDamaged instanceof BaseEntity) {
@@ -262,7 +262,7 @@ class EventListener implements Listener {
      *
      * @param PlayerJoinEvent $ev
      */
-    public function playerJoin (PlayerJoinEvent $ev) {
+    public function playerJoin(PlayerJoinEvent $ev) {
         PureEntities::logOutput("[EventListener] playerJoin: " . $ev->getPlayer()->getName(), PureEntities::DEBUG);
         foreach ($ev->getPlayer()->getLevel()->getEntities() as $entity) {
             if ($entity->isAlive() and !$entity->isClosed() and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster and
@@ -303,11 +303,11 @@ class EventListener implements Listener {
      *
      * @param Level $level
      * @param Vector3 $pos
-     * @param int     $exp
+     * @param int $exp
      * @return bool|XPOrb
      */
-    public function spawnXPOrb(Level $level, Vector3 $pos, int $exp = 1){
-        if($exp > 0){
+    public function spawnXPOrb(Level $level, Vector3 $pos, int $exp = 1) {
+        if ($exp > 0) {
             $nbt = new CompoundTag("", [
                 "Pos" => new ListTag("Pos", [
                     new DoubleTag("", $pos->getX()),

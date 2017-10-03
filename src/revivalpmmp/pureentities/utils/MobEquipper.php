@@ -48,7 +48,7 @@ class MobEquipper {
      *
      * @param BaseEntity $entity
      */
-    public static function equipMob (BaseEntity $entity) {
+    public static function equipMob(BaseEntity $entity) {
         if ($entity instanceof IntfCanEquip) {
             // check if configuration already cached - if not create it and store it
             $entityConfig = MobEquipmentConfigHolder::getConfig($entity->getName());
@@ -110,7 +110,7 @@ class MobEquipper {
      * @param string $armorType
      * @return Item
      */
-    private static function getBoots (string $armorType) : Item {
+    private static function getBoots(string $armorType): Item {
         switch ($armorType) {
             case self::LEATHER:
                 return Item::get(ItemIds::LEATHER_BOOTS);
@@ -130,7 +130,7 @@ class MobEquipper {
      * @param string $armorType
      * @return Item
      */
-    private static function getChestplate (string $armorType) : Item {
+    private static function getChestplate(string $armorType): Item {
         switch ($armorType) {
             case self::LEATHER:
                 return Item::get(ItemIds::LEATHER_TUNIC);
@@ -150,7 +150,7 @@ class MobEquipper {
      * @param string $armorType
      * @return Item
      */
-    private static function getHelmet (string $armorType) : Item {
+    private static function getHelmet(string $armorType): Item {
         switch ($armorType) {
             case self::LEATHER:
                 return Item::get(ItemIds::LEATHER_CAP);
@@ -170,7 +170,7 @@ class MobEquipper {
      * @param string $armorType
      * @return Item
      */
-    private static function getLeggings (string $armorType) : Item {
+    private static function getLeggings(string $armorType): Item {
         switch ($armorType) {
             case self::LEATHER:
                 return Item::get(ItemIds::LEATHER_PANTS);
@@ -190,7 +190,7 @@ class MobEquipper {
      * @param $chances ArmorTypeChances
      * @return string
      */
-    private static function getArmorType (ArmorTypeChances $chances) : string {
+    private static function getArmorType(ArmorTypeChances $chances): string {
         if (mt_rand(0, 100) <= $chances->getDiamond()) {
             return self::DIAMOND;
         } else if (mt_rand(0, 100) <= $chances->getGold()) {

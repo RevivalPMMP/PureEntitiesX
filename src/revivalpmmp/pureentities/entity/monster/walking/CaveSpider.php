@@ -31,7 +31,6 @@ class CaveSpider extends WalkingMonster {
     const NETWORK_ID = Data::CAVE_SPIDER;
 
     public $width = 1.438;
-    public $length = 1.188;
     public $height = 0.547;
     public $speed = 1.3;
 
@@ -60,7 +59,6 @@ class CaveSpider extends WalkingMonster {
                 MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
             $player->attack($ev);
             Effect::getEffect(Effect::POISON)->applyEffect($player);
-
             $this->checkTamedMobsAttack($player);
         }
     }
@@ -78,7 +76,7 @@ class CaveSpider extends WalkingMonster {
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 12;
     }
 

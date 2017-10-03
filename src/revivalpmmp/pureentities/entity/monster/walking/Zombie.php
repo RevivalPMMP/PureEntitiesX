@@ -38,7 +38,6 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     const NETWORK_ID = Data::ZOMBIE;
 
     public $width = 1.031;
-    public $length = 0.891;
     public $height = 2;
     public $speed = 1.1;
 
@@ -169,13 +168,14 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->isClosed()) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $this->getMobEquipment()->entityBaseTick($tickDiff);
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
-        $time = $this->getLevel()->getTime() % Level::TIME_FULL;
+        $time = $this->getLevel() !== null ? $this->getLevel()->getTime() % Level::TIME_FULL : Level::TIME_NIGHT;
         if (
             !$this->isOnFire()
             && ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)
@@ -209,7 +209,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

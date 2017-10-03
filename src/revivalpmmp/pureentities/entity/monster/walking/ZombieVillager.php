@@ -32,7 +32,6 @@ class ZombieVillager extends WalkingMonster {
     const NETWORK_ID = Data::ZOMBIE_VILLAGER;
 
     public $width = 1.031;
-    public $length = 0.891;
     public $height = 2.125;
     public $speed = 1.1;
 
@@ -67,6 +66,7 @@ class ZombieVillager extends WalkingMonster {
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
@@ -102,7 +102,7 @@ class ZombieVillager extends WalkingMonster {
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

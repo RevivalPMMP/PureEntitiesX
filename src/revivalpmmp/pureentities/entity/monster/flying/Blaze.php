@@ -44,7 +44,6 @@ class Blaze extends FlyingMonster implements ProjectileSource {
 
     public $height = 1.5;
     public $width = 1.25;
-    public $length = 0.906;
     public $gravity = 0.04;
     public $speed = 1.0;
 
@@ -135,7 +134,7 @@ class Blaze extends FlyingMonster implements ProjectileSource {
     }
 
     public function updateMove($tickDiff) {
-        if (!$this->isMovement()) {
+        if (!$this->isMovement() or $this->isClosed()) {
             return null;
         }
 
@@ -165,12 +164,12 @@ class Blaze extends FlyingMonster implements ProjectileSource {
                     } else {
                         $this->motionY = 0;
                     }
-                } else {
+                } elseif ($diff > 0) {
                     $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                     $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
                 }
             }
-            $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
+            if ($diff > 0) $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
         }
 

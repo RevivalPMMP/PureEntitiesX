@@ -41,8 +41,7 @@ class Stray extends WalkingMonster implements ProjectileSource {
     const NETWORK_ID = Data::STRAY;
 
     public $height = 2;
-    public $width = 0.781;
-    public $length = 0.875;
+    public $width = 0.875;
     public $speed = 1.0;
 
     public function getSpeed(): float {
@@ -53,6 +52,11 @@ class Stray extends WalkingMonster implements ProjectileSource {
         return "Stray";
     }
 
+    /**
+     * Attack a player
+     *
+     * @param Entity $player
+     */
     public function attackEntity(Entity $player) {
         if ($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55) {
             $this->attackDelay = 0;
@@ -135,7 +139,7 @@ class Stray extends WalkingMonster implements ProjectileSource {
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

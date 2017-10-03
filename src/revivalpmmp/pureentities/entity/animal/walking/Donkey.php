@@ -28,9 +28,8 @@ use revivalpmmp\pureentities\data\Data;
 class Donkey extends WalkingAnimal implements Rideable {
     const NETWORK_ID = Data::DONKEY;
 
-    public $width = 0.75;
+    public $width = 1.2;
     public $height = 1.562;
-    public $length = 1.2;
     public $speed = 1.0;
 
     public function getName(): string {
@@ -43,7 +42,7 @@ class Donkey extends WalkingAnimal implements Rideable {
 
     public function targetOption(Creature $creature, float $distance): bool {
         if ($creature instanceof Player) {
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
+            return $creature->spawned && $creature->isAlive() && !$creature->isClosed() && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
         }
         return false;
     }
@@ -56,7 +55,7 @@ class Donkey extends WalkingAnimal implements Rideable {
         }
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

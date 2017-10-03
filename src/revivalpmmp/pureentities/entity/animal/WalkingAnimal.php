@@ -48,11 +48,12 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
-        if (!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
+        if ($this->getLevel() !== null && !$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
             $hasUpdate = true;
             $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
             if ($airTicks <= -20) {
@@ -86,6 +87,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
      * @return bool
      */
     public function onUpdate(int $currentTick): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         if (!$this->isAlive()) {
             if (++$this->deadTicks >= 23) {
                 $this->close();
@@ -102,9 +104,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         if ($target instanceof Player) {
             if ($this->distance($target) <= 2) {
                 $this->pitch = 22; // pitch is the angle for looking up or down while yaw is looking left/right
-                $this->x = $this->lastX;
-                $this->y = $this->lastY;
-                $this->z = $this->lastZ;
+                $this->setPosition(new Vector3($this->lastX, $this->lastY, $this->lastZ));
             }
         } elseif (
             $target instanceof Vector3

@@ -47,8 +47,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     const NETWORK_ID = Data::WOLF;
 
     public $height = 0.969;
-    public $width = 0.5;
-    public $length = 1.594;
+    public $width = 1.2;
     public $speed = 1.2;
 
     const RED = 14;
@@ -195,6 +194,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * @return bool
      */
     public function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         $this->checkFollowOwner();
         return parent::entityBaseTick($tickDiff);
     }
@@ -363,7 +363,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         return [];
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 8; // but only for wild ones, tamed ones: 20
     }
 
@@ -469,6 +469,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      *
      * @param bool $sit
      */
+
     public function setSitting(bool $sit=true) {
        $this->sitting = $sit;
        $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, $sit);

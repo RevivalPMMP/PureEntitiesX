@@ -48,6 +48,9 @@ abstract class BaseEntity extends Creature {
     public $stayTime = 0;
     protected $moveTime = 0;
 
+    /** @var float */
+    public $eyeHeight = null;
+
     /** @var Vector3|Entity */
     private $baseTarget = null;
 
@@ -88,6 +91,9 @@ abstract class BaseEntity extends Creature {
         $this->panicTicks = PluginConfiguration::getInstance()->getPanicTicks();
         $this->maxAge = PluginConfiguration::getInstance()->getMaxAge();
         parent::__construct($level, $nbt);
+        if ($this->eyeHeight === null) {
+            $this->eyeHeight = $this->height / 2 + 0.1;
+        }
     }
 
     public abstract function updateMove($tickDiff);
@@ -96,7 +102,7 @@ abstract class BaseEntity extends Creature {
      * Should return the experience dropped by the entity when killed
      * @return int
      */
-    public function getKillExperience() : int {
+    public function getKillExperience(): int {
         return 0; // default no experience drops
     }
 
@@ -217,8 +223,10 @@ abstract class BaseEntity extends Creature {
         }
     }
 
-    public function updateMovement(){
-        parent::updateMovement();
+    public function updateMovement() {
+        if (!$this->isClosed() && $this->getLevel() !== null) {
+            parent::updateMovement();
+        }
     }
 
     public function isInsideOfSolid(): bool {
@@ -233,16 +241,17 @@ abstract class BaseEntity extends Creature {
      * @param EntityDamageEvent $source the damage event
      */
     public function attack(EntityDamageEvent $source) {
+
+        if ($this->isClosed() || $source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)) {
+            return;
+        }
+
         if ($this->isKnockback() > 0) return;
 
         // "wake up" entity - it gets attacked!
         $this->idlingComponent->stopIdling(1, true);
 
         parent::attack($source);
-
-        if ($source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)) {
-            return;
-        }
 
         $this->stayTime = 0;
         $this->moveTime = 0;
@@ -352,7 +361,7 @@ abstract class BaseEntity extends Creature {
     }
 
     public function targetOption(Creature $creature, float $distance): bool {
-        return $this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 81;
+        return $this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->isClosed() && $distance <= 81;
     }
 
     /**
@@ -489,7 +498,7 @@ abstract class BaseEntity extends Creature {
             PureEntities::logOutput("$this: still in panic.");
             return true; // still in panic
         }
-        PureEntities::logOutput("$this: no in panic.");
+        PureEntities::logOutput("$this: not in panic");
         return false; // no in panic
     }
 
