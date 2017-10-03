@@ -196,29 +196,36 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
         return $targetOption;
     }
 
+
+    // TODO: Consider moving this to WalkingEntity to reduce code duplication.
     /**
      * The general showButton function is implemented here for entities that are walking animals
-     * and are interactive - we're working with interfaces here.  Priority is given to taming
-     * followed by breeding then feeding.
+     * and are interactive - we're working with interfaces here.
      *
      * @param Player $player
      */
     public function showButton(Player $player) {
-        if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+        if ($player->getInventory() != null) { // sometimes, we get null on getInventory?!
             $itemInHand = $player->getInventory()->getItemInHand()->getId();
             // Redefining how to determine button circumstance.  There are several animals that are breedable
             // without being tameable (ie. Sheep, Cows, Mooshroom, Pigs, Chicken)
             PureEntities::logOutput("Player looking at $this");
             PureEntities::logOutput("showButton: Item in Hand $itemInHand");
+            if ($this instanceof IntfShearable and $itemInHand === Item::SHEARS and !$this->isSheared()) {
+                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $player);
+                PureEntities::logOutput("Button text set to Shear.");
 
-            if ($this instanceof IntfTameable) {
+            } else if ($this instanceof IntfTameable) {
                 $feedableItems = $this->getFeedableItems();
                 $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
                 $tameFood = $this->getTameFoods();
                 if (!$this->isTamed() and in_array($itemInHand, $tameFood)) {
                     InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
                     PureEntities::logOutput("Button text set to Tame.");
-                } else if (!$hasFeedableItemsInHand) { // When no feedable items in hand, offer sitting options.
+                } else if($this->isTamed() and $hasFeedableItemsInHand) {
+                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
+                    PureEntities::logOutput("Button text set to Feed for tameable entity.");
+                } else if ($this->isTamed()) { // Offer sit or stand.
                     if ($this->isSitting()) {
                         InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
                         PureEntities::logOutput("Button text set to Stand.");
@@ -227,7 +234,8 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
                         PureEntities::logOutput("Button text set to Sit.");
                     }
                 }
-            } else if ($this instanceof IntfCanBreed or $this instanceof IntfTameable) {
+
+            } else if ($this instanceof IntfCanBreed) {
                 $feedableItems = $this->getFeedableItems();
                 $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
                 if ($hasFeedableItemsInHand) {
@@ -237,11 +245,8 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
                     $player->getInventory()->getItemInHand()->getDamage() > 0
                 ) {
                     InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_DYE, $player);
-                    PureEntities::logOutput("Button text set to Dye.");
+                    PureEntities::logOutput("Button text set to Dye for sheep.");
                 }
-            } else if ($this instanceof IntfShearable and ($itemInHand === Item::SHEARS)) {
-                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $player);
-                PureEntities::logOutput("Button text set to Shear.");
             } else { // No button type interactions necessary.
                 $damage = $player->getInventory()->getItemInHand()->getDamage();
                 PureEntities::logOutput("Player looking at $this with item in hand $itemInHand.");
@@ -250,5 +255,4 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
             }
         }
     }
-
 }

@@ -36,6 +36,7 @@ use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\traits\Tameable;
 
 
 // TODO: Add 'Begging Mode' for untamed ocelots.
@@ -45,7 +46,8 @@ use revivalpmmp\pureentities\data\Data;
 
 
 
-class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanInteract, IntfCanPanic {
+class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
+    use Tameable;
     const NETWORK_ID = Data::OCELOT;
 
     public $width = 0.6;
@@ -514,7 +516,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanInteract, Int
         if ($this->isTamed()) {
             if ($this->getOwner() !== null && !$this->isSitting()) {
                 if ($this->getOwner()->distanceSquared($this) > $this->teleportDistance) {
-                    $newPosition = $this->getPositionNearOwner();
+                    $newPosition = $this->getPositionNearOwner($this->getOwner(), $this);
                     $this->teleport($newPosition !== null ? $newPosition : $this->getOwner()); // this should be better than teleporting directly onto player
                     PureEntities::logOutput("$this: teleport distance exceeded. Teleport myself near to owner.");
                 } else if ($this->getOwner()->distanceSquared($this) > $this->followDistance) {
@@ -533,28 +535,11 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanInteract, Int
         }
     }
 
-    /**
-     * Returns a position near the player (owner) of this entity
-     *
-     * @return Vector3|null the position near the owner
-     */
-
-    //This function needs to be in a parent class for tamed animals.
-    private function getPositionNearOwner(): Vector3 {
-        $x = $this->getOwner()->x + (mt_rand(2, 3) * (mt_rand(0, 1) ==1 ?: -1));
-        $z = $this->getOwner()->z + (mt_rand(2, 3) * (mt_rand(0, 1) ==1 ?: -1));
-        $pos = PureEntities::getInstance()->getSuitableHeightPosition($x, $this->getOwner()->y, $z, $this->getLevel());
-        if ($pos !== null) {
-            return new Vector3($x, $pos->y, $z);
-        } else {
-            return null;
-        }
-    }
 
     /**
      * Generates and returns a random value from 1 to 3.
      * This is used to determine number of XP Orbs dropped
-     * after killing the wolf.
+     * after killing the entity.
      * @return int
      */
 

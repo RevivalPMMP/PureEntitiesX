@@ -121,34 +121,34 @@ class EventListener implements Listener {
                 $entity = $player->level->getEntity($packet->trData->entityRuntimeId);
                 PureEntities::logOutput("$entity with button text $btnTxt",PureEntities::DEBUG);
                 if ($entity instanceof IntfShearable and !$entity->isSheared() and
-                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SHEAR) == 0) {
+                    strcmp($btnTxt, PureEntities::BUTTON_TEXT_SHEAR) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->shear", PureEntities::DEBUG);
                     $return = $entity->shear($player);
-                } else if ($entity instanceof Cow and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_MILK) == 0) {
+                } else if ($entity instanceof Cow and strcmp($btnTxt, PureEntities::BUTTON_TEXT_MILK) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->milk", PureEntities::DEBUG);
                     $return = $entity->milk($player);
                 } else if ($entity instanceof IntfCanBreed and
-                    strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_FEED) == 0 and
+                    strcmp($btnTxt, PureEntities::BUTTON_TEXT_FEED) == 0 and
                     $entity->getBreedingComponent() !== false
                 ) { // normally, this shouldn't be needed (because IntfCanBreed needs this method!
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->feed", PureEntities::DEBUG);
-                    $return = $entity->getBreedingComponent()->feed($player); // feed the sheep
-                    // decrease wheat in players hand
+                    $return = $entity->getBreedingComponent()->feed($player); // feed the entity
+                    // decrease food in players hand
                     $itemInHand = $player->getInventory()->getItemInHand();
                     if ($itemInHand != null) {
                         $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
                     }
-                } else if ($entity instanceof IntfTameable and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_TAME) == 0) {
+                } else if ($entity instanceof IntfTameable and !$entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_TAME) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame", PureEntities::DEBUG);
                     $return = $entity->tame($player);
-                } else if ($entity instanceof IntfTameable and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_SIT) == 0) {
+                } else if ($entity instanceof IntfTameable and $entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_SIT) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit", PureEntities::DEBUG);
                     $entity->setSitting(true);
                     if ($entity instanceof Ocelot) {
                         $entity->setCommandedToSit(true);
                     }
                     $return = true;
-                } else if ($entity instanceof IntfTameable and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_STAND) == 0) {
+                } else if ($entity instanceof IntfTameable and $entity->isTamed() and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_STAND) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->stand", PureEntities::DEBUG);
                     $entity->setSitting(false);
                     if ($entity instanceof Ocelot) {

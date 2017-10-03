@@ -21,7 +21,7 @@ namespace revivalpmmp\pureentities\features;
 
 use pocketmine\Player;
 
-interface IntfTameable extends IntfCanBreed {
+interface IntfTameable{
 
     public function setTamed(bool $tamed);
 
