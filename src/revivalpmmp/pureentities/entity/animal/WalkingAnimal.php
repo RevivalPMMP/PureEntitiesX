@@ -168,7 +168,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
     public function targetOption(Creature $creature, float $distance): bool {
         $targetOption = false;
         if ($creature instanceof Player) { // a player requests the target option
-            if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+            if ($creature != null and $creature->getInventory() != null) { // sometimes, we get null on getInventory?!
                 $itemInHand = $creature->getInventory()->getItemInHand()->getId();
                 if ($this instanceof IntfTameable) {
                     $tameFood = $this->getTameFoods();
