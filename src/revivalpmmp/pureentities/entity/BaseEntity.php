@@ -94,6 +94,8 @@ abstract class BaseEntity extends Creature {
         if ($this->eyeHeight === null) {
             $this->eyeHeight = $this->height / 2 + 0.1;
         }
+        $this->namedtag->generatedByPEX = new ByteTag("generatedByPEX",1);
+
     }
 
     public abstract function updateMove($tickDiff);

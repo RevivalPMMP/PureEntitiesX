@@ -382,28 +382,46 @@ class PureEntities extends PluginBase implements CommandExecutor {
                 $counterLivingEntities = 0;
                 $counterOtherEntities = 0;
                 $entitiesRemoved = [];
-                foreach (Server::getInstance()->getLevels() as $level) {
-                    foreach ($level->getEntities() as $entity) {
-                        if (!$entity instanceof Player) {
-                            $entitiesRemoved[] = clone($entity);
-                            $entity->close();
-                            $entitiesRemoved[] = $entity;
-                            if ($entity instanceof BaseEntity) {
-                                $counterLivingEntities++;
-                            } else {
-                                $counterOtherEntities++;
+                if (!count($args) > 1 or $args == null) {
+                    foreach (Server::getInstance()->getLevels() as $level) {
+                        foreach ($level->getEntities() as $entity) {
+                            if (count($args) === 0) {
+                                if (!$entity instanceof Player and isset($entity->namedtag->generatedByPEX)) {
+                                    $entitiesRemoved[] = clone($entity);
+                                    $entity->close();
+                                    $entitiesRemoved[] = $entity;
+                                    if ($entity instanceof BaseEntity) {
+                                        $counterLivingEntities++;
+                                    } else {
+                                        $counterOtherEntities++;
+                                    }
+                                }
+                            } elseif (count($args) == 1 and strcmp(strtolower($args[0]), "all") == 0) {
+                                if (!$entity instanceof Player) {
+                                    $entitiesRemoved[] = clone($entity);
+                                    $entity->close();
+                                    $entitiesRemoved[] = $entity;
+                                    if ($entity instanceof BaseEntity) {
+                                        $counterLivingEntities++;
+                                    } else {
+                                        $counterOtherEntities++;
+                                    }
+                                }
                             }
                         }
                     }
+                    $sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
+                    self::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", self::NORM);
+                    foreach ($entitiesRemoved as $entity) {
+                        $name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
+                        self::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", self::NORM);
+                    }
+                    unset($entitiesRemoved);
+                    $commandSuccessful = true;
+                } else {
+                    $sender->sendMessage("Usage: peremove <opt:all>");
+                    $commandSuccessful = true;
                 }
-                $sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
-                self::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", self::NORM);
-                foreach ($entitiesRemoved as $entity) {
-                    $name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
-                    self::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", self::NORM);
-                }
-                unset($entitiesRemoved);
-                $commandSuccessful = true;
                 break;
             case "pesummon":
                 if (($sender instanceof Player and count($args) >= 1 and count($args) <= 3) or (!$sender instanceof Player and count($args) > 1)) {
