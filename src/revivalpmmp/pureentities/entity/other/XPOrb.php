@@ -24,7 +24,6 @@ use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\sound\ExpPickupSound;
-
 class XPOrb extends Entity {
 	const NETWORK_ID = 69;
 
