@@ -34,7 +34,6 @@ class IronGolem extends WalkingMonster {
 
     public $height = 2.688;
     public $width = 1.625;
-    public $length = 0.906;
     public $speed = 0.8;
 
     public function getSpeed(): float {
@@ -89,7 +88,7 @@ class IronGolem extends WalkingMonster {
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

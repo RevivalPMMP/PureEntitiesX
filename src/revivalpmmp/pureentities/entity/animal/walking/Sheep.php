@@ -66,9 +66,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
     const NBT_KEY_SHEARED = "Sheared";
 
 
-    public $length = 1.484;
-    public $width = 0.719;
-    public $height = 1.406;
+    public $width = 1.2;
+    public $height = 0.6;
     public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
@@ -100,20 +99,12 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 
     public static function getRandomColor(): int {
         $rand = "";
-        $rand .= str_repeat(self::WHITE . " ", 20);
-        $rand .= str_repeat(self::ORANGE . " ", 5);
-        $rand .= str_repeat(self::MAGENTA . " ", 5);
-        $rand .= str_repeat(self::LIGHT_BLUE . " ", 5);
-        $rand .= str_repeat(self::YELLOW . " ", 5);
-        $rand .= str_repeat(self::GRAY . " ", 10);
-        $rand .= str_repeat(self::LIGHT_GRAY . " ", 10);
-        $rand .= str_repeat(self::CYAN . " ", 5);
-        $rand .= str_repeat(self::PURPLE . " ", 5);
-        $rand .= str_repeat(self::BLUE . " ", 5);
-        $rand .= str_repeat(self::BROWN . " ", 5);
-        $rand .= str_repeat(self::GREEN . " ", 5);
-        $rand .= str_repeat(self::RED . " ", 5);
-        $rand .= str_repeat(self::BLACK . " ", 10);
+        $rand .= str_repeat(self::WHITE . " ", 818);
+        $rand .= str_repeat(self::GRAY . " ", 50);
+        $rand .= str_repeat(self::LIGHT_GRAY . " ", 50);
+        $rand .= str_repeat(self::BROWN . " ", 30);
+        $rand .= str_repeat(self::BLACK . " ", 50);
+        $rand .= str_repeat(self::PINK . " ", 2);
         $arr = explode(" ", $rand);
         return intval($arr[mt_rand(0, count($arr) - 1)]);
     }
@@ -173,7 +164,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
                 $currentBlock = $this->getCurrentBlock();
                 if ($currentBlock !== null and
                     ($currentBlock instanceof Grass or $currentBlock instanceof TallGrass or strcmp($currentBlock->getName(), "Double Tallgrass") == 0)
-                ) { // only grass blocks are eatable by sheeps)
+                ) { // only grass blocks are eatable by sheep)
                     $this->blockOfInterestReached($currentBlock);
                 }
             }
@@ -196,7 +187,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
      *
      * @return int
      */
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 8;
     }
 

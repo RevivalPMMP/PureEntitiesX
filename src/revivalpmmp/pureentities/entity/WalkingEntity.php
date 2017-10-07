@@ -99,7 +99,7 @@ abstract class WalkingEntity extends BaseEntity {
      * @return null|Vector3
      */
     public function updateMove($tickDiff) {
-        if (!$this->isMovement()) {
+        if ($this->isClosed() or $this->getLevel() == null or !$this->isMovement()) {
             return null;
         }
 
@@ -139,11 +139,9 @@ abstract class WalkingEntity extends BaseEntity {
             if ($x ** 2 + $z ** 2 < 0.7) {
                 $this->motionX = 0;
                 $this->motionZ = 0;
-            } else {
+            } elseif ($diff > 0) {
                 $this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
                 $this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
-            }
-            if ($diff > 0) {
                 $this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
             }
             $this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
@@ -227,7 +225,12 @@ abstract class WalkingEntity extends BaseEntity {
         // in your direction but cannot jump (is stuck). Then the next line should apply
         $blockingBlock = $this->getLevel()->getBlock($this->getPosition());
         if ($blockingBlock->canPassThrough()) { // when we can pass through the current block then the next block is blocking the way
-            $blockingBlock = $this->getTargetBlock(2); // just for correction use 2 blocks ...
+            try {
+                $blockingBlock = $this->getTargetBlock(2); // just for correction use 2 blocks ...
+            } catch (\InvalidStateException $ex) {
+                PureEntities::logOutput("Caught InvalidStateException for getTargetBlock", PureEntities::DEBUG);
+                return false;
+            }
         }
         if ($blockingBlock != null and !$blockingBlock->canPassThrough() and $this->getMaxJumpHeight() > 0) {
             // we cannot pass through the block that is directly in front of entity - check if jumping is possible
@@ -242,16 +245,17 @@ abstract class WalkingEntity extends BaseEntity {
                 } else if ($blockingBlock instanceof StoneSlab or $blockingBlock instanceof Stair) { // on stairs entities shouldn't jump THAT high
                     $this->motionY = $this->gravity * 4;
                     PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
-                } else if ($this->motionY <= ($this->gravity * 8)) {
-                    PureEntities::logOutput("$this: checkJump(): set motion to gravity * 8!", PureEntities::DEBUG);
-                    $this->motionY = $this->gravity * 8;
+                } else if ($this->motionY < ($this->gravity * 3.2)) { // Magic
+                    PureEntities::logOutput("$this: checkJump(): set motion to gravity * 3.2!", PureEntities::DEBUG);
+                    $this->motionY = $this->gravity * 3.2;
                 } else {
                     PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
                     $this->motionY += $this->gravity * 0.25;
                 }
                 return true;
-            } else {
+            } elseif(!$upperBlock->canPassThrough()) {
                 PureEntities::logOutput("$this: checkJump(): cannot pass through the upper blocks!", PureEntities::DEBUG);
+                $this->yaw = $this->getYaw() + mt_rand(-120, 120) / 10;
             }
         } else {
             PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $blockingBlock->canPassThrough() . "] " .

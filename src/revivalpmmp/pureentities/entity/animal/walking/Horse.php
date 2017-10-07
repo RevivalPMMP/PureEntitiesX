@@ -28,9 +28,8 @@ use revivalpmmp\pureentities\data\Data;
 class Horse extends WalkingAnimal implements Rideable {
     const NETWORK_ID = Data::HORSE;
 
-    public $width = 0.75;
-    public $height = 1.562;
-    public $length = 1.2;
+    public $width = 1.3;
+    public $height = 1.5;
     public $speed = 1.0;
 
     public function getName(): string {
@@ -43,7 +42,7 @@ class Horse extends WalkingAnimal implements Rideable {
 
     public function targetOption(Creature $creature, float $distance): bool {
         if ($creature instanceof Player) {
-            return $creature->spawned && $creature->isAlive() && !$creature->closed && $creature->getInventory()->getItemInHand()->getId() == Item::APPLE && $distance <= 49;
+            return $creature->spawned && $creature->isAlive() && !$creature->isClosed() && $creature->getInventory()->getItemInHand()->getId() == Item::APPLE && $distance <= 49;
         }
         return false;
     }
@@ -56,7 +55,7 @@ class Horse extends WalkingAnimal implements Rideable {
         }
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

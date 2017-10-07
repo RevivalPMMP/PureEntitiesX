@@ -33,7 +33,6 @@ class Enderman extends WalkingMonster {
 
     public $height = 2.875;
     public $width = 1.094;
-    public $length = 0.5;
     public $speed = 1.21;
 
     public function getSpeed(): float {
@@ -61,7 +60,6 @@ class Enderman extends WalkingMonster {
             $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
                 MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
             $player->attack($ev);
-
             $this->checkTamedMobsAttack($player);
         }
     }
@@ -89,7 +87,7 @@ class Enderman extends WalkingMonster {
      *
      * @param Player $player
      */
-    public function playerLooksAt (Player $player) {
+    public function playerLooksAt(Player $player) {
         // if the player wears a pumpkin, the enderman doesn't attack the player
         if (!$player->getInventory()->getHelmet() instanceof Pumpkin) {
             $this->setBaseTarget($player);

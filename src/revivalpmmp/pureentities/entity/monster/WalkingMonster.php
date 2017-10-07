@@ -19,7 +19,8 @@
 namespace revivalpmmp\pureentities\entity\monster;
 
 use pocketmine\entity\Creature;
-use pocketmine\item\ItemIds;
+use pocketmine\item\Item;
+use pocketmine\Item\ItemIds;
 use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\monster\walking\Enderman;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
@@ -34,6 +35,8 @@ use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
 use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\features\IntfFeedable;
+use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -86,8 +89,8 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                     }
                 }
             }
+            parent::checkTarget(false);
         }
-		return parent::checkTarget($checkSkip);
     }
 
     public function getDamage(int $difficulty = null): float {
@@ -160,6 +163,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
     }
 
     public function onUpdate(int $currentTick): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         if ($this->server->getDifficulty() < 1) {
             $this->close();
             return false;
@@ -205,6 +209,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
     }
 
     public function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         Timings::$timerEntityBaseTick->startTiming();
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
@@ -216,7 +221,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                 $this->attack($ev);
                 $this->move(mt_rand(-20, 20), mt_rand(-20, 20), mt_rand(-20, 20));
             }
-        } else {
+        } elseif ($this->getLevel() !== null) {
             if (!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
                 $hasUpdate = true;
                 $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
@@ -266,42 +271,49 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
      */
     public function showButton(Player $player) {
         if ($this->isFriendly()) {
-            if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+            if ($player->getInventory() != null) { // sometimes, we get null on getInventory?!
                 $itemInHand = $player->getInventory()->getItemInHand()->getId();
-                if ($this instanceof IntfTameable) {
+                if ($this instanceof IntfShearable and $itemInHand === Item::SHEARS and !$this->isSheared()) {
+                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $player);
+                    PureEntities::logOutput("Button text set to Shear.");
+
+                } else if ($this instanceof IntfTameable) {
+
+                    $feedableItems = $this->getFeedableItems();
+                    $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
                     $tameFood = $this->getTameFoods();
                     if (!$this->isTamed() and in_array($itemInHand, $tameFood)) {
                         InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
-                    } else if ($this instanceof Wolf and $this->isTamed() and $itemInHand == ItemIds::DYE and
-                        $player->getInventory()->getItemInHand()->getDamage() > 0
-                    ) { // normal dye won't work ...
+                        PureEntities::logOutput("Button text set to Tame.");
+                    } else if($this->isTamed() and $hasFeedableItemsInHand) {
+                        InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
+                        PureEntities::logOutput("Button text set to Feed for tameable entity.");
+                    } else if ($this instanceof Wolf and $this->isTamed() and $itemInHand == ItemIds::DYE) {
                         InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_DYE, $player);
-                    } else if ($this instanceof IntfCanBreed) {
-                        if ($this->isTamed()) { // tamed - it can breed!!!
-                            $feedableItems = $this->getFeedableItems();
-                            $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
-                            if ($hasFeedableItemsInHand) {
-                                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
-                            } else if (!$hasFeedableItemsInHand) { // When no feedable items in hand, offer sitting options.
-                                if ($this->isSitting()) {
-                                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
-                                } else {
-                                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
-                                }
-                            } else {
-                                InteractionHelper::displayButtonText("", $player);
-                            }
-                        } else { // not tamed - so feeding is not possible, also sit is not possible!
-                            InteractionHelper::displayButtonText("", $player);
+                        PureEntities::logOutput("Button text was set to Dye for tamed Wolf.");
+                    } else if ($this->isTamed()) { // Offer sit or stand.
+                        if ($this->isSitting()) {
+                            InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
+                            PureEntities::logOutput("Button text set to Stand.");
+                        } else {
+                            InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
+                            PureEntities::logOutput("Button text set to Sit.");
                         }
-                    } else {
-                        InteractionHelper::displayButtonText("", $player);
                     }
-                } else {
+
+                } else if ($this instanceof IntfCanBreed) {
+                    $feedableItems = $this->getFeedableItems();
+                    $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
+                    if ($hasFeedableItemsInHand) {
+                        InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
+                        PureEntities::logOutput("Button text set to Feed.");
+                    }
+                } else { // No button type interactions necessary.
+                    $damage = $player->getInventory()->getItemInHand()->getDamage();
                     InteractionHelper::displayButtonText("", $player);
                 }
-
             }
+
         }
     }
 
@@ -327,7 +339,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
                                 $hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
                                 if ($hasFeedableItemsInHand) {
                                     // check if the entity is able to follow - but only on a distance of 6 blocks
-                                    $targetOption = $creature->spawned && $creature->isAlive() && !$creature->closed;
+                                    $targetOption = $creature->spawned && $creature->isAlive() && !$creature->isClosed();
                                 } else {
                                     // reset base target when it was player before (follow by holding wheat)
                                     if ($this->isFollowingPlayer($creature)) { // we've to reset follow when there's nothing interesting in hand
@@ -342,7 +354,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster {
             }
         } else {
             // when the entity is not friendly, it attacks the player!!!
-            $targetOption = ($this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->closed && $distance <= 81);
+            $targetOption = ($this instanceof Monster && (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->isClosed() && $distance <= 81);
         }
         return $targetOption;
     }

@@ -32,10 +32,9 @@ use revivalpmmp\pureentities\data\Data;
 class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::COW;
 
-    public $width = 0.75;
-    public $height = 1.562;
-    public $length = 1.5;
-    public $eyeHeight = 1.2;
+    public $width = 1.5;
+    public $height = 1.2;
+    public $eyeHeight = 1;
     public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
@@ -113,7 +112,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 10;
     }
 

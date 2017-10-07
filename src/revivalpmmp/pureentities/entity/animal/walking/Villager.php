@@ -25,7 +25,6 @@ class Villager extends WalkingAnimal {
     const NETWORK_ID = Data::VILLAGER;
 
     public $width = 0.938;
-    public $length = 0.609;
     public $height = 2;
     public $speed = 1.1;
 
@@ -41,7 +40,7 @@ class Villager extends WalkingAnimal {
         return [];
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 10;
     }
 

@@ -8,11 +8,21 @@ use pocketmine\utils\MainLogger;
 use pocketmine\utils\TextFormat;
 use pocketmine\Worker;
 
-class CustomLogger extends MainLogger {
+class CustomLogger extends \AttachableThreadedLogger {
 	/** @var \ClassLoader */
 	protected $classLoader;
 	protected $isKilled = false;
+	/** @var string  */
 	protected $logFile;
+	/** @var \Threaded  */
+	protected $logStream;
+	/** @var  bool */
+	protected $shutdown;
+	/** @var bool */
+	protected $logDebug;
+	/** @var CustomLogger */
+	public static $logger = null;
+
 	/**
 	 * CustomLogger constructor.
 	 *
@@ -21,14 +31,24 @@ class CustomLogger extends MainLogger {
 	 * @throws \RuntimeException
 	 */
 	public function __construct(bool $logDebug = true) {
-		\AttachableThreadedLogger::__construct();
-		$logFile = \pocketmine\DATA."plugins".DIRECTORY_SEPARATOR."PureEntitiesX".DIRECTORY_SEPARATOR.date("j.n.Y").".log";
+	    parent::__construct();
+	    if (static::$logger instanceof CustomLogger) {
+	        throw new \RuntimeException("PureEntitesX Custom Logger has already been created.");
+        }
+		$logFile = \pocketmine\DATA."plugins".DIRECTORY_SEPARATOR."PureEntitiesX".DIRECTORY_SEPARATOR."PureEntitiesX_".date("j.n.Y").".log";
 		touch($logFile);
 		$this->logFile = $logFile;
 		$this->logDebug = $logDebug;
 		$this->logStream = new \Threaded;
 		$this->start();
 	}
+
+    /**
+     * @return CustomLogger
+     */
+	public static function getLogger() : CustomLogger{
+        return static::$logger;
+    }
 
 	/**
 	 * Assigns the CustomLogger instance to the {@link CustomLogger#logger} static property.
@@ -41,6 +61,151 @@ class CustomLogger extends MainLogger {
 			static::$logger = $this;
 		}
 	}
+
+    public function emergency($message){
+        $this->send($message, \LogLevel::EMERGENCY, "EMERGENCY", TextFormat::RED);
+    }
+
+    public function alert($message){
+        $this->send($message, \LogLevel::ALERT, "ALERT", TextFormat::RED);
+    }
+
+    public function critical($message){
+        $this->send($message, \LogLevel::CRITICAL, "CRITICAL", TextFormat::RED);
+    }
+
+    public function error($message){
+        $this->send($message, \LogLevel::ERROR, "ERROR", TextFormat::DARK_RED);
+    }
+
+    public function warning($message){
+        $this->send($message, \LogLevel::WARNING, "WARNING", TextFormat::YELLOW);
+    }
+
+    public function notice($message){
+        $this->send($message, \LogLevel::NOTICE, "NOTICE", TextFormat::AQUA);
+    }
+
+    public function info($message){
+        $this->send($message, \LogLevel::INFO, "INFO", TextFormat::WHITE);
+    }
+
+    public function debug($message, bool $force = false){
+        if($this->logDebug === false and !$force){
+            return;
+        }
+        $this->send($message, \LogLevel::DEBUG, "DEBUG", TextFormat::GRAY);
+    }
+    /**
+     * @param bool $logDebug
+     */
+    public function setLogDebug(bool $logDebug){
+        $this->logDebug = $logDebug;
+    }
+
+    public function logException(\Throwable $e, $trace = null){
+        if($trace === null){
+            $trace = $e->getTrace();
+        }
+        $errstr = $e->getMessage();
+        $errfile = $e->getFile();
+        $errno = $e->getCode();
+        $errline = $e->getLine();
+
+        $errorConversion = [
+            0 => "EXCEPTION",
+            E_ERROR => "E_ERROR",
+            E_WARNING => "E_WARNING",
+            E_PARSE => "E_PARSE",
+            E_NOTICE => "E_NOTICE",
+            E_CORE_ERROR => "E_CORE_ERROR",
+            E_CORE_WARNING => "E_CORE_WARNING",
+            E_COMPILE_ERROR => "E_COMPILE_ERROR",
+            E_COMPILE_WARNING => "E_COMPILE_WARNING",
+            E_USER_ERROR => "E_USER_ERROR",
+            E_USER_WARNING => "E_USER_WARNING",
+            E_USER_NOTICE => "E_USER_NOTICE",
+            E_STRICT => "E_STRICT",
+            E_RECOVERABLE_ERROR => "E_RECOVERABLE_ERROR",
+            E_DEPRECATED => "E_DEPRECATED",
+            E_USER_DEPRECATED => "E_USER_DEPRECATED"
+        ];
+        if($errno === 0){
+            $type = LogLevel::CRITICAL;
+        }else{
+            $type = ($errno === E_ERROR or $errno === E_USER_ERROR) ? LogLevel::ERROR : (($errno === E_USER_WARNING or $errno === E_WARNING) ? LogLevel::WARNING : LogLevel::NOTICE);
+        }
+        $errno = $errorConversion[$errno] ?? $errno;
+        $errstr = preg_replace('/\s+/', ' ', trim($errstr));
+        $errfile = \pocketmine\cleanPath($errfile);
+        $this->log($type, get_class($e) . ": \"$errstr\" ($errno) in \"$errfile\" at line $errline");
+        foreach(\pocketmine\getTrace(0, $trace) as $i => $line){
+            $this->debug($line, true);
+        }
+    }
+
+    public function log($level, $message){
+        switch($level){
+            case LogLevel::EMERGENCY:
+                $this->emergency($message);
+                break;
+            case LogLevel::ALERT:
+                $this->alert($message);
+                break;
+            case LogLevel::CRITICAL:
+                $this->critical($message);
+                break;
+            case LogLevel::ERROR:
+                $this->error($message);
+                break;
+            case LogLevel::WARNING:
+                $this->warning($message);
+                break;
+            case LogLevel::NOTICE:
+                $this->notice($message);
+                break;
+            case LogLevel::INFO:
+                $this->info($message);
+                break;
+            case LogLevel::DEBUG:
+                $this->debug($message);
+                break;
+        }
+    }
+
+    public function shutdown(){
+        $this->shutdown = true;
+        $this->notify();
+    }
+
+    /**
+     * @param resource $logResource
+     */
+    private function writeLogStream($logResource){
+        while($this->logStream->count() > 0){
+            $chunk = $this->logStream->shift();
+            fwrite($logResource, $chunk);
+        }
+    }
+
+    public function run(){
+        $this->shutdown = false;
+        $logResource = fopen($this->logFile, "ab");
+        if(!is_resource($logResource)){
+            throw new \RuntimeException("Couldn't open log file");
+        }
+
+        while($this->shutdown === false){
+            $this->writeLogStream($logResource);
+            $this->synchronized(function(){
+                $this->wait(25000);
+            });
+        }
+
+        $this->writeLogStream($logResource);
+
+        fclose($logResource);
+    }
 
 	/**
 	 * Registers the class loader for this thread.

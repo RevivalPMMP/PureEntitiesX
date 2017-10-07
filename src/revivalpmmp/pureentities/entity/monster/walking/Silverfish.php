@@ -29,8 +29,7 @@ class Silverfish extends WalkingMonster {
     const NETWORK_ID = Data::SILVERFISH;
 
     public $height = 0.438;
-    public $width = 0.609;
-    public $length = 1.094;
+    public $width = 1.094;
     public $speed = 1.4;
 
     public function getSpeed(): float {
@@ -69,7 +68,7 @@ class Silverfish extends WalkingMonster {
         return [];
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 8;
     }
 

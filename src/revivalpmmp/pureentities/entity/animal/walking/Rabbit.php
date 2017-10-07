@@ -31,8 +31,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
 
     public $height = 0.5;
     public $width = 0.5;
-    public $length = 0.5;
-    public $speed = 1.1;
+    public $speed = 2;
 
     private $feedableItems = array(
         Item::CARROT,
@@ -117,7 +116,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 3;
     }
 

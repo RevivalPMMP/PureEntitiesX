@@ -18,6 +18,7 @@
 namespace revivalpmmp\pureentities\entity\other;
 
 use pocketmine\entity\Entity;
+use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
@@ -28,14 +29,13 @@ class XPOrb extends Entity {
 	const NETWORK_ID = 69;
 
 	public $width = 0.25;
-	public $length = 0.25;
 	public $height = 0.25;
 
 	protected $gravity = 0.04;
 	protected $drag = 0;
-	
+
 	protected $experience = 0;
-	
+
 	protected $range = 6;
 
 	public function initEntity(){
@@ -48,16 +48,16 @@ class XPOrb extends Entity {
 	}
 
 	public function onUpdate(int $currentTick): bool {
-		if($this->closed){
+		if($this->isClosed()){
 			return false;
 		}
-		
+
 		$tickDiff = $currentTick - $this->lastUpdate;
-		
+
 		$this->lastUpdate = $currentTick;
-		
+
 		$this->timings->startTiming();
-		
+
 		$hasUpdate = $this->entityBaseTick($tickDiff);
 
 		$this->age++;
@@ -67,7 +67,7 @@ class XPOrb extends Entity {
 			$this->close();
 			$hasUpdate = true;
 		}
-		
+
 		$minDistance = PHP_INT_MAX;
 		$target = null;
 		foreach($this->getViewers() as $p){
@@ -76,9 +76,9 @@ class XPOrb extends Entity {
 					$target = $p;
 					$minDistance = $dist;
 				}
-			} 
+			}
 		}
-		
+
 		if($target !== null){
 			$moveSpeed = 0.7;
 			$motX = ($target->getX() - $this->x) / 8;
@@ -86,7 +86,7 @@ class XPOrb extends Entity {
 			$motZ = ($target->getZ() - $this->z) / 8;
 			$motSqrt = sqrt($motX * $motX + $motY * $motY + $motZ * $motZ);
 			$motC = 1 - $motSqrt;
-		
+
 			if($motC > 0){
 				$motC *= $motC;
 				$this->motionX = $motX / $motSqrt * $motC * $moveSpeed;
@@ -129,11 +129,11 @@ class XPOrb extends Entity {
 	public function canCollideWith(Entity $entity): bool {
 		return false;
 	}
-	
+
 	public function setExperience($exp){
 		$this->experience = $exp;
 	}
-	
+
 	public function getExperience(){
 		return $this->experience;
 	}
@@ -143,12 +143,8 @@ class XPOrb extends Entity {
         $pk = new AddEntityPacket();
         $pk->type = XPOrb::NETWORK_ID;
         $pk->entityRuntimeId = $this->getId();
-        $pk->x = $this->x;
-        $pk->y = $this->y;
-        $pk->z = $this->z;
-        $pk->speedX = $this->motionX;
-        $pk->speedY = $this->motionY;
-        $pk->speedZ = $this->motionZ;
+        $pk->position = $this->asVector3();
+        $pk->motion = $this->getMotion();
         $pk->metadata = $this->dataProperties;
         $player->dataPacket($pk);
 

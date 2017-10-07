@@ -193,15 +193,15 @@ abstract class BaseSpawner {
      * the entity may get stuck in the ground or suffers suffocation
      *
      * @param Position $pos
-     * @param int $entityid
+     * @param int $entityId
      * @param Level $level
      * @param string $type
      * @param bool $isBaby
      * @return bool
      */
-    protected function spawnEntityToLevel(Position $pos, int $entityid, Level $level, string $type, bool $isBaby = false): bool {
-        $pos->y += self::HEIGHTS[$entityid];
-        return PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityid, $level, $type, $isBaby) !== null;
+    protected function spawnEntityToLevel(Position $pos, int $entityId, Level $level, string $type, bool $isBaby = false): bool {
+        $pos->y += self::HEIGHTS[$entityId];
+        return PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityId, $level, $type, $isBaby) !== null;
     }
 
     /**

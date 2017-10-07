@@ -38,8 +38,7 @@ class PigZombie extends WalkingMonster {
     private $angry = 0;
 
     public $height = 2.03;
-    public $width = 1.031;
-    public $length = 1.125;
+    public $width = 1.125;
     public $eyeHeight = 1.62;
     public $speed = 1.15;
 
@@ -128,7 +127,7 @@ class PigZombie extends WalkingMonster {
         return $drops;
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 20;
     }
 

@@ -29,6 +29,7 @@ use revivalpmmp\pureentities\entity\animal\jumping\Rabbit;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
+use revivalpmmp\pureentities\traits;
 use pocketmine\entity\Entity;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -42,11 +43,11 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCanInteract {
+    use traits\Tameable;
     const NETWORK_ID = Data::WOLF;
 
     public $height = 0.969;
-    public $width = 0.5;
-    public $length = 1.594;
+    public $width = 1.2;
     public $speed = 1.2;
 
     const RED = 14;
@@ -139,7 +140,6 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
                 PureEntities::logOutput("Wolf($this): is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", PureEntities::NORM);
             }
         }
-        $this->setCollarColor($this->getCollarColor());
         $this->breedableClass->init();
 
         $this->teleportDistance = PluginConfiguration::getInstance()->getTamedTeleportBlocks();
@@ -194,6 +194,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      * @return bool
      */
     public function entityBaseTick(int $tickDiff = 1): bool {
+        if ($this->isClosed() or $this->getLevel() == null) return false;
         $this->checkFollowOwner();
         return parent::entityBaseTick($tickDiff);
     }
@@ -220,6 +221,9 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         }
     }
 
+    // TODO: Evaluate best way to handle movement updates for tamed entities that are sitting.
+    // Tamed entities should 'look at' or face their owner when the owner is close.
+
     /**
      * We need to override this method. When wolf is sitting, the entity shouldn't move!
      *
@@ -242,7 +246,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     }
 
     /**
-     * Loads data from nbt and stores to local variables
+     * Loads data from NBT and stores to local variables
      */
     public function loadFromNBT() {
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
@@ -280,7 +284,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             parent::saveNBT();
             $this->namedtag->Angry = new IntTag(self::NBT_KEY_ANGRY, $this->angryValue);
-            $this->namedtag->Color = new IntTag(self::NBT_KEY_COLLAR_COLOR, $this->collarColor); // set collar color
+            $this->namedtag->Color = new ByteTag(self::NBT_KEY_COLLAR_COLOR, $this->collarColor); // set collar color
             $this->namedtag->Sitting = new IntTag(self::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
             if ($this->getOwnerName() !== null) {
                 $this->namedtag->OwnerName = new StringTag(self::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
@@ -359,7 +363,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         return [];
     }
 
-    public function getMaxHealth() : int{
+    public function getMaxHealth(): int {
         return 8; // but only for wild ones, tamed ones: 20
     }
 
@@ -465,6 +469,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
      *
      * @param bool $sit
      */
+
     public function setSitting(bool $sit=true) {
        $this->sitting = $sit;
        $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, $sit);
@@ -497,8 +502,14 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         if ($this->isTamed()) {
             $this->collarColor = $collarColor;
 
-            // ID may be the reason for collar color bug.
-            $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor); // collar color RED (because it's tamed!)
+            if (!isset($this->namedtag[self::NBT_KEY_COLLAR_COLOR])) {
+                $this->namedtag->Color = new ByteTag(self::NBT_KEY_COLLAR_COLOR, $collarColor); // set collar color
+                $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor);
+
+            } else {
+                $this->namedtag[self::NBT_KEY_COLLAR_COLOR] = $this->collarColor;
+                $this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor);
+            }
         }
     }
 
@@ -512,7 +523,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     }
 
     /**
-     * This method has to be called as soon as a owner name is set. It searches online players for the owner name
+     * This method has to be called as soon as an owner name is set. It searches online players for the owner name
      * and then sets it as owner here
      */
     public function mapOwner() {
@@ -537,7 +548,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
             if ($this->getOwner() !== null && !$this->isSitting() && !$this->isTargetMonsterOrAnimal()) {
                 if ($this->getOwner()->distanceSquared($this) > $this->teleportDistance) {
                     $this->setAngry(0); // reset angry flag
-                    $newPosition = $this->getPositionNearOwner();
+                    $newPosition = $this->getPositionNearOwner($this->getOwner(), $this);
                     $this->teleport($newPosition !== null ? $newPosition : $this->getOwner()); // this should be better than teleporting directly onto player
                     PureEntities::logOutput("$this: teleport distance exceeded. Teleport myself near to owner.");
                 } else if ($this->getOwner()->distanceSquared($this) > $this->followDistance) {
@@ -554,25 +565,6 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
                 }
             }
         }
-    }
-
-    /**
-     * Returns a position near the player (owner) of this entity
-     *
-     * @return Vector3|null the position near the owner
-     */
-
-    //This function needs to be in a parent class for tamed animals.
-    private function getPositionNearOwner(): Vector3 {
-        $x = $this->getOwner()->x + (mt_rand(0, 1) == 0 ? -1 : 1);
-        $z = $this->getOwner()->z + (mt_rand(0, 1) == 0 ? -1 : 1);
-        $pos = PureEntities::getInstance()->getSuitableHeightPosition($x, $this->getOwner()->y, $z, $this->getLevel());
-        if ($pos !== null) {
-            return new Vector3($x, $pos->y, $z);
-        } else {
-            return null;
-        }
-
     }
 
     public function getKillExperience(): int {

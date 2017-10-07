@@ -26,8 +26,7 @@ class Bat extends FlyingAnimal {
     //TODO implement
     const NETWORK_ID = Data::BAT;
 
-    public $width = 0.469;
-    public $length = 0.484;
+    public $width = 0.484;
     public $height = 0.5;
     public $speed = 1.0;
 
@@ -47,7 +46,7 @@ class Bat extends FlyingAnimal {
         return [];
     }
 
-    public function getMaxHealth() : int {
+    public function getMaxHealth(): int {
         return 6;
     }
 
