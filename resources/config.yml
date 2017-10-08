@@ -63,6 +63,7 @@ max-spawn:
   cow: 5
   horse: 10 # also donkeys and so on ...
   ocelot: 2
+  parrot: 3
   pig: 5
   rabbit: 5
   sheep: 5
@@ -90,6 +91,7 @@ probability:
   cow: 20
   horse: 10
   ocelot: 20
+  parrot: 30
   pig: 20
   rabbit: 20
   sheep: 20
