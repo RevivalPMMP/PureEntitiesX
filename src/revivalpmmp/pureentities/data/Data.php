@@ -57,17 +57,6 @@ interface Data {
     const FIRE_BALL = 85;
     const PARROT = 30;
 
-    // NBT Items
-    const NBT_KEY_OWNER_UUID = "OwnerUUID"; // string
-    const NBT_KEY_SITTING = "Sitting"; // 1 or 0 (true/false)
-    const NBT_KEY_ANGRY = "Angry"; // 0 - not angry, > 0 angry
-    const NBT_KEY_COLLAR_COLOR = "Color"; // 0 -14 (14 - RED)
-    const NBT_KEY_CATTYPE = "Variant";
-    const NBT_KEY_BIRDTYPE = "Variant";
 
-    // this is our own tag - only for server side ...
-    const NBT_SERVER_KEY_OWNER_NAME = "OwnerName";
 
-    // Colors
-    const RED = 14;
 }
