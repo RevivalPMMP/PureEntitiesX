@@ -140,7 +140,7 @@ class EventListener implements Listener {
                     }
                 } else if ($entity instanceof IntfTameable and !$entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_TAME) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame", PureEntities::DEBUG);
-                    $return = $entity->tame($player);
+                    $return = $entity->attemptToTame($player);
                 } else if ($entity instanceof IntfTameable and $entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_SIT) == 0) {
                     PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit", PureEntities::DEBUG);
                     $entity->setSitting(true);

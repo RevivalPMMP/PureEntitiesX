@@ -18,7 +18,10 @@
 
 namespace revivalpmmp\pureentities\entity\animal;
 
+use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\entity\FlyingEntity;
+use revivalpmmp\pureentities\features\IntfTameable;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -94,6 +97,25 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal {
             $this->moveTime = 0;
         }
         return true;
+    }
+
+    public function showButton(Player $player) {
+        if ($this instanceof IntfTameable) {
+            $itemInHand = $player->getInventory()->getItemInHand()->getId();
+            $tameFood = $this->getTameFoods();
+            if (!$this->isTamed() and in_array($itemInHand, $tameFood)) {
+                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
+                PureEntities::logOutput("Button text set to Tame.");
+            } else if ($this->isTamed()) { // Offer sit or stand.
+                if ($this->isSitting()) {
+                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
+                    PureEntities::logOutput("Button text set to Stand.");
+                } else {
+                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
+                    PureEntities::logOutput("Button text set to Sit.");
+                }
+            }
+        }
     }
 
 }

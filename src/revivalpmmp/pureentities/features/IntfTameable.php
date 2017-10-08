@@ -47,7 +47,7 @@ interface IntfTameable{
      * @param Player $player
      * @return mixed
      */
-    public function tame(Player $player);
+    public function attemptToTame(Player $player);
 
     /**
      * This method is called from SetTamedOwnerTask to map the owner after the player logged in
@@ -68,4 +68,5 @@ interface IntfTameable{
      * @param bool $sit
      */
     public function setSitting(bool $sit=true);
+
 }
