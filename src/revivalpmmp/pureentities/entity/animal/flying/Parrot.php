@@ -19,18 +19,13 @@ namespace revivalpmmp\pureentities\entity\animal\flying;
 
 
 use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\FlyingAnimal;
 use pocketmine\item\Item;
-use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\mcpe\protocol\EntityEventPacket;
-use pocketmine\Player;
-use revivalpmmp\pureentities\components\BreedingComponent;
 use pocketmine\nbt\tag\IntTag;
-use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
-use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
@@ -42,13 +37,11 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
 
     const NETWORK_ID = Data::PARROT;
     private $birdType; // 0 = red, 1 = blue, 2 = green, 3 = cyan, 4 = silver
-    public $width = 0.5;
-    public $height = 0.9;
-    public $speed = 1.0;
-
     public function initEntity()
     {
         parent::initEntity();
+        $this->width = 0.5;
+        $this->height = 0.9;
         $this->fireProof = false;
         $this->tameFoods = array(
             Item::SEEDS,
@@ -57,7 +50,10 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
             Item::PUMPKIN_SEEDS,
             Item::WHEAT_SEEDS
         );
-        $this->setBirdType(mt_rand(0,5));
+        $this->loadFromNBT();
+        if (empty($this->namedtag->variant)) {
+            $this->setBirdType(mt_rand(0,4));
+        }
 
         if ($this->isTamed()) {
             $this->mapOwner();
@@ -70,7 +66,7 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
     public function loadFromNBT() {
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             if (isset($this->namedtag->OwnerName)) {
-                $this->ownerName = $this->namedtag[Data::NBT_SERVER_KEY_OWNER_NAME];
+                $this->ownerName = $this->namedtag[NBTConst::NBT_SERVER_KEY_OWNER_NAME];
                 $this->setTamed(true);
             }
             if ($this->ownerName !== null) {
@@ -82,14 +78,10 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
                 }
             }
             if (isset($this->namedtag->Variant)) {
-                $this->setBirdType($this->namedtag[Data::NBT_KEY_BIRDTYPE]);
+                $this->setBirdType($this->namedtag[NBTConst::NBT_KEY_BIRDTYPE]);
             }
             if (isset($this->namedtag->Sitting)) {
-                $this->setSitting($this->namedtag[Data::NBT_KEY_SITTING] === 1);
-
-                // Until an appropriate NBT key can be attached to this, if the entity is sitting when loaded,
-                // commandedToSit will be set to true so that it doesn't teleport to it's owner by accident.
-                $this->setCommandedToSit($this->isSitting());
+                $this->setSitting($this->namedtag[NBTConst::NBT_KEY_SITTING] === 1);
             }
         }
     }
@@ -98,13 +90,13 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
     {
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             parent::saveNBT();
-            $this->namedtag->Variant = new ByteTag(Data::NBT_KEY_BIRDTYPE, $this->birdType);
-            $this->namedtag->Sitting = new IntTag(Data::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
+            $this->namedtag->Variant = new ByteTag(NBTConst::NBT_KEY_BIRDTYPE, $this->birdType);
+            $this->namedtag->Sitting = new IntTag(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
             if ($this->getOwnerName() !== null) {
-                $this->namedtag->OwnerName = new StringTag(Data::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
+                $this->namedtag->OwnerName = new StringTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
             }
             if ($this->owner !== null) {
-                $this->namedtag->OwnerUUID = new StringTag(Data::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
+                $this->namedtag->OwnerUUID = new StringTag(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
             }
         }
 
@@ -123,7 +115,7 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
     }
 
     public function getDrops(): array {
-        return [];
+        return [Item::FEATHER];
     }
 
     public function getMaxHealth(): int {
@@ -136,6 +128,5 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
     }
     private function getBirdType() {
         return $this->birdType;
-
     }
 }
