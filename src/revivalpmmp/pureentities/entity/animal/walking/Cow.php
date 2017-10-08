@@ -32,10 +32,7 @@ use revivalpmmp\pureentities\data\Data;
 class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::COW;
 
-    public $width = 1.5;
-    public $height = 1.2;
     public $eyeHeight = 1;
-    public $speed = 1.0;
 
     private $feedableItems = array(Item::WHEAT);
 
@@ -48,8 +45,12 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.5;
+        $this->height = 1.2;
+
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
+
     }
 
     public function saveNBT() {

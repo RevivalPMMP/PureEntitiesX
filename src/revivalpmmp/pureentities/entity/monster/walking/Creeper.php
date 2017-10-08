@@ -34,10 +34,6 @@ class Creeper extends WalkingMonster implements Explosive {
     const NETWORK_ID = Data::CREEPER;
     const DATA_POWERED = 19;
 
-    public $width = 0.7;
-    public $height = 1.7;
-    public $speed = 0.9;
-
     private $bombTime = 0;
 
     private $explodeBlocks = false;
@@ -53,6 +49,9 @@ class Creeper extends WalkingMonster implements Explosive {
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 0.7;
+        $this->height = 1.7;
+        $this->speed = 0.9;
         $this->loadFromNBT();
         $this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) == 0 ? false : true);
     }

@@ -29,10 +29,6 @@ use revivalpmmp\pureentities\features\IntfCanPanic;
 class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = 18;
 
-    public $height = 0.5;
-    public $width = 0.5;
-    public $speed = 2;
-
     private $feedableItems = array(
         Item::CARROT,
         Item::GOLDEN_CARROT,
@@ -47,6 +43,9 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 0.5;
+        $this->height = 0.5;
+        $this->speed = 2;
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
     }

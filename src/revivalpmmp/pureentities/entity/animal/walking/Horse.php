@@ -28,9 +28,14 @@ use revivalpmmp\pureentities\data\Data;
 class Horse extends WalkingAnimal implements Rideable {
     const NETWORK_ID = Data::HORSE;
 
-    public $width = 1.3;
-    public $height = 1.5;
-    public $speed = 1.0;
+
+
+    public function initEntity()
+    {
+        parent::initEntity();
+        $this->width = 1.3;
+        $this->height = 1.5;
+    }
 
     public function getName(): string {
         return "Horse";

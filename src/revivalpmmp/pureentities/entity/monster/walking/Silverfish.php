@@ -28,16 +28,15 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class Silverfish extends WalkingMonster {
     const NETWORK_ID = Data::SILVERFISH;
 
-    public $height = 0.438;
-    public $width = 1.094;
-    public $speed = 1.4;
-
     public function getSpeed(): float {
         return $this->speed;
     }
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.094;
+        $this->height = 0.438;
+        $this->speed = 1.4;
 
         $this->setMaxDamage(1);
         $this->setDamage([0, 1, 1, 1]);

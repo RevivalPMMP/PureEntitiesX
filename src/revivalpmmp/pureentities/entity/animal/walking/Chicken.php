@@ -30,10 +30,7 @@ use revivalpmmp\pureentities\features\IntfCanPanic;
 class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::CHICKEN;
 
-    public $width = 1;
-    public $height = 0.8;
     public $eyeHeight = 0.6;
-    public $speed = 1.0;
     public $gravity = 0.08; // floating chickens
 
     // egg laying specific configuration (an egg is laid by a chicken each 6000-120000 ticks)
@@ -57,6 +54,9 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1;
+        $this->height = 0.8;
+
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
     }

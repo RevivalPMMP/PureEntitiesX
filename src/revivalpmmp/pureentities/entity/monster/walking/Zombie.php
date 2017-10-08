@@ -37,10 +37,6 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
     const NETWORK_ID = Data::ZOMBIE;
 
-    public $width = 1.031;
-    public $height = 2;
-    public $speed = 1.1;
-
     /**
      * @var MobEquipment
      */
@@ -67,6 +63,9 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.031;
+        $this->height = 2.0;
+        $this->speed = 1.1;
         $this->setDamage([0, 2, 3, 4]);
 
         $this->mobEquipment = new MobEquipment($this);

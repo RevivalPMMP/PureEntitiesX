@@ -40,9 +40,11 @@ use revivalpmmp\pureentities\data\Data;
 class Skeleton extends WalkingMonster implements ProjectileSource {
     const NETWORK_ID = Data::SKELETON;
 
-    public $height = 2;
-    public $width = 0.875;
-    public $speed = 1.0;
+    public function initEntity() {
+        parent::initEntity();
+        $this->width = 0.875;
+        $this->height = 2.0;
+    }
 
     public function getSpeed(): float {
         return $this->speed;
@@ -149,6 +151,4 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
     public function getKillExperience(): int {
         return 5;
     }
-
-
 }

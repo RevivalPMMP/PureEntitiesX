@@ -35,17 +35,15 @@ use revivalpmmp\pureentities\data\Data;
 class Ghast extends FlyingMonster implements ProjectileSource {
     const NETWORK_ID = Data::GHAST;
 
-    public $width = 4.5;
-    public $height = 4.5;
-    public $speed = 1.2;
-
     public function getSpeed(): float {
         return $this->speed;
     }
 
     public function initEntity() {
         parent::initEntity();
-
+        $this->width = 4.5;
+        $this->height = 4.5;
+        $this->speed = 1.2;
         $this->fireProof = true;
         $this->setDamage([0, 0, 0, 0]);
     }

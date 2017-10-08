@@ -36,11 +36,7 @@ class PigZombie extends WalkingMonster {
     const NETWORK_ID = Data::PIG_ZOMBIE;
 
     private $angry = 0;
-
-    public $height = 2.03;
-    public $width = 1.125;
     public $eyeHeight = 1.62;
-    public $speed = 1.15;
 
     public function getSpeed(): float {
         return $this->speed;
@@ -48,6 +44,9 @@ class PigZombie extends WalkingMonster {
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.125;
+        $this->height = 2.03;
+        $this->speed = 1.15;
 
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             if (isset($this->namedtag->Angry)) {

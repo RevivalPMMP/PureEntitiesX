@@ -31,10 +31,6 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class Slime extends JumpingMonster {
     const NETWORK_ID = Data::SLIME;
 
-    public $width = 1.2;
-    public $height = 1.2;
-    public $speed = 0.8;
-
     public function getSpeed(): float {
         return $this->speed;
     }
@@ -45,6 +41,9 @@ class Slime extends JumpingMonster {
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.2;
+        $this->height = 1.2;
+        $this->speed = 0.8;
 
         $this->setDamage([0, 2, 2, 3]);
     }

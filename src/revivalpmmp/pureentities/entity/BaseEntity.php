@@ -60,6 +60,8 @@ abstract class BaseEntity extends Creature {
     protected $fireProof = false;
     private $maxJumpHeight = 1; // default: 1 block jump height - this should be 2 for horses e.g.
     protected $checkTargetSkipTicks = 1; // default: no skip
+    public $width = 1.0;
+    public $height = 1.0;
     public $speed = 1.0;
     /**
      * @var null|TickCounter

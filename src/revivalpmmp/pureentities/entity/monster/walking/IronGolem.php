@@ -32,16 +32,15 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class IronGolem extends WalkingMonster {
     const NETWORK_ID = Data::IRON_GOLEM;
 
-    public $height = 2.688;
-    public $width = 1.625;
-    public $speed = 0.8;
-
     public function getSpeed(): float {
         return $this->speed;
     }
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 2.688;
+        $this->height = 1.625;
+        $this->speed = 0.8;
         $this->setMaxHealth(20);
         $this->setHealth(20);
 

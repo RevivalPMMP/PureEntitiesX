@@ -31,16 +31,15 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class Enderman extends WalkingMonster {
     const NETWORK_ID = Data::ENDERMAN;
 
-    public $height = 2.875;
-    public $width = 1.094;
-    public $speed = 1.21;
-
     public function getSpeed(): float {
         return $this->speed;
     }
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.094;
+        $this->height = 2.875;
+        $this->speed = 1.21;
 
         $this->setDamage([0, 4, 7, 10]);
     }

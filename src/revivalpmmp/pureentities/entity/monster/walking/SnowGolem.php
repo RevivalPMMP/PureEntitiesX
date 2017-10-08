@@ -42,10 +42,6 @@ use revivalpmmp\pureentities\data\Data;
 class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract, IntfShearable {
     const NETWORK_ID = Data::SNOW_GOLEM;
 
-    public $height = 1.875;
-    public $width = 1.281;
-    public $speed = 1.0;
-
     const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
 
     // --------------------------------------------------
@@ -59,6 +55,8 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.281;
+        $this->height = 1.875;
 
         $this->setFriendly(true);
         $this->loadFromNBT();

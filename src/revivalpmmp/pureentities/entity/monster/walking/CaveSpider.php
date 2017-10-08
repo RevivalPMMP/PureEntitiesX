@@ -30,16 +30,15 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class CaveSpider extends WalkingMonster {
     const NETWORK_ID = Data::CAVE_SPIDER;
 
-    public $width = 1.438;
-    public $height = 0.547;
-    public $speed = 1.3;
-
     public function getSpeed(): float {
         return $this->speed;
     }
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.438;
+        $this->height = 0.547;
+        $this->speed = 1.3;
         $this->setDamage([0, 2, 3, 3]);
     }
 

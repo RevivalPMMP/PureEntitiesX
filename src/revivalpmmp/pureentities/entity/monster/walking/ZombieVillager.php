@@ -31,16 +31,15 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class ZombieVillager extends WalkingMonster {
     const NETWORK_ID = Data::ZOMBIE_VILLAGER;
 
-    public $width = 1.031;
-    public $height = 2.125;
-    public $speed = 1.1;
-
     public function getSpeed(): float {
         return $this->speed;
     }
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.031;
+        $this->height = 2.125;
+        $this->speed = 1.1;
 
         $this->setDamage([0, 3, 4, 6]);
     }

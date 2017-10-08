@@ -28,10 +28,6 @@ use revivalpmmp\pureentities\features\IntfCanInteract;
 class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
     const NETWORK_ID = Data::MOOSHROOM;
 
-    public $height = 1.875;
-    public $width = 1.781;
-    public $speed = 1.0;
-
     private $feedableItems = array(Item::WHEAT);
 
     /**
@@ -43,6 +39,8 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.781;
+        $this->height = 1.875;
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
     }

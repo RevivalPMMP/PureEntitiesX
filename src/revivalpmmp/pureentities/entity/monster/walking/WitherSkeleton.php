@@ -32,10 +32,6 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class WitherSkeleton extends WalkingMonster {
     const NETWORK_ID = Data::WITHER_SKELETON;
 
-    public $height = 2;
-    public $width = 0.875;
-    public $speed = 1.0;
-
     public function getSpeed(): float {
         return $this->speed;
     }
@@ -46,6 +42,8 @@ class WitherSkeleton extends WalkingMonster {
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 0.875;
+        $this->height = 2.0;
 
         $this->setDamage([0, 3, 4, 6]);
     }

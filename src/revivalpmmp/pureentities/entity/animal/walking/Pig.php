@@ -30,10 +30,6 @@ use revivalpmmp\pureentities\features\IntfCanPanic;
 class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
     const NETWORK_ID = Data::PIG;
 
-    public $width = 1.5;
-    public $height = 1;
-    public $speed = 1.0;
-
     private $feedableItems = array(
         Item::CARROT,
         Item::BEETROOT);
@@ -47,6 +43,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = 1.5;
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
     }

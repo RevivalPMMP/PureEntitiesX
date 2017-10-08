@@ -24,9 +24,12 @@ use revivalpmmp\pureentities\data\Data;
 class Villager extends WalkingAnimal {
     const NETWORK_ID = Data::VILLAGER;
 
-    public $width = 0.938;
-    public $height = 2;
-    public $speed = 1.1;
+    public function initEntity() {
+        parent::initEntity();
+        $this->width = 0.938;
+        $this->height = 2;
+        $this->speed = 1.1;
+    }
 
     public function getSpeed(): float {
         return $this->speed;
