@@ -25,6 +25,7 @@ use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\ThreadManager;
 use revivalpmmp\pureentities\data\Color;
+use revivalpmmp\pureentities\entity\animal\flying\Parrot;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
@@ -130,6 +131,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
             //ElderGuardian::class,
             //Guardian::class,
             //Bat::class,
+            Parrot::class,
             Squid::class,
             Villager::class,
             Blaze::class,
