@@ -19,6 +19,8 @@
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
 use pocketmine\entity\Creature;
+use pocketmine\nbt\NBT;
+use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
@@ -35,6 +37,7 @@ use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\traits\Tameable;
 
 
@@ -45,7 +48,7 @@ use revivalpmmp\pureentities\traits\Tameable;
 
 
 class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
-    use Tameable;
+    use Tameable, Feedable;
     const NETWORK_ID = Data::OCELOT;
 
     public $width = 0.8;
@@ -89,14 +92,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
      */
     private $commandedToSit = false;
 
-    // --------------------------------------------------
-    // nbt variables
-    // --------------------------------------------------
-
     private $catType = 0; // 0 = Wild Ocelot, 1 = Tuxedo, 2 = Tabby, 3 = Siamese
-
-    // End of NBT Variables
-
 
     public function getSpeed(): float {
         return $this->speed;
@@ -244,17 +240,17 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
     public function loadFromNBT() {
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             if (isset($this->namedtag->Variant)) {
-                $this->setCatType($this->namedtag[Data::NBT_KEY_CATTYPE]);
+                $this->setCatType($this->namedtag[NBTConst::NBT_KEY_CATTYPE]);
             }
             if (isset($this->namedtag->Sitting)) {
-                $this->setSitting($this->namedtag[Data::NBT_KEY_SITTING] === 1);
+                $this->setSitting($this->namedtag[NBTConst::NBT_KEY_SITTING] === 1);
 
                 // Until an appropriate NBT key can be attached to this, if the entity is sitting when loaded,
                 // commandedToSit will be set to true so that it doesn't teleport to it's owner by accident.
                 $this->setCommandedToSit($this->isSitting());
             }
             if (isset($this->namedtag->OwnerName)) {
-                $this->ownerName = $this->namedtag[Data::NBT_SERVER_KEY_OWNER_NAME];
+                $this->ownerName = $this->namedtag[NBTConst::NBT_SERVER_KEY_OWNER_NAME];
                 $this->setTamed(true);
             }
             if ($this->ownerName !== null) {
@@ -272,13 +268,13 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
      public function saveNBT() {
          if (PluginConfiguration::getInstance()->getEnableNBT()) {
              parent::saveNBT();
-             $this->namedtag->Variant = new ByteTag(Data::NBT_KEY_CATTYPE, $this->catType); // sets ocelot skin
-             $this->namedtag->Sitting = new IntTag(Data::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
+             $this->namedtag->Variant = new ByteTag(NBTConst::NBT_KEY_CATTYPE, $this->catType); // sets ocelot skin
+             $this->namedtag->Sitting = new IntTag(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
              if ($this->getOwnerName() !== null) {
-                 $this->namedtag->OwnerName = new StringTag(Data::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
+                 $this->namedtag->OwnerName = new StringTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
              }
              if ($this->owner !== null) {
-                 $this->namedtag->OwnerUUID = new StringTag(Data::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
+                 $this->namedtag->OwnerUUID = new StringTag(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
              }
          }
          $this->breedableClass->saveNBT();
