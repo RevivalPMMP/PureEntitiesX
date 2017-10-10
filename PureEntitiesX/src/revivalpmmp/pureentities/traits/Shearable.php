@@ -21,7 +21,12 @@ namespace revivalpmmp\pureentities\traits;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\animal\walking\Cow;
+use revivalpmmp\pureentities\entity\animal\walking\Mooshroom;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
+use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\PureEntities;
 
 trait Shearable {
 
@@ -37,7 +42,7 @@ trait Shearable {
      * @return bool
      */
     public function shear(Player $player): bool {
-        if ($this->isSheared() or $this->getBreedingComponent()->isBaby()) {
+        if ($this->isSheared() or ($this instanceof IntfCanBreed and $this->getBreedingComponent()->isBaby()) ) {
             return false;
         } else {
             $meta = ($this instanceof Sheep ? $this->color : 0);
@@ -47,7 +52,9 @@ trait Shearable {
             } else {
                 $dropCount = mt_rand(1, $this->maxShearDrops);
             }
-            $player->getLevel()->dropItem($this->asVector3(), Item::get(Item::WOOL, $meta, $dropCount));
+            if ($dropCount != 0) {
+                $player->getLevel()->dropItem($this->asVector3(), Item::get($this->shearItems, $meta, $dropCount));
+            }
             $this->setSheared(true);
             return true;
         }
@@ -59,6 +66,22 @@ trait Shearable {
 
     public function setSheared(bool $sheared){
         $this->sheared = $sheared;
-        $this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, $sheared); // send client data
+        $this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, $sheared);
+        if ($this instanceof Mooshroom and $sheared == true) {
+
+            /**
+             * @var Cow $newCow
+             */
+            $newCow = PureEntities::create(Data::COW, $this->asLocation());
+            $loaded = false;
+            while (!$loaded) {
+                $newCow->setPosition($this->asVector3());
+                $newCow->setRotation($this->getYaw(), $this->getPitch());
+                if ($newCow->temporalVector !== null) {
+                    $loaded = true;
+                }
+            }
+            $this->close();
+        }
     }
 }

@@ -128,7 +128,6 @@ abstract class WalkingEntity extends BaseEntity {
 
             if ($this instanceof IntfTameable and
                 $this->getBaseTarget() instanceof Player and
-                $this->isFriendly() and
                 $this->isTamed() and
                 $distance <= 6
             ) { // before moving nearer to the player, check if distance

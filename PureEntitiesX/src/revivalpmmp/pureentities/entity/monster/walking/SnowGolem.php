@@ -38,8 +38,10 @@ use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\traits\Shearable;
 
 class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract, IntfShearable {
+    use Shearable;
     const NETWORK_ID = Data::SNOW_GOLEM;
 
     const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
@@ -47,11 +49,6 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
     // --------------------------------------------------
     // nbt variables
     // --------------------------------------------------
-
-    /**
-     * @var bool
-     */
-    private $sheared = false;
 
     public function initEntity() {
         parent::initEntity();
@@ -61,6 +58,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
         $this->setFriendly(true);
         $this->loadFromNBT();
         $this->setSheared($this->isSheared()); // set data from NBT
+        $this->maxShearDrops = 0;
     }
 
     public function getSpeed(): float {
@@ -132,28 +130,6 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
     // functions for snowgolem
     // ------------------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Sets the snowgolem sheared. This means, he looses his pumpkin and shows face
-     * @param bool $sheared
-     */
-    public function setSheared(bool $sheared) {
-        $this->sheared = $sheared;
-        $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SHEARED, $sheared); // set pumpkin on/off (sheared?)
-    }
-
-    public function isSheared(): bool {
-        return $this->sheared;
-    }
-
-    public function shear(Player $player): bool {
-        if ($this->isSheared()) {
-            return false;
-        } else {
-            $this->setSheared(true);
-            InteractionHelper::displayButtonText("", $player);
-            return true;
-        }
-    }
 
     /**
      * This method is called when a player is looking at this entity. This

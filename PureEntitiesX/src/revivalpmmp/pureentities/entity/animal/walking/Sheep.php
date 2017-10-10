@@ -78,19 +78,10 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
         $this->breedableClass->init();
         $this->feedableItems = array(Item::WHEAT);
         $this->maxShearDrops = 3;
-        $this->shearItems = array(Item::WOOL);
+        $this->shearItems = Item::WOOL;
         $this->loadFromNBT();
         $this->setColor($this->getColor());
         $this->setSheared($this->isSheared());
-    }
-
-
-    /**
-     * Returns the appropriate NetworkID associated with this entity
-     * @return int
-     */
-    public function getNetworkId() {
-        return self::NETWORK_ID;
     }
 
     public function getSpeed(): float {

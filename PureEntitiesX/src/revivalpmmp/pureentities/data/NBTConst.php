@@ -25,7 +25,7 @@ interface NBTConst {
     const NBT_KEY_ANGRY = "Angry"; // 0 - not angry, > 0 angry
     const NBT_KEY_BIRDTYPE = "Variant";
     const NBT_KEY_CATTYPE = "Variant";
-    const NBT_KEY_COLLAR_COLOR = "Color"; // 0 -14 (14 - RED)
+    const NBT_KEY_COLLAR_COLOR = "PEXCollarColor"; // 0 -14 (14 - RED)
     const NBT_KEY_COLOR = "Color";
     const NBT_KEY_OWNER_UUID = "OwnerUUID"; // string
     const NBT_KEY_SHEARED = "Sheared";
