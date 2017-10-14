@@ -112,6 +112,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
         $this->setTamed($this->isTamed());
         if ($this->isTamed()) {
             $this->mapOwner();
+            $this->setCollarColor($this->collarColor);
             if ($this->owner === null) {
                 PureEntities::logOutput("Wolf($this): is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", PureEntities::NORM);
             }

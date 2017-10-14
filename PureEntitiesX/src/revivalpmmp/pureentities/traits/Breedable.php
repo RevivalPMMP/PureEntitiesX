@@ -30,4 +30,8 @@ trait Breedable {
     public function getBreedingComponent() {
         return $this->breedableClass;
     }
+
+    public function getNetworkId() {
+        return $this->NETWORK_ID;
+    }
 }

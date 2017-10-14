@@ -18,31 +18,36 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\nbt\tag\ByteTag;
 use revivalpmmp\pureentities\components\BreedingComponent;
+use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanInteract;
+use revivalpmmp\pureentities\features\IntfShearable;
+use revivalpmmp\pureentities\PluginConfiguration;
+use revivalpmmp\pureentities\traits\Breedable;
+use revivalpmmp\pureentities\traits\Feedable;
+use revivalpmmp\pureentities\traits\Shearable;
 
-class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
+class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable {
+    use Shearable, Breedable, Feedable;
     const NETWORK_ID = Data::MOOSHROOM;
-
-    private $feedableItems = array(Item::WHEAT);
-
-    /**
-     * Is needed for breeding functionality
-     *
-     * @var BreedingComponent
-     */
-    private $breedableClass;
 
     public function initEntity() {
         parent::initEntity();
         $this->width = 1.781;
         $this->height = 1.875;
+        $this->feedableItems = array(Item::WHEAT);
+
+        $this->loadFromNBT();
         $this->breedableClass = new BreedingComponent($this);
+        $this->setSheared($this->isSheared());
         $this->breedableClass->init();
+        $this->maxShearDrops = 5;
+        $this->shearItems = Item::RED_MUSHROOM;
     }
 
     public function getSpeed(): float {
@@ -53,35 +58,19 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract {
         return "Mooshroom";
     }
 
+    public function loadFromNBT() {
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->namedtag->Sheared)) {
+                $this->sheared = (bool)$this->namedtag[NBTConst::NBT_KEY_SHEARED];
+            } else {
+                $this->setSheared(false);
+            }
+        }
+    }
     public function saveNBT() {
         parent::saveNBT();
         $this->breedableClass->saveNBT();
-    }
-
-    /**
-     * Returns the breedable class or NULL if not configured
-     *
-     * @return BreedingComponent
-     */
-    public function getBreedingComponent() {
-        return $this->breedableClass;
-    }
-
-    /**
-     * Returns the appropriate NetworkID associated with this entity
-     * @return int
-     */
-    public function getNetworkId() {
-        return self::NETWORK_ID;
-    }
-
-    /**
-     * Returns the items that can be fed to the entity
-     *
-     * @return array
-     */
-    public function getFeedableItems() {
-        return $this->feedableItems;
+        $this->namedtag->Sheared = new ByteTag(NBTConst::NBT_KEY_SHEARED, $this->isSheared() ? 0 : 1);
     }
 
     public function getDrops(): array {
