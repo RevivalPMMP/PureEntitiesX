@@ -115,7 +115,7 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
     }
 
     public function getDrops(): array {
-        return [Item::FEATHER];
+        return [Item::get(Item::FEATHER, 0, mt_rand(1,2))];
     }
 
     public function getMaxHealth(): int {
