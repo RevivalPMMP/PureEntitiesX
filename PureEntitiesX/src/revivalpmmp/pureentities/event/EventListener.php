@@ -241,8 +241,8 @@ class EventListener implements Listener {
             if ($entityDamaged instanceof BaseEntity) {
                 $damageCause = $entityDamaged->getLastDamageCause();
                 if ($damageCause instanceof EntityDamageByEntityEvent) {
-                    $damager = $damageCause->getDamager();
-                    if ($damager instanceof Player) {
+                    $sourceOfDamage = $damageCause->getDamager();
+                    if ($sourceOfDamage instanceof Player) {
                         $killExperience = $entityDamaged->getKillExperience();
                         $this->spawnXPOrb($entityDamaged->getLevel(), $entityDamaged, $killExperience);
                     }
@@ -276,6 +276,9 @@ class EventListener implements Listener {
                 Server::getInstance()->getScheduler()->scheduleDelayedTask(new SetTamedOwnerTask(
                     PureEntities::getInstance(), $entity), 20); // map owner after 20 ticks
             }
+        }
+        if(isset($ev->getPlayer()->namedtag->XpP) and $ev->getPlayer()->namedtag->XpP instanceof FloatTag) {
+            $ev->getPlayer()->setXpProgress($ev->getPlayer()->namedtag["XpP"]);
         }
     }
 
@@ -332,5 +335,9 @@ class EventListener implements Listener {
             return $expOrb;
         }
         return false;
+    }
+
+    public function initPlayerXp (Player $player) {
+
     }
 }
