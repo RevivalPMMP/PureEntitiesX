@@ -381,10 +381,10 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
         switch ($command->getName()) {
             case "peremove":
-                $counterLivingEntities = 0;
-                $counterOtherEntities = 0;
-                $entitiesRemoved = [];
-                if (!count($args) > 1 or $args == null) {
+                if (count($args) <= 1) {
+                    $counterLivingEntities = 0;
+                    $counterOtherEntities = 0;
+                    $entitiesRemoved = [];
                     foreach (Server::getInstance()->getLevels() as $level) {
                         foreach ($level->getEntities() as $entity) {
                             if (count($args) === 0) {
@@ -398,7 +398,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
                                         $counterOtherEntities++;
                                     }
                                 }
-                            } elseif (count($args) == 1 and strcmp(strtolower($args[0]), "all") == 0) {
+                            } elseif (strcmp(strtolower($args[0]), "all") == 0) {
                                 if (!$entity instanceof Player) {
                                     $entitiesRemoved[] = clone($entity);
                                     $entity->close();
@@ -451,8 +451,6 @@ class PureEntities extends PluginBase implements CommandExecutor {
                     $sender->sendMessage("Usage: pesummon <mobname> <opt:player_name> <opt:baby>");
                     $commandSuccessful = true;
                 }
-                break;
-            default:
                 break;
         }
         return $commandSuccessful;
