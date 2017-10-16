@@ -25,6 +25,7 @@ use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\task\spawners\animal\ChickenSpawner;
 use revivalpmmp\pureentities\task\spawners\animal\CowSpawner;
+use revivalpmmp\pureentities\task\spawners\animal\ParrotSpawner;
 use revivalpmmp\pureentities\task\spawners\monster\BlazeSpawner;
 use revivalpmmp\pureentities\task\spawners\monster\CaveSpiderSpawner;
 use revivalpmmp\pureentities\task\spawners\monster\CreeperSpawner;
@@ -70,18 +71,25 @@ class AutoSpawnTask extends PluginTask {
             if (count($level->getPlayers()) > 0) {
                 foreach ($level->getPlayers() as $player) {
                     foreach ($this->spawnerClasses as $spawnerClass) {
+                        $locationValid = false;
+                        $pass = 1;
+                        while (!$locationValid) {
 
-                        $x = $player->x + mt_rand(-20, 20);
-                        $z = $player->z + mt_rand(-20, 20);
-                        $y = $player->y;
+                            // Random method used to get 8 block difference from player to entity spawn)
+                            $x = $player->x + (random_int(8, 20) * (random_int(0, 1) === 0 ? 1 : -1));
+                            $z = $player->z + (random_int(8, 20) * (random_int(0, 1) === 0 ? 1 : -1));
+                            $y = $player->y;
 
-                        // search up- and downwards the current player's y-coordinate to find a valid block!
-                        $correctedPosition = PureEntities::getSuitableHeightPosition($x, $y, $z, $level);
-                        if ($correctedPosition !== null) {
-                            $pos = new Position($correctedPosition->x, $correctedPosition->y - 1, $correctedPosition->z, $level);
-                            $spawnerClass->spawn($pos, $player);
-                        } else {
-                            PureEntities::logOutput("AutoSpawnTask: cannot find a suitable spawn coordinate [search.x:$x] [search.y:$y] [search.z:$z]", PureEntities::WARN);
+                            // search up- and downwards the current player's y-coordinate to find a valid block!
+                            $correctedPosition = PureEntities::getSuitableHeightPosition($x, $y, $z, $level);
+                            if ($correctedPosition !== null) {
+                                $pos = new Position($correctedPosition->x, $correctedPosition->y - 1, $correctedPosition->z, $level);
+                                $spawnerClass->spawn($pos, $player);
+                                $locationValid = true;
+                            } else {
+                                PureEntities::logOutput("AutoSpawnTask: suitable spawn coordinate not found [search.x:$x] [search.y:$y] [search.z:$z] [pass:$pass]", PureEntities::WARN);
+                                $pass++;
+                            }
                         }
                     }
                 }
@@ -95,6 +103,7 @@ class AutoSpawnTask extends PluginTask {
         $this->spawnerClasses[] = new CowSpawner();
         $this->spawnerClasses[] = new HorseSpawner();
         $this->spawnerClasses[] = new OcelotSpawner();
+        // $this->spawnerClasses[] = new ParrotSpawner();
         $this->spawnerClasses[] = new PigSpawner();
         $this->spawnerClasses[] = new RabbitSpawner();
         $this->spawnerClasses[] = new SheepSpawner();
