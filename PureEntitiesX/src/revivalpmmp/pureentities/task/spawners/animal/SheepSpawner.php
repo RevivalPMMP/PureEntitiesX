@@ -52,8 +52,8 @@ class SheepSpawner extends BaseSpawner {
                 !$block->isTransparent() and // and only on opaque blocks
                 $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level
                 $this->checkPlayerDistance($player, $pos) and // distance to player has to be at least a configurable amount of blocks (atm 8!)
-                $this->isEnoughAirAbovePosition($pos)
-            ) { // check if there is at least 2 blocks of air above the spawn position
+                $this->isEnoughAirAbovePosition($pos) // check if there is at least 2 blocks of air above the spawn position
+            ) {
                 $this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Animal");
                 PureEntities::logOutput($this->getClassNameShort() . ": scheduleCreatureSpawn (pos: $pos)", PureEntities::NORM);
                 return true;
@@ -76,7 +76,7 @@ class SheepSpawner extends BaseSpawner {
     // ---- sheep spawner specific methods ----
 
     /**
-     * Checks if there is at least 2 blocks of AIR above the position to spawn the pig to
+     * Checks if there is at least 2 blocks of AIR above the position to spawn the entity to
      *
      * @param Position $pos
      * @return bool
