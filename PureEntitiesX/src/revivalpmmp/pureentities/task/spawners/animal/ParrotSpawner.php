@@ -64,7 +64,7 @@ class ParrotSpawner extends BaseSpawner {
     }
 
     protected function getEntityNetworkId(): int {
-        return Bat::NETWORK_ID;
+        return Parrot::NETWORK_ID;
     }
 
     protected function getEntityName(): string {
