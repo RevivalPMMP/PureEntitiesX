@@ -130,7 +130,7 @@ class Spawner extends Spawnable {
         return true;
     }
 
-    public function saveNBT() {
+    public function saveNBT() : void {
         if (PluginConfiguration::getInstance()->getEnableNBT()) {
             parent::saveNBT();
 
@@ -188,7 +188,7 @@ class Spawner extends Spawnable {
         $this->maxNearbyEntities = $count;
     }
 
-    public function addAdditionalSpawnData(CompoundTag $nbt) {
+    public function addAdditionalSpawnData(CompoundTag $nbt) : void {
         $nbt["EntityId"] = $this->entityId;
     }
 
