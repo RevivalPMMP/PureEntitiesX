@@ -21,6 +21,7 @@ namespace revivalpmmp\pureentities;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
+use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\ThreadManager;
@@ -97,6 +98,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
     const DEBUG = \LogLevel::DEBUG;
 
     // button texts ...
+    // TODO Move these into their own Class under Data.
     const BUTTON_TEXT_SHEAR = "Shear";
     const BUTTON_TEXT_FEED = "Feed";
     const BUTTON_TEXT_MILK = "Milk";
@@ -182,11 +184,11 @@ class PureEntities extends PluginBase implements CommandExecutor {
 
         $this->saveDefaultConfig();
 
-        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] The Original Code for this Plugin was Written by milk0417. It is now being maintained by RevivalPMMP for PMMP 'REDACTED'.");
-
         Color::init();
 
         self::$instance = $this;
+
+        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Originally written by milk0417. Currently maintained by RevivalPMMP for PMMP 'REDACTED'.");
     }
 
     public function onEnable() {
@@ -200,9 +202,6 @@ class PureEntities extends PluginBase implements CommandExecutor {
             $this->getServer()->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
         }
 
-        $this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
-        $this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
-
         $enabled = self::$loggingEnabled = PluginConfiguration::getInstance()->getLogEnabled();
         if($enabled) {
 	        $level = self::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", self::NORM));
@@ -211,6 +210,9 @@ class PureEntities extends PluginBase implements CommandExecutor {
 	        self::$logger->registerStatic();
 	        ThreadManager::getInstance()->{spl_object_hash(self::$logger)} = self::$logger; // just in case the logger isn't shut down by the plugin
 	        $this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . $level);
+
+            $this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
+            $this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
         }
     }
 
@@ -470,5 +472,20 @@ class PureEntities extends PluginBase implements CommandExecutor {
             $longClassName = strtok("\\");
         }
         return $short;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getRegisteredClasses() : array{
+        return self::$registeredClasses;
+    }
+
+    public static function getPositionNearPlayer(Player $player, int $minimumDistanceToPlayer = 8, int $maximumDistanceToPlayer = 40) : Position {
+        // Random method used to get 8 block difference from player to entity spawn)
+        $x = $player->x + (random_int($minimumDistanceToPlayer, $maximumDistanceToPlayer) * (random_int(0, 1) === 0 ? 1 : -1));
+        $z = $player->z + (random_int($minimumDistanceToPlayer, $maximumDistanceToPlayer) * (random_int(0, 1) === 0 ? 1 : -1));
+
+        return new Position($x, $player->y, $z, $player->getLevel());
     }
 }
