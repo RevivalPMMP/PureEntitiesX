@@ -26,8 +26,8 @@ class Villager extends WalkingAnimal {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 0.938;
-        $this->height = 2;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 1.1;
     }
 

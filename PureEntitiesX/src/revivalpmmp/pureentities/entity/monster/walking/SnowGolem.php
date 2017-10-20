@@ -23,8 +23,7 @@ use pocketmine\item\ItemIds;
 use pocketmine\nbt\tag\IntTag;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
-use pocketmine\entity\Projectile;
-use pocketmine\entity\ProjectileSource;
+use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\level\sound\LaunchSound;
 use pocketmine\nbt\tag\CompoundTag;
@@ -52,8 +51,8 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 1.281;
-        $this->height = 1.875;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
 
         $this->setFriendly(true);
         $this->loadFromNBT();

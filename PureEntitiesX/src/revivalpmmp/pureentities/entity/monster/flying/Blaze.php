@@ -29,7 +29,7 @@ use pocketmine\block\Stair;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\ProjectileLaunchEvent;
-use pocketmine\entity\ProjectileSource;
+use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\sound\LaunchSound;
@@ -50,8 +50,8 @@ class Blaze extends FlyingMonster implements ProjectileSource {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 1.25;
-        $this->height = 1.5;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
 
         $this->fireProof = true;
         $this->setDamage([0, 0, 0, 0]);

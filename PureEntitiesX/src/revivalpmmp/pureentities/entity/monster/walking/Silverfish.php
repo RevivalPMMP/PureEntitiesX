@@ -34,8 +34,8 @@ class Silverfish extends WalkingMonster {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 1.094;
-        $this->height = 0.438;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 1.4;
 
         $this->setMaxDamage(1);

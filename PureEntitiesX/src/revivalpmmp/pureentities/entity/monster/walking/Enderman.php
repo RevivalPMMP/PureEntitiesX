@@ -37,8 +37,8 @@ class Enderman extends WalkingMonster {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 1.094;
-        $this->height = 2.875;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 1.21;
 
         $this->setDamage([0, 4, 7, 10]);

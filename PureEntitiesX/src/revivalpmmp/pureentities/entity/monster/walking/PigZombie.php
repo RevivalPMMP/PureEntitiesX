@@ -44,8 +44,8 @@ class PigZombie extends WalkingMonster {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 1.125;
-        $this->height = 2.03;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 1.15;
 
         if (PluginConfiguration::getInstance()->getEnableNBT()) {

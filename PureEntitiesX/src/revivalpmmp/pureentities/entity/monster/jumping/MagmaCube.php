@@ -35,8 +35,8 @@ class MagmaCube extends JumpingMonster {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 1.2;
-        $this->height = 1.2;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 0.8;
 
         $this->fireProof = true;

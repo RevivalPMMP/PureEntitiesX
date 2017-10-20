@@ -38,8 +38,8 @@ class IronGolem extends WalkingMonster {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 2.688;
-        $this->height = 1.625;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 0.8;
         $this->setMaxHealth(20);
         $this->setHealth(20);

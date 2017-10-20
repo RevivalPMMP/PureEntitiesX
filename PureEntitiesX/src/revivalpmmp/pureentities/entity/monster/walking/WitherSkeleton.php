@@ -42,8 +42,8 @@ class WitherSkeleton extends WalkingMonster {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 0.875;
-        $this->height = 2.0;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
 
         $this->setDamage([0, 3, 4, 6]);
     }

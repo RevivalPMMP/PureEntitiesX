@@ -20,6 +20,7 @@
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
 use revivalpmmp\pureentities\components\BreedingComponent;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
@@ -43,8 +44,8 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 0.5;
-        $this->height = 0.5;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 2;
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();

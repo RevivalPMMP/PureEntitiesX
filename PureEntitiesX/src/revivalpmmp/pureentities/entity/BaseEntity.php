@@ -23,6 +23,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use revivalpmmp\pureentities\components\IdlingComponent;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use pocketmine\entity\Creature;
@@ -96,6 +97,8 @@ abstract class BaseEntity extends Creature {
         if ($this->eyeHeight === null) {
             $this->eyeHeight = $this->height / 2 + 0.1;
         }
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->namedtag->generatedByPEX = new ByteTag("generatedByPEX",1);
     }
 

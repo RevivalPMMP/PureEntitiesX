@@ -33,8 +33,8 @@ class Horse extends WalkingAnimal implements Rideable {
     public function initEntity()
     {
         parent::initEntity();
-        $this->width = 1.3;
-        $this->height = 1.5;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
     }
 
     public function getName(): string {

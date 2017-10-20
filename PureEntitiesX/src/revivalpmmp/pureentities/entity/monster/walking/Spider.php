@@ -36,8 +36,8 @@ class Spider extends WalkingMonster {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 2.062;
-        $this->height = 0.781;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 1.13;
 
         $this->setDamage([0, 2, 2, 3]);

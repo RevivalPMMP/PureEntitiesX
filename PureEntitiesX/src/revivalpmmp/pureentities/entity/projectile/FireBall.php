@@ -24,7 +24,7 @@ use pocketmine\level\particle\CriticalParticle;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
-use pocketmine\entity\Projectile;
+use pocketmine\entity\projectile\Projectile;
 use pocketmine\entity\Entity;
 use pocketmine\level\Explosion;
 use revivalpmmp\pureentities\data\Data;
@@ -32,9 +32,6 @@ use pocketmine\math\Vector3;
 
 class FireBall extends Projectile {
     const NETWORK_ID = Data::FIRE_BALL;
-
-    public $width = 0.5;
-    public $height = 0.5;
 
     protected $damage = 4;
 
@@ -46,7 +43,8 @@ class FireBall extends Projectile {
 
     public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false) {
         parent::__construct($level, $nbt, $shootingEntity);
-
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->isCritical = $critical;
     }
 

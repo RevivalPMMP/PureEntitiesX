@@ -43,7 +43,8 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 1.5;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
     }

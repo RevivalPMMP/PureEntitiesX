@@ -48,11 +48,6 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     use Feedable, Breedable, Tameable;
     const NETWORK_ID = Data::WOLF;
 
-    public $height = 0.969;
-    public $width = 1.2;
-    public $speed = 1.2;
-
-
     /**
      * Is needed for breeding functionality
      *
@@ -85,6 +80,9 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
+        $this->speed = 1.2;
 
         $this->fireProof = false;
         $this->setDamage([0, 3, 4, 6]);

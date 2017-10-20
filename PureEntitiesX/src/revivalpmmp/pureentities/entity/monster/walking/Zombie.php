@@ -63,8 +63,8 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 1.031;
-        $this->height = 2.0;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 1.1;
         $this->setDamage([0, 2, 3, 4]);
 

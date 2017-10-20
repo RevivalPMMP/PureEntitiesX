@@ -72,8 +72,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
     public function initEntity() {
         parent::initEntity();
 
-        $this->width = 1.2;
-        $this->height = 0.6;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
         $this->feedableItems = array(Item::WHEAT);

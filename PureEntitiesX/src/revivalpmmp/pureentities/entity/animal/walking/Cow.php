@@ -45,8 +45,8 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 1.5;
-        $this->height = 1.2;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
 
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();

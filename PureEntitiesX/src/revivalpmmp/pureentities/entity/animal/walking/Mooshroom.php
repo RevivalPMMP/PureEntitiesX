@@ -38,8 +38,8 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 1.781;
-        $this->height = 1.875;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->feedableItems = array(Item::WHEAT);
 
         $this->loadFromNBT();

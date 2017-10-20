@@ -25,7 +25,7 @@ use revivalpmmp\pureentities\PureEntities;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\ProjectileLaunchEvent;
-use pocketmine\entity\ProjectileSource;
+use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\level\Location;
 use pocketmine\level\sound\LaunchSound;
 use pocketmine\math\Vector3;
@@ -41,8 +41,8 @@ class Ghast extends FlyingMonster implements ProjectileSource {
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 4.5;
-        $this->height = 4.5;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 1.2;
         $this->fireProof = true;
         $this->setDamage([0, 0, 0, 0]);

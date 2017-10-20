@@ -40,8 +40,8 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
     public function initEntity()
     {
         parent::initEntity();
-        $this->width = 0.5;
-        $this->height = 0.9;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->fireProof = false;
         $this->tameFoods = array(
             Item::SEEDS,

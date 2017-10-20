@@ -51,11 +51,6 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
     use Tameable, Feedable;
     const NETWORK_ID = Data::OCELOT;
 
-    public $width = 0.8;
-    public $height = 0.8;
-    public $speed = 1.2;
-
-
     private $comfortObjects = array(
         Item::BED,
         Item::LIT_FURNACE,
@@ -112,6 +107,9 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 
     public function initEntity() {
         parent::initEntity();
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
+        $this->speed = 1.2;
 
         $this->fireProof = false;
 
