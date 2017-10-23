@@ -97,8 +97,6 @@ abstract class BaseEntity extends Creature {
         if ($this->eyeHeight === null) {
             $this->eyeHeight = $this->height / 2 + 0.1;
         }
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->namedtag->generatedByPEX = new ByteTag("generatedByPEX",1);
     }
 

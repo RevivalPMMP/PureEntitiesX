@@ -41,8 +41,8 @@ class Skeleton extends WalkingMonster implements ProjectileSource {
 
     public function initEntity() {
         parent::initEntity();
-        // $this->width = 0.875;
-        // $this->height = 2.0;
+        $this->width = Data::WIDTHS[$this::NETWORK_ID];
+        $this->height = Data::HEIGHTS[$this::NETWORK_ID];
     }
 
     public function getSpeed(): float {
