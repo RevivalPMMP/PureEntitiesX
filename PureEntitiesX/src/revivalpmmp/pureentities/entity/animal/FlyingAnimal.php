@@ -70,12 +70,9 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal {
     }
 
     public function onUpdate(int $currentTick): bool {
-        if (!$this->isAlive()) {
-            if (++$this->deadTicks >= 23) {
-                $this->close();
-                return false;
-            }
-            return true;
+        if ($this->getLevel() === null) return false;
+        if ($this->isClosed() or !$this->isAlive()) {
+            parent::onUpdate($currentTick);
         }
 
         $tickDiff = $currentTick - $this->lastUpdate;

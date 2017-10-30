@@ -93,6 +93,7 @@ abstract class BaseEntity extends Creature {
         $this->panicEnabled = PluginConfiguration::getInstance()->getEnablePanic();
         $this->panicTicks = PluginConfiguration::getInstance()->getPanicTicks();
         $this->maxAge = PluginConfiguration::getInstance()->getMaxAge();
+        $this->maxDeadTicks = 23;
         parent::__construct($level, $nbt);
         if ($this->eyeHeight === null) {
             $this->eyeHeight = $this->height / 2 + 0.1;

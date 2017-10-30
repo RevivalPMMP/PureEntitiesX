@@ -87,13 +87,9 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
      * @return bool
      */
     public function onUpdate(int $currentTick): bool {
-        if ($this->isClosed() or $this->getLevel() == null) return false;
-        if (!$this->isAlive()) {
-            if (++$this->deadTicks >= 23) {
-                $this->close();
-                return false;
-            }
-            return true;
+        if ($this->getLevel() == null) return false;
+        if ($this->isClosed() or !$this->isAlive()) {
+            parent::onUpdate($currentTick);
         }
 
         $tickDiff = $currentTick - $this->lastUpdate;
