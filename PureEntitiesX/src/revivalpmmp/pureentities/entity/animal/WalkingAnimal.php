@@ -53,6 +53,13 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
+        // BaseEntity::entityBaseTick checks and can trigger despawn.  After calling it, we need to verify
+        // that the entity is still valid for updates before performing any other tasks on it.
+        if($this->isClosed() or !$this->isAlive()) {
+            Timings::$timerEntityBaseTick->stopTiming();
+            return false;
+        }
+
         if ($this->getLevel() !== null && !$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
             $hasUpdate = true;
             $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
@@ -89,9 +96,8 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal {
     public function onUpdate(int $currentTick): bool {
         if ($this->getLevel() == null) return false;
         if ($this->isClosed() or !$this->isAlive()) {
-            parent::onUpdate($currentTick);
+            return parent::onUpdate($currentTick);
         }
-
         $tickDiff = $currentTick - $this->lastUpdate;
         $this->lastUpdate = $currentTick;
         $this->entityBaseTick($tickDiff);
