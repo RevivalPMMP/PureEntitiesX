@@ -1,6 +1,6 @@
 <?php
 
-namespace revivalpmmp\pureentities\features;
+
 
 /*  PureEntitiesX: Mob AI Plugin for PMMP
     Copyright (C) 2017 RevivalPMMP
@@ -18,6 +18,8 @@ namespace revivalpmmp\pureentities\features;
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 
+namespace revivalpmmp\pureentities\features;
+
 /**
  * Interface IntfCanPanic
  *
@@ -27,17 +29,39 @@ namespace revivalpmmp\pureentities\features;
  */
 interface IntfCanPanic {
 
-    /**
-     * Should return the speed when in panic
-     *
-     * @return float
-     */
-    public function getPanicSpeed(): float;
+
+    public function setPanicSpeed(float $panicSpeed);
+
+    public function getPanicSpeed(): float ;
+
+    public function setNormalSpeed(float $normalSpeed);
+
+    public function getNormalSpeed(): float;
 
     /**
-     * Should return the normal speed (of adult) of the entity
+     * This has to be called by onUpdate / entityBaseTick
      *
-     * @return float
+     * @param int $tickDiff
+     * @return bool true if the entity is still in panic
      */
-    public function getNormalSpeed(): float;
+    public function panicTick(int $tickDiff = 1): bool;
+
+    /**
+     * Checks if this entity is in panic mode (flee mode)
+     *
+     * @return bool
+     */
+    public function isInPanic();
+
+    /**
+     * Sets an entity in panic mode.
+     */
+    public function setInPanic();
+
+    /**
+     * Unsets panic for an entity
+     */
+    public function unsetInPanic();
+
+    public function panicEnabled() : bool;
 }

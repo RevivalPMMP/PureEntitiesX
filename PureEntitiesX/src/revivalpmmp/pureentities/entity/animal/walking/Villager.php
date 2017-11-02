@@ -22,17 +22,13 @@ use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use revivalpmmp\pureentities\data\Data;
 
 class Villager extends WalkingAnimal {
-    const NETWORK_ID = Data::VILLAGER;
+    const NETWORK_ID = Data::NETWORK_IDS["villager"];
 
     public function initEntity() {
         parent::initEntity();
         $this->width = Data::WIDTHS[self::NETWORK_ID];
         $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 1.1;
-    }
-
-    public function getSpeed(): float {
-        return $this->speed;
     }
 
     public function getName(): string {

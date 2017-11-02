@@ -45,15 +45,8 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCanInteract {
-    use Feedable, Breedable, Tameable;
-    const NETWORK_ID = Data::WOLF;
-
-    /**
-     * Is needed for breeding functionality
-     *
-     * @var BreedingComponent
-     */
-    private $breedableClass;
+    use Breedable, Feedable, Tameable;
+    const NETWORK_ID = Data::NETWORK_IDS["wolf"];
 
     /**
      * Teleport distance - when does a tamed wolf start to teleport to it's owner?
@@ -73,10 +66,6 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
     private $angryValue = 0;
 
     private $collarColor = Color::RED;
-
-    public function getSpeed(): float {
-        return $this->speed;
-    }
 
     public function initEntity() {
         parent::initEntity();
@@ -119,15 +108,6 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
         $this->teleportDistance = PluginConfiguration::getInstance()->getTamedTeleportBlocks();
         $this->followDistance = PluginConfiguration::getInstance()->getTamedPlayerMaxDistance();
-    }
-
-    /**
-     * Returns the breedable class or NULL if not configured
-     *
-     * @return BreedingComponent
-     */
-    public function getBreedingComponent() {
-        return $this->breedableClass;
     }
 
     /**

@@ -86,15 +86,18 @@ trait Tameable
      * @param Player $player
      * @return bool
      */
-    public function attemptToTame(Player $player): bool {
+    public function attemptToTame(Player $player): bool
+    {
         // This shouldn't be necessary but just in case...
         if ($this->isTamed()) {
             return null;
         }
         $tameSuccess = mt_rand(0, $this->tameChance - 1) === 0;
         $itemInHand = $player->getInventory()->getItemInHand();
-        if ($itemInHand != null) {
+        if ($itemInHand != null and in_array($itemInHand->getId(), $this->getTameFoods())) {
             $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
+        } else {
+            return false;
         }
         if($tameSuccess) {
             $pk = new EntityEventPacket();

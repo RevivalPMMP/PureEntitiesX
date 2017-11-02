@@ -29,11 +29,7 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class ZombieVillager extends WalkingMonster {
-    const NETWORK_ID = Data::ZOMBIE_VILLAGER;
-
-    public function getSpeed(): float {
-        return $this->speed;
-    }
+    const NETWORK_ID = Data::NETWORK_IDS["zombie_villager"];
 
     public function initEntity() {
         parent::initEntity();
@@ -70,6 +66,12 @@ class ZombieVillager extends WalkingMonster {
 
         $hasUpdate = parent::entityBaseTick($tickDiff);
 
+        // BaseEntity::entityBaseTick checks and can trigger despawn.  After calling it, we need to verify
+        // that the entity is still valid for updates before performing any other tasks on it.
+        if($this->isClosed() or !$this->isAlive()) {
+            Timings::$timerEntityBaseTick->stopTiming();
+            return false;
+        }
         $time = $this->getLevel()->getTime() % Level::TIME_FULL;
         if (
             !$this->isOnFire()
@@ -86,16 +88,19 @@ class ZombieVillager extends WalkingMonster {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
-            switch (mt_rand(0, 5)) {
-                case 1:
-                    array_push($drops, Item::get(Item::CARROT, 0, 1));
-                    break;
-                case 2:
-                    array_push($drops, Item::get(Item::POTATO, 0, 1));
-                    break;
-                case 3:
-                    array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
-                    break;
+            // 2.5 percent chance of dropping one of these items.
+            if (mt_rand(1, 1000) % 25 == 0) {
+                switch (mt_rand(1, 3)) {
+                    case 1:
+                        array_push($drops, Item::get(Item::CARROT, 0, 1));
+                        break;
+                    case 2:
+                        array_push($drops, Item::get(Item::POTATO, 0, 1));
+                        break;
+                    case 3:
+                        array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
+                        break;
+                }
             }
         }
         return $drops;

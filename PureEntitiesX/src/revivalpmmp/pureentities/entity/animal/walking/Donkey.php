@@ -26,7 +26,7 @@ use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
 class Donkey extends WalkingAnimal implements Rideable {
-    const NETWORK_ID = Data::DONKEY;
+    const NETWORK_ID = Data::NETWORK_IDS["donkey"];
 
     public function initEntity()
     {
@@ -37,10 +37,6 @@ class Donkey extends WalkingAnimal implements Rideable {
 
     public function getName(): string {
         return "Donkey";
-    }
-
-    public function getSpeed(): float {
-        return $this->speed;
     }
 
     public function targetOption(Creature $creature, float $distance): bool {

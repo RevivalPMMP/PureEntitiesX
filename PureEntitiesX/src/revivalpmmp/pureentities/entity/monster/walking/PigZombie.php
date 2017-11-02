@@ -33,14 +33,11 @@ use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class PigZombie extends WalkingMonster {
-    const NETWORK_ID = Data::PIG_ZOMBIE;
+    const NETWORK_ID = Data::NETWORK_IDS["pig_zombie"];
 
     private $angry = 0;
     public $eyeHeight = 1.62;
 
-    public function getSpeed(): float {
-        return $this->speed;
-    }
 
     public function initEntity() {
         parent::initEntity();

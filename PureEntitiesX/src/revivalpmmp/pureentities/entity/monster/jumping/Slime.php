@@ -19,6 +19,7 @@
 namespace revivalpmmp\pureentities\entity\monster\jumping;
 
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\JumpingMonster;
 use pocketmine\entity\Entity;
@@ -26,26 +27,47 @@ use pocketmine\item\Item;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Slime extends JumpingMonster {
-    const NETWORK_ID = Data::SLIME;
+    const NETWORK_ID = Data::NETWORK_IDS["slime"];
+    const NBT_CONST_CUBESIZE = "CubeSize";
 
-    public function getSpeed(): float {
-        return $this->speed;
+    private $cubeSize = -1; // 0 = Tiny, 1 = Small, 2 = Big
+    private $cubeDimensions = array(0.51, 1.02, 2.04);
+
+
+    public function initEntity() {
+        parent::initEntity();
+        $this->loadFromNBT();
+        if ($this->cubeSize == -1) {
+            $this->cubeSize = mt_rand(0, 2);
+            $this->saveNBT();
+        }
+
+        $this->width = $this->cubeDimensions[$this->cubeSize];
+        $this->height = $this->cubeDimensions[$this->cubeSize];
+        $this->speed = 0.8;
+
+        $this->setDamage([0, 2, 2, 3]);
+    }
+
+    public function saveNBT() {
+        $this->namedtag->CubeSize = new IntTag(self::NBT_CONST_CUBESIZE ,$this->cubeSize);
+    }
+
+    public function loadFromNBT() {
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::loadFromNBT();
+            if (isset($this->namedtag->CubeSize)) {
+                $this->cubeSize = $this->namedtag[self::NBT_CONST_CUBESIZE];
+            }
+        }
     }
 
     public function getName(): string {
         return "Slime";
-    }
-
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->speed = 0.8;
-
-        $this->setDamage([0, 2, 2, 3]);
     }
 
     /**
@@ -73,7 +95,7 @@ class Slime extends JumpingMonster {
     }
 
     public function getDrops(): array {
-        if ($this->isLootDropAllowed()) {
+        if ($this->isLootDropAllowed() and $this->cubeSize == 0) {
             return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
         } else {
             return [];
@@ -85,8 +107,13 @@ class Slime extends JumpingMonster {
     }
 
     public function getKillExperience(): int {
-        // normally big, small, tiny
-        return mt_rand(1, 4);
+        if ($this->cubeSize == 2) {
+            return 4;
+        } else if ($this->cubeSize == 1) {
+            return 2;
+        } else {
+            return 1;
+        }
     }
 
 }

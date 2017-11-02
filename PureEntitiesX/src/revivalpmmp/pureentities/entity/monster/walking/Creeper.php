@@ -31,7 +31,7 @@ use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class Creeper extends WalkingMonster implements Explosive {
-    const NETWORK_ID = Data::CREEPER;
+    const NETWORK_ID = Data::NETWORK_IDS["creeper"];
     const DATA_POWERED = 19;
 
     private $bombTime = 0;
@@ -42,10 +42,6 @@ class Creeper extends WalkingMonster implements Explosive {
      * @var int
      */
     private $powered = 0;
-
-    public function getSpeed(): float {
-        return $this->speed;
-    }
 
     public function initEntity() {
         parent::initEntity();

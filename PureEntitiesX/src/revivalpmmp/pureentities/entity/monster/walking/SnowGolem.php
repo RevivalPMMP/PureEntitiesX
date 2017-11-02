@@ -41,7 +41,7 @@ use revivalpmmp\pureentities\traits\Shearable;
 
 class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract, IntfShearable {
     use Shearable;
-    const NETWORK_ID = Data::SNOW_GOLEM;
+    const NETWORK_ID = Data::NETWORK_IDS["snow_golem"];
 
     const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
 
@@ -58,10 +58,6 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
         $this->loadFromNBT();
         $this->setSheared($this->isSheared()); // set data from NBT
         $this->maxShearDrops = 0;
-    }
-
-    public function getSpeed(): float {
-        return $this->speed;
     }
 
     public function getName(): string {

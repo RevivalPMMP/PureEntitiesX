@@ -33,11 +33,7 @@ use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
 class Ghast extends FlyingMonster implements ProjectileSource {
-    const NETWORK_ID = Data::GHAST;
-
-    public function getSpeed(): float {
-        return $this->speed;
-    }
+    const NETWORK_ID = Data::NETWORK_IDS["ghast"];
 
     public function initEntity() {
         parent::initEntity();

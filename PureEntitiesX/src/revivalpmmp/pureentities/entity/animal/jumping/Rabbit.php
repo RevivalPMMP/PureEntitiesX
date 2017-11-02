@@ -18,11 +18,11 @@
 
 namespace revivalpmmp\pureentities\entity\animal\jumping;
 
-use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
+use revivalpmmp\pureentities\entity\animal\JumpingAnimal;
 use revivalpmmp\pureentities\data\Data;
 
-class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
-    const NETWORK_ID = Data::RABBIT;
+class Rabbit extends JumpingAnimal {
+    const NETWORK_ID = Data::NETWORK_IDS["rabbit"];
 
     public function getSpeed(): float {
         return $this->speed;
@@ -34,8 +34,8 @@ class Rabbit extends WalkingAnimal { //TODO create JumpingAnimal class
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = 0.5;
-        $this->height = 0.5;
+        $this->width = Data::WIDTHS[self::NETWORK_ID];
+        $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 2;
         $this->setMaxHealth(3);
         $this->setHealth(3);

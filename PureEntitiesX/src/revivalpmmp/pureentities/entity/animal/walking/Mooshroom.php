@@ -34,7 +34,7 @@ use revivalpmmp\pureentities\traits\Shearable;
 
 class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable {
     use Shearable, Breedable, Feedable;
-    const NETWORK_ID = Data::MOOSHROOM;
+    const NETWORK_ID = Data::NETWORK_IDS["mooshroom"];
 
     public function initEntity() {
         parent::initEntity();
@@ -48,10 +48,6 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
         $this->breedableClass->init();
         $this->maxShearDrops = 5;
         $this->shearItems = Item::RED_MUSHROOM;
-    }
-
-    public function getSpeed(): float {
-        return $this->speed;
     }
 
     public function getName(): string {

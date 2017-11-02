@@ -40,18 +40,13 @@ use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
 class Blaze extends FlyingMonster implements ProjectileSource {
-    const NETWORK_ID = Data::BLAZE;
-
-    public $gravity = 0.04;
-
-    public function getSpeed(): float {
-        return $this->speed;
-    }
+    const NETWORK_ID = Data::NETWORK_IDS["blaze"];
 
     public function initEntity() {
         parent::initEntity();
         $this->width = Data::WIDTHS[self::NETWORK_ID];
         $this->height = Data::HEIGHTS[self::NETWORK_ID];
+        $this->gravity = 0.04;
 
         $this->fireProof = true;
         $this->setDamage([0, 0, 0, 0]);

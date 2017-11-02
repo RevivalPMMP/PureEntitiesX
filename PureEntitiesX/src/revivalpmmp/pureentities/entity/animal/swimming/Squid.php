@@ -18,8 +18,10 @@
 
 namespace revivalpmmp\pureentities\entity\animal\swimming;
 
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\animal\Animal;
 
 class Squid extends \pocketmine\entity\Squid implements Animal {
     //TODO implement
+    const NETWORK_ID = Data::NETWORK_IDS["squid"];
 }

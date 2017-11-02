@@ -23,7 +23,6 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use revivalpmmp\pureentities\components\IdlingComponent;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use pocketmine\entity\Creature;
@@ -37,15 +36,14 @@ use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
-use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\utils\TickCounter;
 
 abstract class BaseEntity extends Creature {
 
+    protected $networkId = null;
     public $stayTime = 0;
     protected $moveTime = 0;
 
@@ -56,18 +54,15 @@ abstract class BaseEntity extends Creature {
     private $baseTarget = null;
 
     private $movement = true;
-    private $friendly = false;
+    protected $friendly = false;
     private $wallcheck = true;
     protected $fireProof = false;
-    private $maxJumpHeight = 1; // default: 1 block jump height - this should be 2 for horses e.g.
+    protected $maxJumpHeight = 1; // default: 1 block jump height - this should be 2 for horses e.g.
     protected $checkTargetSkipTicks = 1; // default: no skip
     public $width = 1.0;
     public $height = 1.0;
     public $speed = 1.0;
-    /**
-     * @var null|TickCounter
-     */
-    protected $panicCounter = null;
+
 
     /**
      * @var int
@@ -79,8 +74,6 @@ abstract class BaseEntity extends Creature {
      */
     protected $idlingComponent;
 
-    protected $panicEnabled = true;
-    protected $panicTicks = 100;
 
     protected $maxAge = 0;
 
@@ -90,8 +83,6 @@ abstract class BaseEntity extends Creature {
     public function __construct(Level $level, CompoundTag $nbt) {
         $this->idlingComponent = new IdlingComponent($this);
         $this->checkTargetSkipTicks = PluginConfiguration::getInstance()->getCheckTargetSkipTicks();
-        $this->panicEnabled = PluginConfiguration::getInstance()->getEnablePanic();
-        $this->panicTicks = PluginConfiguration::getInstance()->getPanicTicks();
         $this->maxAge = PluginConfiguration::getInstance()->getMaxAge();
         $this->maxDeadTicks = 23;
         parent::__construct($level, $nbt);
@@ -155,6 +146,18 @@ abstract class BaseEntity extends Creature {
             PureEntities::logOutput("$this: setBaseTarget to $baseTarget", PureEntities::DEBUG);
             $this->baseTarget = $baseTarget;
         }
+    }
+
+    public function setNetworkId(int $networkId) {
+        $this->networkId = $networkId;
+    }
+
+
+    /*
+     * Returns the appropriate Network Id for this entity.
+     */
+    public function getNetworkId() {
+        return $this->networkId;
     }
 
     /**
@@ -261,8 +264,8 @@ abstract class BaseEntity extends Creature {
         $this->stayTime = 0;
         $this->moveTime = 0;
 
-        $damager = $source->getDamager();
-        $motion = (new Vector3($this->x - $damager->x, $this->y - $damager->y, $this->z - $damager->z))->normalize();
+        $sourceOfDamage = $source->getDamager();
+        $motion = (new Vector3($this->x - $sourceOfDamage->x, $this->y - $sourceOfDamage->y, $this->z - $sourceOfDamage->z))->normalize();
         $this->motionX = $motion->x * 0.19;
         $this->motionZ = $motion->z * 0.19;
         if (($this instanceof FlyingEntity) && !($this instanceof Blaze)) {
@@ -272,8 +275,8 @@ abstract class BaseEntity extends Creature {
         }
 
         // panic mode - here we check if the entity can enter panic mode and so on
-        if ($this instanceof IntfCanPanic and $damager instanceof Player and !$this->isInPanic() and $this->panicEnabled) {
-            $this->setBaseTarget(new Vector3($this->x - ($damager->x * 10), $this->y - $damager->y, ($this->z - $damager->z * 10)));
+        if ($this instanceof IntfCanPanic and $sourceOfDamage instanceof Player and !$this->isInPanic() and $this->panicEnabled()) {
+            $this->setBaseTarget(new Vector3($this->x - ($sourceOfDamage->x * 10), $this->y - $sourceOfDamage->y, ($this->z - $sourceOfDamage->z * 10)));
             $this->setInPanic(); // this should prevent to search for other targets and increase run speed
         }
 
@@ -312,7 +315,9 @@ abstract class BaseEntity extends Creature {
         }
 
         // check panic tick
-        $this->panicTick($tickDiff);
+        if ($this instanceof IntfCanPanic) {
+            $this->panicTick($tickDiff);
+        }
 
         Timings::$timerEntityBaseTick->stopTiming();
         return $hasUpdate;
@@ -450,6 +455,7 @@ abstract class BaseEntity extends Creature {
      */
     private function getTamedMobs(Player $player) {
         $tamedMobs = [];
+        if($player->isClosed()) return [];
         foreach ($player->getLevel()->getEntities() as $entity) {
             if ($entity instanceof IntfTameable and
                 $entity->isTamed() and
@@ -488,64 +494,4 @@ abstract class BaseEntity extends Creature {
         }
         return false;
     }
-
-    /**
-     * This has to be called by onUpdate / entityBaseTick
-     *
-     * @param int $tickDiff
-     * @return bool true if the entity is still in panic
-     */
-    public function panicTick(int $tickDiff = 1): bool {
-        if ($this->isInPanic()) {
-            PureEntities::logOutput("$this: is in panic. Checking if expired.");
-            if ($this->panicCounter->isTicksExpired($tickDiff)) {
-                PureEntities::logOutput("$this: panic expired. Resetting entity status.");
-                $this->unsetInPanic();
-                return false; // not in panic anymore
-            }
-            PureEntities::logOutput("$this: still in panic.");
-            return true; // still in panic
-        }
-        PureEntities::logOutput("$this: not in panic");
-        return false; // no in panic
-    }
-
-    /**
-     * Checks if this entity is in panic mode (flee mode)
-     *
-     * @return bool
-     */
-    public function isInPanic() {
-        return $this->panicCounter !== null;
-    }
-
-    /**
-     * Sets an entity in panic mode.
-     */
-    public function setInPanic() {
-        $this->panicCounter = new TickCounter($this->panicTicks); // x ticks in panic
-        /**
-         * @var $this IntfCanPanic
-         */
-        if (!$this instanceof IntfCanBreed or ($this instanceof IntfCanBreed && !$this->getBreedingComponent()->isBaby())) {
-            $this->speed = $this->getPanicSpeed();
-        }
-        $this->moveTime = $this->panicTicks; // move for x ticks
-        PureEntities::logOutput("$this: in panic now [speed:" . $this->speed . "] [duration:" . $this->panicTicks . "]");
-    }
-
-    /**
-     * Unsets panic for an entity
-     */
-    public function unsetInPanic() {
-        $this->panicCounter = null;
-        /**
-         * @var $this IntfCanPanic
-         */
-        $this->speed = $this->getNormalSpeed();
-        $this->setBaseTarget(null);
-        PureEntities::logOutput("$this: unset panic now [speed:" . $this->speed . "]");
-    }
-
-
 }

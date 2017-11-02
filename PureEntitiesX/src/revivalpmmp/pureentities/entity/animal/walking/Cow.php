@@ -28,25 +28,22 @@ use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\traits\Breedable;
+use revivalpmmp\pureentities\traits\CanPanic;
+use revivalpmmp\pureentities\traits\Feedable;
 
 class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
-    const NETWORK_ID = Data::COW;
 
-    public $eyeHeight = 1;
-
-    private $feedableItems = array(Item::WHEAT);
-
-    /**
-     * Is needed for breeding functionality
-     *
-     * @var BreedingComponent
-     */
-    private $breedableClass;
+    use Breedable, CanPanic, Feedable;
+    const NETWORK_ID = Data::NETWORK_IDS["cow"];
 
     public function initEntity() {
         parent::initEntity();
         $this->width = Data::WIDTHS[self::NETWORK_ID];
         $this->height = Data::HEIGHTS[self::NETWORK_ID];
+        $this->eyeHeight = 1;
+
+        $this->feedableItems = array(Item::WHEAT);
 
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
@@ -58,29 +55,8 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
         $this->breedableClass->saveNBT();
     }
 
-    public function getSpeed(): float {
-        return $this->speed;
-    }
-
-    public function getPanicSpeed(): float {
-        return 1.2;
-    }
-
-    public function getNormalSpeed(): float {
-        return 1.0;
-    }
-
     public function getName(): string {
         return "Cow";
-    }
-
-    /**
-     * Returns the breedable class or NULL if not configured
-     *
-     * @return BreedingComponent
-     */
-    public function getBreedingComponent() {
-        return $this->breedableClass;
     }
 
     /**
@@ -91,14 +67,6 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
         return self::NETWORK_ID;
     }
 
-    /**
-     * Returns the items that can be fed to the entity
-     *
-     * @return array
-     */
-    public function getFeedableItems() {
-        return $this->feedableItems;
-    }
 
     public function getDrops(): array {
         $drops = [];

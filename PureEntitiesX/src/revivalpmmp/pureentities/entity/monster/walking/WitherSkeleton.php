@@ -30,15 +30,7 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class WitherSkeleton extends WalkingMonster {
-    const NETWORK_ID = Data::WITHER_SKELETON;
-
-    public function getSpeed(): float {
-        return $this->speed;
-    }
-
-    public function getName(): string {
-        return "Wither Skeleton";
-    }
+    const NETWORK_ID = Data::NETWORK_IDS["wither_skeleton"];
 
     public function initEntity() {
         parent::initEntity();
@@ -46,6 +38,10 @@ class WitherSkeleton extends WalkingMonster {
         $this->height = Data::HEIGHTS[self::NETWORK_ID];
 
         $this->setDamage([0, 3, 4, 6]);
+    }
+
+    public function getName(): string {
+        return "Wither Skeleton";
     }
 
     public function setHealth(float $amount) {

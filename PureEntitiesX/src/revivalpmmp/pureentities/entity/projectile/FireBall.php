@@ -31,7 +31,7 @@ use revivalpmmp\pureentities\data\Data;
 use pocketmine\math\Vector3;
 
 class FireBall extends Projectile {
-    const NETWORK_ID = Data::FIRE_BALL;
+    const NETWORK_ID = Data::NETWORK_IDS["fire_ball"];
 
     protected $damage = 4;
 

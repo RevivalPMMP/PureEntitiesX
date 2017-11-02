@@ -26,25 +26,23 @@ use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
+use revivalpmmp\pureentities\traits\Breedable;
+use revivalpmmp\pureentities\traits\CanPanic;
+use revivalpmmp\pureentities\traits\Feedable;
 
 class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
-    const NETWORK_ID = Data::PIG;
 
-    private $feedableItems = array(
-        Item::CARROT,
-        Item::BEETROOT);
+    use Breedable, CanPanic, Feedable;
+    const NETWORK_ID = Data::NETWORK_IDS["pig"];
 
-    /**
-     * Is needed for breeding functionality
-     *
-     * @var BreedingComponent
-     */
-    private $breedableClass;
 
     public function initEntity() {
         parent::initEntity();
         $this->width = Data::WIDTHS[self::NETWORK_ID];
         $this->height = Data::HEIGHTS[self::NETWORK_ID];
+        $this->feedableItems = array(
+            Item::CARROT,
+            Item::BEETROOT);
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
     }
@@ -53,30 +51,9 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
         return "Pig";
     }
 
-    public function getSpeed(): float {
-        return $this->speed;
-    }
-
-    public function getNormalSpeed(): float {
-        return 1.0;
-    }
-
-    public function getPanicSpeed(): float {
-        return 1.2;
-    }
-
     public function saveNBT() {
         parent::saveNBT();
         $this->breedableClass->saveNBT();
-    }
-
-    /**
-     * Returns the breedable class or NULL if not configured
-     *
-     * @return BreedingComponent
-     */
-    public function getBreedingComponent() {
-        return $this->breedableClass;
     }
 
     /**
@@ -85,15 +62,6 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
      */
     public function getNetworkId() {
         return self::NETWORK_ID;
-    }
-
-    /**
-     * Returns the items that can be fed to the entity
-     *
-     * @return array
-     */
-    public function getFeedableItems() {
-        return $this->feedableItems;
     }
 
     public function getDrops(): array {

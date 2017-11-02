@@ -38,12 +38,13 @@ use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\traits\Breedable;
+use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\traits\Shearable;
 
 class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable, IntfCanPanic {
-    use Shearable, Feedable, Breedable;
-    const NETWORK_ID = Data::SHEEP;
+    use Breedable, CanPanic, Feedable, Shearable;
+    const NETWORK_ID = Data::NETWORK_IDS["sheep"];
 
     const DATA_COLOR_INFO = 16;
 
@@ -82,18 +83,6 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
         $this->loadFromNBT();
         $this->setColor($this->getColor());
         $this->setSheared($this->isSheared());
-    }
-
-    public function getSpeed(): float {
-        return $this->speed;
-    }
-
-    public function getNormalSpeed(): float {
-        return 1.0;
-    }
-
-    public function getPanicSpeed(): float {
-        return 1.2;
     }
 
     public function checkTarget(bool $checkSkip = true) {

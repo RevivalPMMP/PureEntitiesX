@@ -49,7 +49,7 @@ class SpiderSpawner extends BaseSpawner {
                 ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
                 PureEntities::DEBUG);
 
-            if ($biomeId != Biome::HELL and // they don't spawn in nether
+            if ($biomeId != Biome::HELL and // they don't spawn in the nether
                 $this->isSpawnAllowedByBlockLight($player, $pos, 7) and // check block light when enabled
                 !$this->isDay($pos->level) and // spawn only at night
                 $block->isSolid() and // block must be solid

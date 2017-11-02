@@ -58,7 +58,7 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal {
             Timings::$timerEntityBaseTick->stopTiming();
             return false;
         }
-        
+
         if (!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
             $hasUpdate = true;
             $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;

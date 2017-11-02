@@ -22,6 +22,7 @@ namespace revivalpmmp\pureentities\task\spawners\animal;
 use pocketmine\block\Solid;
 use pocketmine\level\Position;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\animal\walking\Chicken;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\task\spawners\BaseSpawner;
@@ -64,7 +65,7 @@ class ChickenSpawner extends BaseSpawner {
     }
 
     protected function getEntityNetworkId(): int {
-        return Chicken::NETWORK_ID;
+        return Data::NETWORK_IDS["chicken"];
     }
 
     protected function getEntityName(): string {

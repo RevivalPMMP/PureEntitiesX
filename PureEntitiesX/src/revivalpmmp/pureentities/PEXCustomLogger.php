@@ -7,7 +7,7 @@ use pocketmine\ThreadManager;
 use pocketmine\utils\TextFormat;
 use pocketmine\Worker;
 
-class CustomLogger extends \AttachableThreadedLogger {
+class PEXCustomLogger extends \AttachableThreadedLogger {
 	/** @var \ClassLoader */
 	protected $classLoader;
 	protected $isKilled = false;
@@ -19,7 +19,7 @@ class CustomLogger extends \AttachableThreadedLogger {
 	protected $shutdown;
 	/** @var bool */
 	protected $logDebug;
-	/** @var CustomLogger */
+	/** @var PEXCustomLogger */
 	public static $logger = null;
 
 	/**
@@ -31,7 +31,7 @@ class CustomLogger extends \AttachableThreadedLogger {
 	 */
 	public function __construct(bool $logDebug = true) {
 	    parent::__construct();
-	    if (static::$logger instanceof CustomLogger) {
+	    if (static::$logger instanceof PEXCustomLogger) {
 	        throw new \RuntimeException("PureEntitesX Custom Logger has already been created.");
         }
 		$logFile = \pocketmine\DATA."plugins".DIRECTORY_SEPARATOR."PureEntitiesX".DIRECTORY_SEPARATOR."PureEntitiesX_".date("j.n.Y").".log";
@@ -43,9 +43,9 @@ class CustomLogger extends \AttachableThreadedLogger {
 	}
 
     /**
-     * @return CustomLogger
+     * @return PEXCustomLogger
      */
-	public static function getLogger() : CustomLogger{
+	public static function getLogger() : PEXCustomLogger{
         return static::$logger;
     }
 
@@ -56,7 +56,7 @@ class CustomLogger extends \AttachableThreadedLogger {
 	 * want the logger to be accessible via {@link CustomLogger#getLogger}.
 	 */
 	public function registerStatic(){
-		if(static::$logger === null or !static::$logger instanceof CustomLogger){
+		if(static::$logger === null or !static::$logger instanceof PEXCustomLogger){
 			static::$logger = $this;
 		}
 	}
@@ -130,9 +130,9 @@ class CustomLogger extends \AttachableThreadedLogger {
             E_USER_DEPRECATED => "E_USER_DEPRECATED"
         ];
         if($errno === 0){
-            $type = LogLevel::CRITICAL;
+            $type = \LogLevel::CRITICAL;
         }else{
-            $type = ($errno === E_ERROR or $errno === E_USER_ERROR) ? LogLevel::ERROR : (($errno === E_USER_WARNING or $errno === E_WARNING) ? LogLevel::WARNING : LogLevel::NOTICE);
+            $type = ($errno === E_ERROR or $errno === E_USER_ERROR) ? \LogLevel::ERROR : (($errno === E_USER_WARNING or $errno === E_WARNING) ? \LogLevel::WARNING : \LogLevel::NOTICE);
         }
         $errno = $errorConversion[$errno] ?? $errno;
         $errstr = preg_replace('/\s+/', ' ', trim($errstr));
@@ -145,28 +145,28 @@ class CustomLogger extends \AttachableThreadedLogger {
 
     public function log($level, $message){
         switch($level){
-            case LogLevel::EMERGENCY:
+            case \LogLevel::EMERGENCY:
                 $this->emergency($message);
                 break;
-            case LogLevel::ALERT:
+            case \LogLevel::ALERT:
                 $this->alert($message);
                 break;
-            case LogLevel::CRITICAL:
+            case \LogLevel::CRITICAL:
                 $this->critical($message);
                 break;
-            case LogLevel::ERROR:
+            case \LogLevel::ERROR:
                 $this->error($message);
                 break;
-            case LogLevel::WARNING:
+            case \LogLevel::WARNING:
                 $this->warning($message);
                 break;
-            case LogLevel::NOTICE:
+            case \LogLevel::NOTICE:
                 $this->notice($message);
                 break;
-            case LogLevel::INFO:
+            case \LogLevel::INFO:
                 $this->info($message);
                 break;
-            case LogLevel::DEBUG:
+            case \LogLevel::DEBUG:
                 $this->debug($message);
                 break;
         }

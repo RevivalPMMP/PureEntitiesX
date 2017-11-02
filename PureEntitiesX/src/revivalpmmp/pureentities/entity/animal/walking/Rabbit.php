@@ -26,27 +26,26 @@ use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
+use revivalpmmp\pureentities\traits\Breedable;
+use revivalpmmp\pureentities\traits\CanPanic;
+use revivalpmmp\pureentities\traits\Feedable;
 
 class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
-    const NETWORK_ID = 18;
 
-    private $feedableItems = array(
-        Item::CARROT,
-        Item::GOLDEN_CARROT,
-        Item::DANDELION);
-
-    /**
-     * Is needed for breeding functionality
-     *
-     * @var BreedingComponent
-     */
-    private $breedableClass;
+    use Breedable, CanPanic, Feedable;
+    const NETWORK_ID = Data::NETWORK_IDS["rabbit"];
 
     public function initEntity() {
         parent::initEntity();
         $this->width = Data::WIDTHS[self::NETWORK_ID];
         $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 2;
+        $this->setNormalSpeed(1.1);
+        $this->setPanicSpeed(1.3);
+        $this->feedableItems = array(
+            Item::CARROT,
+            Item::GOLDEN_CARROT,
+            Item::DANDELION);
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
     }
@@ -57,41 +56,11 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
     }
 
     /**
-     * Returns the breedable class or NULL if not configured
-     *
-     * @return BreedingComponent
-     */
-    public function getBreedingComponent() {
-        return $this->breedableClass;
-    }
-
-    /**
      * Returns the appropriate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
         return self::NETWORK_ID;
-    }
-
-    /**
-     * Returns the items that can be fed to the entity
-     *
-     * @return array
-     */
-    public function getFeedableItems() {
-        return $this->feedableItems;
-    }
-
-    public function getSpeed(): float {
-        return $this->speed;
-    }
-
-    public function getNormalSpeed(): float {
-        return 1.1;
-    }
-
-    public function getPanicSpeed(): float {
-        return 1.3;
     }
 
     public function getName(): string {
@@ -126,6 +95,4 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
         }
         return mt_rand(1, 3);
     }
-
-
 }

@@ -32,10 +32,15 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\PureEntities;
+use revivalpmmp\pureentities\traits\Breedable;
+use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
-    const NETWORK_ID = Data::ZOMBIE;
+
+
+    use Breedable, Feedable;
+    const NETWORK_ID = Data::NETWORK_IDS["zombie"];
 
     /**
      * @var MobEquipment
@@ -49,18 +54,6 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
      */
     private $pickUpLoot = [ItemIds::IRON_SWORD, ItemIds::IRON_SHOVEL];
 
-    /**
-     * Is needed for breeding functionality, but here we use it only as an
-     * ageable component.
-     *
-     * @var BreedingComponent
-     */
-    private $breedableClass;
-
-    public function getSpeed(): float {
-        return $this->speed;
-    }
-
     public function initEntity() {
         parent::initEntity();
         $this->width = Data::WIDTHS[self::NETWORK_ID];
@@ -71,17 +64,10 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         $this->mobEquipment = new MobEquipment($this);
         $this->mobEquipment->init();
 
+        $this->feedableItems = [];
+
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
-    }
-
-    /**
-     * Returns the breedable class or NULL if not configured
-     *
-     * @return BreedingComponent
-     */
-    public function getBreedingComponent() {
-        return $this->breedableClass;
     }
 
     /**
@@ -90,15 +76,6 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
      */
     public function getNetworkId() {
         return self::NETWORK_ID;
-    }
-
-    /**
-     * Returns the items that can be fed to the entity
-     *
-     * @return array
-     */
-    public function getFeedableItems() {
-        return []; // return an empty array - a zombie is not feedable
     }
 
     public function getName(): string {
@@ -189,22 +166,21 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed {
         $drops = [];
         if ($this->isLootDropAllowed()) {
             array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
-            switch (mt_rand(0, 5)) {
-                case 1:
-                    array_push($drops, Item::get(Item::CARROT, 0, 1));
-                    break;
-                case 2:
-                    array_push($drops, Item::get(Item::POTATO, 0, 1));
-                    break;
-                case 3:
-                    array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
-                    break;
+            // 2.5 percent chance of dropping one of these items.
+            if (mt_rand(1, 1000) % 25 == 0) {
+                switch (mt_rand(1, 3)) {
+                    case 1:
+                        array_push($drops, Item::get(Item::CARROT, 0, 1));
+                        break;
+                    case 2:
+                        array_push($drops, Item::get(Item::POTATO, 0, 1));
+                        break;
+                    case 3:
+                        array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
+                        break;
+                }
             }
-
-            // add equipment with a chance of 9% (drop chance)
-            $this->getMobEquipment()->addLoot($drops);
         }
-
         return $drops;
     }
 

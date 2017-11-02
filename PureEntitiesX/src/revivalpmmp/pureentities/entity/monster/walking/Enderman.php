@@ -29,11 +29,7 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Enderman extends WalkingMonster {
-    const NETWORK_ID = Data::ENDERMAN;
-
-    public function getSpeed(): float {
-        return $this->speed;
-    }
+    const NETWORK_ID = Data::NETWORK_IDS["enderman"];
 
     public function initEntity() {
         parent::initEntity();

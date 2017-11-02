@@ -35,7 +35,7 @@ use revivalpmmp\pureentities\traits\Tameable;
 class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
     use Tameable;
 
-    const NETWORK_ID = Data::PARROT;
+    const NETWORK_ID = Data::NETWORK_IDS["parrot"];
     private $birdType; // 0 = red, 1 = blue, 2 = green, 3 = cyan, 4 = silver
     public function initEntity()
     {
@@ -100,10 +100,6 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
             }
         }
 
-    }
-
-    public function getSpeed(): float {
-        return $this->speed;
     }
 
     public function getName(): string {

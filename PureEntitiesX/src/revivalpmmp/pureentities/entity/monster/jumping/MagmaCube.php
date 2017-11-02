@@ -19,28 +19,50 @@
 namespace revivalpmmp\pureentities\entity\monster\jumping;
 
 use pocketmine\item\Item;
+use pocketmine\nbt\NBT;
+use pocketmine\nbt\tag\IntTag;
 use revivalpmmp\pureentities\entity\monster\JumpingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class MagmaCube extends JumpingMonster {
-    const NETWORK_ID = Data::MAGMA_CUBE;
+    const NETWORK_ID = Data::NETWORK_IDS["magma_cube"];
+    const NBT_CONST_CUBESIZE = "CubeSize";
 
-    public function getSpeed(): float {
-        return $this->speed;
-    }
+    private $cubeSize = -1; // 0 = Tiny, 1 = Small, 2 = Big
+    private $cubeDimensions = array(0.51, 1.02, 2.04);
+
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
+        $this->loadFromNBT();
+        if ($this->cubeSize == -1) {
+            $this->cubeSize = mt_rand(0, 2);
+            $this->saveNBT();
+        }
+
+        $this->width = $this->cubeDimensions[$this->cubeSize];
+        $this->height = $this->cubeDimensions[$this->cubeSize];
         $this->speed = 0.8;
 
         $this->fireProof = true;
         $this->setDamage([0, 3, 4, 6]);
+    }
+
+    public function saveNBT() {
+        $this->namedtag->CubeSize = new IntTag(self::NBT_CONST_CUBESIZE ,$this->cubeSize);
+    }
+
+    public function loadFromNBT() {
+        if (PluginConfiguration::getInstance()->getEnableNBT()) {
+            if (isset($this->namedtag->CubeSize)) {
+                $this->cubeSize = $this->namedtag[self::NBT_CONST_CUBESIZE];
+            }
+        }
     }
 
     public function getName(): string {
@@ -80,7 +102,13 @@ class MagmaCube extends JumpingMonster {
 
     public function getKillExperience(): int {
         // normally it would be set by small/medium/big sized - but as we have it not now - i'll make it more static
-        return mt_rand(3, 6);
+        if ($this->cubeSize == 2) {
+            return 4;
+        } else if ($this->cubeSize == 1) {
+            return 2;
+        } else {
+            return 1;
+        }
     }
 
 

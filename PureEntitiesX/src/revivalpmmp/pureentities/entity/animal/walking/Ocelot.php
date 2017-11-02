@@ -37,6 +37,8 @@ use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\traits\Breedable;
+use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\traits\Tameable;
 
@@ -48,8 +50,8 @@ use revivalpmmp\pureentities\traits\Tameable;
 
 
 class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
-    use Tameable, Feedable;
-    const NETWORK_ID = Data::OCELOT;
+    use Breedable, CanPanic, Feedable, Tameable;
+    const NETWORK_ID = Data::NETWORK_IDS["ocelot"];
 
     private $comfortObjects = array(
         Item::BED,
@@ -57,13 +59,6 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
         Item::BURNING_FURNACE,
         Item::CHEST
     );
-
-    /**
-     * Is needed for breeding functionality
-     *
-     * @var BreedingComponent
-     */
-    private $breedableClass;
 
     /**
      * Teleport distance - when does a tamed wolf start to teleport to it's owner?
@@ -89,18 +84,6 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 
     private $catType = 0; // 0 = Wild Ocelot, 1 = Tuxedo, 2 = Tabby, 3 = Siamese
 
-    public function getSpeed(): float {
-        return $this->speed;
-    }
-
-    public function getNormalSpeed(): float {
-        return 1.2;
-    }
-
-    public function getPanicSpeed(): float {
-        return 1.4;
-    }
-
     public function getBeggingSpeed(): float {
         return 0.8;
     }
@@ -110,6 +93,8 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
         $this->width = Data::WIDTHS[self::NETWORK_ID];
         $this->height = Data::HEIGHTS[self::NETWORK_ID];
         $this->speed = 1.2;
+        $this->setNormalSpeed($this->speed);
+        $this->setPanicSpeed(1.4);
 
         $this->fireProof = false;
 
@@ -141,29 +126,11 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
     }
 
     /**
-     * Returns the breedable class or NULL if not configured
-     *
-     * @return BreedingComponent
-     */
-    public function getBreedingComponent() {
-        return $this->breedableClass;
-    }
-
-    /**
      * Returns the appropriate NetworkID associated with this entity
      * @return int
      */
     public function getNetworkId() {
         return self::NETWORK_ID;
-    }
-
-    /**
-     * Returns the items that can be fed to the entity
-     *
-     * @return array
-     */
-    public function getFeedableItems() {
-        return $this->feedableItems;
     }
 
     /**
@@ -216,8 +183,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
     }
 
     /**
-     * We need to override this method. When a tameable entity is sitting, the entity shouldn't move
-     * except to face its owner when the owner is close.
+     * Tamed ocelots behave differently from other tamed animals when dealing with sit commands.
      *
      * @param int $tickDiff
      * @return null|\pocketmine\math\Vector3

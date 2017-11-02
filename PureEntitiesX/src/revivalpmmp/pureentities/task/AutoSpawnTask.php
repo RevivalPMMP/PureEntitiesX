@@ -68,6 +68,12 @@ class AutoSpawnTask extends PluginTask {
             if (count($this->spawnerWorlds) > 0 and !in_array($level->getName(), $this->spawnerWorlds)){
                 continue;
             }
+
+            // TODO: Fix inefficiency here.
+            // Instead of just running the spawn method for each creature on each player
+            // we should build a 'recommended spawn map' based on all active player locations.
+            // More notes to come on GitHub project card.
+
             if (count($level->getPlayers()) > 0) {
                 foreach ($level->getPlayers() as $player) {
                     foreach ($this->spawnerClasses as $spawnerClass) {
@@ -75,19 +81,16 @@ class AutoSpawnTask extends PluginTask {
                         $pass = 1;
                         while (!$locationValid) {
 
-                            // Random method used to get 8 block difference from player to entity spawn)
-                            $x = $player->x + (random_int(8, 20) * (random_int(0, 1) === 0 ? 1 : -1));
-                            $z = $player->z + (random_int(8, 20) * (random_int(0, 1) === 0 ? 1 : -1));
-                            $y = $player->y;
+                            $suggestedLocation = PureEntities::getPositionNearPlayer($player);
 
-                            // search up- and downwards the current player's y-coordinate to find a valid block!
-                            $correctedPosition = PureEntities::getSuitableHeightPosition($x, $y, $z, $level);
+                            // search up and down the current player's y-coordinate to find a valid block!
+                            $correctedPosition = PureEntities::getSuitableHeightPosition($suggestedLocation->x, $suggestedLocation->y, $suggestedLocation->z, $suggestedLocation->level);
                             if ($correctedPosition !== null) {
                                 $pos = new Position($correctedPosition->x, $correctedPosition->y - 1, $correctedPosition->z, $level);
                                 $spawnerClass->spawn($pos, $player);
                                 $locationValid = true;
                             } else {
-                                PureEntities::logOutput("AutoSpawnTask: suitable spawn coordinate not found [search.x:$x] [search.y:$y] [search.z:$z] [pass:$pass]", PureEntities::WARN);
+                                PureEntities::logOutput("AutoSpawnTask: suitable spawn coordinate not found.  Pass $pass.", PureEntities::WARN);
                                 $pass++;
                             }
                         }
@@ -97,6 +100,7 @@ class AutoSpawnTask extends PluginTask {
         }
     }
 
+    // TODO Automate this to update with a config file or data file.
     private function prepareSpawnerClasses() {
         // $this->spawnerClasses[] = new BatSpawner();
         $this->spawnerClasses[] = new ChickenSpawner();

@@ -26,11 +26,8 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Silverfish extends WalkingMonster {
-    const NETWORK_ID = Data::SILVERFISH;
+    const NETWORK_ID = Data::NETWORK_IDS["silverfish"];
 
-    public function getSpeed(): float {
-        return $this->speed;
-    }
 
     public function initEntity() {
         parent::initEntity();

@@ -26,7 +26,7 @@ use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
 class Horse extends WalkingAnimal implements Rideable {
-    const NETWORK_ID = Data::HORSE;
+    const NETWORK_ID = Data::NETWORK_IDS["horse"];
 
 
 
@@ -39,10 +39,6 @@ class Horse extends WalkingAnimal implements Rideable {
 
     public function getName(): string {
         return "Horse";
-    }
-
-    public function getSpeed(): float {
-        return $this->speed;
     }
 
     public function targetOption(Creature $creature, float $distance): bool {

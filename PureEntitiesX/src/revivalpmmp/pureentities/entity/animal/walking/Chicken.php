@@ -26,51 +26,39 @@ use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
+use revivalpmmp\pureentities\traits\Breedable;
+use revivalpmmp\pureentities\traits\CanPanic;
+use revivalpmmp\pureentities\traits\Feedable;
 
-class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
-    const NETWORK_ID = Data::CHICKEN;
+class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic
+{
+    use Feedable, Breedable, CanPanic;
 
-    public $eyeHeight = 0.6;
-    public $gravity = 0.08; // floating chickens
+    const NETWORK_ID = Data::NETWORK_IDS["chicken"];
 
     // egg laying specific configuration (an egg is laid by a chicken each 6000-120000 ticks)
-    private $dropEggTimer = 0;
-    private $dropEggTime = 0;
     const DROP_EGG_DELAY_MIN = 6000;
     const DROP_EGG_DELAY_MAX = 12000;
+    private $dropEggTimer = 0;
+    private $dropEggTime = 0;
 
-    private $feedableItems = array(
-        Item::WHEAT_SEEDS,
-        Item::PUMPKIN_SEEDS,
-        Item::MELON_SEEDS,
-        Item::BEETROOT_SEEDS);
-
-    /**
-     * Is needed for breeding functionality
-     *
-     * @var BreedingComponent
-     */
-    private $breedableClass;
 
     public function initEntity() {
         parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
+        $this->setNetworkId(Data::NETWORK_IDS["chicken"]);
+        $this->width = Data::WIDTHS[$this->getNetworkId()];
+        $this->height = Data::HEIGHTS[$this->getNetworkId()];
+        $this->eyeHeight = 0.6;
+        $this->gravity =0.08;
 
         $this->breedableClass = new BreedingComponent($this);
         $this->breedableClass->init();
-    }
 
-    public function getSpeed(): float {
-        return $this->speed;
-    }
-
-    public function getNormalSpeed(): float {
-        return 1.0;
-    }
-
-    function getPanicSpeed(): float {
-        return 1.2;
+        $this->feedableItems = array(
+            Item::WHEAT_SEEDS,
+            Item::PUMPKIN_SEEDS,
+            Item::MELON_SEEDS,
+            Item::BEETROOT_SEEDS);
     }
 
     public function saveNBT() {
@@ -82,38 +70,13 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
         return "Chicken";
     }
 
-    /**
-     * Returns the breedable class or NULL if not configured
-     *
-     * @return BreedingComponent
-     */
-    public function getBreedingComponent() {
-        return $this->breedableClass;
-    }
-
-    /**
-     * Returns the appropriate NetworkID associated with this entity
-     * @return int
-     */
-    public function getNetworkId() {
-        return self::NETWORK_ID;
-    }
-
-    /**
-     * Returns the items that can be fed to the entity
-     *
-     * @return array
-     */
-    public function getFeedableItems() {
-        return $this->feedableItems;
-    }
 
     public function getDrops(): array {
         $drops = [];
 
         if ($this->isLootDropAllowed()) {
             // only adult chicken drop something ...
-            if ($this->breedableClass != null && $this->breedableClass->isBaby()) {
+            if ($this->breedableClass != null && !$this->breedableClass->isBaby()) {
                 array_push($drops, Item::get(Item::FEATHER, 0, mt_rand(0, 2)));
                 if ($this->isOnFire()) {
                     array_push($drops, Item::get(Item::COOKED_CHICKEN, 0, 1));

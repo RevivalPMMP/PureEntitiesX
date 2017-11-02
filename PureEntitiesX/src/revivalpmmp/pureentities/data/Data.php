@@ -25,6 +25,8 @@ interface Data {
     /* Individual Network ID Constants will soon be phased out
      * and replaced with the NETWORK_IDS array.
      */
+
+/*
     const CHICKEN = 10;
     const COW = 11;
     const PIG = 12;
@@ -62,6 +64,7 @@ interface Data {
     const SLIME = 37;
     const FIRE_BALL = 85;
     const PARROT = 30;
+*/
 
     // Entity Network IDs
     const NETWORK_IDS = array(

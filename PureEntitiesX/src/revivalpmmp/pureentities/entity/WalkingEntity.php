@@ -207,7 +207,7 @@ abstract class WalkingEntity extends BaseEntity {
             }
         }
 
-        if ($this->motionY > 0.1 or $this->stayTime > 0) { // when entities are "hunting" they sometimes have a really small y motion (lesser than 0.1) so we've to take this into account
+        if ($this->motionY > 0.1 or $this->stayTime > 0) { // when entities are "hunting" they sometimes have a really small y motion (lesser than 0.1) so we need to take this into account
             PureEntities::logOutput("$this: checkJump(): onGround:" . $this->isOnGround() . ", stayTime:" . $this->stayTime . ", motionY:" . $this->motionY);
             return false;
         }

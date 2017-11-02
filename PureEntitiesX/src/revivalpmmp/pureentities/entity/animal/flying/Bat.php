@@ -24,7 +24,7 @@ use pocketmine\entity\Creature;
 
 class Bat extends FlyingAnimal {
     //TODO implement
-    const NETWORK_ID = Data::BAT;
+    const NETWORK_ID = Data::NETWORK_IDS["bat"];
 
     public function initEntity()
     {

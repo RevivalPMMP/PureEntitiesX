@@ -46,7 +46,7 @@ class BreedingComponent {
     const SEARCH_FOR_PARTNER_DELAY = 100; // do a search for a partner every 300 ticks
     const IN_LOVE_EMIT_DELAY = 100; // emit every 100 ticks the in love animation when in love
     const AGE_TICK_DELAY = 100; // how often is the age updated ...
-    const BREED_NOT_POSSIBLE_TICKS = 6000; // 5 minutes - how long can an entity not breed when breed was done
+    const BREED_NOT_POSSIBLE_TICKS = 6000; // 5 minutes - Amount of time that must pass before another breeding attempt can be made after a successful attempt.
 
     // ----------------------------------------
     // well known NBT keys

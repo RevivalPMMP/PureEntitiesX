@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\entity\projectile\Projectile;
 use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
@@ -37,16 +38,12 @@ use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
 class Stray extends WalkingMonster implements ProjectileSource {
-    const NETWORK_ID = Data::STRAY;
+    const NETWORK_ID = Data::NETWORK_IDS["stray"];
     public function initEntity()
     {
         parent::initEntity();
         $this->width = Data::WIDTHS[self::NETWORK_ID];
         $this->height = Data::HEIGHTS[self::NETWORK_ID];
-    }
-
-    public function getSpeed(): float {
-        return $this->speed;
     }
 
     public function getName(): string {
