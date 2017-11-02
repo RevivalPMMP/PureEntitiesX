@@ -4,7 +4,6 @@ namespace revivalpmmp\pureentities;
 
 use pocketmine\Thread;
 use pocketmine\ThreadManager;
-use pocketmine\utils\MainLogger;
 use pocketmine\utils\TextFormat;
 use pocketmine\Worker;
 
@@ -235,7 +234,7 @@ class CustomLogger extends \AttachableThreadedLogger {
 
 		$thread = \Thread::getCurrentThread();
 		if($thread === null){
-			$threadName = "Server thread";
+			$threadName = "PEX";
 		}elseif($thread instanceof Thread or $thread instanceof Worker){
 			$threadName = $thread->getThreadName() . " thread";
 		}else{
