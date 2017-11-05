@@ -31,7 +31,7 @@ abstract class JumpingEntity extends BaseEntity {
 
     public function updateMove($tickDiff) {
         // TODO
-        $this->jump();
+        // $this->jump();
         return null;
     }
 }

@@ -262,6 +262,7 @@ class PureEntities extends PluginBase implements CommandExecutor {
      */
     public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null, Player $owner = null) {
         $this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
+
         if ($event->isCancelled()) {
             return null;
         } else {

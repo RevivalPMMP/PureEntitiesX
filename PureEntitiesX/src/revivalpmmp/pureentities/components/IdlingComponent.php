@@ -187,7 +187,7 @@ class IdlingComponent {
             }
 
 
-            // 0 degrees is horizontal, -90 is up, 90 is down. but 90 degrees looking very silly - so 60 degrees is
+            // 0 degrees is horizontal, -90 is up, 90 is down. but 90 degrees looks very silly - so 60 degrees is
             // completely ok
             $pitch = mt_rand(0, 1) ? $pitch + mt_rand(10, 20) : $pitch - mt_rand(10, 20);
             if ($pitch > 60) {

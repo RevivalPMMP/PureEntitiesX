@@ -47,9 +47,6 @@ abstract class BaseEntity extends Creature {
     public $stayTime = 0;
     protected $moveTime = 0;
 
-    /** @var float */
-    public $eyeHeight = null;
-
     /** @var Vector3|Entity */
     private $baseTarget = null;
 
@@ -86,9 +83,9 @@ abstract class BaseEntity extends Creature {
         $this->maxAge = PluginConfiguration::getInstance()->getMaxAge();
         $this->maxDeadTicks = 23;
         parent::__construct($level, $nbt);
-        if ($this->eyeHeight === null) {
+        /* if ($this->eyeHeight === null) {
             $this->eyeHeight = $this->height / 2 + 0.1;
-        }
+        } */
         $this->namedtag->generatedByPEX = new ByteTag("generatedByPEX",1);
     }
 
