@@ -6,4 +6,4 @@ process of reviewal and approval.
 Issue Reporting Guidelines can be found here:
 https://github.com/RevivalPMMP/PureEntitiesX/wiki/Issue-Reporting-Guidelines
 
-Any malicious material submitted that could be used to harm servers will be ppromptly rejected.
+Any malicious material submitted that could be used to harm servers will be promptly rejected.
