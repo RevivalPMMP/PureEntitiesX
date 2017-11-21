@@ -47,9 +47,6 @@ abstract class BaseEntity extends Creature{
 	public $stayTime = 0;
 	protected $moveTime = 0;
 
-	/** @var float */
-	public $eyeHeight = null;
-
 	/** @var Vector3|Entity */
 	private $baseTarget = null;
 
@@ -57,7 +54,16 @@ abstract class BaseEntity extends Creature{
 	protected $friendly = false;
 	private $wallcheck = true;
 	protected $fireProof = false;
-	protected $maxJumpHeight = 1; // default: 1 block jump height - this should be 2 for horses e.g.
+
+	/**
+	 * Default is 1.2 blocks because entities need to be able to jump
+	 * just higher than the block to land on top of it.
+	 *
+	 * For Horses (and its variants) this should be 2.2
+	 *
+	 * @var float $maxJumpHeight
+	 */
+	protected $maxJumpHeight = 1.2;
 	protected $checkTargetSkipTicks = 1; // default: no skip
 	public $width = 1.0;
 	public $height = 1.0;
@@ -86,9 +92,9 @@ abstract class BaseEntity extends Creature{
 		$this->maxAge = PluginConfiguration::getInstance()->getMaxAge();
 		$this->maxDeadTicks = 23;
 		parent::__construct($level, $nbt);
-		if($this->eyeHeight === null){
+		/* if ($this->eyeHeight === null) {
 			$this->eyeHeight = $this->height / 2 + 0.1;
-		}
+		} */
 		$this->namedtag->generatedByPEX = new ByteTag("generatedByPEX", 1);
 	}
 
