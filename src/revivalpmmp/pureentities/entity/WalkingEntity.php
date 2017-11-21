@@ -264,16 +264,6 @@ abstract class WalkingEntity extends BaseEntity{
 	}
 
 	/**
-	 * Checks if this entity is following a player
-	 *
-	 * @param Creature $creature the possible player
-	 * @return bool
-	 */
-	protected function isFollowingPlayer(Creature $creature) : bool{
-		return $this->getBaseTarget() !== null and $this->getBaseTarget() instanceof Player and $this->getBaseTarget()->getId() === $creature->getId();
-	}
-
-	/**
 	 * Finds the next random location starting from current x/y/z and sets it as base target
 	 */
 	public function findRandomLocation(){
