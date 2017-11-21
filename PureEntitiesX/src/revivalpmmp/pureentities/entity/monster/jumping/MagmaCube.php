@@ -29,87 +29,87 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class MagmaCube extends JumpingMonster {
-    const NETWORK_ID = Data::NETWORK_IDS["magma_cube"];
-    const NBT_CONST_CUBESIZE = "CubeSize";
+class MagmaCube extends JumpingMonster{
+	const NETWORK_ID = Data::NETWORK_IDS["magma_cube"];
+	const NBT_CONST_CUBESIZE = "CubeSize";
 
-    private $cubeSize = -1; // 0 = Tiny, 1 = Small, 2 = Big
-    private $cubeDimensions = array(0.51, 1.02, 2.04);
+	private $cubeSize = -1; // 0 = Tiny, 1 = Small, 2 = Big
+	private $cubeDimensions = array(0.51, 1.02, 2.04);
 
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->loadFromNBT();
-        if ($this->cubeSize == -1) {
-            $this->cubeSize = mt_rand(0, 2);
-            $this->saveNBT();
-        }
+	public function initEntity(){
+		parent::initEntity();
+		$this->loadFromNBT();
+		if($this->cubeSize == -1){
+			$this->cubeSize = mt_rand(0, 2);
+			$this->saveNBT();
+		}
 
-        $this->width = $this->cubeDimensions[$this->cubeSize];
-        $this->height = $this->cubeDimensions[$this->cubeSize];
-        $this->speed = 0.8;
+		$this->width = $this->cubeDimensions[$this->cubeSize];
+		$this->height = $this->cubeDimensions[$this->cubeSize];
+		$this->speed = 0.8;
 
-        $this->fireProof = true;
-        $this->setDamage([0, 3, 4, 6]);
-    }
+		$this->fireProof = true;
+		$this->setDamage([0, 3, 4, 6]);
+	}
 
-    public function saveNBT() {
-        $this->namedtag->CubeSize = new IntTag(self::NBT_CONST_CUBESIZE ,$this->cubeSize);
-    }
+	public function saveNBT(){
+		$this->namedtag->CubeSize = new IntTag(self::NBT_CONST_CUBESIZE, $this->cubeSize);
+	}
 
-    public function loadFromNBT() {
-        if (PluginConfiguration::getInstance()->getEnableNBT()) {
-            if (isset($this->namedtag->CubeSize)) {
-                $this->cubeSize = $this->namedtag[self::NBT_CONST_CUBESIZE];
-            }
-        }
-    }
+	public function loadFromNBT(){
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			if(isset($this->namedtag->CubeSize)){
+				$this->cubeSize = $this->namedtag[self::NBT_CONST_CUBESIZE];
+			}
+		}
+	}
 
-    public function getName(): string {
-        return "MagmaCube";
-    }
+	public function getName() : string{
+		return "MagmaCube";
+	}
 
-    /**
-     * Attack a player
-     *
-     * @param Entity $player
-     */
-    public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 10 && $this->distanceSquared($player) < 1) {
-            $this->attackDelay = 0;
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
-            $player->attack($ev);
+	/**
+	 * Attack a player
+	 *
+	 * @param Entity $player
+	 */
+	public function attackEntity(Entity $player){
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 1){
+			$this->attackDelay = 0;
+			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			$player->attack($ev);
 
-            $this->checkTamedMobsAttack($player);
-        }
-    }
+			$this->checkTamedMobsAttack($player);
+		}
+	}
 
-    public function getDrops(): array {
-        $drops = [];
-        if ($this->isLootDropAllowed()) {
-            switch (mt_rand(0, 1)) {
-                case 0:
-                    $drops[] = Item::get(Item::NETHERRACK, 0, 1);
-                    break;
-                case 1:
-                    $drops[] = Item::get(Item::MAGMA_CREAM, 0, 1);
-                    break;
-            }
-        }
-        return $drops;
-    }
+	public function getDrops() : array{
+		$drops = [];
+		if($this->isLootDropAllowed()){
+			switch(mt_rand(0, 1)){
+				case 0:
+					$drops[] = Item::get(Item::NETHERRACK, 0, 1);
+					break;
+				case 1:
+					$drops[] = Item::get(Item::MAGMA_CREAM, 0, 1);
+					break;
+			}
+		}
+		return $drops;
+	}
 
-    public function getKillExperience(): int {
-        // normally it would be set by small/medium/big sized - but as we have it not now - i'll make it more static
-        if ($this->cubeSize == 2) {
-            return 4;
-        } else if ($this->cubeSize == 1) {
-            return 2;
-        } else {
-            return 1;
-        }
-    }
+	public function getKillExperience() : int{
+		// normally it would be set by small/medium/big sized - but as we have it not now - i'll make it more static
+		if($this->cubeSize == 2){
+			return 4;
+		}else if($this->cubeSize == 1){
+			return 2;
+		}else{
+			return 1;
+		}
+	}
 
 
 }

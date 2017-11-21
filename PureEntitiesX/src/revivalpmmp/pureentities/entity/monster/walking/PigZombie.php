@@ -32,105 +32,105 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class PigZombie extends WalkingMonster {
-    const NETWORK_ID = Data::NETWORK_IDS["pig_zombie"];
+class PigZombie extends WalkingMonster{
+	const NETWORK_ID = Data::NETWORK_IDS["pig_zombie"];
 
-    private $angry = 0;
-    public $eyeHeight = 1.62;
+	private $angry = 0;
+	public $eyeHeight = 1.62;
 
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->speed = 1.15;
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->speed = 1.15;
 
-        if (PluginConfiguration::getInstance()->getEnableNBT()) {
-            if (isset($this->namedtag->Angry)) {
-                $this->angry = (int)$this->namedtag["Angry"];
-            }
-        }
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			if(isset($this->namedtag->Angry)){
+				$this->angry = (int) $this->namedtag["Angry"];
+			}
+		}
 
-        $this->fireProof = true;
-        $this->setDamage([0, 5, 9, 13]);
-    }
+		$this->fireProof = true;
+		$this->setDamage([0, 5, 9, 13]);
+	}
 
-    public function saveNBT() {
-        if (PluginConfiguration::getInstance()->getEnableNBT()) {
-            parent::saveNBT();
-            $this->namedtag->Angry = new IntTag("Angry", $this->angry);
-        }
-    }
+	public function saveNBT(){
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::saveNBT();
+			$this->namedtag->Angry = new IntTag("Angry", $this->angry);
+		}
+	}
 
-    public function getName(): string {
-        return "PigZombie";
-    }
+	public function getName() : string{
+		return "PigZombie";
+	}
 
-    public function isAngry(): bool {
-        return $this->angry > 0;
-    }
+	public function isAngry() : bool{
+		return $this->angry > 0;
+	}
 
-    public function setAngry(int $val) {
-        $this->angry = $val;
-    }
+	public function setAngry(int $val){
+		$this->angry = $val;
+	}
 
-    public function targetOption(Creature $creature, float $distance): bool {
-        return $this->isAngry() && parent::targetOption($creature, $distance);
-    }
+	public function targetOption(Creature $creature, float $distance) : bool{
+		return $this->isAngry() && parent::targetOption($creature, $distance);
+	}
 
-    public function attack(EntityDamageEvent $source) {
-        parent::attack($source);
+	public function attack(EntityDamageEvent $source){
+		parent::attack($source);
 
-        if (!$source->isCancelled()) {
-            $this->setAngry(1000);
-        }
-    }
+		if(!$source->isCancelled()){
+			$this->setAngry(1000);
+		}
+	}
 
-    public function spawnTo(Player $player) {
-        parent::spawnTo($player);
+	public function spawnTo(Player $player){
+		parent::spawnTo($player);
 
-        $pk = new MobEquipmentPacket();
-        $pk->entityRuntimeId = $this->getId();
-        $pk->item = new GoldSword();
-        $pk->inventorySlot = 10;
-        $pk->hotbarSlot = 10;
-        $player->dataPacket($pk);
-    }
+		$pk = new MobEquipmentPacket();
+		$pk->entityRuntimeId = $this->getId();
+		$pk->item = new GoldSword();
+		$pk->inventorySlot = 10;
+		$pk->hotbarSlot = 10;
+		$player->dataPacket($pk);
+	}
 
-    /**
-     * Attack the player
-     *
-     * @param Entity $player
-     */
-    public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 10 && $this->distanceSquared($player) < 1.44) {
-            $this->attackDelay = 0;
+	/**
+	 * Attack the player
+	 *
+	 * @param Entity $player
+	 */
+	public function attackEntity(Entity $player){
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 1.44){
+			$this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
-            $player->attack($ev);
+			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			$player->attack($ev);
 
-            $this->checkTamedMobsAttack($player);
-        }
-    }
+			$this->checkTamedMobsAttack($player);
+		}
+	}
 
-    public function getDrops(): array {
-        $drops = [];
-        if ($this->isLootDropAllowed()) {
-            array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 1)));
-            array_push($drops, Item::get(Item::GOLD_INGOT, 0, mt_rand(0, 1)));
-        }
-        return $drops;
-    }
+	public function getDrops() : array{
+		$drops = [];
+		if($this->isLootDropAllowed()){
+			array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 1)));
+			array_push($drops, Item::get(Item::GOLD_INGOT, 0, mt_rand(0, 1)));
+		}
+		return $drops;
+	}
 
-    public function getMaxHealth(): int {
-        return 20;
-    }
+	public function getMaxHealth() : int{
+		return 20;
+	}
 
-    public function getKillExperience(): int {
-        // adult: 5, baby: 12
-        return 5;
-    }
+	public function getKillExperience() : int{
+		// adult: 5, baby: 12
+		return 5;
+	}
 
 
 }
