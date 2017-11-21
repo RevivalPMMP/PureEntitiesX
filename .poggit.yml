@@ -1,6 +1,6 @@
 --- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX/
 projects:
   PureEntitiesX:
-    path: PureEntitiesX/
+    path: /
     icon: icon.png
 ...
