@@ -29,97 +29,97 @@ use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
-abstract class FlyingAnimal extends FlyingEntity implements Animal {
+abstract class FlyingAnimal extends FlyingEntity implements Animal{
 
-    public function getSpeed(): float {
-        return 0.7;
-    }
+	public function getSpeed() : float{
+		return 0.7;
+	}
 
-    public function initEntity() {
-        parent::initEntity();
+	public function initEntity(){
+		parent::initEntity();
 
-        if ($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null) {
-            $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
-        }
-    }
+		if($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null){
+			$this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
+		}
+	}
 
-    public function isBaby(): bool {
-        return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
-    }
+	public function isBaby() : bool{
+		return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
+	}
 
-    public function entityBaseTick(int $tickDiff = 1): bool {
-        Timings::$timerEntityBaseTick->startTiming();
+	public function entityBaseTick(int $tickDiff = 1) : bool{
+		Timings::$timerEntityBaseTick->startTiming();
 
-        $hasUpdate = parent::entityBaseTick($tickDiff);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
-        // BaseEntity::entityBaseTick checks and can trigger despawn.  After calling it, we need to verify
-        // that the entity is still valid for updates before performing any other tasks on it.
-        if($this->isClosed() or !$this->isAlive()) {
-            Timings::$timerEntityBaseTick->stopTiming();
-            return false;
-        }
+		// BaseEntity::entityBaseTick checks and can trigger despawn.  After calling it, we need to verify
+		// that the entity is still valid for updates before performing any other tasks on it.
+		if($this->isClosed() or !$this->isAlive()){
+			Timings::$timerEntityBaseTick->stopTiming();
+			return false;
+		}
 
-        if (!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()) {
-            $hasUpdate = true;
-            $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
-            if ($airTicks <= -20) {
-                $airTicks = 0;
-                $ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
-                $this->attack($ev);
-            }
-            $this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, $airTicks);
-        } else {
-            $this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, 300);
-        }
+		if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()){
+			$hasUpdate = true;
+			$airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
+			if($airTicks <= -20){
+				$airTicks = 0;
+				$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
+				$this->attack($ev);
+			}
+			$this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, $airTicks);
+		}else{
+			$this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, 300);
+		}
 
-        Timings::$timerEntityBaseTick->stopTiming();
-        return $hasUpdate;
-    }
+		Timings::$timerEntityBaseTick->stopTiming();
+		return $hasUpdate;
+	}
 
-    public function onUpdate(int $currentTick): bool {
-        if ($this->getLevel() == null) return false;
-        if ($this->isClosed() or !$this->isAlive()) {
-            return parent::onUpdate($currentTick);
-        }
+	public function onUpdate(int $currentTick) : bool{
+		if($this->getLevel() == null) return false;
+		if($this->isClosed() or !$this->isAlive()){
+			return parent::onUpdate($currentTick);
+		}
 
-        $tickDiff = $currentTick - $this->lastUpdate;
-        $this->lastUpdate = $currentTick;
-        $this->entityBaseTick($tickDiff);
+		$tickDiff = $currentTick - $this->lastUpdate;
+		$this->lastUpdate = $currentTick;
+		$this->entityBaseTick($tickDiff);
 
-        $target = $this->updateMove($tickDiff);
-        if ($target instanceof Player) {
-            if ($this->distance($target) <= 2) {
-                $this->pitch = 22;
-                $this->x = $this->lastX;
-                $this->y = $this->lastY;
-                $this->z = $this->lastZ;
-            }
-        } elseif (
-            $target instanceof Vector3
-            && $this->distance($target) <= 1
-        ) {
-            $this->moveTime = 0;
-        }
-        return true;
-    }
+		$target = $this->updateMove($tickDiff);
+		if($target instanceof Player){
+			if($this->distance($target) <= 2){
+				$this->pitch = 22;
+				$this->x = $this->lastX;
+				$this->y = $this->lastY;
+				$this->z = $this->lastZ;
+			}
+		}elseif(
+			$target instanceof Vector3
+			&& $this->distance($target) <= 1
+		){
+			$this->moveTime = 0;
+		}
+		return true;
+	}
 
-    public function showButton(Player $player) {
-        if ($this instanceof IntfTameable) {
-            $itemInHand = $player->getInventory()->getItemInHand()->getId();
-            $tameFood = $this->getTameFoods();
-            if (!$this->isTamed() and in_array($itemInHand, $tameFood)) {
-                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
-                PureEntities::logOutput("Button text set to Tame.");
-            } else if ($this->isTamed()) { // Offer sit or stand.
-                if ($this->isSitting()) {
-                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
-                    PureEntities::logOutput("Button text set to Stand.");
-                } else {
-                    InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
-                    PureEntities::logOutput("Button text set to Sit.");
-                }
-            }
-        }
-    }
+	public function showButton(Player $player){
+		if($this instanceof IntfTameable){
+			$itemInHand = $player->getInventory()->getItemInHand()->getId();
+			$tameFood = $this->getTameFoods();
+			if(!$this->isTamed() and in_array($itemInHand, $tameFood)){
+				InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
+				PureEntities::logOutput("Button text set to Tame.");
+			}else if($this->isTamed()){ // Offer sit or stand.
+				if($this->isSitting()){
+					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
+					PureEntities::logOutput("Button text set to Stand.");
+				}else{
+					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
+					PureEntities::logOutput("Button text set to Sit.");
+				}
+			}
+		}
+	}
 
 }

@@ -30,70 +30,70 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
 
-class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
+class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanInteract, IntfCanPanic{
 
-    use Breedable, CanPanic, Feedable;
-    const NETWORK_ID = Data::NETWORK_IDS["pig"];
+	use Breedable, CanPanic, Feedable;
+	const NETWORK_ID = Data::NETWORK_IDS["pig"];
 
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->feedableItems = array(
-            Item::CARROT,
-            Item::BEETROOT);
-        $this->breedableClass = new BreedingComponent($this);
-        $this->breedableClass->init();
-    }
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->feedableItems = array(
+			Item::CARROT,
+			Item::BEETROOT);
+		$this->breedableClass = new BreedingComponent($this);
+		$this->breedableClass->init();
+	}
 
-    public function getName(): string {
-        return "Pig";
-    }
+	public function getName() : string{
+		return "Pig";
+	}
 
-    public function saveNBT() {
-        parent::saveNBT();
-        $this->breedableClass->saveNBT();
-    }
+	public function saveNBT(){
+		parent::saveNBT();
+		$this->breedableClass->saveNBT();
+	}
 
-    /**
-     * Returns the appropriate NetworkID associated with this entity
-     * @return int
-     */
-    public function getNetworkId() {
-        return self::NETWORK_ID;
-    }
+	/**
+	 * Returns the appropriate NetworkID associated with this entity
+	 * @return int
+	 */
+	public function getNetworkId(){
+		return self::NETWORK_ID;
+	}
 
-    public function getDrops(): array {
-        if ($this->isLootDropAllowed()) {
-            if ($this->isOnFire()) {
-                return [Item::get(Item::COOKED_PORKCHOP, 0, mt_rand(1, 3))];
-            } else {
-                return [Item::get(Item::RAW_PORKCHOP, 0, mt_rand(1, 3))];
-            }
-        } else {
-            return [];
-        }
-    }
+	public function getDrops() : array{
+		if($this->isLootDropAllowed()){
+			if($this->isOnFire()){
+				return [Item::get(Item::COOKED_PORKCHOP, 0, mt_rand(1, 3))];
+			}else{
+				return [Item::get(Item::RAW_PORKCHOP, 0, mt_rand(1, 3))];
+			}
+		}else{
+			return [];
+		}
+	}
 
-    public function getMaxHealth(): int {
-        return 10;
-    }
+	public function getMaxHealth() : int{
+		return 10;
+	}
 
-    public function getKillExperience(): int {
-        if ($this->getBreedingComponent()->isBaby()) {
-            return mt_rand(1, 7);
-        }
-        return mt_rand(1, 3);
-    }
+	public function getKillExperience() : int{
+		if($this->getBreedingComponent()->isBaby()){
+			return mt_rand(1, 7);
+		}
+		return mt_rand(1, 3);
+	}
 
-    /**
-     * Just for Bluelight ...
-     * @return null
-     */
-    public function getRidePosition() {
-        return null;
-    }
+	/**
+	 * Just for Bluelight ...
+	 * @return null
+	 */
+	public function getRidePosition(){
+		return null;
+	}
 
 
 }

@@ -26,74 +26,74 @@ use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
-abstract class SwimmingAnimal extends SwimmingEntity implements Animal {
+abstract class SwimmingAnimal extends SwimmingEntity implements Animal{
 
-    public function getSpeed(): float {
-        return 1.0;
-    }
+	public function getSpeed() : float{
+		return 1.0;
+	}
 
-    public function initEntity() {
-        parent::initEntity();
+	public function initEntity(){
+		parent::initEntity();
 
-        if ($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null) {
-            $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
-        }
-    }
+		if($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null){
+			$this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
+		}
+	}
 
-    public function isBaby(): bool {
-        return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
-    }
+	public function isBaby() : bool{
+		return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
+	}
 
-    public function entityBaseTick(int $tickDiff = 1): bool {
-        Timings::$timerEntityBaseTick->startTiming();
+	public function entityBaseTick(int $tickDiff = 1) : bool{
+		Timings::$timerEntityBaseTick->startTiming();
 
-        $hasUpdate = parent::entityBaseTick($tickDiff);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
-        if (!$this->hasEffect(Effect::WATER_BREATHING) && !$this->isInsideOfWater()) {
-            $hasUpdate = true;
-            $airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
-            if ($airTicks <= -20) {
-                $airTicks = 0;
-                $ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
-                $this->attack($ev);
-            }
-            $this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, $airTicks);
-        } else {
-            $this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, 300);
-        }
+		if(!$this->hasEffect(Effect::WATER_BREATHING) && !$this->isInsideOfWater()){
+			$hasUpdate = true;
+			$airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
+			if($airTicks <= -20){
+				$airTicks = 0;
+				$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
+				$this->attack($ev);
+			}
+			$this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, $airTicks);
+		}else{
+			$this->setDataProperty(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, 300);
+		}
 
-        Timings::$timerEntityBaseTick->stopTiming();
-        return $hasUpdate;
-    }
+		Timings::$timerEntityBaseTick->stopTiming();
+		return $hasUpdate;
+	}
 
-    public function onUpdate(int $currentTick): bool {
-        if (!$this->isAlive()) {
-            if (++$this->deadTicks >= 23) {
-                $this->close();
-                return false;
-            }
-            return true;
-        }
+	public function onUpdate(int $currentTick) : bool{
+		if(!$this->isAlive()){
+			if(++$this->deadTicks >= 23){
+				$this->close();
+				return false;
+			}
+			return true;
+		}
 
-        $tickDiff = $currentTick - $this->lastUpdate;
-        $this->lastUpdate = $currentTick;
-        $this->entityBaseTick($tickDiff);
+		$tickDiff = $currentTick - $this->lastUpdate;
+		$this->lastUpdate = $currentTick;
+		$this->entityBaseTick($tickDiff);
 
-        $target = $this->updateMove($tickDiff);
-        if ($target instanceof Player) {
-            if ($this->distance($target) <= 2) {
-                $this->pitch = 22;
-                $this->x = $this->lastX;
-                $this->y = $this->lastY;
-                $this->z = $this->lastZ;
-            }
-        } elseif (
-            $target instanceof Vector3
-            && $this->distance($target) <= 1
-        ) {
-            $this->moveTime = 0;
-        }
-        return true;
-    }
+		$target = $this->updateMove($tickDiff);
+		if($target instanceof Player){
+			if($this->distance($target) <= 2){
+				$this->pitch = 22;
+				$this->x = $this->lastX;
+				$this->y = $this->lastY;
+				$this->z = $this->lastZ;
+			}
+		}elseif(
+			$target instanceof Vector3
+			&& $this->distance($target) <= 1
+		){
+			$this->moveTime = 0;
+		}
+		return true;
+	}
 
 }

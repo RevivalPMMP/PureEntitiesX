@@ -30,100 +30,99 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
 
-class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic
-{
-    use Feedable, Breedable, CanPanic;
+class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic{
+	use Feedable, Breedable, CanPanic;
 
-    const NETWORK_ID = Data::NETWORK_IDS["chicken"];
+	const NETWORK_ID = Data::NETWORK_IDS["chicken"];
 
-    // egg laying specific configuration (an egg is laid by a chicken each 6000-120000 ticks)
-    const DROP_EGG_DELAY_MIN = 6000;
-    const DROP_EGG_DELAY_MAX = 12000;
-    private $dropEggTimer = 0;
-    private $dropEggTime = 0;
-
-
-    public function initEntity() {
-        parent::initEntity();
-        $this->setNetworkId(Data::NETWORK_IDS["chicken"]);
-        $this->width = Data::WIDTHS[$this->getNetworkId()];
-        $this->height = Data::HEIGHTS[$this->getNetworkId()];
-        $this->eyeHeight = 0.6;
-        $this->gravity =0.08;
-
-        $this->breedableClass = new BreedingComponent($this);
-        $this->breedableClass->init();
-
-        $this->feedableItems = array(
-            Item::WHEAT_SEEDS,
-            Item::PUMPKIN_SEEDS,
-            Item::MELON_SEEDS,
-            Item::BEETROOT_SEEDS);
-    }
-
-    public function saveNBT() {
-        parent::saveNBT();
-        $this->breedableClass->saveNBT();
-    }
-
-    public function getName(): string {
-        return "Chicken";
-    }
+	// egg laying specific configuration (an egg is laid by a chicken each 6000-120000 ticks)
+	const DROP_EGG_DELAY_MIN = 6000;
+	const DROP_EGG_DELAY_MAX = 12000;
+	private $dropEggTimer = 0;
+	private $dropEggTime = 0;
 
 
-    public function getDrops(): array {
-        $drops = [];
+	public function initEntity(){
+		parent::initEntity();
+		$this->setNetworkId(Data::NETWORK_IDS["chicken"]);
+		$this->width = Data::WIDTHS[$this->getNetworkId()];
+		$this->height = Data::HEIGHTS[$this->getNetworkId()];
+		$this->eyeHeight = 0.6;
+		$this->gravity = 0.08;
 
-        if ($this->isLootDropAllowed()) {
-            // only adult chicken drop something ...
-            if ($this->breedableClass != null && !$this->breedableClass->isBaby()) {
-                array_push($drops, Item::get(Item::FEATHER, 0, mt_rand(0, 2)));
-                if ($this->isOnFire()) {
-                    array_push($drops, Item::get(Item::COOKED_CHICKEN, 0, 1));
-                } else {
-                    array_push($drops, Item::get(Item::RAW_CHICKEN, 0, 1));
-                }
-            }
-        }
-        return $drops;
-    }
+		$this->breedableClass = new BreedingComponent($this);
+		$this->breedableClass->init();
 
-    public function getMaxHealth(): int {
-        return 4;
-    }
+		$this->feedableItems = array(
+			Item::WHEAT_SEEDS,
+			Item::PUMPKIN_SEEDS,
+			Item::MELON_SEEDS,
+			Item::BEETROOT_SEEDS);
+	}
+
+	public function saveNBT(){
+		parent::saveNBT();
+		$this->breedableClass->saveNBT();
+	}
+
+	public function getName() : string{
+		return "Chicken";
+	}
 
 
-    // ----- functionality to lay an eg ... -------------
-    public function entityBaseTick(int $tickDiff = 1): bool {
-        if ($this->dropEggTime === 0) {
-            $this->dropEggTime = mt_rand(self::DROP_EGG_DELAY_MIN, self::DROP_EGG_DELAY_MAX);
-        }
+	public function getDrops() : array{
+		$drops = [];
 
-        if ($this->dropEggTimer >= $this->dropEggTime) { // drop an egg!
-            $this->layEgg();
-        } else {
-            $this->dropEggTimer += $tickDiff;
-        }
+		if($this->isLootDropAllowed()){
+			// only adult chicken drop something ...
+			if($this->breedableClass != null && !$this->breedableClass->isBaby()){
+				array_push($drops, Item::get(Item::FEATHER, 0, mt_rand(0, 2)));
+				if($this->isOnFire()){
+					array_push($drops, Item::get(Item::COOKED_CHICKEN, 0, 1));
+				}else{
+					array_push($drops, Item::get(Item::RAW_CHICKEN, 0, 1));
+				}
+			}
+		}
+		return $drops;
+	}
 
-        parent::entityBaseTick($tickDiff);
-        return true;
-    }
+	public function getMaxHealth() : int{
+		return 4;
+	}
 
-    private function layEgg() {
-        $item = Item::get(Item::EGG, 0, 1);
-        $this->getLevel()->dropItem($this, $item);
-        $this->getLevel()->addSound(new PopSound($this), $this->getViewers());
 
-        $this->dropEggTimer = 0;
-        $this->dropEggTime = 0;
-    }
+	// ----- functionality to lay an eg ... -------------
+	public function entityBaseTick(int $tickDiff = 1) : bool{
+		if($this->dropEggTime === 0){
+			$this->dropEggTime = mt_rand(self::DROP_EGG_DELAY_MIN, self::DROP_EGG_DELAY_MAX);
+		}
 
-    public function getKillExperience(): int {
-        if ($this->getBreedingComponent()->isBaby()) {
-            return mt_rand(1, 7);
-        }
-        return mt_rand(1, 3);
-    }
+		if($this->dropEggTimer >= $this->dropEggTime){ // drop an egg!
+			$this->layEgg();
+		}else{
+			$this->dropEggTimer += $tickDiff;
+		}
+
+		parent::entityBaseTick($tickDiff);
+		return true;
+	}
+
+	private function layEgg(){
+		$item = Item::get(Item::EGG, 0, 1);
+		$this->getLevel()->dropItem($this, $item);
+		$this->getLevel()->addSound(new PopSound($this), $this->getViewers());
+
+		$this->dropEggTimer = 0;
+		$this->dropEggTime = 0;
+	}
+
+	public function getKillExperience() : int{
+		if($this->getBreedingComponent()->isBaby()){
+			return mt_rand(1, 7);
+		}
+		return mt_rand(1, 3);
+	}
 
 
 }

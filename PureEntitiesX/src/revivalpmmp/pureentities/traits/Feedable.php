@@ -18,21 +18,21 @@
 
 namespace revivalpmmp\pureentities\traits;
 
-trait Feedable
-{
+trait Feedable{
 
-    /**
-     * List of items that can be fed to the entity.
-     *
-     * @var array
-     */
-    private $feedableItems = [];
-    /**
-     * Returns the items that can be fed to the entity
-     *
-     * @return array
-     */
-    public function getFeedableItems() {
-        return $this->feedableItems;
-    }
+	/**
+	 * List of items that can be fed to the entity.
+	 *
+	 * @var array
+	 */
+	private $feedableItems = [];
+
+	/**
+	 * Returns the items that can be fed to the entity
+	 *
+	 * @return array
+	 */
+	public function getFeedableItems(){
+		return $this->feedableItems;
+	}
 }

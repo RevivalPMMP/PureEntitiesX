@@ -27,58 +27,58 @@ use pocketmine\item\Item;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class CaveSpider extends WalkingMonster {
-    const NETWORK_ID = Data::NETWORK_IDS["cave_spider"];
+class CaveSpider extends WalkingMonster{
+	const NETWORK_ID = Data::NETWORK_IDS["cave_spider"];
 
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->speed = 1.3;
-        $this->setDamage([0, 2, 3, 3]);
-    }
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->speed = 1.3;
+		$this->setDamage([0, 2, 3, 3]);
+	}
 
-    public function getName(): string {
-        return "CaveSpider";
-    }
+	public function getName() : string{
+		return "CaveSpider";
+	}
 
-    /**
-     * Attack the player
-     *
-     * @param Entity $player
-     */
-    public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 10 && $this->distanceSquared($player) < 1.32) {
-            $this->attackDelay = 0;
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
-            $player->attack($ev);
-            Effect::getEffect(Effect::POISON)->applyEffect($player);
-            $this->checkTamedMobsAttack($player);
-        }
-    }
+	/**
+	 * Attack the player
+	 *
+	 * @param Entity $player
+	 */
+	public function attackEntity(Entity $player){
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 1.32){
+			$this->attackDelay = 0;
+			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			$player->attack($ev);
+			Effect::getEffect(Effect::POISON)->applyEffect($player);
+			$this->checkTamedMobsAttack($player);
+		}
+	}
 
-    public function getDrops(): array {
-        $drops = [];
-        if ($this->isLootDropAllowed()) {
-            array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
-            switch (mt_rand(0, 2)) {
-                case 0:
-                    array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
-                    break;
-            }
-        }
-        return $drops;
-    }
+	public function getDrops() : array{
+		$drops = [];
+		if($this->isLootDropAllowed()){
+			array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
+			switch(mt_rand(0, 2)){
+				case 0:
+					array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
+					break;
+			}
+		}
+		return $drops;
+	}
 
-    public function getMaxHealth(): int {
-        return 12;
-    }
+	public function getMaxHealth() : int{
+		return 12;
+	}
 
-    public function getKillExperience(): int {
-        return 5;
-    }
+	public function getKillExperience() : int{
+		return 5;
+	}
 
 
 }

@@ -29,8 +29,8 @@ use pocketmine\Player;
  *
  * @package revivalpmmp\pureentities\features
  */
-interface IntfCanInteract {
+interface IntfCanInteract{
 
-    public function showButton(Player $player);
+	public function showButton(Player $player);
 
 }

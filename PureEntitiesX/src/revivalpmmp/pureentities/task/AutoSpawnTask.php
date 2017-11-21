@@ -45,88 +45,88 @@ use revivalpmmp\pureentities\task\spawners\monster\SpiderSpawner;
 use revivalpmmp\pureentities\task\spawners\monster\WolfSpawner;
 use revivalpmmp\pureentities\task\spawners\monster\ZombieSpawner;
 
-class AutoSpawnTask extends PluginTask {
+class AutoSpawnTask extends PluginTask{
 
-    private $plugin;
+	private $plugin;
 
-    /** @var array $spawnerClasses */
-    private $spawnerClasses = [];
-    /** @var array $spawnerWorlds */
-    private $spawnerWorlds = [];
+	/** @var array $spawnerClasses */
+	private $spawnerClasses = [];
+	/** @var array $spawnerWorlds */
+	private $spawnerWorlds = [];
 
-    public function __construct(PureEntities $plugin) {
-        parent::__construct($plugin);
-        $this->plugin = $plugin;
-        $this->spawnerWorlds = PluginConfiguration::getInstance()->getEnabledWorlds();
-        $this->prepareSpawnerClasses();
-    }
+	public function __construct(PureEntities $plugin){
+		parent::__construct($plugin);
+		$this->plugin = $plugin;
+		$this->spawnerWorlds = PluginConfiguration::getInstance()->getEnabledWorlds();
+		$this->prepareSpawnerClasses();
+	}
 
-    public function onRun(int $currentTick) {
-        PureEntities::logOutput("AutoSpawnTask: onRun ($currentTick)", PureEntities::DEBUG);
+	public function onRun(int $currentTick){
+		PureEntities::logOutput("AutoSpawnTask: onRun ($currentTick)", PureEntities::DEBUG);
 
-        foreach ($this->plugin->getServer()->getLevels() as $level) {
-            if (count($this->spawnerWorlds) > 0 and !in_array($level->getName(), $this->spawnerWorlds)){
-                continue;
-            }
+		foreach($this->plugin->getServer()->getLevels() as $level){
+			if(count($this->spawnerWorlds) > 0 and !in_array($level->getName(), $this->spawnerWorlds)){
+				continue;
+			}
 
-            // TODO: Fix inefficiency here.
-            // Instead of just running the spawn method for each creature on each player
-            // we should build a 'recommended spawn map' based on all active player locations.
-            // More notes to come on GitHub project card.
+			// TODO: Fix inefficiency here.
+			// Instead of just running the spawn method for each creature on each player
+			// we should build a 'recommended spawn map' based on all active player locations.
+			// More notes to come on GitHub project card.
 
-            if (count($level->getPlayers()) > 0) {
-                foreach ($level->getPlayers() as $player) {
-                    foreach ($this->spawnerClasses as $spawnerClass) {
-                        $locationValid = false;
-                        $pass = 1;
-                        while (!$locationValid) {
+			if(count($level->getPlayers()) > 0){
+				foreach($level->getPlayers() as $player){
+					foreach($this->spawnerClasses as $spawnerClass){
+						$locationValid = false;
+						$pass = 1;
+						while(!$locationValid){
 
-                            $suggestedLocation = PureEntities::getPositionNearPlayer($player);
+							$suggestedLocation = PureEntities::getPositionNearPlayer($player);
 
-                            // search up and down the current player's y-coordinate to find a valid block!
-                            $correctedPosition = PureEntities::getSuitableHeightPosition($suggestedLocation->x, $suggestedLocation->y, $suggestedLocation->z, $suggestedLocation->level);
-                            if ($correctedPosition !== null) {
-                                $pos = new Position($correctedPosition->x, $correctedPosition->y - 1, $correctedPosition->z, $level);
-                                $spawnerClass->spawn($pos, $player);
-                                $locationValid = true;
-                            } else {
-                                PureEntities::logOutput("AutoSpawnTask: suitable spawn coordinate not found.  Pass $pass.", PureEntities::WARN);
-                                $pass++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+							// search up and down the current player's y-coordinate to find a valid block!
+							$correctedPosition = PureEntities::getSuitableHeightPosition($suggestedLocation->x, $suggestedLocation->y, $suggestedLocation->z, $suggestedLocation->level);
+							if($correctedPosition !== null){
+								$pos = new Position($correctedPosition->x, $correctedPosition->y - 1, $correctedPosition->z, $level);
+								$spawnerClass->spawn($pos, $player);
+								$locationValid = true;
+							}else{
+								PureEntities::logOutput("AutoSpawnTask: suitable spawn coordinate not found.  Pass $pass.", PureEntities::WARN);
+								$pass++;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-    // TODO Automate this to update with a config file or data file.
-    private function prepareSpawnerClasses() {
-        // $this->spawnerClasses[] = new BatSpawner();
-        $this->spawnerClasses[] = new ChickenSpawner();
-        $this->spawnerClasses[] = new CowSpawner();
-        $this->spawnerClasses[] = new HorseSpawner();
-        $this->spawnerClasses[] = new OcelotSpawner();
-        // $this->spawnerClasses[] = new ParrotSpawner();
-        $this->spawnerClasses[] = new PigSpawner();
-        $this->spawnerClasses[] = new RabbitSpawner();
-        $this->spawnerClasses[] = new SheepSpawner();
+	// TODO Automate this to update with a config file or data file.
+	private function prepareSpawnerClasses(){
+		// $this->spawnerClasses[] = new BatSpawner();
+		$this->spawnerClasses[] = new ChickenSpawner();
+		$this->spawnerClasses[] = new CowSpawner();
+		$this->spawnerClasses[] = new HorseSpawner();
+		$this->spawnerClasses[] = new OcelotSpawner();
+		// $this->spawnerClasses[] = new ParrotSpawner();
+		$this->spawnerClasses[] = new PigSpawner();
+		$this->spawnerClasses[] = new RabbitSpawner();
+		$this->spawnerClasses[] = new SheepSpawner();
 
-        // monster spawners ...
-        $this->spawnerClasses[] = new BlazeSpawner();
-        $this->spawnerClasses[] = new CaveSpiderSpawner();
-        $this->spawnerClasses[] = new CreeperSpawner();
-        $this->spawnerClasses[] = new EndermanSpawner();
-        $this->spawnerClasses[] = new GhastSpawner();
-        $this->spawnerClasses[] = new IronGolemSpawner();
-        $this->spawnerClasses[] = new MagmaCubeSpawner();
-        $this->spawnerClasses[] = new PigZombieSpawner();
-        $this->spawnerClasses[] = new SkeletonSpawner();
-        $this->spawnerClasses[] = new SlimeSpawner();
-        $this->spawnerClasses[] = new SpiderSpawner();
-        $this->spawnerClasses[] = new WolfSpawner();
-        $this->spawnerClasses[] = new ZombieSpawner();
+		// monster spawners ...
+		$this->spawnerClasses[] = new BlazeSpawner();
+		$this->spawnerClasses[] = new CaveSpiderSpawner();
+		$this->spawnerClasses[] = new CreeperSpawner();
+		$this->spawnerClasses[] = new EndermanSpawner();
+		$this->spawnerClasses[] = new GhastSpawner();
+		$this->spawnerClasses[] = new IronGolemSpawner();
+		$this->spawnerClasses[] = new MagmaCubeSpawner();
+		$this->spawnerClasses[] = new PigZombieSpawner();
+		$this->spawnerClasses[] = new SkeletonSpawner();
+		$this->spawnerClasses[] = new SlimeSpawner();
+		$this->spawnerClasses[] = new SpiderSpawner();
+		$this->spawnerClasses[] = new WolfSpawner();
+		$this->spawnerClasses[] = new ZombieSpawner();
 
-    }
+	}
 
 }

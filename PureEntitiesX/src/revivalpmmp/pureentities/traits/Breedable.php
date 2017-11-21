@@ -21,18 +21,18 @@ namespace revivalpmmp\pureentities\traits;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\data\Data;
 
-trait Breedable {
+trait Breedable{
 
-    /**
-     * @var BreedingComponent
-     */
-    private $breedableClass;
+	/**
+	 * @var BreedingComponent
+	 */
+	private $breedableClass;
 
-    public function getBreedingComponent() {
-        return $this->breedableClass;
-    }
+	public function getBreedingComponent(){
+		return $this->breedableClass;
+	}
 
-    public function getNetworkId() {
-        return Data::NETWORK_IDS[strtolower($this->getName())];
-    }
+	public function getNetworkId(){
+		return Data::NETWORK_IDS[strtolower($this->getName())];
+	}
 }

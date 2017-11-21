@@ -18,19 +18,19 @@
 
 namespace revivalpmmp\pureentities\data;
 
-interface NBTConst {
+interface NBTConst{
 
-    // Keys
+	// Keys
 
-    const NBT_KEY_ANGRY = "Angry"; // 0 - not angry, > 0 angry
-    const NBT_KEY_BIRDTYPE = "Variant";
-    const NBT_KEY_CATTYPE = "Variant";
-    const NBT_KEY_COLLAR_COLOR = "PEXCollarColor"; // 0 -14 (14 - RED)
-    const NBT_KEY_COLOR = "Color";
-    const NBT_KEY_OWNER_UUID = "OwnerUUID"; // string
-    const NBT_KEY_SHEARED = "Sheared";
-    const NBT_KEY_SITTING = "Sitting"; // 1 or 0 (true/false)
+	const NBT_KEY_ANGRY = "Angry"; // 0 - not angry, > 0 angry
+	const NBT_KEY_BIRDTYPE = "Variant";
+	const NBT_KEY_CATTYPE = "Variant";
+	const NBT_KEY_COLLAR_COLOR = "PEXCollarColor"; // 0 -14 (14 - RED)
+	const NBT_KEY_COLOR = "Color";
+	const NBT_KEY_OWNER_UUID = "OwnerUUID"; // string
+	const NBT_KEY_SHEARED = "Sheared";
+	const NBT_KEY_SITTING = "Sitting"; // 1 or 0 (true/false)
 
-    // this is our own tag - only for server side ...
-    const NBT_SERVER_KEY_OWNER_NAME = "OwnerName";
+	// this is our own tag - only for server side ...
+	const NBT_SERVER_KEY_OWNER_NAME = "OwnerName";
 }

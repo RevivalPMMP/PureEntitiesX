@@ -21,30 +21,30 @@ namespace revivalpmmp\pureentities\entity\animal\walking;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use revivalpmmp\pureentities\data\Data;
 
-class Villager extends WalkingAnimal {
-    const NETWORK_ID = Data::NETWORK_IDS["villager"];
+class Villager extends WalkingAnimal{
+	const NETWORK_ID = Data::NETWORK_IDS["villager"];
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->speed = 1.1;
-    }
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->speed = 1.1;
+	}
 
-    public function getName(): string {
-        return "Villager";
-    }
+	public function getName() : string{
+		return "Villager";
+	}
 
-    public function getDrops(): array {
-        return [];
-    }
+	public function getDrops() : array{
+		return [];
+	}
 
-    public function getMaxHealth(): int {
-        return 10;
-    }
+	public function getMaxHealth() : int{
+		return 10;
+	}
 
-    public function getKillExperience(): int {
-        return mt_rand(3, 6);
-    }
+	public function getKillExperience() : int{
+		return mt_rand(3, 6);
+	}
 
 }

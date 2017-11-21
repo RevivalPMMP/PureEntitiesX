@@ -24,7 +24,7 @@ use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\sound\ExpPickupSound;
 use revivalpmmp\pureentities\utils\XpCalculator;
 
-class XPOrb extends Entity {
+class XPOrb extends Entity{
 	const NETWORK_ID = 69;
 
 	public $width = 0.25;
@@ -39,14 +39,14 @@ class XPOrb extends Entity {
 
 	public function initEntity(){
 		parent::initEntity();
-        if (PluginConfiguration::getInstance()->getEnableNBT()) {
-            if (isset($this->namedtag->Experience)) {
-                $this->experience = $this->namedtag["Experience"];
-            } else $this->close();
-        }
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			if(isset($this->namedtag->Experience)){
+				$this->experience = $this->namedtag["Experience"];
+			}else $this->close();
+		}
 	}
 
-	public function onUpdate(int $currentTick): bool {
+	public function onUpdate(int $currentTick) : bool{
 		if($this->isClosed()){
 			return false;
 		}
@@ -104,31 +104,31 @@ class XPOrb extends Entity {
 			}
 
 			if($minDistance <= 1.3){
-                $this->kill();
-                $this->close();
-                $xpToGain = $this->getExperience();
-                if($xpToGain > 0){
-                    if ($this->getLevel() !== null) {
-                        $this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
-                    }
-                    XpCalculator::updatePlayerXp($target, $xpToGain);
-                }
-                $this->timings->stopTiming();
+				$this->kill();
+				$this->close();
+				$xpToGain = $this->getExperience();
+				if($xpToGain > 0){
+					if($this->getLevel() !== null){
+						$this->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
+					}
+					XpCalculator::updatePlayerXp($target, $xpToGain);
+				}
+				$this->timings->stopTiming();
 
-                return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+				return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
 			}
 		}
 
-        $this->move($this->motionX, $this->motionY, $this->motionZ);
+		$this->move($this->motionX, $this->motionY, $this->motionZ);
 
-        $this->updateMovement();
+		$this->updateMovement();
 
-        $this->timings->stopTiming();
+		$this->timings->stopTiming();
 
-        return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
-    }
+		return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+	}
 
-	public function canCollideWith(Entity $entity): bool {
+	public function canCollideWith(Entity $entity) : bool{
 		return false;
 	}
 
@@ -140,15 +140,15 @@ class XPOrb extends Entity {
 		return $this->experience;
 	}
 
-    public function spawnTo(Player $player){
-        $this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NO_AI, true);
-        $pk = new AddEntityPacket();
-        $pk->type = XPOrb::NETWORK_ID;
-        $pk->entityRuntimeId = $this->getId();
-        $pk->position = $this->asVector3();
-        $pk->motion = $this->getMotion();
-        $pk->metadata = $this->dataProperties;
-        $player->dataPacket($pk);
+	public function spawnTo(Player $player){
+		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NO_AI, true);
+		$pk = new AddEntityPacket();
+		$pk->type = XPOrb::NETWORK_ID;
+		$pk->entityRuntimeId = $this->getId();
+		$pk->position = $this->asVector3();
+		$pk->motion = $this->getMotion();
+		$pk->metadata = $this->dataProperties;
+		$player->dataPacket($pk);
 
 		parent::spawnTo($player);
 	}

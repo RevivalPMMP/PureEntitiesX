@@ -32,65 +32,66 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\traits\Shearable;
 
-class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable {
-    use Shearable, Breedable, Feedable;
-    const NETWORK_ID = Data::NETWORK_IDS["mooshroom"];
+class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable{
+	use Shearable, Breedable, Feedable;
+	const NETWORK_ID = Data::NETWORK_IDS["mooshroom"];
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->feedableItems = array(Item::WHEAT);
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->feedableItems = array(Item::WHEAT);
 
-        $this->loadFromNBT();
-        $this->breedableClass = new BreedingComponent($this);
-        $this->setSheared($this->isSheared());
-        $this->breedableClass->init();
-        $this->maxShearDrops = 5;
-        $this->shearItems = Item::RED_MUSHROOM;
-    }
+		$this->loadFromNBT();
+		$this->breedableClass = new BreedingComponent($this);
+		$this->setSheared($this->isSheared());
+		$this->breedableClass->init();
+		$this->maxShearDrops = 5;
+		$this->shearItems = Item::RED_MUSHROOM;
+	}
 
-    public function getName(): string {
-        return "Mooshroom";
-    }
+	public function getName() : string{
+		return "Mooshroom";
+	}
 
-    public function loadFromNBT() {
-        if (PluginConfiguration::getInstance()->getEnableNBT()) {
-            if (isset($this->namedtag->Sheared)) {
-                $this->sheared = (bool)$this->namedtag[NBTConst::NBT_KEY_SHEARED];
-            } else {
-                $this->setSheared(false);
-            }
-        }
-    }
-    public function saveNBT() {
-        parent::saveNBT();
-        $this->breedableClass->saveNBT();
-        $this->namedtag->Sheared = new ByteTag(NBTConst::NBT_KEY_SHEARED, $this->isSheared() ? 0 : 1);
-    }
+	public function loadFromNBT(){
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			if(isset($this->namedtag->Sheared)){
+				$this->sheared = (bool) $this->namedtag[NBTConst::NBT_KEY_SHEARED];
+			}else{
+				$this->setSheared(false);
+			}
+		}
+	}
 
-    public function getDrops(): array {
-        $drops = [];
-        if ($this->isLootDropAllowed()) {
-            array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
-            if ($this->isOnFire()) {
-                array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
-            } else {
-                array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
-            }
-        }
-        return $drops;
-    }
+	public function saveNBT(){
+		parent::saveNBT();
+		$this->breedableClass->saveNBT();
+		$this->namedtag->Sheared = new ByteTag(NBTConst::NBT_KEY_SHEARED, $this->isSheared() ? 0 : 1);
+	}
 
-    public function getMaxHealth(): int {
-        return 10;
-    }
+	public function getDrops() : array{
+		$drops = [];
+		if($this->isLootDropAllowed()){
+			array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
+			if($this->isOnFire()){
+				array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
+			}else{
+				array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
+			}
+		}
+		return $drops;
+	}
 
-    public function getKillExperience(): int {
-        if ($this->getBreedingComponent()->isBaby()) {
-            return mt_rand(1, 7);
-        }
-        return mt_rand(1, 3);
-    }
+	public function getMaxHealth() : int{
+		return 10;
+	}
+
+	public function getKillExperience() : int{
+		if($this->getBreedingComponent()->isBaby()){
+			return mt_rand(1, 7);
+		}
+		return mt_rand(1, 3);
+	}
 
 }

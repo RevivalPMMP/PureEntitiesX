@@ -33,38 +33,38 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task
  */
-class EndermanLookingTask extends PluginTask {
+class EndermanLookingTask extends PluginTask{
 
-    /**
-     * @var PureEntities
-     */
-    private $plugin;
+	/**
+	 * @var PureEntities
+	 */
+	private $plugin;
 
-    private $isInteractiveButtonCorrectionSet = false;
+	private $isInteractiveButtonCorrectionSet = false;
 
-    public function __construct(PureEntities $plugin) {
-        parent::__construct($plugin);
-        $this->plugin = $plugin;
-        $this->isInteractiveButtonCorrectionSet = PluginConfiguration::getInstance()->isInteractiveButtonCorrection();
-    }
+	public function __construct(PureEntities $plugin){
+		parent::__construct($plugin);
+		$this->plugin = $plugin;
+		$this->isInteractiveButtonCorrectionSet = PluginConfiguration::getInstance()->isInteractiveButtonCorrection();
+	}
 
-    /**
-     * Called when the task is executed
-     *
-     * @param int $currentTick
-     */
-    public function onRun(int $currentTick) {
-        foreach ($this->plugin->getServer()->getOnlinePlayers() as $player) {
+	/**
+	 * Called when the task is executed
+	 *
+	 * @param int $currentTick
+	 */
+	public function onRun(int $currentTick){
+		foreach($this->plugin->getServer()->getOnlinePlayers() as $player){
 
-            // Exceeding a max distance of 30 seems to cause problems with entity detection.
-            // TODO: Find route cause of failures above max distance of 30.
-            $entity = InteractionHelper::getEntityPlayerLookingAt($player, 30, $this->isInteractiveButtonCorrectionSet);
-            PureEntities::logOutput("EndermanLookingTask: $player is looking at $entity", PureEntities::DEBUG);
-            if ($entity !== null and $entity instanceof Enderman and !$entity->getBaseTarget() instanceof Living) { // player is looking at an enderman
-                $entity->playerLooksAt($player);
-            }
-        }
-    }
+			// Exceeding a max distance of 30 seems to cause problems with entity detection.
+			// TODO: Find route cause of failures above max distance of 30.
+			$entity = InteractionHelper::getEntityPlayerLookingAt($player, 30, $this->isInteractiveButtonCorrectionSet);
+			PureEntities::logOutput("EndermanLookingTask: $player is looking at $entity", PureEntities::DEBUG);
+			if($entity !== null and $entity instanceof Enderman and !$entity->getBaseTarget() instanceof Living){ // player is looking at an enderman
+				$entity->playerLooksAt($player);
+			}
+		}
+	}
 
 
 }

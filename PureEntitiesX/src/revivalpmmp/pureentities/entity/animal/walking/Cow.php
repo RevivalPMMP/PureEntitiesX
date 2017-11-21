@@ -32,103 +32,103 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
 
-class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
+class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic{
 
-    use Breedable, CanPanic, Feedable;
-    const NETWORK_ID = Data::NETWORK_IDS["cow"];
+	use Breedable, CanPanic, Feedable;
+	const NETWORK_ID = Data::NETWORK_IDS["cow"];
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->eyeHeight = 1;
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->eyeHeight = 1;
 
-        $this->feedableItems = array(Item::WHEAT);
+		$this->feedableItems = array(Item::WHEAT);
 
-        $this->breedableClass = new BreedingComponent($this);
-        $this->breedableClass->init();
+		$this->breedableClass = new BreedingComponent($this);
+		$this->breedableClass->init();
 
-    }
+	}
 
-    public function saveNBT() {
-        parent::saveNBT();
-        $this->breedableClass->saveNBT();
-    }
+	public function saveNBT(){
+		parent::saveNBT();
+		$this->breedableClass->saveNBT();
+	}
 
-    public function getName(): string {
-        return "Cow";
-    }
+	public function getName() : string{
+		return "Cow";
+	}
 
-    /**
-     * Returns the appropriate NetworkID associated with this entity
-     * @return int
-     */
-    public function getNetworkId() {
-        return self::NETWORK_ID;
-    }
-
-
-    public function getDrops(): array {
-        $drops = [];
-        if ($this->isLootDropAllowed()) {
-            array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
-            if ($this->isOnFire()) {
-                array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
-            } else {
-                array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
-            }
-        }
-        return $drops;
-    }
-
-    public function getMaxHealth(): int {
-        return 10;
-    }
-
-    /**
-     * Simple method that milks this cow
-     *
-     * @param Player $player
-     * @return bool true if milking was successful, false if not
-     */
-    public function milk(Player $player): bool {
-        $item = $player->getInventory()->getItemInHand();
-        if ($item !== null && $item->getId() === Item::BUCKET) {
-            --$item->count;
-            $player->getInventory()->setItemInHand($item);
-            $bucketWithMilk = Item::get(Item::BUCKET, 0, 1);
-            $bucketWithMilk->setDamage(1);
-            $player->getInventory()->addItem($bucketWithMilk);
-            InteractionHelper::displayButtonText("", $player);
-            return true;
-        }
-        return false;
-    }
+	/**
+	 * Returns the appropriate NetworkID associated with this entity
+	 * @return int
+	 */
+	public function getNetworkId(){
+		return self::NETWORK_ID;
+	}
 
 
-    /**
-     * This method is called when a player is looking at this entity. This
-     * method shows an interactive button or not
-     *
-     * @param Player $player the player to show a button eventually to
-     */
-    public function showButton(Player $player) {
-        if ($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
-            $itemInHand = $player->getInventory()->getItemInHand();
-            if ($itemInHand->getId() === Item::BUCKET && $itemInHand->getDamage() === 0) { // empty bucket
-                InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $player);
-                return;
-            }
-        }
-        parent::showButton($player);
-    }
+	public function getDrops() : array{
+		$drops = [];
+		if($this->isLootDropAllowed()){
+			array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
+			if($this->isOnFire()){
+				array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
+			}else{
+				array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
+			}
+		}
+		return $drops;
+	}
 
-    public function getKillExperience(): int {
-        if ($this->getBreedingComponent()->isBaby()) {
-            return mt_rand(1, 7);
-        }
-        return mt_rand(1, 3);
-    }
+	public function getMaxHealth() : int{
+		return 10;
+	}
+
+	/**
+	 * Simple method that milks this cow
+	 *
+	 * @param Player $player
+	 * @return bool true if milking was successful, false if not
+	 */
+	public function milk(Player $player) : bool{
+		$item = $player->getInventory()->getItemInHand();
+		if($item !== null && $item->getId() === Item::BUCKET){
+			--$item->count;
+			$player->getInventory()->setItemInHand($item);
+			$bucketWithMilk = Item::get(Item::BUCKET, 0, 1);
+			$bucketWithMilk->setDamage(1);
+			$player->getInventory()->addItem($bucketWithMilk);
+			InteractionHelper::displayButtonText("", $player);
+			return true;
+		}
+		return false;
+	}
+
+
+	/**
+	 * This method is called when a player is looking at this entity. This
+	 * method shows an interactive button or not
+	 *
+	 * @param Player $player the player to show a button eventually to
+	 */
+	public function showButton(Player $player){
+		if($player->getInventory() != null){ // sometimes, we get null on getInventory?! F**k
+			$itemInHand = $player->getInventory()->getItemInHand();
+			if($itemInHand->getId() === Item::BUCKET && $itemInHand->getDamage() === 0){ // empty bucket
+				InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $player);
+				return;
+			}
+		}
+		parent::showButton($player);
+	}
+
+	public function getKillExperience() : int{
+		if($this->getBreedingComponent()->isBaby()){
+			return mt_rand(1, 7);
+		}
+		return mt_rand(1, 3);
+	}
 
 }
 

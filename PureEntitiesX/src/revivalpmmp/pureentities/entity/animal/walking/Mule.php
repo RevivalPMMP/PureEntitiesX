@@ -25,51 +25,50 @@ use pocketmine\Player;
 use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
 
-class Mule extends WalkingAnimal implements Rideable {
-    const NETWORK_ID = Data::NETWORK_IDS["mule"];
+class Mule extends WalkingAnimal implements Rideable{
+	const NETWORK_ID = Data::NETWORK_IDS["mule"];
 
 
-    public function initEntity()
-    {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-    }
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+	}
 
-    public function getName(): string {
-        return "Mule";
-    }
+	public function getName() : string{
+		return "Mule";
+	}
 
-    public function targetOption(Creature $creature, float $distance): bool {
-        if ($creature instanceof Player) {
-            return $creature->spawned && $creature->isAlive() && !$creature->isClosed() && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
-        }
-        return false;
-    }
+	public function targetOption(Creature $creature, float $distance) : bool{
+		if($creature instanceof Player){
+			return $creature->spawned && $creature->isAlive() && !$creature->isClosed() && $creature->getInventory()->getItemInHand()->getId() == Item::WHEAT && $distance <= 49;
+		}
+		return false;
+	}
 
-    public function getDrops(): array {
-        if ($this->isLootDropAllowed()) {
-            return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
-        } else {
-            return [];
-        }
-    }
+	public function getDrops() : array{
+		if($this->isLootDropAllowed()){
+			return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
+		}else{
+			return [];
+		}
+	}
 
-    public function getMaxHealth(): int {
-        return 15;
-    }
+	public function getMaxHealth() : int{
+		return 15;
+	}
 
-    public function getKillExperience(): int {
-        return mt_rand(1, 3);
-    }
+	public function getKillExperience() : int{
+		return mt_rand(1, 3);
+	}
 
-    /**
-     * Just for Bluelight ...
-     * @return null
-     */
-    public function getRidePosition() {
-        return null;
-    }
+	/**
+	 * Just for Bluelight ...
+	 * @return null
+	 */
+	public function getRidePosition(){
+		return null;
+	}
 
 
 }

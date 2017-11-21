@@ -21,33 +21,33 @@ namespace revivalpmmp\pureentities\entity\animal\jumping;
 use revivalpmmp\pureentities\entity\animal\JumpingAnimal;
 use revivalpmmp\pureentities\data\Data;
 
-class Rabbit extends JumpingAnimal {
-    const NETWORK_ID = Data::NETWORK_IDS["rabbit"];
+class Rabbit extends JumpingAnimal{
+	const NETWORK_ID = Data::NETWORK_IDS["rabbit"];
 
-    public function getSpeed(): float {
-        return $this->speed;
-    }
+	public function getSpeed() : float{
+		return $this->speed;
+	}
 
-    public function getName(): string {
-        return "Rabbit";
-    }
+	public function getName() : string{
+		return "Rabbit";
+	}
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->speed = 2;
-        $this->setMaxHealth(3);
-        $this->setHealth(3);
-    }
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->speed = 2;
+		$this->setMaxHealth(3);
+		$this->setHealth(3);
+	}
 
-    public function getDrops(): array {
-        return [];
-    }
+	public function getDrops() : array{
+		return [];
+	}
 
-    public function getKillExperience(): int {
-        // breeding drop 1-4 (not implemented yet)
-        return mt_rand(1, 3);
-    }
+	public function getKillExperience() : int{
+		// breeding drop 1-4 (not implemented yet)
+		return mt_rand(1, 3);
+	}
 
 }

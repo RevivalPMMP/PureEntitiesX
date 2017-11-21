@@ -1,7 +1,6 @@
 <?php
 
 
-
 /*  PureEntitiesX: Mob AI Plugin for PMMP
     Copyright (C) 2017 RevivalPMMP
 
@@ -27,41 +26,41 @@ namespace revivalpmmp\pureentities\features;
  *
  * @package revivalpmmp\pureentities\features
  */
-interface IntfCanPanic {
+interface IntfCanPanic{
 
 
-    public function setPanicSpeed(float $panicSpeed);
+	public function setPanicSpeed(float $panicSpeed);
 
-    public function getPanicSpeed(): float ;
+	public function getPanicSpeed() : float;
 
-    public function setNormalSpeed(float $normalSpeed);
+	public function setNormalSpeed(float $normalSpeed);
 
-    public function getNormalSpeed(): float;
+	public function getNormalSpeed() : float;
 
-    /**
-     * This has to be called by onUpdate / entityBaseTick
-     *
-     * @param int $tickDiff
-     * @return bool true if the entity is still in panic
-     */
-    public function panicTick(int $tickDiff = 1): bool;
+	/**
+	 * This has to be called by onUpdate / entityBaseTick
+	 *
+	 * @param int $tickDiff
+	 * @return bool true if the entity is still in panic
+	 */
+	public function panicTick(int $tickDiff = 1) : bool;
 
-    /**
-     * Checks if this entity is in panic mode (flee mode)
-     *
-     * @return bool
-     */
-    public function isInPanic();
+	/**
+	 * Checks if this entity is in panic mode (flee mode)
+	 *
+	 * @return bool
+	 */
+	public function isInPanic();
 
-    /**
-     * Sets an entity in panic mode.
-     */
-    public function setInPanic();
+	/**
+	 * Sets an entity in panic mode.
+	 */
+	public function setInPanic();
 
-    /**
-     * Unsets panic for an entity
-     */
-    public function unsetInPanic();
+	/**
+	 * Unsets panic for an entity
+	 */
+	public function unsetInPanic();
 
-    public function panicEnabled() : bool;
+	public function panicEnabled() : bool;
 }

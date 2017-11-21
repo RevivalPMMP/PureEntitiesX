@@ -25,73 +25,73 @@ use revivalpmmp\pureentities\PureEntities;
  * Class WearPickupChance
  * @package revivalpmmp\pureentities\config\mobequipment\helper
  */
-class WearPickupChance {
+class WearPickupChance{
 
-    /**
-     * @var array
-     */
-    private $canPickupLoot = [];
+	/**
+	 * @var array
+	 */
+	private $canPickupLoot = [];
 
-    /**
-     * @var array
-     */
-    private $armor = [];
+	/**
+	 * @var array
+	 */
+	private $armor = [];
 
-    /**
-     * @var array
-     */
-    private $weapon = [];
+	/**
+	 * @var array
+	 */
+	private $weapon = [];
 
-    /**
-     * @var Server
-     */
-    private $server;
+	/**
+	 * @var Server
+	 */
+	private $server;
 
-    public function __construct(string $entityName) {
-        $plugin = PureEntities::getInstance();
-        $this->canPickupLoot[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.easy");
-        $this->canPickupLoot[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.normal");
-        $this->canPickupLoot[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.hard");
+	public function __construct(string $entityName){
+		$plugin = PureEntities::getInstance();
+		$this->canPickupLoot[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.easy");
+		$this->canPickupLoot[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.normal");
+		$this->canPickupLoot[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.hard");
 
-        $this->armor[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.easy");
-        $this->armor[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.normal");
-        $this->armor[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.hard");
+		$this->armor[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.easy");
+		$this->armor[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.normal");
+		$this->armor[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.hard");
 
-        $this->weapon[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.easy");
-        $this->weapon[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.normal");
-        $this->weapon[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.hard");
+		$this->weapon[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.easy");
+		$this->weapon[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.normal");
+		$this->weapon[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.hard");
 
-        $this->server = Server::getInstance();
+		$this->server = Server::getInstance();
 
-        PureEntities::logOutput("WearPickupChance successfully loaded for $entityName", PureEntities::NORM);
-    }
+		PureEntities::logOutput("WearPickupChance successfully loaded for $entityName", PureEntities::NORM);
+	}
 
-    public function getCanPickupLootChance() {
-        return $this->getChance($this->canPickupLoot);
-    }
+	public function getCanPickupLootChance(){
+		return $this->getChance($this->canPickupLoot);
+	}
 
-    public function getArmorChance() {
-        return $this->getChance($this->armor);
-    }
+	public function getArmorChance(){
+		return $this->getChance($this->armor);
+	}
 
-    public function getWeaponChance() {
-        return $this->getChance($this->weapon);
-    }
+	public function getWeaponChance(){
+		return $this->getChance($this->weapon);
+	}
 
-    /**
-     * Helper method
-     *
-     * @param array $arrayToCheck
-     * @return int|mixed
-     */
-    private function getChance(array $arrayToCheck) {
-        $difficulty = $this->server->getDifficulty(); // 1 -easy, 2 - normal, 3-hard
-        $chance = 0;
+	/**
+	 * Helper method
+	 *
+	 * @param array $arrayToCheck
+	 * @return int|mixed
+	 */
+	private function getChance(array $arrayToCheck){
+		$difficulty = $this->server->getDifficulty(); // 1 -easy, 2 - normal, 3-hard
+		$chance = 0;
 
-        if ($difficulty > 0) {
-            return $arrayToCheck[$difficulty - 1];
-        }
+		if($difficulty > 0){
+			return $arrayToCheck[$difficulty - 1];
+		}
 
-        return $chance;
-    }
+		return $chance;
+	}
 }

@@ -27,19 +27,19 @@ use revivalpmmp\pureentities\components\MobEquipment;
  *
  * @package revivalpmmp\pureentities\features
  */
-interface IntfCanEquip {
+interface IntfCanEquip{
 
-    /**
-     * Has to return the mob equipment class which should be initialized in initEntity
-     * @return MobEquipment
-     */
-    public function getMobEquipment(): MobEquipment;
+	/**
+	 * Has to return the mob equipment class which should be initialized in initEntity
+	 * @return MobEquipment
+	 */
+	public function getMobEquipment() : MobEquipment;
 
-    /**
-     * Has to return either an empty array when nothing is picked up by the entity or an array with
-     * ItemIds that the entity may pick up
-     * @return array
-     */
-    public function getPickupLoot(): array;
+	/**
+	 * Has to return either an empty array when nothing is picked up by the entity or an array with
+	 * ItemIds that the entity may pick up
+	 * @return array
+	 */
+	public function getPickupLoot() : array;
 
 }

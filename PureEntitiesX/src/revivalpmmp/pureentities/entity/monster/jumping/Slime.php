@@ -30,90 +30,90 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Slime extends JumpingMonster {
-    const NETWORK_ID = Data::NETWORK_IDS["slime"];
-    const NBT_CONST_CUBESIZE = "CubeSize";
+class Slime extends JumpingMonster{
+	const NETWORK_ID = Data::NETWORK_IDS["slime"];
+	const NBT_CONST_CUBESIZE = "CubeSize";
 
-    private $cubeSize = -1; // 0 = Tiny, 1 = Small, 2 = Big
-    private $cubeDimensions = array(0.51, 1.02, 2.04);
+	private $cubeSize = -1; // 0 = Tiny, 1 = Small, 2 = Big
+	private $cubeDimensions = array(0.51, 1.02, 2.04);
 
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->loadFromNBT();
-        if ($this->cubeSize == -1) {
-            $this->cubeSize = mt_rand(0, 2);
-            $this->saveNBT();
-        }
+	public function initEntity(){
+		parent::initEntity();
+		$this->loadFromNBT();
+		if($this->cubeSize == -1){
+			$this->cubeSize = mt_rand(0, 2);
+			$this->saveNBT();
+		}
 
-        $this->width = $this->cubeDimensions[$this->cubeSize];
-        $this->height = $this->cubeDimensions[$this->cubeSize];
-        $this->speed = 0.8;
+		$this->width = $this->cubeDimensions[$this->cubeSize];
+		$this->height = $this->cubeDimensions[$this->cubeSize];
+		$this->speed = 0.8;
 
-        $this->setDamage([0, 2, 2, 3]);
-    }
+		$this->setDamage([0, 2, 2, 3]);
+	}
 
-    public function saveNBT() {
-        $this->namedtag->CubeSize = new IntTag(self::NBT_CONST_CUBESIZE ,$this->cubeSize);
-    }
+	public function saveNBT(){
+		$this->namedtag->CubeSize = new IntTag(self::NBT_CONST_CUBESIZE, $this->cubeSize);
+	}
 
-    public function loadFromNBT() {
-        if (PluginConfiguration::getInstance()->getEnableNBT()) {
-            parent::loadFromNBT();
-            if (isset($this->namedtag->CubeSize)) {
-                $this->cubeSize = $this->namedtag[self::NBT_CONST_CUBESIZE];
-            }
-        }
-    }
+	public function loadFromNBT(){
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::loadFromNBT();
+			if(isset($this->namedtag->CubeSize)){
+				$this->cubeSize = $this->namedtag[self::NBT_CONST_CUBESIZE];
+			}
+		}
+	}
 
-    public function getName(): string {
-        return "Slime";
-    }
+	public function getName() : string{
+		return "Slime";
+	}
 
-    /**
-     * Attack a player
-     *
-     * @param Entity $player
-     */
-    public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
-            $this->attackDelay = 0;
+	/**
+	 * Attack a player
+	 *
+	 * @param Entity $player
+	 */
+	public function attackEntity(Entity $player){
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 2){
+			$this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
-            $player->attack($ev);
+			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			$player->attack($ev);
 
-            $this->checkTamedMobsAttack($player);
-        }
-    }
+			$this->checkTamedMobsAttack($player);
+		}
+	}
 
-    public function targetOption(Creature $creature, float $distance): bool {
-        if ($creature instanceof Player) {
-            return $creature->isAlive() && $distance <= 25;
-        }
-        return false;
-    }
+	public function targetOption(Creature $creature, float $distance) : bool{
+		if($creature instanceof Player){
+			return $creature->isAlive() && $distance <= 25;
+		}
+		return false;
+	}
 
-    public function getDrops(): array {
-        if ($this->isLootDropAllowed() and $this->cubeSize == 0) {
-            return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
-        } else {
-            return [];
-        }
-    }
+	public function getDrops() : array{
+		if($this->isLootDropAllowed() and $this->cubeSize == 0){
+			return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
+		}else{
+			return [];
+		}
+	}
 
-    public function getMaxHealth(): int {
-        return 4;
-    }
+	public function getMaxHealth() : int{
+		return 4;
+	}
 
-    public function getKillExperience(): int {
-        if ($this->cubeSize == 2) {
-            return 4;
-        } else if ($this->cubeSize == 1) {
-            return 2;
-        } else {
-            return 1;
-        }
-    }
+	public function getKillExperience() : int{
+		if($this->cubeSize == 2){
+			return 4;
+		}else if($this->cubeSize == 1){
+			return 2;
+		}else{
+			return 1;
+		}
+	}
 
 }

@@ -23,50 +23,50 @@ use pocketmine\Player;
 
 interface IntfTameable{
 
-    public function setTamed(bool $tamed);
+	public function setTamed(bool $tamed);
 
-    public function isTamed(): bool;
+	public function isTamed() : bool;
 
-    /**
-     * @return mixed null|Player
-     */
-    public function getOwner();
+	/**
+	 * @return mixed null|Player
+	 */
+	public function getOwner();
 
-    public function setOwner(Player $player);
+	public function setOwner(Player $player);
 
-    public function getOwnerName();
+	public function getOwnerName();
 
-    /**
-     * @return mixed (array)
-     */
-    public function getTameFoods();
+	/**
+	 * @return mixed (array)
+	 */
+	public function getTameFoods();
 
-    /**
-     * Called when an entity gets tamed by a player
-     *
-     * @param Player $player
-     * @return mixed
-     */
-    public function attemptToTame(Player $player);
+	/**
+	 * Called when an entity gets tamed by a player
+	 *
+	 * @param Player $player
+	 * @return mixed
+	 */
+	public function attemptToTame(Player $player);
 
-    /**
-     * This method is called from SetTamedOwnerTask to map the owner after the player logged in
-     * Implementation details in Wolf.php
-     * @return mixed
-     */
-    public function mapOwner();
+	/**
+	 * This method is called from SetTamedOwnerTask to map the owner after the player logged in
+	 * Implementation details in Wolf.php
+	 * @return mixed
+	 */
+	public function mapOwner();
 
-    /**
-     * Should return true when tamed entity is sitting
-     * @return bool
-     */
-    public function isSitting(): bool;
+	/**
+	 * Should return true when tamed entity is sitting
+	 * @return bool
+	 */
+	public function isSitting() : bool;
 
-    /**
-     * Sets entity sitting or not.
-     *
-     * @param bool $sit
-     */
-    public function setSitting(bool $sit=true);
+	/**
+	 * Sets entity sitting or not.
+	 *
+	 * @param bool $sit
+	 */
+	public function setSitting(bool $sit = true);
 
 }

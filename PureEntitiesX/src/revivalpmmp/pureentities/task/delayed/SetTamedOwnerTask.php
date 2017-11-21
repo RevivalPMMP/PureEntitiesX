@@ -32,38 +32,38 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task\delayed
  */
-class SetTamedOwnerTask extends PluginTask {
+class SetTamedOwnerTask extends PluginTask{
 
-    /**
-     * @var PureEntities
-     */
-    private $plugin;
+	/**
+	 * @var PureEntities
+	 */
+	private $plugin;
 
-    /**
-     * @var IntfTameable
-     */
-    private $tameableEntity;
+	/**
+	 * @var IntfTameable
+	 */
+	private $tameableEntity;
 
-    /**
-     * ShowMobEquipmentTask constructor.
-     * @param PureEntities $plugin
-     * @param IntfTameable $tameableEntity
-     */
-    public function __construct(PureEntities $plugin, IntfTameable $tameableEntity) {
-        parent::__construct($plugin);
-        $this->plugin = $plugin;
-        $this->tameableEntity = $tameableEntity;
-    }
+	/**
+	 * ShowMobEquipmentTask constructor.
+	 * @param PureEntities $plugin
+	 * @param IntfTameable $tameableEntity
+	 */
+	public function __construct(PureEntities $plugin, IntfTameable $tameableEntity){
+		parent::__construct($plugin);
+		$this->plugin = $plugin;
+		$this->tameableEntity = $tameableEntity;
+	}
 
-    /**
-     * Executed when delayed task's time is over.
-     *
-     * This method sends the equipment of all equipped entities to the joined player.
-     *
-     * @param $currentTick
-     */
-    public function onRun(int $currentTick) {
-        $this->tameableEntity->mapOwner();
-    }
+	/**
+	 * Executed when delayed task's time is over.
+	 *
+	 * This method sends the equipment of all equipped entities to the joined player.
+	 *
+	 * @param $currentTick
+	 */
+	public function onRun(int $currentTick){
+		$this->tameableEntity->mapOwner();
+	}
 
 }

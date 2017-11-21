@@ -35,39 +35,39 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task\delayed
  */
-class ShowMobEquipmentTask extends PluginTask {
+class ShowMobEquipmentTask extends PluginTask{
 
-    /**
-     * @var PureEntities
-     */
-    private $plugin;
+	/**
+	 * @var PureEntities
+	 */
+	private $plugin;
 
-    private $playerJoined;
+	private $playerJoined;
 
-    /**
-     * ShowMobEquipmentTask constructor.
-     * @param PureEntities $plugin
-     * @param Player $playerJoined
-     */
-    public function __construct(PureEntities $plugin, Player $playerJoined) {
-        parent::__construct($plugin);
-        $this->plugin = $plugin;
-        $this->playerJoined = $playerJoined;
-    }
+	/**
+	 * ShowMobEquipmentTask constructor.
+	 * @param PureEntities $plugin
+	 * @param Player       $playerJoined
+	 */
+	public function __construct(PureEntities $plugin, Player $playerJoined){
+		parent::__construct($plugin);
+		$this->plugin = $plugin;
+		$this->playerJoined = $playerJoined;
+	}
 
-    /**
-     * Executed when delayed task's time is over.
-     *
-     * This method sends the equipment of all equipped entities to the joined player.
-     *
-     * @param $currentTick
-     */
-    public function onRun(int $currentTick) {
-        foreach ($this->playerJoined->getLevel()->getEntities() as $entity) {
-            if ($entity->isAlive() and !$entity->isClosed() and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster) {
-                $entity->getMobEquipment()->sendEquipmentUpdate($this->playerJoined);
-            }
-        }
-    }
+	/**
+	 * Executed when delayed task's time is over.
+	 *
+	 * This method sends the equipment of all equipped entities to the joined player.
+	 *
+	 * @param $currentTick
+	 */
+	public function onRun(int $currentTick){
+		foreach($this->playerJoined->getLevel()->getEntities() as $entity){
+			if($entity->isAlive() and !$entity->isClosed() and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster){
+				$entity->getMobEquipment()->sendEquipmentUpdate($this->playerJoined);
+			}
+		}
+	}
 
 }

@@ -28,60 +28,60 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Spider extends WalkingMonster {
-    const NETWORK_ID = Data::NETWORK_IDS["spider"];
+class Spider extends WalkingMonster{
+	const NETWORK_ID = Data::NETWORK_IDS["spider"];
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->speed = 1.13;
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->speed = 1.13;
 
-        $this->setDamage([0, 2, 2, 3]);
-        PureEntities::logOutput($this->getName() . ": created with height of $this->height and width of $this->width.", PureEntities::NORM);
-    }
+		$this->setDamage([0, 2, 2, 3]);
+		PureEntities::logOutput($this->getName() . ": created with height of $this->height and width of $this->width.", PureEntities::NORM);
+	}
 
-    public function getName(): string {
-        return "Spider";
-    }
+	public function getName() : string{
+		return "Spider";
+	}
 
-    /**
-     * Attack a player
-     *
-     * @param Entity $player
-     */
-    public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 10 && (($this->isFriendly() && !($player instanceof Player)) || !$this->isFriendly())) {
-            $this->attackDelay = 0;
+	/**
+	 * Attack a player
+	 *
+	 * @param Entity $player
+	 */
+	public function attackEntity(Entity $player){
+		if($this->attackDelay > 10 && (($this->isFriendly() && !($player instanceof Player)) || !$this->isFriendly())){
+			$this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
-            $player->attack($ev);
+			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			$player->attack($ev);
 
-            $this->checkTamedMobsAttack($player);
-        }
-    }
+			$this->checkTamedMobsAttack($player);
+		}
+	}
 
-    public function getDrops(): array {
-        $drops = [];
-        if ($this->isLootDropAllowed()) {
-            array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
-            switch (mt_rand(0, 2)) {
-                case 0:
-                    array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
-                    break;
-            }
-        }
-        return $drops;
-    }
+	public function getDrops() : array{
+		$drops = [];
+		if($this->isLootDropAllowed()){
+			array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
+			switch(mt_rand(0, 2)){
+				case 0:
+					array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
+					break;
+			}
+		}
+		return $drops;
+	}
 
-    public function getMaxHealth(): int {
-        return 16;
-    }
+	public function getMaxHealth() : int{
+		return 16;
+	}
 
-    public function getKillExperience(): int {
-        return 5;
-    }
+	public function getKillExperience() : int{
+		return 5;
+	}
 
 
 }

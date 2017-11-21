@@ -28,93 +28,93 @@ use pocketmine\item\Item;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Husk extends WalkingMonster implements Ageable {
-    const NETWORK_ID = Data::NETWORK_IDS["husk"];
+class Husk extends WalkingMonster implements Ageable{
+	const NETWORK_ID = Data::NETWORK_IDS["husk"];
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->speed = 1.1;
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->speed = 1.1;
 
-        if ($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null) {
-            $this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
-        }
-        $this->setDamage([0, 3, 4, 6]);
-    }
+		if($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null){
+			$this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
+		}
+		$this->setDamage([0, 3, 4, 6]);
+	}
 
-    public function getName(): string {
-        return "Husk";
-    }
+	public function getName() : string{
+		return "Husk";
+	}
 
-    public function isBaby(): bool {
-        return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
-    }
+	public function isBaby() : bool{
+		return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
+	}
 
-    public function setHealth(float $amount) {
-        parent::setHealth($amount);
+	public function setHealth(float $amount){
+		parent::setHealth($amount);
 
-        if ($this->isAlive()) {
-            if (15 < $this->getHealth()) {
-                $this->setDamage([0, 2, 3, 4]);
-            } else if (10 < $this->getHealth()) {
-                $this->setDamage([0, 3, 4, 6]);
-            } else if (5 < $this->getHealth()) {
-                $this->setDamage([0, 3, 5, 7]);
-            } else {
-                $this->setDamage([0, 4, 6, 9]);
-            }
-        }
-    }
+		if($this->isAlive()){
+			if(15 < $this->getHealth()){
+				$this->setDamage([0, 2, 3, 4]);
+			}else if(10 < $this->getHealth()){
+				$this->setDamage([0, 3, 4, 6]);
+			}else if(5 < $this->getHealth()){
+				$this->setDamage([0, 3, 5, 7]);
+			}else{
+				$this->setDamage([0, 4, 6, 9]);
+			}
+		}
+	}
 
-    /**
-     * Attack player
-     *
-     * @param Entity $player
-     */
-    public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
-            $this->attackDelay = 0;
+	/**
+	 * Attack player
+	 *
+	 * @param Entity $player
+	 */
+	public function attackEntity(Entity $player){
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 2){
+			$this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
-            $player->attack($ev);
-            $effect = Effect::getEffect(17)->setDuration(1800)->setAmplifier(1);
-            $effect->applyEffect($player);
+			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			$player->attack($ev);
+			$effect = Effect::getEffect(17)->setDuration(1800)->setAmplifier(1);
+			$effect->applyEffect($player);
 
-            $this->checkTamedMobsAttack($player);
-        }
-    }
+			$this->checkTamedMobsAttack($player);
+		}
+	}
 
-    public function getDrops(): array {
-        $drops = [];
-        if ($this->isLootDropAllowed()) {
-            array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
-            // 2.5 percent chance of dropping one of these items.
-            if (mt_rand(1, 1000) % 25 == 0) {
-                switch (mt_rand(1, 3)) {
-                    case 1:
-                        array_push($drops, Item::get(Item::CARROT, 0, 1));
-                        break;
-                    case 2:
-                        array_push($drops, Item::get(Item::POTATO, 0, 1));
-                        break;
-                    case 3:
-                        array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
-                        break;
-                }
-            }
-        }
-        return $drops;
-    }
+	public function getDrops() : array{
+		$drops = [];
+		if($this->isLootDropAllowed()){
+			array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
+			// 2.5 percent chance of dropping one of these items.
+			if(mt_rand(1, 1000) % 25 == 0){
+				switch(mt_rand(1, 3)){
+					case 1:
+						array_push($drops, Item::get(Item::CARROT, 0, 1));
+						break;
+					case 2:
+						array_push($drops, Item::get(Item::POTATO, 0, 1));
+						break;
+					case 3:
+						array_push($drops, Item::get(Item::IRON_INGOT, 0, 1));
+						break;
+				}
+			}
+		}
+		return $drops;
+	}
 
-    public function getMaxHealth(): int {
-        return 20;
-    }
+	public function getMaxHealth() : int{
+		return 20;
+	}
 
-    public function getKillExperience(): int {
-        // babies spawn 12 exp - not for now - as it isn't implemented yet
-        return 5;
-    }
+	public function getKillExperience() : int{
+		// babies spawn 12 exp - not for now - as it isn't implemented yet
+		return 5;
+	}
 
 }

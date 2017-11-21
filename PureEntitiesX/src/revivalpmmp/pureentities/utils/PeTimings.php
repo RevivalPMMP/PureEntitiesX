@@ -29,35 +29,35 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\utils
  */
-class PeTimings {
+class PeTimings{
 
-    private static $timingsHolder = [];
+	private static $timingsHolder = [];
 
-    /**
-     * Remember the timestamp when we started a timed function. This method has to be
-     * called when we want to start record timings for a specific function or part of code
-     *
-     * @param string $description
-     */
-    public static function startTiming(string $description) {
-        self::$timingsHolder[$description] = round(microtime(1));
-    }
+	/**
+	 * Remember the timestamp when we started a timed function. This method has to be
+	 * called when we want to start record timings for a specific function or part of code
+	 *
+	 * @param string $description
+	 */
+	public static function startTiming(string $description){
+		self::$timingsHolder[$description] = round(microtime(1));
+	}
 
-    /**
-     * This stops the timing and returns the expired time between start and stop in milliseconds
-     *
-     * @param string $description
-     * @param bool $logToFile
-     * @return float
-     */
-    public static function stopTiming(string $description, bool $logToFile = false) {
-        $timeExpired = round(microtime(1)) - self::$timingsHolder[$description];
+	/**
+	 * This stops the timing and returns the expired time between start and stop in milliseconds
+	 *
+	 * @param string $description
+	 * @param bool   $logToFile
+	 * @return float
+	 */
+	public static function stopTiming(string $description, bool $logToFile = false){
+		$timeExpired = round(microtime(1)) - self::$timingsHolder[$description];
 
-        if ($logToFile) {
-            PureEntities::logOutput("PeTimings[$description]: took $timeExpired microseconds to complete.");
-        }
+		if($logToFile){
+			PureEntities::logOutput("PeTimings[$description]: took $timeExpired microseconds to complete.");
+		}
 
-        return $timeExpired;
-    }
+		return $timeExpired;
+	}
 
 }

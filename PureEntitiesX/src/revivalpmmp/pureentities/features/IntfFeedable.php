@@ -22,8 +22,8 @@ namespace revivalpmmp\pureentities\features;
 /**
  * Interface to be implemented by feedable mobs
  */
-interface IntfFeedable {
+interface IntfFeedable{
 
-    public function getFeedableItems();
+	public function getFeedableItems();
 
 }

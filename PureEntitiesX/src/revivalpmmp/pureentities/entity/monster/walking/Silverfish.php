@@ -25,52 +25,52 @@ use pocketmine\event\entity\EntityDamageEvent;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Silverfish extends WalkingMonster {
-    const NETWORK_ID = Data::NETWORK_IDS["silverfish"];
+class Silverfish extends WalkingMonster{
+	const NETWORK_ID = Data::NETWORK_IDS["silverfish"];
 
 
-    public function initEntity() {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->speed = 1.4;
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->speed = 1.4;
 
-        $this->setMaxDamage(1);
-        $this->setDamage([0, 1, 1, 1]);
-    }
+		$this->setMaxDamage(1);
+		$this->setDamage([0, 1, 1, 1]);
+	}
 
-    public function getName(): string {
-        return "Silverfish";
-    }
+	public function getName() : string{
+		return "Silverfish";
+	}
 
-    /**
-     * Attack the player
-     *
-     * @param Entity $player
-     */
-    public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 10 && $this->distanceSquared($player) < 1) {
-            $this->attackDelay = 0;
+	/**
+	 * Attack the player
+	 *
+	 * @param Entity $player
+	 */
+	public function attackEntity(Entity $player){
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 1){
+			$this->attackDelay = 0;
 
-            $ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-                MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
-            $player->attack($ev);
+			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
+				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			$player->attack($ev);
 
-            $this->checkTamedMobsAttack($player);
-        }
-    }
+			$this->checkTamedMobsAttack($player);
+		}
+	}
 
-    public function getDrops(): array {
-        return [];
-    }
+	public function getDrops() : array{
+		return [];
+	}
 
-    public function getMaxHealth(): int {
-        return 8;
-    }
+	public function getMaxHealth() : int{
+		return 8;
+	}
 
-    public function getKillExperience(): int {
-        return 5;
-    }
+	public function getKillExperience() : int{
+		return 5;
+	}
 
 
 }

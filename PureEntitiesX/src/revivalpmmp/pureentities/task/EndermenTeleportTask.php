@@ -11,9 +11,10 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task
  */
-class EndermenTeleportTask extends PluginTask {
+class EndermenTeleportTask extends PluginTask{
 	private $plugin;
-	public function __construct(PureEntities $plugin) {
+
+	public function __construct(PureEntities $plugin){
 		parent::__construct($plugin);
 		$this->plugin = $plugin;
 	}

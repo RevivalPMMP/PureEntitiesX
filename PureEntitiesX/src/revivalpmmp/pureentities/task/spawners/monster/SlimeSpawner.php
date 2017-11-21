@@ -40,56 +40,56 @@ use revivalpmmp\pureentities\task\spawners\BaseSpawner;
  *
  * @package revivalpmmp\pureentities\task\spawners
  */
-class SlimeSpawner extends BaseSpawner {
+class SlimeSpawner extends BaseSpawner{
 
-    public function spawn(Position $pos, Player $player): bool {
-        if ($this->spawnAllowedByProbability()) { // first check if spawn would be allowed, if not the other method calls make no sense at all
-            $block = $pos->level->getBlock($pos); // because we get the air block, we need to subtract 1 from the y position
-            $biomeId = $pos->level->getBiomeId($pos->x, $pos->z);
+	public function spawn(Position $pos, Player $player) : bool{
+		if($this->spawnAllowedByProbability()){ // first check if spawn would be allowed, if not the other method calls make no sense at all
+			$block = $pos->level->getBlock($pos); // because we get the air block, we need to subtract 1 from the y position
+			$biomeId = $pos->level->getBiomeId($pos->x, $pos->z);
 
-            $y = $pos->y;
-            $spawnAllowedByLayer = false;
-            $checkLightLevel = false;
-            if ($biomeId != Biome::SWAMP and $y <= 40) {
-                $spawnAllowedByLayer = true;
-            } else if ($biomeId == Biome::SWAMP and $y >= 50 and $y <= 70) {
-                $spawnAllowedByLayer = true;
-                $checkLightLevel = true;
-            }
+			$y = $pos->y;
+			$spawnAllowedByLayer = false;
+			$checkLightLevel = false;
+			if($biomeId != Biome::SWAMP and $y <= 40){
+				$spawnAllowedByLayer = true;
+			}else if($biomeId == Biome::SWAMP and $y >= 50 and $y <= 70){
+				$spawnAllowedByLayer = true;
+				$checkLightLevel = true;
+			}
 
-            PureEntities::logOutput($this->getClassNameShort() .
-                ": spawnAllowedByLayer: $spawnAllowedByLayer" .
-                ", isNight: " . !$this->isDay($pos->getLevel()) .
-                ", block is solid: " . $block->isSolid() . "[" . $block->getName() .
-                "], spawnAllowedByEntityCount: " . $this->spawnAllowedByEntityCount($pos->getLevel()) .
-                ", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
-                PureEntities::DEBUG);
+			PureEntities::logOutput($this->getClassNameShort() .
+				": spawnAllowedByLayer: $spawnAllowedByLayer" .
+				", isNight: " . !$this->isDay($pos->getLevel()) .
+				", block is solid: " . $block->isSolid() . "[" . $block->getName() .
+				"], spawnAllowedByEntityCount: " . $this->spawnAllowedByEntityCount($pos->getLevel()) .
+				", playerDistanceOK: " . $this->checkPlayerDistance($player, $pos),
+				PureEntities::DEBUG);
 
-            if ($biomeId != Biome::HELL and // they don't spawn in nether
-                ($checkLightLevel and $this->isSpawnAllowedByBlockLight($player, $pos, 7)) and // check block light when enabled
-                $spawnAllowedByLayer and // respect layer for spawning
-                !$this->isDay($pos->getLevel()) and // only spawn at night ...
-                $this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level
-                $this->checkPlayerDistance($player, $pos)
-            ) { // distance to player has to be at least a configurable amount of blocks (atm 8!)
-                $this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Monster");
-                PureEntities::logOutput($this->getClassNameShort() . ": scheduleCreatureSpawn (pos: $pos)", PureEntities::NORM);
-                return true;
-            }
-        } else {
-            PureEntities::logOutput($this->getClassNameShort() . ": spawn not allowed because probability denies spawn", PureEntities::DEBUG);
-        }
+			if($biomeId != Biome::HELL and // they don't spawn in nether
+				($checkLightLevel and $this->isSpawnAllowedByBlockLight($player, $pos, 7)) and // check block light when enabled
+				$spawnAllowedByLayer and // respect layer for spawning
+				!$this->isDay($pos->getLevel()) and // only spawn at night ...
+				$this->spawnAllowedByEntityCount($pos->getLevel()) and // respect count in level
+				$this->checkPlayerDistance($player, $pos)
+			){ // distance to player has to be at least a configurable amount of blocks (atm 8!)
+				$this->spawnEntityToLevel($pos, $this->getEntityNetworkId(), $pos->getLevel(), "Monster");
+				PureEntities::logOutput($this->getClassNameShort() . ": scheduleCreatureSpawn (pos: $pos)", PureEntities::NORM);
+				return true;
+			}
+		}else{
+			PureEntities::logOutput($this->getClassNameShort() . ": spawn not allowed because probability denies spawn", PureEntities::DEBUG);
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    protected function getEntityNetworkId(): int {
-        return Slime::NETWORK_ID;
-    }
+	protected function getEntityNetworkId() : int{
+		return Slime::NETWORK_ID;
+	}
 
-    protected function getEntityName(): string {
-        return "Slime";
-    }
+	protected function getEntityName() : string{
+		return "Slime";
+	}
 
 
 }

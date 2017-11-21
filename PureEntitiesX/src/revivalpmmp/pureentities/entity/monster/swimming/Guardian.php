@@ -23,18 +23,18 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use revivalpmmp\pureentities\entity\monster\SwimmingMonster;
 
-class Guardian extends SwimmingMonster implements Monster {
+class Guardian extends SwimmingMonster implements Monster{
 
-    // TODO: refer to the NewMobs branch for this mobs data
+	// TODO: refer to the NewMobs branch for this mobs data
 
-    const NETWORK_ID = Data::NETWORK_IDS["guardian"];
+	const NETWORK_ID = Data::NETWORK_IDS["guardian"];
 
-    public function attackEntity(Entity $player) {
-        parent::attackEntity($player);
-    }
+	public function attackEntity(Entity $player){
+		parent::attackEntity($player);
+	}
 
-    public function getName(): string {
-        return "ElderGuardian";
-    }
+	public function getName() : string{
+		return "ElderGuardian";
+	}
 
 }

@@ -32,97 +32,97 @@ use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\traits\Tameable;
 
-class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
-    use Tameable;
+class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
+	use Tameable;
 
-    const NETWORK_ID = Data::NETWORK_IDS["parrot"];
-    private $birdType; // 0 = red, 1 = blue, 2 = green, 3 = cyan, 4 = silver
-    public function initEntity()
-    {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-        $this->fireProof = false;
-        $this->tameFoods = array(
-            Item::SEEDS,
-            Item::BEETROOT_SEEDS,
-            Item::MELON_SEEDS,
-            Item::PUMPKIN_SEEDS,
-            Item::WHEAT_SEEDS
-        );
-        $this->loadFromNBT();
-        if (empty($this->namedtag->variant)) {
-            $this->setBirdType(mt_rand(0,4));
-        }
+	const NETWORK_ID = Data::NETWORK_IDS["parrot"];
+	private $birdType; // 0 = red, 1 = blue, 2 = green, 3 = cyan, 4 = silver
 
-        if ($this->isTamed()) {
-            $this->mapOwner();
-            if ($this->owner === null) {
-                PureEntities::logOutput("$this: is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", PureEntities::NORM);
-            }
-        }
-    }
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->fireProof = false;
+		$this->tameFoods = array(
+			Item::SEEDS,
+			Item::BEETROOT_SEEDS,
+			Item::MELON_SEEDS,
+			Item::PUMPKIN_SEEDS,
+			Item::WHEAT_SEEDS
+		);
+		$this->loadFromNBT();
+		if(empty($this->namedtag->variant)){
+			$this->setBirdType(mt_rand(0, 4));
+		}
 
-    public function loadFromNBT() {
-        if (PluginConfiguration::getInstance()->getEnableNBT()) {
-            if (isset($this->namedtag->OwnerName)) {
-                $this->ownerName = $this->namedtag[NBTConst::NBT_SERVER_KEY_OWNER_NAME];
-                $this->setTamed(true);
-            }
-            if ($this->ownerName !== null) {
-                foreach ($this->getLevel()->getPlayers() as $levelPlayer) {
-                    if (strcasecmp($levelPlayer->getName(), $this->namedtag->OwnerName) == 0) {
-                        $this->owner = $levelPlayer;
-                        break;
-                    }
-                }
-            }
-            if (isset($this->namedtag->Variant)) {
-                $this->setBirdType($this->namedtag[NBTConst::NBT_KEY_BIRDTYPE]);
-            }
-            if (isset($this->namedtag->Sitting)) {
-                $this->setSitting($this->namedtag[NBTConst::NBT_KEY_SITTING] === 1);
-            }
-        }
-    }
+		if($this->isTamed()){
+			$this->mapOwner();
+			if($this->owner === null){
+				PureEntities::logOutput("$this: is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", PureEntities::NORM);
+			}
+		}
+	}
 
-    public function saveNBT()
-    {
-        if (PluginConfiguration::getInstance()->getEnableNBT()) {
-            parent::saveNBT();
-            $this->namedtag->Variant = new ByteTag(NBTConst::NBT_KEY_BIRDTYPE, $this->birdType);
-            $this->namedtag->Sitting = new IntTag(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
-            if ($this->getOwnerName() !== null) {
-                $this->namedtag->OwnerName = new StringTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
-            }
-            if ($this->owner !== null) {
-                $this->namedtag->OwnerUUID = new StringTag(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
-            }
-        }
+	public function loadFromNBT(){
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			if(isset($this->namedtag->OwnerName)){
+				$this->ownerName = $this->namedtag[NBTConst::NBT_SERVER_KEY_OWNER_NAME];
+				$this->setTamed(true);
+			}
+			if($this->ownerName !== null){
+				foreach($this->getLevel()->getPlayers() as $levelPlayer){
+					if(strcasecmp($levelPlayer->getName(), $this->namedtag->OwnerName) == 0){
+						$this->owner = $levelPlayer;
+						break;
+					}
+				}
+			}
+			if(isset($this->namedtag->Variant)){
+				$this->setBirdType($this->namedtag[NBTConst::NBT_KEY_BIRDTYPE]);
+			}
+			if(isset($this->namedtag->Sitting)){
+				$this->setSitting($this->namedtag[NBTConst::NBT_KEY_SITTING] === 1);
+			}
+		}
+	}
 
-    }
+	public function saveNBT(){
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::saveNBT();
+			$this->namedtag->Variant = new ByteTag(NBTConst::NBT_KEY_BIRDTYPE, $this->birdType);
+			$this->namedtag->Sitting = new IntTag(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
+			if($this->getOwnerName() !== null){
+				$this->namedtag->OwnerName = new StringTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
+			}
+			if($this->owner !== null){
+				$this->namedtag->OwnerUUID = new StringTag(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
+			}
+		}
 
-    public function getName(): string {
-        return "Parrot";
-    }
+	}
 
-    public function targetOption(Creature $creature, float $distance): bool {
-        return false;
-    }
+	public function getName() : string{
+		return "Parrot";
+	}
 
-    public function getDrops(): array {
-        return [Item::get(Item::FEATHER, 0, mt_rand(1,2))];
-    }
+	public function targetOption(Creature $creature, float $distance) : bool{
+		return false;
+	}
 
-    public function getMaxHealth(): int {
-        return 6;
-    }
+	public function getDrops() : array{
+		return [Item::get(Item::FEATHER, 0, mt_rand(1, 2))];
+	}
 
-    public function setBirdType(int $type) {
-        $this->birdType = $type;
-        $this->setDataProperty(self::DATA_VARIANT, self::DATA_TYPE_INT, $type);
-    }
-    private function getBirdType() {
-        return $this->birdType;
-    }
+	public function getMaxHealth() : int{
+		return 6;
+	}
+
+	public function setBirdType(int $type){
+		$this->birdType = $type;
+		$this->setDataProperty(self::DATA_VARIANT, self::DATA_TYPE_INT, $type);
+	}
+
+	private function getBirdType(){
+		return $this->birdType;
+	}
 }

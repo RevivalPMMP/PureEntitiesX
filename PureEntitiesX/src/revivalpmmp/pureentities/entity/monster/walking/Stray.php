@@ -37,113 +37,113 @@ use pocketmine\nbt\tag\FloatTag;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 
-class Stray extends WalkingMonster implements ProjectileSource {
-    const NETWORK_ID = Data::NETWORK_IDS["stray"];
-    public function initEntity()
-    {
-        parent::initEntity();
-        $this->width = Data::WIDTHS[self::NETWORK_ID];
-        $this->height = Data::HEIGHTS[self::NETWORK_ID];
-    }
+class Stray extends WalkingMonster implements ProjectileSource{
+	const NETWORK_ID = Data::NETWORK_IDS["stray"];
 
-    public function getName(): string {
-        return "Stray";
-    }
+	public function initEntity(){
+		parent::initEntity();
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+	}
 
-    /**
-     * Attack a player
-     *
-     * @param Entity $player
-     */
-    public function attackEntity(Entity $player) {
-        if ($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55) {
-            $this->attackDelay = 0;
+	public function getName() : string{
+		return "Stray";
+	}
 
-            $f = 1.2;
-            $yaw = $this->yaw + mt_rand(-220, 220) / 10;
-            $pitch = $this->pitch + mt_rand(-120, 120) / 10;
-            $nbt = new CompoundTag("", [
-                "Pos" => new ListTag("Pos", [
-                    new DoubleTag("", $this->x + (-sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5)),
-                    new DoubleTag("", $this->y + 1.62),
-                    new DoubleTag("", $this->z + (cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5))
-                ]),
-                "Motion" => new ListTag("Motion", [
-                    new DoubleTag("", -sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * $f),
-                    new DoubleTag("", -sin($pitch / 180 * M_PI) * $f),
-                    new DoubleTag("", cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * $f)
-                ]),
-                "Rotation" => new ListTag("Rotation", [
-                    new FloatTag("", $yaw),
-                    new FloatTag("", $pitch)
-                ]),
-            ]);
+	/**
+	 * Attack a player
+	 *
+	 * @param Entity $player
+	 */
+	public function attackEntity(Entity $player){
+		if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55){
+			$this->attackDelay = 0;
 
-            /** @var Projectile $arrow */
-            $arrow = Entity::createEntity("Arrow", $this->getLevel(), $nbt, $this);
+			$f = 1.2;
+			$yaw = $this->yaw + mt_rand(-220, 220) / 10;
+			$pitch = $this->pitch + mt_rand(-120, 120) / 10;
+			$nbt = new CompoundTag("", [
+				"Pos" => new ListTag("Pos", [
+					new DoubleTag("", $this->x + (-sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5)),
+					new DoubleTag("", $this->y + 1.62),
+					new DoubleTag("", $this->z + (cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5))
+				]),
+				"Motion" => new ListTag("Motion", [
+					new DoubleTag("", -sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * $f),
+					new DoubleTag("", -sin($pitch / 180 * M_PI) * $f),
+					new DoubleTag("", cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * $f)
+				]),
+				"Rotation" => new ListTag("Rotation", [
+					new FloatTag("", $yaw),
+					new FloatTag("", $pitch)
+				]),
+			]);
 
-            $ev = new EntityShootBowEvent($this, Item::get(Item::ARROW, 0, 1), $arrow, $f);
-            $this->server->getPluginManager()->callEvent($ev);
+			/** @var Projectile $arrow */
+			$arrow = Entity::createEntity("Arrow", $this->getLevel(), $nbt, $this);
 
-            $projectile = $ev->getProjectile();
-            if ($ev->isCancelled()) {
-                $projectile->kill();
-            } elseif ($projectile instanceof Projectile) {
-                $this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($projectile));
-                if ($launch->isCancelled()) {
-                    $projectile->kill();
-                } else {
-                    $projectile->spawnToAll();
-                    $this->level->addSound(new LaunchSound($this), $this->getViewers());
-                }
-            }
-        }
-    }
+			$ev = new EntityShootBowEvent($this, Item::get(Item::ARROW, 0, 1), $arrow, $f);
+			$this->server->getPluginManager()->callEvent($ev);
 
-    public function spawnTo(Player $player) {
-        parent::spawnTo($player);
+			$projectile = $ev->getProjectile();
+			if($ev->isCancelled()){
+				$projectile->kill();
+			}elseif($projectile instanceof Projectile){
+				$this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($projectile));
+				if($launch->isCancelled()){
+					$projectile->kill();
+				}else{
+					$projectile->spawnToAll();
+					$this->level->addSound(new LaunchSound($this), $this->getViewers());
+				}
+			}
+		}
+	}
 
-        $pk = new MobEquipmentPacket();
-        $pk->entityRuntimeId = $this->getId();
-        $pk->item = new Bow();
-        $pk->inventorySlot = 10;
-        $pk->hotbarSlot = 10;
-        $player->dataPacket($pk);
-    }
+	public function spawnTo(Player $player){
+		parent::spawnTo($player);
 
-    public function entityBaseTick(int $tickDiff = 1): bool {
-        Timings::$timerEntityBaseTick->startTiming();
+		$pk = new MobEquipmentPacket();
+		$pk->entityRuntimeId = $this->getId();
+		$pk->item = new Bow();
+		$pk->inventorySlot = 10;
+		$pk->hotbarSlot = 10;
+		$player->dataPacket($pk);
+	}
 
-        $hasUpdate = parent::entityBaseTick($tickDiff);
+	public function entityBaseTick(int $tickDiff = 1) : bool{
+		Timings::$timerEntityBaseTick->startTiming();
 
-        $time = $this->getLevel()->getTime() % Level::TIME_FULL;
-        if (
-            !$this->isOnFire()
-            && ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)
-        ) {
-            $this->setOnFire(100);
-        }
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
-        Timings::$timerEntityBaseTick->stopTiming();
-        return $hasUpdate;
-    }
+		$time = $this->getLevel()->getTime() % Level::TIME_FULL;
+		if(
+			!$this->isOnFire()
+			&& ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)
+		){
+			$this->setOnFire(100);
+		}
 
-    public function getDrops(): array {
-        $drops = [];
-        if ($this->isLootDropAllowed()) {
-            array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));
-            array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
-        }
-        return $drops;
-    }
+		Timings::$timerEntityBaseTick->stopTiming();
+		return $hasUpdate;
+	}
 
-    public function getMaxHealth(): int {
-        return 20;
-    }
+	public function getDrops() : array{
+		$drops = [];
+		if($this->isLootDropAllowed()){
+			array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));
+			array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
+		}
+		return $drops;
+	}
 
-    public function getKillExperience(): int {
-        return 5;
-    }
+	public function getMaxHealth() : int{
+		return 20;
+	}
+
+	public function getKillExperience() : int{
+		return 5;
+	}
 
 
 }
