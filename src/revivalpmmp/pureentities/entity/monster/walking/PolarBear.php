@@ -32,6 +32,9 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class PolarBear extends WalkingMonster implements Monster{
 
+	// Base created from Spider.
+	// TODO udpate Polar Bear specific methods.
+
 	const NETWORK_ID = Data::NETWORK_IDS["polar_bear"];
 
 	public function initEntity(){
@@ -45,7 +48,7 @@ class PolarBear extends WalkingMonster implements Monster{
 	}
 
 	public function getName() : string{
-		return "Spider";
+		return "Polar Bear";
 	}
 
 	/**
