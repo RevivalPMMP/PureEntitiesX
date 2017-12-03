@@ -30,6 +30,15 @@ use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Shulker extends WalkingMonster implements Monster{
+
+	// Base created from Spider
+	// TODO Lots!  Fix shell color
+	// TODO Implement Peeping
+	// TODO Implement Attacking
+	// TODO Implement Teleport on Block Update
+	// TODO Make Dyeable
+	// TODO Modify Color of Head Based on Source of Spawn
+
 	const NETWORK_ID = Data::NETWORK_IDS["shulker"];
 
 	public function initEntity(){
