@@ -48,7 +48,7 @@ class PolarBear extends WalkingMonster implements Monster{
 	}
 
 	public function getName() : string{
-		return "Polar Bear";
+		return "PolarBear";
 	}
 
 	/**
