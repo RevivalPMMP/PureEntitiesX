@@ -51,6 +51,7 @@ use revivalpmmp\pureentities\entity\monster\walking\IronGolem;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use revivalpmmp\pureentities\entity\monster\walking\Silverfish;
 use revivalpmmp\pureentities\entity\monster\walking\Skeleton;
+use revivalpmmp\pureentities\entity\monster\walking\Witch;
 use revivalpmmp\pureentities\entity\monster\walking\WitherSkeleton;
 use revivalpmmp\pureentities\entity\monster\walking\SnowGolem;
 use revivalpmmp\pureentities\entity\monster\walking\Spider;
@@ -157,6 +158,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Slime::class,
 			SnowGolem::class,
 			Spider::class,
+			Witch::class,
 			Wolf::class,
 			Zombie::class,
 			ZombieVillager::class,
@@ -262,6 +264,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 */
 	public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null, Player $owner = null){
 		$this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
+
 		if($event->isCancelled()){
 			return null;
 		}else{
@@ -337,7 +340,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	public static function getSuitableHeightPosition($x, $y, $z, Level $level){
 		$newPosition = null;
 		$id = $level->getBlockIdAt($x, $y, $z);
-		if($id == 0){ // we found an air block - we need to search down step by step to get the correct block which is not a "AIR" block
+		if($id == 0){ // we found an air block - we need to search down step by step to get the correct block which is not an "AIR" block
 			$air = true;
 			$y = $y - 1;
 			while($air){
