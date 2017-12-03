@@ -63,7 +63,6 @@ class Donkey extends WalkingAnimal implements Rideable{
 	}
 
 	/**
-	 * Just for Bluelight ...
 	 * @return null
 	 */
 	public function getRidePosition(){

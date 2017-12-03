@@ -88,7 +88,6 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
 	}
 
 	/**
-	 * Just for Bluelight ...
 	 * @return null
 	 */
 	public function getRidePosition(){
