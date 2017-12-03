@@ -60,6 +60,7 @@ use revivalpmmp\pureentities\entity\monster\walking\Creeper;
 use revivalpmmp\pureentities\entity\monster\walking\Enderman;
 use revivalpmmp\pureentities\entity\monster\walking\IronGolem;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
+use revivalpmmp\pureentities\entity\monster\walking\PolarBear;
 use revivalpmmp\pureentities\entity\monster\walking\Silverfish;
 use revivalpmmp\pureentities\entity\monster\walking\Skeleton;
 use revivalpmmp\pureentities\entity\monster\walking\Witch;
@@ -149,6 +150,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Ocelot::class,
 			Pig::class,
 			PigZombie::class,
+			PolarBear::class,
 			Rabbit::class,
 			Sheep::class,
 			Silverfish::class,
