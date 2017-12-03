@@ -189,6 +189,26 @@ abstract class BaseEntity extends Creature{
 	public function initEntity(){
 		parent::initEntity();
 
+		$this->loadNBT();
+
+		$this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
+
+		$this->idlingComponent->loadFromNBT();
+	}
+
+	public function saveNBT(){
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::saveNBT();
+			$this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
+			$this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
+			$this->namedtag->AgeInTicks = new IntTag("AgeInTicks", $this->age);
+
+			// No reason to attempt this if getEnableNBT is false.
+			$this->idlingComponent->saveNBT();
+		}
+	}
+
+	public function loadNBT() {
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			if(isset($this->namedtag->Movement)){
 				$this->setMovement($this->namedtag["Movement"]);
@@ -202,20 +222,6 @@ abstract class BaseEntity extends Creature{
 				$this->age = $this->namedtag["AgeInTicks"];
 			}
 		}
-		$this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
-
-
-		$this->idlingComponent->loadFromNBT();
-	}
-
-	public function saveNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			parent::saveNBT();
-			$this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
-			$this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
-			$this->namedtag->AgeInTicks = new IntTag("AgeInTicks", $this->age);
-		}
-		$this->idlingComponent->saveNBT();
 	}
 
 	public function spawnTo(Player $player){
@@ -274,6 +280,7 @@ abstract class BaseEntity extends Creature{
 		$motion = (new Vector3($this->x - $sourceOfDamage->x, $this->y - $sourceOfDamage->y, $this->z - $sourceOfDamage->z))->normalize();
 		$this->motionX = $motion->x * 0.19;
 		$this->motionZ = $motion->z * 0.19;
+
 		if(($this instanceof FlyingEntity) && !($this instanceof Blaze)){
 			$this->motionY = $motion->y * 0.19;
 		}else{
