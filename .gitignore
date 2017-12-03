@@ -9,3 +9,4 @@ Travis.php
 .gitignore
 icon.jpg
 phpstorm_codeformatting.xml
+config.yml
