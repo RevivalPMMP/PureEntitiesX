@@ -163,3 +163,44 @@ mob-equipment:
       chain: 13 # not used yet
       iron: 2
       diamond: 1
+
+  zombiepigman:
+      # chances for pickup loot, wearing armor and weapon in percent for easy|normal|hard
+      wear-pickup-chances:
+        can-pickup-loot:
+          easy: 0
+          normal: 55
+          hard: 75
+        armor:
+          easy: 0
+          normal: 15
+          hard: 20
+        weapon:
+          easy: 1
+          normal: 10
+          hard: 20
+      # chances of different armor pieces, per difficulty (easy|normal|hard)
+      wear-chances:
+        helmet:
+          easy: 100
+          normal: 100
+          hard: 100
+        helmet-chestplate:
+          easy: 75
+          normal: 75
+          hard: 90
+        helmet-chestplate-leggings:
+          easy: 56
+          normal: 56
+          hard: 81
+        full:
+          easy: 42
+          normal: 42
+          hard: 73
+      # chances of different armor pieces, per difficulty
+      armor-types:
+        leather: 37
+        gold: 48
+        chain: 13 # not used yet
+        iron: 2
+        diamond: 1

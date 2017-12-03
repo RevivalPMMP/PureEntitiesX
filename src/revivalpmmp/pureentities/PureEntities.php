@@ -70,6 +70,7 @@ use revivalpmmp\pureentities\entity\monster\walking\SnowGolem;
 use revivalpmmp\pureentities\entity\monster\walking\Spider;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\entity\monster\walking\Zombie;
+use revivalpmmp\pureentities\entity\monster\walking\ZombiePigman;
 use revivalpmmp\pureentities\entity\monster\walking\ZombieVillager;
 use revivalpmmp\pureentities\entity\monster\walking\Husk;
 use revivalpmmp\pureentities\entity\monster\walking\Stray;
@@ -164,6 +165,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Witch::class,
 			Wolf::class,
 			Zombie::class,
+			ZombiePigman::class,
 			ZombieVillager::class,
 			FireBall::class
 		];
