@@ -59,6 +59,7 @@ use revivalpmmp\pureentities\entity\monster\jumping\Slime;
 use revivalpmmp\pureentities\entity\monster\walking\CaveSpider;
 use revivalpmmp\pureentities\entity\monster\walking\Creeper;
 use revivalpmmp\pureentities\entity\monster\walking\Enderman;
+use revivalpmmp\pureentities\entity\monster\walking\Endermite;
 use revivalpmmp\pureentities\entity\monster\walking\IronGolem;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use revivalpmmp\pureentities\entity\monster\walking\PolarBear;
@@ -140,7 +141,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			//EnderCharge::class,
 			//EnderDragon::class,
 			Enderman::class,
-			//Endermite::class,
+			Endermite::class,
 			//Evoker::class,
 			FireBall::class,
 			Ghast::class,
