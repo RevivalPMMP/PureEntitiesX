@@ -37,6 +37,7 @@ use pocketmine\ThreadManager;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
 use revivalpmmp\pureentities\data\Color;
+use revivalpmmp\pureentities\entity\animal\flying\Bat;
 use revivalpmmp\pureentities\entity\animal\flying\Parrot;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\animal\walking\Llama;
@@ -134,7 +135,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 
 	public function onLoad(){
 		self::$registeredClasses = [
-			//Bat::class,
+			Bat::class,
 			Blaze::class,
 			CaveSpider::class,
 			Chicken::class,
