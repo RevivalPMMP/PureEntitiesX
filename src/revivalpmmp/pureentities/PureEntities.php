@@ -55,6 +55,7 @@ use revivalpmmp\pureentities\entity\animal\walking\Rabbit;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\flying\Ghast;
+use revivalpmmp\pureentities\entity\monster\flying\Vex;
 use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
 use revivalpmmp\pureentities\entity\monster\jumping\Slime;
 use revivalpmmp\pureentities\entity\monster\walking\CaveSpider;
@@ -68,6 +69,7 @@ use revivalpmmp\pureentities\entity\monster\walking\PolarBear;
 use revivalpmmp\pureentities\entity\monster\walking\Shulker;
 use revivalpmmp\pureentities\entity\monster\walking\Silverfish;
 use revivalpmmp\pureentities\entity\monster\walking\Skeleton;
+use revivalpmmp\pureentities\entity\monster\walking\Vindicator;
 use revivalpmmp\pureentities\entity\monster\walking\Witch;
 use revivalpmmp\pureentities\entity\monster\walking\WitherSkeleton;
 use revivalpmmp\pureentities\entity\monster\walking\SnowGolem;
@@ -171,9 +173,9 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Spider::class,
 			Squid::class,
 			Stray::class,
-			//Vex::class,
+			Vex::class,
 			Villager::class,
-			//Vindicator::class,
+			Vindicator::class,
 			Witch::class,
 			//Wither::class
 			WitherSkeleton::class,
