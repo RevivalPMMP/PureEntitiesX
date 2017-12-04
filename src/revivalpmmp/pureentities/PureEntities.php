@@ -40,6 +40,7 @@ use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\flying\Parrot;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
 use revivalpmmp\pureentities\entity\animal\walking\Llama;
+use revivalpmmp\pureentities\entity\animal\walking\SkeletonHorse;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\animal\walking\Villager;
 use revivalpmmp\pureentities\entity\animal\walking\Horse;
@@ -164,7 +165,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Shulker::class,
 			Silverfish::class,
 			Skeleton::class,
-			//SkeletonHorse::class,
+			SkeletonHorse::class,
 			Slime::class,
 			SnowGolem::class,
 			Spider::class,
