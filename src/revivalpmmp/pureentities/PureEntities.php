@@ -39,6 +39,7 @@ use pocketmine\utils\TextFormat;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\flying\Parrot;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
+use revivalpmmp\pureentities\entity\animal\walking\Llama;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\animal\walking\Villager;
 use revivalpmmp\pureentities\entity\animal\walking\Horse;
@@ -128,28 +129,31 @@ class PureEntities extends PluginBase implements CommandExecutor{
 
 	public function onLoad(){
 		self::$registeredClasses = [
-			Stray::class,
-			Husk::class,
-			Horse::class,
-			Donkey::class,
-			Mule::class,
-			//ElderGuardian::class,
-			//Guardian::class,
 			//Bat::class,
-			Parrot::class,
-			Squid::class,
-			Villager::class,
 			Blaze::class,
 			CaveSpider::class,
 			Chicken::class,
 			Cow::class,
 			Creeper::class,
+			Donkey::class,
+			//ElderGuardian::class,
+			//EnderCharge::class,
+			//EnderDragon::class,
 			Enderman::class,
+			//Endermite::class,
+			//Evoker::class,
+			FireBall::class,
 			Ghast::class,
+			//Guardian::class,
+			Horse::class,
+			Husk::class,
 			IronGolem::class,
+			Llama::class,
 			MagmaCube::class,
 			Mooshroom::class,
+			Mule::class,
 			Ocelot::class,
+			Parrot::class,
 			Pig::class,
 			PigZombie::class,
 			PolarBear::class,
@@ -158,16 +162,22 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Shulker::class,
 			Silverfish::class,
 			Skeleton::class,
-			WitherSkeleton::class,
+			//SkeletonHorse::class,
 			Slime::class,
 			SnowGolem::class,
 			Spider::class,
+			Squid::class,
+			Stray::class,
+			//Vex::class,
+			Villager::class,
+			//Vindicator::class,
 			Witch::class,
+			//Wither::class
+			WitherSkeleton::class,
 			Wolf::class,
 			Zombie::class,
 			ZombiePigman::class,
-			ZombieVillager::class,
-			FireBall::class
+			ZombieVillager::class
 		];
 
 
