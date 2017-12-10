@@ -72,7 +72,7 @@ trait Shearable{
 			/**
 			 * @var Cow $newCow
 			 */
-			$newCow = PureEntities::create(Data::COW, $this->asLocation());
+			$newCow = PureEntities::create(Data::NETWORK_IDS["cow"], $this->asLocation());
 			$loaded = false;
 			while(!$loaded){
 				$newCow->setPosition($this->asVector3());
