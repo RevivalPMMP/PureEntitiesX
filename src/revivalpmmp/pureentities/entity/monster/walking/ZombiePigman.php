@@ -18,7 +18,10 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
+use pocketmine\item\Sword;
+use pocketmine\item\TieredTool;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\entity\monster\Monster;
@@ -73,7 +76,9 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 
 		$this->breedableClass = new BreedingComponent($this);
 		$this->breedableClass->init();
-		// $this->mobEquipment->setMainHand(ITEM::GOLDEN_SWORD);
+		$this->mobEquipment->setMainHand(Item::get(ItemIds::GOLDEN_SWORD));
+		$this->mobEquipment->sendHandItemsToAllClients();
+
 	}
 
 	/**

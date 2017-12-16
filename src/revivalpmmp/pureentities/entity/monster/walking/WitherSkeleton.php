@@ -18,10 +18,11 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\item\ItemFactory;
+use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
-use pocketmine\item\StoneSword;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item;
@@ -65,7 +66,7 @@ class WitherSkeleton extends WalkingMonster{
 
 		$pk = new MobEquipmentPacket();
 		$pk->entityRuntimeId = $this->getId();
-		$pk->item = new StoneSword();
+		$pk->item = ItemFactory::get(ItemIds::STONE_SWORD);
 		$pk->inventorySlot = 10;
 		$pk->hotbarSlot = 10;
 		$player->dataPacket($pk);

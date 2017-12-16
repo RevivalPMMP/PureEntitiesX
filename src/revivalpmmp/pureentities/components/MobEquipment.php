@@ -25,26 +25,22 @@ use pocketmine\item\DiamondBoots;
 use pocketmine\item\DiamondChestplate;
 use pocketmine\item\DiamondHelmet;
 use pocketmine\item\DiamondLeggings;
-use pocketmine\item\DiamondSword;
 use pocketmine\item\GoldBoots;
 use pocketmine\item\GoldChestplate;
 use pocketmine\item\GoldHelmet;
 use pocketmine\item\GoldLeggings;
-use pocketmine\item\GoldSword;
 use pocketmine\item\IronBoots;
 use pocketmine\item\IronChestplate;
 use pocketmine\item\IronHelmet;
 use pocketmine\item\IronLeggings;
-use pocketmine\item\IronSword;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\item\LeatherBoots;
 use pocketmine\item\LeatherCap;
 use pocketmine\item\LeatherPants;
 use pocketmine\item\LeatherTunic;
-use pocketmine\item\StoneSword;
-use pocketmine\item\Tool;
-use pocketmine\item\WoodenSword;
+use pocketmine\item\Sword;
+use pocketmine\item\TieredTool;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\IntTag;
@@ -401,19 +397,19 @@ class MobEquipment{
 		if($itemInMain !== null and $itemInMain->getId() !== ItemIds::AIR){
 			// is wearing something in main hand
 			if($this->isSwordWorn()){
-				$tier = $itemInMain->isSword(); // strange: this returns the tier (as in PMMP and Tesseract)
+				$tier = $itemInMain->isSword();
 				switch($tier){
-					case Tool::TIER_WOODEN:
-					case Tool::TIER_GOLD:
+					case TieredTool::TIER_WOODEN:
+					case TieredTool::TIER_GOLD:
 						$damageToAdd = 5;
 						break;
-					case Tool::TIER_STONE:
+					case TieredTool::TIER_STONE:
 						$damageToAdd = 6;
 						break;
-					case Tool::TIER_IRON:
+					case TieredTool::TIER_IRON:
 						$damageToAdd = 7;
 						break;
-					case Tool::TIER_DIAMOND:
+					case TieredTool::TIER_DIAMOND:
 						$damageToAdd = 8;
 						break;
 					default:
@@ -531,9 +527,7 @@ class MobEquipment{
 	 */
 	private function isSwordWorn() : bool{
 		return $this->getMainHand() !== null and $this->getMainHand()->getId() !== ItemIds::AIR and
-			($this->getMainHand() instanceof IronSword or $this->getMainHand() instanceof StoneSword or
-				$this->getMainHand() instanceof WoodenSword or $this->getMainHand() instanceof GoldSword or
-				$this->getMainHand() instanceof DiamondSword);
+			($this->getMainHand() instanceof Sword);
 	}
 
 	private function storeToNBT(){
