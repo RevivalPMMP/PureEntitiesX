@@ -59,7 +59,7 @@ class Slime extends JumpingMonster{
 
 	public function loadFromNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			parent::loadFromNBT();
+
 			if(isset($this->namedtag->CubeSize)){
 				$this->cubeSize = $this->namedtag[self::NBT_CONST_CUBESIZE];
 			}
