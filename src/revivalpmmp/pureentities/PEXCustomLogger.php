@@ -22,6 +22,8 @@ class PEXCustomLogger extends \AttachableThreadedLogger{
 	/** @var PEXCustomLogger */
 	public static $logger = null;
 
+	public $logDirectory = \pocketmine\DATA . "plugins" . DIRECTORY_SEPARATOR . "PureEntitiesX" . DIRECTORY_SEPARATOR . "logs" . DIRECTORY_SEPARATOR;
+
 	/**
 	 * CustomLogger constructor.
 	 *
@@ -32,9 +34,13 @@ class PEXCustomLogger extends \AttachableThreadedLogger{
 	public function __construct(bool $logDebug = true){
 		parent::__construct();
 		if(static::$logger instanceof PEXCustomLogger){
-			throw new \RuntimeException("PureEntitesX Custom Logger has already been created.");
+			throw new \RuntimeException("PureEntitiesX Custom Logger has already been created.");
 		}
-		$logFile = \pocketmine\DATA . "plugins" . DIRECTORY_SEPARATOR . "PureEntitiesX" . DIRECTORY_SEPARATOR . "PureEntitiesX_" . date("j.n.Y") . ".log";
+
+		$logFile = $this->logDirectory . "PureEntitiesX_" . date("j.n.Y") . ".log";
+		if(!file_exists($this->logDirectory)){
+			mkdir($this->logDirectory);
+		}
 		touch($logFile);
 		$this->logFile = $logFile;
 		$this->logDebug = $logDebug;
