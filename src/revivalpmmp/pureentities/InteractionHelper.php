@@ -48,7 +48,7 @@ class InteractionHelper{
 	 * @param Player $player the player to get the button text for
 	 * @return ?string           the button text, may be empty or NULL
 	 */
-	public static function getButtonText(Player $player) : ?string {
+	public static function getButtonText(Player $player) : ?string{
 		return $player->getDataProperty(Entity::DATA_INTERACTIVE_TAG);
 	}
 
@@ -73,17 +73,12 @@ class InteractionHelper{
 
 			// get all blocks in looking direction until the max interact distance is reached (it's possible that startblock isn't found!)
 			try{
-				$itr = new BlockIterator($player->level, $player->getPosition(), $player->getDirectionVector(), $player->getEyeHeight(), $maxDistance);
-				if($itr !== null){
-					$block = null;
-					$entity = null;
-					while($itr->valid()){
-						$itr->next();
-						$block = $itr->current();
-						$entity = self::getEntityAtPosition($nearbyEntities, $block->x, $block->y, $block->z, $useCorrection);
-						if($entity !== null){
-							break;
-						}
+				foreach(VoxelRayTrace::inDirection($player->add(0, $player->eyeHeight, 0), $player->getDirectionVector(), $maxDistance) as $vector3){
+
+					$block = $player->level->getBlockAt($vector3->x, $vector3->y, $vector3->z);
+					$entity = self::getEntityAtPosition($nearbyEntities, $block->x, $block->y, $block->z, $useCorrection);
+					if($entity !== null){
+						break;
 					}
 				}
 			}catch(\InvalidStateException $e){
