@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\entity\projectile\Projectile;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\nbt\tag\IntTag;
