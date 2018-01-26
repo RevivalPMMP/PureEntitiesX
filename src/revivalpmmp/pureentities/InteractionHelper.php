@@ -19,8 +19,8 @@
 namespace revivalpmmp\pureentities;
 
 use pocketmine\entity\Entity;
+use pocketmine\math\VoxelRayTrace;
 use pocketmine\Player;
-use pocketmine\utils\BlockIterator;
 use revivalpmmp\pureentities\utils\PeTimings;
 
 /**
