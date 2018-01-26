@@ -147,7 +147,7 @@ class XPOrb extends Entity{
 		$pk->entityRuntimeId = $this->getId();
 		$pk->position = $this->asVector3();
 		$pk->motion = $this->getMotion();
-		$pk->metadata = $this->dataProperties;
+		$pk->metadata = $this->getDataPropertyManager()->getAll();
 		$player->dataPacket($pk);
 
 		parent::spawnTo($player);
