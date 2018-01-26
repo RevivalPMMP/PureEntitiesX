@@ -19,14 +19,11 @@
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
 use pocketmine\entity\Creature;
-use pocketmine\nbt\NBT;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
-use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use pocketmine\nbt\tag\IntTag;
@@ -289,7 +286,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 	 */
 	public function setCatType(int $type = 0){
 		$this->catType = $type;
-		$this->setDataProperty(self::DATA_VARIANT, self::DATA_TYPE_INT, $type);
+		$this->getDataPropertyManager()->setPropertyValue(self::DATA_VARIANT, self::DATA_TYPE_INT, $type);
 	}
 
 	/**

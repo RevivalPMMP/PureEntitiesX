@@ -119,7 +119,7 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
 
 	public function setBirdType(int $type){
 		$this->birdType = $type;
-		$this->setDataProperty(self::DATA_VARIANT, self::DATA_TYPE_INT, $type);
+		$this->getDataPropertyManager()->setPropertyValue(self::DATA_VARIANT, self::DATA_TYPE_INT, $type);
 	}
 
 	private function getBirdType(){

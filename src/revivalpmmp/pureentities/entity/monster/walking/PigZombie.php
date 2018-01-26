@@ -18,10 +18,10 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\item\ItemFactory;
 use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
-use pocketmine\item\GoldSword;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -91,7 +91,7 @@ class PigZombie extends WalkingMonster{
 
 		$pk = new MobEquipmentPacket();
 		$pk->entityRuntimeId = $this->getId();
-		$pk->item = new GoldSword();
+		$pk->item = ItemFactory::get(Item::GOLD_SWORD, 0, 1);
 		$pk->inventorySlot = 10;
 		$pk->hotbarSlot = 10;
 		$player->dataPacket($pk);

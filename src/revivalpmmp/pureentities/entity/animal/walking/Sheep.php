@@ -167,7 +167,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 	 */
 	public function setColor(int $color){
 		$this->color = $color;
-		$this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $color);
+		$this->getDataPropertyManager()->setPropertyValue(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $color);
 	}
 
 	/**

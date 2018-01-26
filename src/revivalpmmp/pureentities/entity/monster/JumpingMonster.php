@@ -157,15 +157,15 @@ abstract class JumpingMonster extends JumpingEntity implements Monster{
 		$this->attackDelay += $tickDiff;
 		if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()){
 			$hasUpdate = true;
-			$airTicks = $this->getDataProperty(self::DATA_AIR) - $tickDiff;
+			$airTicks = $this->getDataPropertyManager()->getPropertyValue(self::DATA_AIR, Entity::DATA_TYPE_SHORT) - $tickDiff;
 			if($airTicks <= -20){
 				$airTicks = 0;
 				$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
 				$this->attack($ev);
 			}
-			$this->setDataProperty(self::DATA_AIR, self::DATA_TYPE_SHORT, $airTicks);
+			$this->getDataPropertyManager()->setPropertyValue(self::DATA_AIR, self::DATA_TYPE_SHORT, $airTicks);
 		}else{
-			$this->setDataProperty(self::DATA_AIR, self::DATA_TYPE_SHORT, 300);
+			$this->getDataPropertyManager()->setPropertyValue(self::DATA_AIR, self::DATA_TYPE_SHORT, 300);
 		}
 
 		Timings::$timerEntityBaseTick->stopTiming();

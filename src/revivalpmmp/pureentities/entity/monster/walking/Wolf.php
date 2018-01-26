@@ -327,11 +327,11 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
 			if(!isset($this->namedtag[NBTConst::NBT_KEY_COLLAR_COLOR])){
 				$this->namedtag->Color = new ByteTag(NBTConst::NBT_KEY_COLLAR_COLOR, $collarColor); // set collar color
-				$this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor);
+				$this->getDataPropertyManager()->setPropertyValue(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor);
 
 			}else{
 				$this->namedtag[NBTConst::NBT_KEY_COLLAR_COLOR] = $this->collarColor;
-				$this->setDataProperty(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor);
+				$this->getDataPropertyManager()->setPropertyValue(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor);
 			}
 		}
 	}

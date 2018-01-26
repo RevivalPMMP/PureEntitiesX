@@ -58,7 +58,7 @@ class Creeper extends WalkingMonster implements Explosive{
 
 	public function setPowered($value = true){
 		$value ? $this->powered = 1 : $this->powered = 0;
-		$this->setDataProperty(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->powered);
+		$this->getDataPropertyManager()->setPropertyValue(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->powered);
 	}
 
 	public function loadFromNBT(){

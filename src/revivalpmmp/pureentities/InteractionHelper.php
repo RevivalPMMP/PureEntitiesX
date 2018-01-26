@@ -38,7 +38,7 @@ class InteractionHelper{
 	 * @param Player $player the player to display the text
 	 */
 	public static function displayButtonText(string $text, Player $player){
-		$player->setDataProperty(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, $text);
+		$player->getDataPropertyManager()->setPropertyValue(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING, $text);
 	}
 
 
@@ -49,7 +49,7 @@ class InteractionHelper{
 	 * @return ?string           the button text, may be empty or NULL
 	 */
 	public static function getButtonText(Player $player) : ?string{
-		return $player->getDataProperty(Entity::DATA_INTERACTIVE_TAG);
+		return $player->getDataPropertyManager()->getPropertyValue(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING);
 	}
 
 	/**
