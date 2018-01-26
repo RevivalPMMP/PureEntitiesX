@@ -78,8 +78,13 @@ class MobDamageCalculator{
 	 * @return float the final damage calculated with respect to armor etc. pp worn by player
 	 */
 	public static function calculateFinalDamage(Entity $player, float $damageFromEntity) : float{
-		if($player instanceof Player and $player->getInventory() !== null){
-			$armorItems = $player->getInventory()->getArmorContents();
+		if($player instanceof Player and $player->getArmorInventory() !== null){
+			$playerArmor = $player->getArmorInventory();
+			$armorItems = [];
+			array_push($armorItems, $playerArmor->getHelmet());
+			array_push($armorItems, $playerArmor->getChestplate());
+			array_push($armorItems, $playerArmor->getLeggings());
+			array_push($armorItems, $playerArmor->getBoots());
 
 			if($armorItems !== null and sizeof($armorItems) > 0){
 				// complete damage reduction in percent
