@@ -32,4 +32,4 @@ permissions:
         description: "Allows spawning mobs"
       pureentities.command.peremove:
         default: op
-        description: "Allows remove of all entities in current level"
+        description: "Allows removal of all non-player entities from loaded chunks"
