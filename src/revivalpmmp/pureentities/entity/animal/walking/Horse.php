@@ -58,7 +58,7 @@ class Horse extends WalkingAnimal implements Rideable{
 		return 20;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return mt_rand(1, 3);
 	}
 

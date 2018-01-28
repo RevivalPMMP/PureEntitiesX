@@ -141,7 +141,7 @@ class Stray extends WalkingMonster implements ProjectileSource{
 		return 20;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return 5;
 	}
 

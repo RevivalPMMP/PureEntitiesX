@@ -123,7 +123,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
 		parent::showButton($player);
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		if($this->getBreedingComponent()->isBaby()){
 			return mt_rand(1, 7);
 		}

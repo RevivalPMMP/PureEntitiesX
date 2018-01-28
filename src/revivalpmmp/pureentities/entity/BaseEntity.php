@@ -104,7 +104,7 @@ abstract class BaseEntity extends Creature{
 	 * Should return the experience dropped by the entity when killed
 	 * @return int
 	 */
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return 0; // default no experience drops
 	}
 

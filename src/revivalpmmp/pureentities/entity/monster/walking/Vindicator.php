@@ -167,7 +167,7 @@ class Vindicator extends WalkingMonster implements IntfCanEquip, IntfCanBreed, M
 		return 20;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		// adult: 5, baby: 12
 		return 5;
 	}

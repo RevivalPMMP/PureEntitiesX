@@ -58,7 +58,7 @@ class Mule extends WalkingAnimal implements Rideable{
 		return 15;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return mt_rand(1, 3);
 	}
 

@@ -53,9 +53,6 @@ idle:
   max-idle: 500 # max idle in ticks
   time-between-idle: 20 # time that has to pass at least between each idling status in seconds
 
-xp:
-  enabled: true # enable experience pickup system - disable if you have problems!
-
 # control max spawning values ...
 max-spawn:
   bat: 2

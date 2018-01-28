@@ -76,7 +76,7 @@ class CaveSpider extends WalkingMonster{
 		return 12;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return 5;
 	}
 

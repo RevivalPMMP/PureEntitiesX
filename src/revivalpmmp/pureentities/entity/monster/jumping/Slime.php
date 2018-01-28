@@ -106,7 +106,7 @@ class Slime extends JumpingMonster{
 		return 4;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		if($this->cubeSize == 2){
 			return 4;
 		}else if($this->cubeSize == 1){

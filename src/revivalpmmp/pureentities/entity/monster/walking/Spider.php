@@ -79,7 +79,7 @@ class Spider extends WalkingMonster{
 		return 16;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return 5;
 	}
 

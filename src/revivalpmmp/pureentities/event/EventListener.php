@@ -20,38 +20,27 @@ namespace revivalpmmp\pureentities\event;
 
 use pocketmine\block\Air;
 use pocketmine\event\block\BlockPlaceEvent;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\Item;
-use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\IntTag;
-use pocketmine\nbt\tag\ListTag;
-use pocketmine\nbt\tag\LongTag;
 use pocketmine\nbt\tag\StringTag;
-use pocketmine\network\mcpe\protocol\InteractPacket;  // This may become unnecessary with continued updates.
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
-use pocketmine\Player;
 use pocketmine\Server;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Ocelot;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
-use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
-use revivalpmmp\pureentities\entity\other\XPOrb;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\features\IntfShearable;
@@ -230,27 +219,6 @@ class EventListener implements Listener{
 	}
 
 	/**
-	 * EventListener method for spawning XP orbs when an entity got killed
-	 *
-	 * @param EntityDeathEvent $ev
-	 */
-	public function entityDeathEvent(EntityDeathEvent $ev){
-		if(PluginConfiguration::getInstance()->getXpEnabled()){
-			$entityDamaged = $ev->getEntity();
-			if($entityDamaged instanceof BaseEntity){
-				$damageCause = $entityDamaged->getLastDamageCause();
-				if($damageCause instanceof EntityDamageByEntityEvent){
-					$sourceOfDamage = $damageCause->getDamager();
-					if($sourceOfDamage instanceof Player){
-						$killExperience = $entityDamaged->getKillExperience();
-						$this->spawnXPOrb($entityDamaged->getLevel(), $entityDamaged, $killExperience);
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * This method is called when a player joins the server. We have to do different stuff here - especially
 	 * for mobs that are equipped - as this says we should do so: https://forums.pmmp.io/threads/mob-equipment.1212/
 	 *
@@ -276,9 +244,6 @@ class EventListener implements Listener{
 					PureEntities::getInstance(), $entity), 20); // map owner after 20 ticks
 			}
 		}
-		if(isset($ev->getPlayer()->namedtag->XpP) and $ev->getPlayer()->namedtag->XpP instanceof FloatTag){
-			$ev->getPlayer()->setXpProgress($ev->getPlayer()->namedtag["XpP"]);
-		}
 	}
 
 	/**
@@ -298,45 +263,5 @@ class EventListener implements Listener{
 				PureEntities::logOutput("$entity: despawned from level because player quit: " . $ev->getPlayer());
 			}
 		}
-	}
-
-	/**
-	 * Add an experience orb - copied from Tesseract / Genisys
-	 *
-	 * @param Level   $level
-	 * @param Vector3 $pos
-	 * @param int     $exp
-	 * @return bool|XPOrb
-	 */
-	public function spawnXPOrb(Level $level, Vector3 $pos, int $exp = 1){
-		if($exp > 0){
-			$nbt = new CompoundTag("", [
-				"Pos" => new ListTag("Pos", [
-					new DoubleTag("", $pos->getX()),
-					new DoubleTag("", $pos->getY() + 0.5),
-					new DoubleTag("", $pos->getZ())
-				]),
-				"Motion" => new ListTag("Motion", [
-					new DoubleTag("", 0),
-					new DoubleTag("", 0),
-					new DoubleTag("", 0)
-				]),
-				"Rotation" => new ListTag("Rotation", [
-					new FloatTag("", 0),
-					new FloatTag("", 0)
-				]),
-				"Experience" => new LongTag("Experience", $exp),
-			]);
-
-			$expOrb = new XPOrb($level, $nbt);
-			$expOrb->spawnToAll();
-
-			return $expOrb;
-		}
-		return false;
-	}
-
-	public function initPlayerXp(Player $player){
-
 	}
 }
