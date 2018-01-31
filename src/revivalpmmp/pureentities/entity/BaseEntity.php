@@ -236,7 +236,7 @@ abstract class BaseEntity extends Creature{
 			$pk->motion = $this->getMotion();
 			$pk->yaw = $this->yaw;
 			$pk->pitch = $this->pitch;
-			$pk->metadata = $this->dataProperties;
+			$pk->metadata = $this->propertyManager->getAll();
 			$player->dataPacket($pk);
 
 			$this->hasSpawned[$player->getLoaderId()] = $player;
