@@ -43,7 +43,7 @@ class Villager extends WalkingAnimal{
 		return 10;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return mt_rand(3, 6);
 	}
 

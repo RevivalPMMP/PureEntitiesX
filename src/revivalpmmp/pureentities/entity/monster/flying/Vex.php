@@ -211,7 +211,7 @@ class Vex extends FlyingMonster implements Monster{
 		return [];
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return 10;
 	}
 }

@@ -87,7 +87,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 		return 10;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		if($this->getBreedingComponent()->isBaby()){
 			return mt_rand(1, 7);
 		}

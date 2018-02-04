@@ -84,7 +84,7 @@ class PolarBear extends WalkingMonster implements Monster{
 		return 30;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return 5;
 	}
 

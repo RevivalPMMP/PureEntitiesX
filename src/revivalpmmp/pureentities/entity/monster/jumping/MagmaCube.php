@@ -100,7 +100,7 @@ class MagmaCube extends JumpingMonster{
 		return $drops;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		// normally it would be set by small/medium/big sized - but as we have it not now - i'll make it more static
 		if($this->cubeSize == 2){
 			return 4;

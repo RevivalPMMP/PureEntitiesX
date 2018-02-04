@@ -199,7 +199,7 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 		return 20;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		if($this->getBreedingComponent()->isBaby()) {
 			return 12;
 		}

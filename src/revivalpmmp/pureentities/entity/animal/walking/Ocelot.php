@@ -345,7 +345,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 	//     return mt_rand($minXp, $maxXp);
 	// }
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return mt_rand(1, 3);
 	}
 

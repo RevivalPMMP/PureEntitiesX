@@ -390,7 +390,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 		}
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		if($this->getBreedingComponent()->isBaby()){
 			return mt_rand(1, 7);
 		}

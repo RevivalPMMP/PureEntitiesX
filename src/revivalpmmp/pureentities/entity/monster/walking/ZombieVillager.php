@@ -111,7 +111,7 @@ class ZombieVillager extends WalkingMonster implements Monster{
 		return 20;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		// adult: 5, baby: 12
 		return 5;
 	}

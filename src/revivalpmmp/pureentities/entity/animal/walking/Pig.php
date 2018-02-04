@@ -80,7 +80,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
 		return 10;
 	}
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		if($this->getBreedingComponent()->isBaby()){
 			return mt_rand(1, 7);
 		}

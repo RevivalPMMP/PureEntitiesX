@@ -73,7 +73,7 @@ class Enderman extends WalkingMonster{
 	}
 
 
-	public function getKillExperience() : int{
+	public function getXpDropAmount() : int{
 		return 5;
 	}
 
