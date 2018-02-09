@@ -19,8 +19,6 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\item\Item;
-use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\data\Color;
@@ -33,7 +31,6 @@ use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\traits\Tameable;
 use revivalpmmp\pureentities\traits\Breedable;
 use pocketmine\entity\Entity;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use revivalpmmp\pureentities\features\IntfCanBreed;
@@ -78,8 +75,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
 
 		$this->breedableClass = new BreedingComponent($this);
+		$this->breedableClass->init();
 
-		$this->loadFromNBT();
 		$this->tameFoods = array(
 			Item::BONE
 		);
@@ -184,31 +181,17 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	/**
 	 * Loads data from NBT and stores to local variables
 	 */
-	public function loadFromNBT(){
+	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(isset($this->namedtag->Angry)){
-				$this->setAngry((int) $this->namedtag[NBTConst::NBT_KEY_ANGRY]);
+		    parent::loadNBT();
+		    $this->loadTameNBT();
+			if(($angry = $this->namedtag->getInt(NBTConst::NBT_KEY_ANGRY, NBTConst::NBT_INVALID_INT)) !== NBTConst::NBT_INVALID_INT){
+				$this->setAngry($angry);
 			}
-			if(isset($this->namedtag->Color)){
-				$this->setCollarColor($this->namedtag[NBTConst::NBT_KEY_COLLAR_COLOR]);
-			}
-			if(isset($this->namedtag->Sitting)){
-				$this->setSitting($this->namedtag[NBTConst::NBT_KEY_SITTING] === 1);
-			}
-			if(isset($this->namedtag->OwnerName)){
-				$this->ownerName = $this->namedtag[NBTConst::NBT_SERVER_KEY_OWNER_NAME];
-				$this->tamed = true;
-			}
-			if($this->ownerName !== null){
-				foreach($this->getLevel()->getPlayers() as $levelPlayer){
-					if(strcasecmp($levelPlayer->getName(), $this->namedtag->OwnerName) == 0){
-						$this->owner = $levelPlayer;
-						break;
-					}
-				}
+			if(($color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLLAR_COLOR, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE){
+				$this->setCollarColor($color);
 			}
 		}
-		$this->breedableClass->saveNBT();
 	}
 
 	// TODO: Determine cause of collar color being improperly applied.
@@ -219,15 +202,9 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->Angry = new IntTag(NBTConst::NBT_KEY_ANGRY, $this->angryValue);
-			$this->namedtag->Color = new ByteTag(NBTConst::NBT_KEY_COLLAR_COLOR, $this->collarColor); // set collar color
-			$this->namedtag->Sitting = new IntTag(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
-			if($this->getOwnerName() !== null){
-				$this->namedtag->OwnerName = new StringTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
-			}
-			if($this->owner !== null){
-				$this->namedtag->OwnerUUID = new StringTag(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
-			}
+			$this->saveTameNBT();
+			$this->namedtag->setInt(NBTConst::NBT_KEY_ANGRY, $this->angryValue);
+			$this->namedtag->setByte(NBTConst::NBT_KEY_COLLAR_COLOR, $this->collarColor); // set collar color
 		}
 		$this->breedableClass->saveNBT();
 	}
@@ -322,15 +299,15 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	 * @param $collarColor
 	 */
 	public function setCollarColor($collarColor){
-		if($this->isTamed()){
+		if($this->tamed){
 			$this->collarColor = $collarColor;
 
-			if(!isset($this->namedtag[NBTConst::NBT_KEY_COLLAR_COLOR])){
-				$this->namedtag->Color = new ByteTag(NBTConst::NBT_KEY_COLLAR_COLOR, $collarColor); // set collar color
+			if(($color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLLAR_COLOR, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE) {
+				$this->namedtag->setByte(NBTConst::NBT_KEY_COLLAR_COLOR, $collarColor); // set collar color
 				$this->getDataPropertyManager()->setPropertyValue(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor);
 
 			}else{
-				$this->namedtag[NBTConst::NBT_KEY_COLLAR_COLOR] = $this->collarColor;
+				$this->namedtag->setByte(NBTConst::NBT_KEY_COLLAR_COLOR, $this->collarColor);
 				$this->getDataPropertyManager()->setPropertyValue(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor);
 			}
 		}
