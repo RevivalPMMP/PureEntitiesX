@@ -18,7 +18,6 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
-use pocketmine\nbt\tag\ByteTag;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
