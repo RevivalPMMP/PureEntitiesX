@@ -22,11 +22,8 @@ use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
-use pocketmine\nbt\tag\ByteTag;
-use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\BreedingComponent;
-use pocketmine\nbt\tag\IntTag;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
@@ -71,13 +68,6 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 	 */
 	private $followDistance = 10;
 
-	/**
-	 * This will be set to true when the ocelot has been given a sit command by its owner.
-	 *
-	 * @var bool
-	 */
-	private $commandedToSit = false;
-
 	private $catType = 0; // 0 = Wild Ocelot, 1 = Tuxedo, 2 = Tabby, 3 = Siamese
 
 	public function getBeggingSpeed() : float{
@@ -105,8 +95,6 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 			Item::RAW_FISH,
 			Item::RAW_SALMON
 		);
-
-		$this->loadFromNBT();
 
 		if($this->isTamed()){
 			$this->mapOwner();
@@ -197,47 +185,22 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 	/**
 	 * Loads data from nbt and stores to local variables
 	 */
-	public function loadFromNBT(){
+	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(isset($this->namedtag->Variant)){
-				$this->setCatType($this->namedtag[NBTConst::NBT_KEY_CATTYPE]);
-			}
-			if(isset($this->namedtag->Sitting)){
-				$this->setSitting($this->namedtag[NBTConst::NBT_KEY_SITTING] === 1);
-
-				// Until an appropriate NBT key can be attached to this, if the entity is sitting when loaded,
-				// commandedToSit will be set to true so that it doesn't teleport to it's owner by accident.
-				$this->setCommandedToSit($this->isSitting());
-			}
-			if(isset($this->namedtag->OwnerName)){
-				$this->ownerName = $this->namedtag[NBTConst::NBT_SERVER_KEY_OWNER_NAME];
-				$this->setTamed(true);
-			}
-			if($this->ownerName !== null){
-				foreach($this->getLevel()->getPlayers() as $levelPlayer){
-					if(strcasecmp($levelPlayer->getName(), $this->namedtag->OwnerName) == 0){
-						$this->owner = $levelPlayer;
-						break;
-					}
-				}
+		    parent::loadNBT();
+		    if(($catType = $this->namedtag->getByte(NBTConst::NBT_KEY_CATTYPE, NBTConst::NBT_INVALID_BYTE) !== NBTConst::NBT_INVALID_BYTE)){
+				$this->setCatType($catType);
 			}
 		}
-		$this->breedableClass->saveNBT();
 	}
 
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->Variant = new ByteTag(NBTConst::NBT_KEY_CATTYPE, $this->catType); // sets ocelot skin
-			$this->namedtag->Sitting = new IntTag(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
-			if($this->getOwnerName() !== null){
-				$this->namedtag->OwnerName = new StringTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
-			}
-			if($this->owner !== null){
-				$this->namedtag->OwnerUUID = new StringTag(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
-			}
+			$this->namedtag->setByte(NBTConst::NBT_KEY_CATTYPE, $this->catType); // sets ocelot skin
+            $this->breedableClass->saveNBT();
 		}
-		$this->breedableClass->saveNBT();
+
 	}
 
 	public function targetOption(Creature $creature, float $distance) : bool{
@@ -256,26 +219,13 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 		return 10;
 	}
 
-	private function onTameSuccess(){
+	private function onTameSuccess(Player $player){
 		$this->setCatType(mt_rand(1, 3)); // Randomly chooses a tamed skin
 	}
 
-	private function onTameFail(){
-		// Need to make it so that the ocelot will enter breeding mode on tame fail.
+	private function onTameFail(Player $player){
+	    $this->getBreedingComponent()->feed($player);
 		return;
-	}
-
-	/**
-	 * This function is used to set the commandedToSit flag.
-	 * This should only be called when the owner of a tame
-	 * ocelot commands it to sit or gives it a command to stand
-	 * when it did not seat itself.
-	 *
-	 * @param bool $command
-	 */
-
-	public function setCommandedToSit(bool $command = true){
-		$this->commandedToSit = $command;
 	}
 
 	/**
