@@ -32,7 +32,7 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class PolarBear extends WalkingMonster implements Monster{
 
 	// Base created from Spider.
-	// TODO: Udpate Polar Bear specific methods.
+	// TODO: Update Polar Bear specific methods.
 
 	const NETWORK_ID = Data::NETWORK_IDS["polar_bear"];
 
