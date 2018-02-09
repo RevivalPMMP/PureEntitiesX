@@ -79,7 +79,6 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 		$this->feedableItems = array(Item::WHEAT);
 		$this->maxShearDrops = 3;
 		$this->shearItems = Item::WOOL;
-		$this->loadFromNBT();
 		$this->setColor($this->getColor());
 		$this->setSheared($this->isSheared());
 	}
@@ -120,18 +119,17 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 	/**
 	 * loads data from nbt and fills internal variables
 	 */
-	public function loadFromNBT(){
+	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(isset($this->namedtag->Sheared)){
-				$this->sheared = (bool) $this->namedtag[NBTConst::NBT_KEY_SHEARED];
+			if(($sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
+				$this->sheared = boolval($sheared);
 			}
-			if(isset($this->namedtag->Color)){
-				$this->color = (int) $this->namedtag[NBTConst::NBT_KEY_COLOR];
+            if(($color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLOR, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
+				$this->color = intval($color);
 			}else{
 				$this->color = Sheep::getRandomColor();
 			}
 		}
-		$this->breedableClass->loadFromNBT();
 	}
 
 	/**
