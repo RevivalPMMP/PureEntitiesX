@@ -82,6 +82,8 @@ use revivalpmmp\pureentities\entity\monster\walking\ZombieVillager;
 use revivalpmmp\pureentities\entity\monster\walking\Husk;
 use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\projectile\FireBall;
+use revivalpmmp\pureentities\entity\projectile\LargeFireball;
+use revivalpmmp\pureentities\entity\projectile\SmallFireball;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 use revivalpmmp\pureentities\event\EventListener;
 use revivalpmmp\pureentities\features\IntfCanBreed;
@@ -148,13 +150,13 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Enderman::class,
 			Endermite::class,
 			Evoker::class,
-			FireBall::class,
 			Ghast::class,
 			//Guardian::class,
 			Horse::class,
 			Husk::class,
 			IronGolem::class,
 			Llama::class,
+            LargeFireball::class,
 			MagmaCube::class,
 			Mooshroom::class,
 			Mule::class,
@@ -170,6 +172,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Skeleton::class,
 			SkeletonHorse::class,
 			Slime::class,
+            SmallFireball::class,
 			SnowGolem::class,
 			Spider::class,
 			Squid::class,
@@ -191,7 +194,8 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Entity::registerEntity($name);
 			if(
 				$name == IronGolem::class
-				|| $name == FireBall::class
+				|| $name == LargeFireball::class
+                || $name == SmallFireball::class
 				|| $name == SnowGolem::class
 				|| $name == ZombieVillager::class
 			){
