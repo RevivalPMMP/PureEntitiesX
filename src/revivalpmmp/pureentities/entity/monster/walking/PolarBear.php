@@ -27,13 +27,12 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class PolarBear extends WalkingMonster implements Monster{
 
 	// Base created from Spider.
-	// TODO udpate Polar Bear specific methods.
+	// TODO: Udpate Polar Bear specific methods.
 
 	const NETWORK_ID = Data::NETWORK_IDS["polar_bear"];
 
@@ -44,7 +43,6 @@ class PolarBear extends WalkingMonster implements Monster{
 		$this->speed = 1.13;
 
 		$this->setDamage([0, 2, 2, 3]);
-		PureEntities::logOutput($this->getName() . ": created with height of $this->height and width of $this->width.", PureEntities::NORM);
 	}
 
 	public function getName() : string{
