@@ -26,6 +26,7 @@ use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
@@ -52,16 +53,10 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
 	}
 
 	public function saveNBT(){
-		parent::saveNBT();
-		$this->breedableClass->saveNBT();
-	}
-
-	/**
-	 * Returns the appropriate NetworkID associated with this entity
-	 * @return int
-	 */
-	public function getNetworkId(){
-		return self::NETWORK_ID;
+        if(PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::saveNBT();
+            $this->breedableClass->saveNBT();
+        }
 	}
 
 	public function getDrops() : array{

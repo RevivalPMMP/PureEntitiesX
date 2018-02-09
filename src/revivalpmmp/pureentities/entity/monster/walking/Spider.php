@@ -25,7 +25,6 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Spider extends WalkingMonster{
@@ -38,7 +37,6 @@ class Spider extends WalkingMonster{
 		$this->speed = 1.13;
 
 		$this->setDamage([0, 2, 2, 3]);
-		PureEntities::logOutput($this->getName() . ": created with height of $this->height and width of $this->width.", PureEntities::NORM);
 	}
 
 	public function getName() : string{

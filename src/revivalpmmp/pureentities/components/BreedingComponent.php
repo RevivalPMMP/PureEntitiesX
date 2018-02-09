@@ -20,9 +20,9 @@ namespace revivalpmmp\pureentities\components;
 
 
 use pocketmine\entity\Entity;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfTameable;
@@ -47,15 +47,6 @@ class BreedingComponent{
 	const IN_LOVE_EMIT_DELAY = 100; // emit every 100 ticks the in love animation when in love
 	const AGE_TICK_DELAY = 100; // how often is the age updated ...
 	const BREED_NOT_POSSIBLE_TICKS = 6000; // 5 minutes - Amount of time that must pass before another breeding attempt can be made after a successful attempt.
-
-	// ----------------------------------------
-	// well known NBT keys
-	// ----------------------------------------
-	const NBT_KEY_AGE = "Age";            // Represents the age of the mob in ticks; when negative, the mob is a baby. When 0 or above, the mob is an adult. When above 0,
-	// represents the number of ticks before this mob can breed again.
-	const NBT_KEY_IN_LOVE = "InLove";         // Number of ticks until the mob loses its breeding hearts and stops searching for a mate. 0 when not searching for a mate.
-	const NBT_KEY_FORCED_AGE = "ForcedAge";      // A value of age which will be assigned to this mob when it grows up. Incremented when a baby mob is fed.
-
 
 	/**
 	 * This is the entity that owns this Breedable class (a reference to the Entity)
@@ -138,19 +129,19 @@ class BreedingComponent{
 
 	public function loadFromNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(isset($this->entity->namedtag->Age)){
-				$this->age = $this->entity->namedtag[self::NBT_KEY_AGE];
+			if(($age = $this->entity->namedtag->getInt(NBTConst::NBT_KEY_AGE, NBTConst::NBT_INVALID_INT)) !== NBTConst::NBT_INVALID_INT) {
+				$this->age = $age;
 			}
-			if(isset($this->entity->namedtag->InLove)){
-				$this->inLove = $this->entity->namedtag[self::NBT_KEY_IN_LOVE];
+			if(($inLove = $this->entity->namedtag->getInt(NBTConst::NBT_KEY_IN_LOVE, NBTConst::NBT_INVALID_INT)) !== NBTConst::NBT_INVALID_INT){
+				$this->inLove = $this->entity->namedtag[NBTConst::NBT_KEY_IN_LOVE];
 			}
 		}
 	}
 
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			$this->entity->namedtag->Age = new IntTag(self::NBT_KEY_AGE, $this->age);
-			$this->entity->namedtag->InLove = new IntTag(self::NBT_KEY_IN_LOVE, $this->inLove);
+			$this->entity->namedtag->setInt(NBTConst::NBT_KEY_AGE, $this->age);
+			$this->entity->namedtag->setInt(NBTConst::NBT_KEY_IN_LOVE, $this->inLove);
 		}
 	}
 

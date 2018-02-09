@@ -20,9 +20,9 @@ namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use revivalpmmp\pureentities\components\IdlingComponent;
+use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use pocketmine\entity\Creature;
@@ -33,7 +33,6 @@ use pocketmine\event\Timings;
 use pocketmine\level\Level;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\ByteTag;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\features\IntfCanPanic;
@@ -95,7 +94,7 @@ abstract class BaseEntity extends Creature{
 		/* if ($this->eyeHeight === null) {
 			$this->eyeHeight = $this->height / 2 + 0.1;
 		} */
-		$this->namedtag->generatedByPEX = new ByteTag("generatedByPEX", 1);
+		$this->namedtag->setByte("generatedByPEX", 1);
 	}
 
 	public abstract function updateMove($tickDiff);
@@ -191,7 +190,7 @@ abstract class BaseEntity extends Creature{
 
 		$this->loadNBT();
 
-		$this->dataProperties[self::DATA_FLAG_NO_AI] = [self::DATA_TYPE_BYTE, 1];
+		$this->setDataFlag(self::DATA_FLAG_NO_AI,self::DATA_TYPE_BYTE, 1);
 
 		$this->idlingComponent->loadFromNBT();
 	}
@@ -199,9 +198,9 @@ abstract class BaseEntity extends Creature{
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->Movement = new ByteTag("Movement", $this->isMovement());
-			$this->namedtag->WallCheck = new ByteTag("WallCheck", $this->isWallCheck());
-			$this->namedtag->AgeInTicks = new IntTag("AgeInTicks", $this->age);
+			$this->namedtag->setByte(NBTConst::NBT_KEY_MOVEMENT, $this->isMovement());
+			$this->namedtag->setByte(NBTConst::NBT_KEY_WALL_CHECK, $this->isWallCheck());
+			$this->namedtag->setInt(NBTConst::NBT_KEY_AGE_IN_TICKS, $this->age);
 
 			// No reason to attempt this if getEnableNBT is false.
 			$this->idlingComponent->saveNBT();
@@ -210,16 +209,16 @@ abstract class BaseEntity extends Creature{
 
 	public function loadNBT() {
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(isset($this->namedtag->Movement)){
-				$this->setMovement($this->namedtag["Movement"]);
+			if(($movement = $this->namedtag->getByte(NBTConst::NBT_KEY_MOVEMENT, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
+				$this->setMovement(boolval($movement));
 			}
 
-			if(isset($this->namedtag->WallCheck)){
-				$this->setWallCheck($this->namedtag["WallCheck"]);
+            if(($wallCheck = $this->namedtag->getByte(NBTConst::NBT_KEY_WALL_CHECK, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
+				$this->setWallCheck(boolval($wallCheck));
 			}
 
-			if(isset($this->namedtag->AgeInTicks)){
-				$this->age = $this->namedtag["AgeInTicks"];
+            if(($age = $this->namedtag->getInt(NBTConst::NBT_KEY_AGE_IN_TICKS, NBTConst::NBT_INVALID_INT)) != NBTConst::NBT_INVALID_INT){
+				$this->age = $age;
 			}
 		}
 	}

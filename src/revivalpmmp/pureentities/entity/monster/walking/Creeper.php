@@ -19,12 +19,12 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\event\entity\ExplosionPrimeEvent;
+use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Explosive;
 use pocketmine\level\Explosion;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\item\Item;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -38,9 +38,6 @@ class Creeper extends WalkingMonster implements Explosive{
 
 	private $explodeBlocks = false;
 
-	/**
-	 * @var int
-	 */
 	private $powered = 0;
 
 	public function initEntity(){
@@ -48,7 +45,6 @@ class Creeper extends WalkingMonster implements Explosive{
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
 		$this->speed = 0.9;
-		$this->loadFromNBT();
 		$this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) == 0 ? false : true);
 	}
 
@@ -61,25 +57,18 @@ class Creeper extends WalkingMonster implements Explosive{
 		$this->getDataPropertyManager()->setPropertyValue(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->powered);
 	}
 
-	public function loadFromNBT(){
+	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(isset($this->namedtag->powered)){
-				$this->powered = $this->namedtag->powered;
-			}
-
-			if(isset($this->namedtag->BombTime)){
-				$this->bombTime = (int) $this->namedtag["BombTime"];
-			}
-
-			$this->setPowered($this->powered);
-		}
+            parent::loadNBT();
+            $this->powered = $this->namedtag->getInt(NBTConst::NBT_KEY_POWERED, 0);
+            $this->setPowered($this->powered);
+        }
 	}
 
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->powered = new IntTag("powered", $this->powered);
-			$this->namedtag->BombTime = new IntTag("BombTime", $this->bombTime);
+			$this->namedtag->setInt("powered", $this->powered);
 		}
 	}
 
@@ -97,8 +86,8 @@ class Creeper extends WalkingMonster implements Explosive{
 				$explosion->explodeA();
 			}
 			$explosion->explodeB();
-			$this->close();
 		}
+		$this->flagForDespawn();
 	}
 
 	public function onUpdate(int $currentTick) : bool{

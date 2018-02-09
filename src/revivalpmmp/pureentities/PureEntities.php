@@ -26,10 +26,6 @@ use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\ListTag;
-use pocketmine\nbt\tag\FloatTag;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
@@ -81,7 +77,8 @@ use revivalpmmp\pureentities\entity\monster\walking\ZombiePigman;
 use revivalpmmp\pureentities\entity\monster\walking\ZombieVillager;
 use revivalpmmp\pureentities\entity\monster\walking\Husk;
 use revivalpmmp\pureentities\entity\monster\walking\Stray;
-use revivalpmmp\pureentities\entity\projectile\FireBall;
+use revivalpmmp\pureentities\entity\projectile\LargeFireball;
+use revivalpmmp\pureentities\entity\projectile\SmallFireball;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
 use revivalpmmp\pureentities\event\EventListener;
 use revivalpmmp\pureentities\features\IntfCanBreed;
@@ -148,13 +145,13 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Enderman::class,
 			Endermite::class,
 			Evoker::class,
-			FireBall::class,
 			Ghast::class,
 			//Guardian::class,
 			Horse::class,
 			Husk::class,
 			IronGolem::class,
 			Llama::class,
+            LargeFireball::class,
 			MagmaCube::class,
 			Mooshroom::class,
 			Mule::class,
@@ -170,6 +167,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Skeleton::class,
 			SkeletonHorse::class,
 			Slime::class,
+            SmallFireball::class,
 			SnowGolem::class,
 			Spider::class,
 			Squid::class,
@@ -191,7 +189,8 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Entity::registerEntity($name);
 			if(
 				$name == IronGolem::class
-				|| $name == FireBall::class
+				|| $name == LargeFireball::class
+                || $name == SmallFireball::class
 				|| $name == SnowGolem::class
 				|| $name == ZombieVillager::class
 			){
@@ -254,22 +253,9 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 * @return Entity
 	 */
 	public static function create($type, Position $source, ...$args){
-		$nbt = new CompoundTag($type ?? "Unknown", [
-			"Pos" => new ListTag("Pos", [
-				new DoubleTag("", $source->x),
-				new DoubleTag("", $source->y),
-				new DoubleTag("", $source->z)
-			]),
-			"Motion" => new ListTag("Motion", [
-				new DoubleTag("", 0),
-				new DoubleTag("", 0),
-				new DoubleTag("", 0)
-			]),
-			"Rotation" => new ListTag("Rotation", [
-				new FloatTag("", $source instanceof Location ? $source->yaw : 0),
-				new FloatTag("", $source instanceof Location ? $source->pitch : 0)
-			]),
-		]);
+
+	    $nbt = Entity::createBaseNBT($source->asVector3(), null, $source instanceof Location ? $source->yaw : 0, $source instanceof Location ? $source->pitch : 0);
+
 		return Entity::createEntity($type, $source->getLevel(), $nbt, ...$args);
 	}
 

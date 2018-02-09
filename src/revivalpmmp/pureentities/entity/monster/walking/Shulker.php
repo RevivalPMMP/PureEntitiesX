@@ -48,7 +48,6 @@ class Shulker extends WalkingMonster implements Monster{
 		$this->speed = 0;
 
 		$this->setDamage([0, 2, 2, 3]);
-		PureEntities::logOutput($this->getName() . ": created with height of $this->height and width of $this->width.", PureEntities::NORM);
 	}
 
 	public function getName() : string{

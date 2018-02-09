@@ -25,7 +25,7 @@ use revivalpmmp\pureentities\entity\monster\SwimmingMonster;
 
 class Guardian extends SwimmingMonster implements Monster{
 
-	// TODO: refer to the NewMobs branch for this mobs data
+	// TODO: Implement Guardian Specific Methods
 
 	const NETWORK_ID = Data::NETWORK_IDS["guardian"];
 
@@ -34,7 +34,7 @@ class Guardian extends SwimmingMonster implements Monster{
 	}
 
 	public function getName() : string{
-		return "ElderGuardian";
+		return "Guardian";
 	}
 
 }

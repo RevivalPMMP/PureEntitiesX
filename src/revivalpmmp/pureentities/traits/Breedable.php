@@ -28,7 +28,7 @@ trait Breedable{
 	 */
 	private $breedableClass;
 
-	public function getBreedingComponent(){
+	public function getBreedingComponent(): ?BreedingComponent{
 		return $this->breedableClass;
 	}
 

@@ -25,7 +25,7 @@ use revivalpmmp\pureentities\entity\monster\SwimmingMonster;
 
 class ElderGuardian extends SwimmingMonster implements Monster{
 
-	// TODO: refer to the NewMobs branch for this mobs data
+	// TODO: Implement ElderGuardian Specific Methods
 
 	const NETWORK_ID = Data::NETWORK_IDS["elder_guardian"];
 

@@ -21,7 +21,7 @@ namespace revivalpmmp\pureentities\entity\monster\walking;
 use pocketmine\entity\projectile\Projectile;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
-use pocketmine\nbt\tag\IntTag;
+use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\entity\projectile\ProjectileSource;
@@ -44,19 +44,12 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	use Shearable;
 	const NETWORK_ID = Data::NETWORK_IDS["snow_golem"];
 
-	const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
-
-	// --------------------------------------------------
-	// nbt variables
-	// --------------------------------------------------
-
 	public function initEntity(){
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
 
 		$this->setFriendly(true);
-		$this->loadFromNBT();
 		$this->setSheared($this->isSheared()); // set data from NBT
 		$this->maxShearDrops = 0;
 	}
@@ -146,10 +139,10 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	/**
 	 * loads data from nbt and fills internal variables
 	 */
-	public function loadFromNBT(){
+	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(isset($this->namedtag->Pumpkin)){
-				$this->sheared = $this->namedtag[self::NBT_KEY_PUMPKIN] === 0;
+			if(($pumpkin = $this->namedtag->getByte(NBTConst::NBT_KEY_PUMPKIN, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE){
+				$this->sheared = boolval($pumpkin);
 			}
 		}
 	}
@@ -160,7 +153,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->Pumpkin = new IntTag(self::NBT_KEY_PUMPKIN, $this->sheared ? 0 : 1); // default: has pumpkin on his head (1 - pumpkin on head, 0 - pumpkin off!)
+			$this->namedtag->setInt(NBTConst::NBT_KEY_PUMPKIN, $this->sheared ? 0 : 1); // default: has pumpkin on his head (1 - pumpkin on head, 0 - pumpkin off!)
 		}
 	}
 

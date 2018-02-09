@@ -30,8 +30,7 @@ use pocketmine\level\Explosion;
 use revivalpmmp\pureentities\data\Data;
 use pocketmine\math\Vector3;
 
-class FireBall extends Projectile{
-	const NETWORK_ID = Data::NETWORK_IDS["fire_ball"];
+abstract class FireBall extends Projectile{
 
 	protected $damage = 4;
 
@@ -43,8 +42,6 @@ class FireBall extends Projectile{
 
 	public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
 		parent::__construct($level, $nbt, $shootingEntity);
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
 		$this->isCritical = $critical;
 	}
 
@@ -99,7 +96,7 @@ class FireBall extends Projectile{
 		$pk->entityRuntimeId = $this->getId();
 		$pk->position = $this->asVector3();
 		$pk->motion = $this->getMotion();
-		$pk->metadata = $this->dataProperties;
+		$pk->metadata = $this->propertyManager->getAll();
 		$player->dataPacket($pk);
 
 		parent::spawnTo($player);

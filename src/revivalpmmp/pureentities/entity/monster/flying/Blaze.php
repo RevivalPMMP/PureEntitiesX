@@ -21,7 +21,7 @@ namespace revivalpmmp\pureentities\entity\monster\flying;
 use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\monster\FlyingMonster;
-use revivalpmmp\pureentities\entity\projectile\FireBall;
+use revivalpmmp\pureentities\entity\projectile\SmallFireball;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\block\Liquid;
 use pocketmine\block\StoneSlab;
@@ -208,24 +208,25 @@ class Blaze extends FlyingMonster implements ProjectileSource{
 			$yaw = $this->yaw + mt_rand(-220, 220) / 10;
 			$pitch = $this->pitch + mt_rand(-120, 120) / 10;
 			$pos = new Location(
-				$this->x + (-sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5),
-				$this->getEyeHeight(),
-				$this->z + (cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5),
+				$this->x + (-sin(rad2deg($yaw)) * cos(rad2deg($pitch)) * 0.5),
+				$this->y + $this->getEyeHeight(),
+				$this->z + (cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * 0.5),
 				$yaw,
 				$pitch,
 				$this->level
 			);
-			$fireball = PureEntities::create("FireBall", $pos, $this);
-			if(!($fireball instanceof FireBall)){
+
+			$motion = new Vector3(
+                -sin(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f,
+                -sin(rad2deg($pitch)) * $f * $f,
+                cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f
+            );
+			$nbt = Entity::createBaseNBT($pos, $motion, $yaw, $pitch);
+			$fireball = Entity::createEntity("SmallFireball", $this->level, $nbt);
+			if(!($fireball instanceof SmallFireball)){
 				return;
 			}
-
 			$fireball->setExplode(true);
-			$fireball->setMotion(new Vector3(
-				-sin(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f,
-				-sin(rad2deg($pitch)) * $f * $f,
-				cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f
-			));
 
 			$this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($fireball));
 			if($launch->isCancelled()){

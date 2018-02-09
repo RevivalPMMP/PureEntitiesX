@@ -26,6 +26,7 @@ use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\traits\Breedable;
@@ -51,22 +52,15 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
 	}
 
 	public function saveNBT(){
-		parent::saveNBT();
-		$this->breedableClass->saveNBT();
+        if(PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::saveNBT();
+            $this->breedableClass->saveNBT();
+        }
 	}
 
 	public function getName() : string{
 		return "Cow";
 	}
-
-	/**
-	 * Returns the appropriate NetworkID associated with this entity
-	 * @return int
-	 */
-	public function getNetworkId(){
-		return self::NETWORK_ID;
-	}
-
 
 	public function getDrops() : array{
 		$drops = [];

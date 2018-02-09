@@ -18,11 +18,13 @@
 
 namespace revivalpmmp\pureentities\traits;
 
+use pocketmine\entity\Entity;
 use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
 use pocketmine\math\Vector3;
+use revivalpmmp\pureentities\data\NBTConst;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\BaseEntity;
 
 /**
@@ -30,7 +32,7 @@ use revivalpmmp\pureentities\entity\BaseEntity;
  * the duplication of code between entities.  This concept was developled while
  * updating movement code for getting owner positions.
  */
-trait Tameable{
+trait Tameable {
 	// -----------------------------------------------------------------------------------------------
 	// Variables
 	// -----------------------------------------------------------------------------------------------
@@ -55,6 +57,13 @@ trait Tameable{
 	 */
 	private $sitting = false;
 
+    /**
+     * This will be set to true when the mob has been given a sit command by its owner.
+     *
+     * @var bool
+     */
+    private $commandedToSit = false;
+
 
 	/**
 	 * List of items that can be used to tame the entity.
@@ -77,6 +86,47 @@ trait Tameable{
 	// Functions
 	// -----------------------------------------------------------------------------------------------
 
+
+    public function saveTameNBT() {
+        if(PluginConfiguration::getInstance()->getEnableNBT()) {
+            $this->namedtag->setByte(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
+            if ($this->getOwnerName() !== null) {
+                $this->namedtag->setString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
+            }
+            if ($this->owner !== null) {
+                $this->namedtag->setString(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
+                $this->namedtag->setLong(NBTConst::NBT_KEY_OWNER_EID, $this->propertyManager->getLong(Entity::DATA_OWNER_EID));
+            }
+
+        }
+    }
+
+    public function loadTameNBT() {
+        if(PluginConfiguration::getInstance()->getEnableNBT()){
+            if(($owner = $this->namedtag->getString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, NBTConst::NBT_INVALID_STRING)) !== NBTConst::NBT_INVALID_STRING){
+                $this->ownerName = $owner;
+                if(($ownerEID = $this->namedtag->getLong(NBTConst::NBT_KEY_OWNER_EID, NBTConst::NBT_INVALID_LONG)) !== NBTConst::NBT_INVALID_LONG) {
+                    $this->propertyManager->setLong(Entity::DATA_OWNER_EID, $ownerEID);
+                }
+                $this->setTamed(true);
+                foreach($this->getLevel()->getPlayers() as $levelPlayer){
+                    if(strcasecmp($levelPlayer->getName(), $owner) == 0){
+                        $this->owner = $levelPlayer;
+                        break;
+                    }
+                }
+            }
+
+            if(($sitting = $this->namedtag->getByte(NBTConst::NBT_KEY_SITTING, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
+                $this->setSitting(boolval($sitting));
+
+                // Until an appropriate NBT key can be attached to this, if the entity is sitting when loaded,
+                // commandedToSit will be set to true so that it doesn't teleport to it's owner by accident.
+                $this->setCommandedToSit($this->isSitting());
+            }
+
+        }
+    }
 
 	/**
 	 * Call this method when a player tries to tame an entity
@@ -108,7 +158,7 @@ trait Tameable{
 			$this->setSitting(true);
 
 			// Perform creature specific options related becoming tamed.
-			$this->onTameSuccess();
+			$this->onTameSuccess($player);
 		}else{
 			$pk = new EntityEventPacket();
 			$pk->entityRuntimeId = $this->getId();
@@ -116,7 +166,7 @@ trait Tameable{
 			$player->dataPacket($pk);
 
 			// Perform entitiy specific options for failed attempts to tame
-			$this->onTameFail();
+			$this->onTameFail($player);
 		}
 		return $tameSuccess;
 	}
@@ -165,6 +215,19 @@ trait Tameable{
 	public function isSitting() : bool{
 		return $this->sitting;
 	}
+
+    /**
+     * This function is used to set the commandedToSit flag.
+     * This should only be called when the owner of a tame
+     * ocelot commands it to sit or gives it a command to stand
+     * when it did not seat itself.
+     *
+     * @param bool $command
+     */
+
+    public function setCommandedToSit(bool $command = true){
+        $this->commandedToSit = $command;
+    }
 
 	/**
 	 * Sets this entity tamed and belonging to the player
@@ -215,7 +278,7 @@ trait Tameable{
 	public function setOwner(Player $player){
 		$this->owner = $player;
 		$this->ownerName = $player->getName();
-		$this->setDataProperty(self::DATA_OWNER_EID, self::DATA_TYPE_LONG, $player->getId());
+		$this->propertyManager->setLong(self::DATA_OWNER_EID, self::DATA_TYPE_LONG, $player->getId());
 		$this->setBaseTarget($player);
 	}
 
@@ -236,17 +299,30 @@ trait Tameable{
 	}
 
 	/**
-	 * The onTame functions are for handling entity specific circumstances
+	 * The onTameSuccess functions are for handling entity specific circumstances
 	 * during the process of trying to tame the entity.  These functions
 	 * will do nothing unless the entity overrides the function with specific
 	 * instructions.  An example of where this is necessary can be found
 	 * with ocelots.
 	 */
-	private function onTameSuccess(){
+
+    /**
+     * Entities should override this method to handle unique needs when a tame
+     * attempt is successful.
+     *
+     * @param Player $player
+     */
+	private function onTameSuccess(Player $player){
 		return;
 	}
 
-	private function onTameFail(){
+    /**
+     * Entities should override this method to handle unique needs when a tame
+     * attempt fails.
+     *
+     * @param Player $player
+     */
+	private function onTameFail(Player $player){
 		return;
 	}
 }

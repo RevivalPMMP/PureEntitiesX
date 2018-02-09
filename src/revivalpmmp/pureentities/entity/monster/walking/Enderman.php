@@ -20,6 +20,7 @@ namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\block\Pumpkin;
 use pocketmine\entity\Creature;
+use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
@@ -29,6 +30,8 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Enderman extends WalkingMonster{
+    // TODO: Add item in hand options.
+
 	const NETWORK_ID = Data::NETWORK_IDS["enderman"];
 
 	public function initEntity(){
@@ -60,10 +63,9 @@ class Enderman extends WalkingMonster{
 	}
 
 	public function getDrops() : array{
-		/*if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
+		if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
 			return [Item::get(368, 0, 1)];
-		}*/
-		# It doesn't seem like Enderpearls exist in PocketMine, this was probably what caused the Endermen to despawn instead of dying
+		}
 		return [];
 	}
 
@@ -82,9 +84,10 @@ class Enderman extends WalkingMonster{
 	 *
 	 * @param Player $player
 	 */
+
 	public function playerLooksAt(Player $player){
 		// if the player wears a pumpkin, the enderman doesn't attack the player
-		if(!$player->getInventory()->getHelmet() instanceof Pumpkin){
+		if(!$player->getArmorInventory()->getHelmet() instanceof Pumpkin){
 			$this->setBaseTarget($player);
 		}
 

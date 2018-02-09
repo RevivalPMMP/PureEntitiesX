@@ -26,6 +26,7 @@ use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
+use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
@@ -51,8 +52,10 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
 	}
 
 	public function saveNBT(){
-		parent::saveNBT();
-		$this->breedableClass->saveNBT();
+        if(PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::saveNBT();
+            $this->breedableClass->saveNBT();
+        }
 	}
 
 	/**

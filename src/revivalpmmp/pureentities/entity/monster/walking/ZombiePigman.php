@@ -18,10 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
-use pocketmine\item\Sword;
-use pocketmine\item\TieredTool;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\entity\monster\Monster;
@@ -79,14 +76,6 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 		$this->mobEquipment->setMainHand(Item::get(ItemIds::GOLDEN_SWORD));
 		$this->mobEquipment->sendHandItemsToAllClients();
 
-	}
-
-	/**
-	 * Returns the appropriate NetworkID associated with this entity
-	 * @return int
-	 */
-	public function getNetworkId(){
-		return self::NETWORK_ID;
 	}
 
 	public function getName() : string{
