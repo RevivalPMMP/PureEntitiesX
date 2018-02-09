@@ -20,6 +20,7 @@ namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\block\Pumpkin;
 use pocketmine\entity\Creature;
+use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
