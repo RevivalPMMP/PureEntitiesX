@@ -41,10 +41,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
 		$this->feedableItems = array(Item::WHEAT);
-
-		$this->loadFromNBT();
 		$this->breedableClass = new BreedingComponent($this);
-		$this->setSheared($this->isSheared());
 		$this->breedableClass->init();
 		$this->maxShearDrops = 5;
 		$this->shearItems = Item::RED_MUSHROOM;
@@ -54,20 +51,21 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 		return "Mooshroom";
 	}
 
-	public function loadFromNBT(){
+	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(isset($this->namedtag->Sheared)){
-				$this->sheared = (bool) $this->namedtag[NBTConst::NBT_KEY_SHEARED];
-			}else{
-				$this->setSheared(false);
-			}
+		    parent::loadNBT();
+			if(($sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, NBTConst::NBT_INVALID_BYTE) != NBTConst::NBT_INVALID_BYTE)) {
+                $this->sheared = boolval($sheared);
+            }
 		}
 	}
 
 	public function saveNBT(){
-		parent::saveNBT();
-		$this->breedableClass->saveNBT();
-		$this->namedtag->Sheared = new ByteTag(NBTConst::NBT_KEY_SHEARED, $this->isSheared() ? 0 : 1);
+        if(PluginConfiguration::getInstance()->getEnableNBT()) {
+            parent::saveNBT();
+            $this->breedableClass->saveNBT();
+            $this->namedtag->setByte(NBTConst::NBT_KEY_SHEARED, $this->isSheared() ? 0 : 1);
+        }
 	}
 
 	public function getDrops() : array{
