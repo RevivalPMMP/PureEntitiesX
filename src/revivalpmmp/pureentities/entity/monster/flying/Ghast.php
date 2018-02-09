@@ -52,41 +52,41 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 	}
 
 	public function attackEntity(Entity $player){
-		if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distance($player) <= 100) {
-            $this->attackDelay = 0;
+		if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distance($player) <= 100){
+			$this->attackDelay = 0;
 
-            $f = 1.2;
-            $yaw = $this->yaw + mt_rand(-220, 220) / 10;
-            $pitch = $this->pitch + mt_rand(-120, 120) / 10;
-            $pos = new Location(
-                $this->x + (-sin(rad2deg($yaw)) * cos(rad2deg($pitch)) * 0.5),
-                $this->y + $this->getEyeHeight(),
-                $this->z + (cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * 0.5),
-                $yaw,
-                $pitch,
-                $this->level
-            );
+			$f = 1.2;
+			$yaw = $this->yaw + mt_rand(-220, 220) / 10;
+			$pitch = $this->pitch + mt_rand(-120, 120) / 10;
+			$pos = new Location(
+				$this->x + (-sin(rad2deg($yaw)) * cos(rad2deg($pitch)) * 0.5),
+				$this->y + $this->getEyeHeight(),
+				$this->z + (cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * 0.5),
+				$yaw,
+				$pitch,
+				$this->level
+			);
 
-            $motion = new Vector3(
-                -sin(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f,
-                -sin(rad2deg($pitch)) * $f * $f,
-                cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f
-            );
-            $nbt = Entity::createBaseNBT($pos, $motion, $yaw, $pitch);
-            $fireball = Entity::createEntity("LargeFireball", $this->level, $nbt);
-            if (!($fireball instanceof LargeFireball)) {
-                return;
-            }
-            $fireball->setExplode(true);
+			$motion = new Vector3(
+				-sin(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f,
+				-sin(rad2deg($pitch)) * $f * $f,
+				cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f
+			);
+			$nbt = Entity::createBaseNBT($pos, $motion, $yaw, $pitch);
+			$fireball = Entity::createEntity("LargeFireball", $this->level, $nbt);
+			if(!($fireball instanceof LargeFireball)){
+				return;
+			}
+			$fireball->setExplode(true);
 
-            $this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($fireball));
-            if ($launch->isCancelled()) {
-                $fireball->kill();
-            } else {
-                $fireball->spawnToAll();
-                $this->level->addSound(new LaunchSound($this), $this->getViewers());
-            }
-        }
+			$this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($fireball));
+			if($launch->isCancelled()){
+				$fireball->kill();
+			}else{
+				$fireball->spawnToAll();
+				$this->level->addSound(new LaunchSound($this), $this->getViewers());
+			}
+		}
 	}
 
 	public function getDrops() : array{

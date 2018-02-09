@@ -52,10 +52,10 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
 	}
 
 	public function saveNBT(){
-        if(PluginConfiguration::getInstance()->getEnableNBT()) {
-            parent::saveNBT();
-            $this->breedableClass->saveNBT();
-        }
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::saveNBT();
+			$this->breedableClass->saveNBT();
+		}
 	}
 
 	/**

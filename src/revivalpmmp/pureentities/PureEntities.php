@@ -151,7 +151,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Husk::class,
 			IronGolem::class,
 			Llama::class,
-            LargeFireball::class,
+			LargeFireball::class,
 			MagmaCube::class,
 			Mooshroom::class,
 			Mule::class,
@@ -167,7 +167,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Skeleton::class,
 			SkeletonHorse::class,
 			Slime::class,
-            SmallFireball::class,
+			SmallFireball::class,
 			SnowGolem::class,
 			Spider::class,
 			Squid::class,
@@ -190,7 +190,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			if(
 				$name == IronGolem::class
 				|| $name == LargeFireball::class
-                || $name == SmallFireball::class
+				|| $name == SmallFireball::class
 				|| $name == SnowGolem::class
 				|| $name == ZombieVillager::class
 			){
@@ -254,7 +254,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 */
 	public static function create($type, Position $source, ...$args){
 
-	    $nbt = Entity::createBaseNBT($source->asVector3(), null, $source instanceof Location ? $source->yaw : 0, $source instanceof Location ? $source->pitch : 0);
+		$nbt = Entity::createBaseNBT($source->asVector3(), null, $source instanceof Location ? $source->yaw : 0, $source instanceof Location ? $source->pitch : 0);
 
 		return Entity::createEntity($type, $source->getLevel(), $nbt, ...$args);
 	}

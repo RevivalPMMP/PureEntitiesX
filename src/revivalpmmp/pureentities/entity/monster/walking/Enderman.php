@@ -30,7 +30,7 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Enderman extends WalkingMonster{
-    // TODO: Add item in hand options.
+	// TODO: Add item in hand options.
 
 	const NETWORK_ID = Data::NETWORK_IDS["enderman"];
 

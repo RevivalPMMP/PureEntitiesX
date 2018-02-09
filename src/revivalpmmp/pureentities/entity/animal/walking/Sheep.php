@@ -124,7 +124,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 			if(($sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
 				$this->sheared = boolval($sheared);
 			}
-            if(($color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLOR, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
+			if(($color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLOR, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
 				$this->color = intval($color);
 			}else{
 				$this->color = Sheep::getRandomColor();

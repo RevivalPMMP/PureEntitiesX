@@ -18,6 +18,7 @@
 
 namespace revivalpmmp\pureentities\entity\monster;
 
+use pocketmine\Player;
 use revivalpmmp\pureentities\entity\FlyingEntity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
@@ -123,7 +124,7 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 		$this->entityBaseTick($tickDiff);
 
 		$target = $this->updateMove($tickDiff);
-		if($target instanceof Entity){
+		if($target instanceof Player){
 			$this->attackEntity($target);
 		}elseif(
 			$target instanceof Vector3

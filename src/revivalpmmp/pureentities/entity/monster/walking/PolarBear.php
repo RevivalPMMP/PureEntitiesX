@@ -71,7 +71,7 @@ class PolarBear extends WalkingMonster implements Monster{
 		if($this->isLootDropAllowed()){
 			if(mt_rand(0, 3) > 0){
 				array_push($drops, Item::get(Item::RAW_FISH, 0, mt_rand(0, 2)));
-			} else {
+			}else{
 				array_push($drops, Item::get(Item::RAW_SALMON, 0, mt_rand(0, 2)));
 			}
 		}

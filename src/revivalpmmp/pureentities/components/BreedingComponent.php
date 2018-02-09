@@ -129,7 +129,7 @@ class BreedingComponent{
 
 	public function loadFromNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(($age = $this->entity->namedtag->getInt(NBTConst::NBT_KEY_AGE, NBTConst::NBT_INVALID_INT)) !== NBTConst::NBT_INVALID_INT) {
+			if(($age = $this->entity->namedtag->getInt(NBTConst::NBT_KEY_AGE, NBTConst::NBT_INVALID_INT)) !== NBTConst::NBT_INVALID_INT){
 				$this->age = $age;
 			}
 			if(($inLove = $this->entity->namedtag->getInt(NBTConst::NBT_KEY_IN_LOVE, NBTConst::NBT_INVALID_INT)) !== NBTConst::NBT_INVALID_INT){

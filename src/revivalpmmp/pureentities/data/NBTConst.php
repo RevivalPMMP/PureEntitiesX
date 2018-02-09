@@ -20,35 +20,35 @@ namespace revivalpmmp\pureentities\data;
 
 interface NBTConst{
 
-    // Invalid Check Keys
-    const NBT_INVALID_BYTE = 126;
-    const NBT_INVALID_INT = -2147483648;
-    const NBT_INVALID_FLOAT = "";
-    const NBT_INVALID_LONG = -9223372036854775808;
-    const NBT_INVALID_SHORT = -2147483648;
-    const NBT_INVALID_STRING = "4Y#X9XAM#bbR7eLz";
+	// Invalid Check Keys
+	const NBT_INVALID_BYTE = 126;
+	const NBT_INVALID_INT = -2147483648;
+	const NBT_INVALID_FLOAT = "";
+	const NBT_INVALID_LONG = -9223372036854775808;
+	const NBT_INVALID_SHORT = -2147483648;
+	const NBT_INVALID_STRING = "4Y#X9XAM#bbR7eLz";
 
 
 	// Standard Keys
-    const NBT_KEY_AGE = "Age";
-    const NBT_KEY_AGE_IN_TICKS = "AgeInTicks";
+	const NBT_KEY_AGE = "Age";
+	const NBT_KEY_AGE_IN_TICKS = "AgeInTicks";
 	const NBT_KEY_ANGRY = "Angry"; // 0 - not angry, > 0 angry
 	const NBT_KEY_BIRDTYPE = "Variant";
 	const NBT_KEY_BOMBTIME = "BombTime";
 	const NBT_KEY_CATTYPE = "Variant";
 	const NBT_KEY_COLLAR_COLOR = "PEXCollarColor"; // 0 -14 (14 - RED)
 	const NBT_KEY_COLOR = "Color";
-    const NBT_KEY_CUBE_SIZE = "CubeSize";
-    const NBT_KEY_FORCED_AGE = "ForcedAge";     // A value of age which will be assigned to this mob when it grows up. Incremented when a baby mob is fed.
+	const NBT_KEY_CUBE_SIZE = "CubeSize";
+	const NBT_KEY_FORCED_AGE = "ForcedAge";     // A value of age which will be assigned to this mob when it grows up. Incremented when a baby mob is fed.
 	const NBT_KEY_IN_LOVE = "InLove";           // Number of ticks until the mob loses its breeding hearts and stops searching for a mate. 0 when not searching for a mate.
-    const NBT_KEY_MOVEMENT = "Movement";
-    const NBT_KEY_OWNER_EID = "OwnerEID";       // Necessary for Wolf Collar Color
+	const NBT_KEY_MOVEMENT = "Movement";
+	const NBT_KEY_OWNER_EID = "OwnerEID";       // Necessary for Wolf Collar Color
 	const NBT_KEY_OWNER_UUID = "OwnerUUID"; // string
-    const NBT_KEY_POWERED = "Powered";
-    const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
+	const NBT_KEY_POWERED = "Powered";
+	const NBT_KEY_PUMPKIN = "Pumpkin"; // 1 or 0 (true/false) - hat on or off ;)
 	const NBT_KEY_SHEARED = "Sheared";
 	const NBT_KEY_SITTING = "Sitting"; // 1 or 0 (true/false)
-    const NBT_KEY_WALL_CHECK = "WallCheck";
+	const NBT_KEY_WALL_CHECK = "WallCheck";
 
 	// this is our own tag - only for server side ...
 	const NBT_SERVER_KEY_OWNER_NAME = "OwnerName";

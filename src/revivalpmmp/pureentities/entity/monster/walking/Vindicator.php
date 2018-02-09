@@ -37,7 +37,7 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Vindicator extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monster {
+class Vindicator extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monster{
 
 	// Base framework created from Zombie
 	// TODO Create Vindicator specific methods

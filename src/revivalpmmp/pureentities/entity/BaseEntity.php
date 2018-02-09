@@ -190,7 +190,7 @@ abstract class BaseEntity extends Creature{
 
 		$this->loadNBT();
 
-		$this->setDataFlag(self::DATA_FLAG_NO_AI,self::DATA_TYPE_BYTE, 1);
+		$this->setDataFlag(self::DATA_FLAG_NO_AI, self::DATA_TYPE_BYTE, 1);
 
 		$this->idlingComponent->loadFromNBT();
 	}
@@ -207,17 +207,17 @@ abstract class BaseEntity extends Creature{
 		}
 	}
 
-	public function loadNBT() {
+	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			if(($movement = $this->namedtag->getByte(NBTConst::NBT_KEY_MOVEMENT, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
 				$this->setMovement(boolval($movement));
 			}
 
-            if(($wallCheck = $this->namedtag->getByte(NBTConst::NBT_KEY_WALL_CHECK, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
+			if(($wallCheck = $this->namedtag->getByte(NBTConst::NBT_KEY_WALL_CHECK, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
 				$this->setWallCheck(boolval($wallCheck));
 			}
 
-            if(($age = $this->namedtag->getInt(NBTConst::NBT_KEY_AGE_IN_TICKS, NBTConst::NBT_INVALID_INT)) != NBTConst::NBT_INVALID_INT){
+			if(($age = $this->namedtag->getInt(NBTConst::NBT_KEY_AGE_IN_TICKS, NBTConst::NBT_INVALID_INT)) != NBTConst::NBT_INVALID_INT){
 				$this->age = $age;
 			}
 		}

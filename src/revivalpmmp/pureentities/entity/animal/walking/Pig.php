@@ -53,10 +53,10 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
 	}
 
 	public function saveNBT(){
-        if(PluginConfiguration::getInstance()->getEnableNBT()) {
-            parent::saveNBT();
-            $this->breedableClass->saveNBT();
-        }
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::saveNBT();
+			$this->breedableClass->saveNBT();
+		}
 	}
 
 	public function getDrops() : array{

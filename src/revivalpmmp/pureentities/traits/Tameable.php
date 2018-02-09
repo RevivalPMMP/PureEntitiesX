@@ -32,7 +32,7 @@ use revivalpmmp\pureentities\entity\BaseEntity;
  * the duplication of code between entities.  This concept was developled while
  * updating movement code for getting owner positions.
  */
-trait Tameable {
+trait Tameable{
 	// -----------------------------------------------------------------------------------------------
 	// Variables
 	// -----------------------------------------------------------------------------------------------
@@ -57,12 +57,12 @@ trait Tameable {
 	 */
 	private $sitting = false;
 
-    /**
-     * This will be set to true when the mob has been given a sit command by its owner.
-     *
-     * @var bool
-     */
-    private $commandedToSit = false;
+	/**
+	 * This will be set to true when the mob has been given a sit command by its owner.
+	 *
+	 * @var bool
+	 */
+	private $commandedToSit = false;
 
 
 	/**
@@ -87,46 +87,46 @@ trait Tameable {
 	// -----------------------------------------------------------------------------------------------
 
 
-    public function saveTameNBT() {
-        if(PluginConfiguration::getInstance()->getEnableNBT()) {
-            $this->namedtag->setByte(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
-            if ($this->getOwnerName() !== null) {
-                $this->namedtag->setString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
-            }
-            if ($this->owner !== null) {
-                $this->namedtag->setString(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
-                $this->namedtag->setLong(NBTConst::NBT_KEY_OWNER_EID, $this->propertyManager->getLong(Entity::DATA_OWNER_EID));
-            }
+	public function saveTameNBT(){
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			$this->namedtag->setByte(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
+			if($this->getOwnerName() !== null){
+				$this->namedtag->setString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
+			}
+			if($this->owner !== null){
+				$this->namedtag->setString(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
+				$this->namedtag->setLong(NBTConst::NBT_KEY_OWNER_EID, $this->propertyManager->getLong(Entity::DATA_OWNER_EID));
+			}
 
-        }
-    }
+		}
+	}
 
-    public function loadTameNBT() {
-        if(PluginConfiguration::getInstance()->getEnableNBT()){
-            if(($owner = $this->namedtag->getString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, NBTConst::NBT_INVALID_STRING)) !== NBTConst::NBT_INVALID_STRING){
-                $this->ownerName = $owner;
-                if(($ownerEID = $this->namedtag->getLong(NBTConst::NBT_KEY_OWNER_EID, NBTConst::NBT_INVALID_LONG)) !== NBTConst::NBT_INVALID_LONG) {
-                    $this->propertyManager->setLong(Entity::DATA_OWNER_EID, $ownerEID);
-                }
-                $this->setTamed(true);
-                foreach($this->getLevel()->getPlayers() as $levelPlayer){
-                    if(strcasecmp($levelPlayer->getName(), $owner) == 0){
-                        $this->owner = $levelPlayer;
-                        break;
-                    }
-                }
-            }
+	public function loadTameNBT(){
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			if(($owner = $this->namedtag->getString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, NBTConst::NBT_INVALID_STRING)) !== NBTConst::NBT_INVALID_STRING){
+				$this->ownerName = $owner;
+				if(($ownerEID = $this->namedtag->getLong(NBTConst::NBT_KEY_OWNER_EID, NBTConst::NBT_INVALID_LONG)) !== NBTConst::NBT_INVALID_LONG){
+					$this->propertyManager->setLong(Entity::DATA_OWNER_EID, $ownerEID);
+				}
+				$this->setTamed(true);
+				foreach($this->getLevel()->getPlayers() as $levelPlayer){
+					if(strcasecmp($levelPlayer->getName(), $owner) == 0){
+						$this->owner = $levelPlayer;
+						break;
+					}
+				}
+			}
 
-            if(($sitting = $this->namedtag->getByte(NBTConst::NBT_KEY_SITTING, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
-                $this->setSitting(boolval($sitting));
+			if(($sitting = $this->namedtag->getByte(NBTConst::NBT_KEY_SITTING, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
+				$this->setSitting(boolval($sitting));
 
-                // Until an appropriate NBT key can be attached to this, if the entity is sitting when loaded,
-                // commandedToSit will be set to true so that it doesn't teleport to it's owner by accident.
-                $this->setCommandedToSit($this->isSitting());
-            }
+				// Until an appropriate NBT key can be attached to this, if the entity is sitting when loaded,
+				// commandedToSit will be set to true so that it doesn't teleport to it's owner by accident.
+				$this->setCommandedToSit($this->isSitting());
+			}
 
-        }
-    }
+		}
+	}
 
 	/**
 	 * Call this method when a player tries to tame an entity
@@ -216,18 +216,18 @@ trait Tameable {
 		return $this->sitting;
 	}
 
-    /**
-     * This function is used to set the commandedToSit flag.
-     * This should only be called when the owner of a tame
-     * ocelot commands it to sit or gives it a command to stand
-     * when it did not seat itself.
-     *
-     * @param bool $command
-     */
+	/**
+	 * This function is used to set the commandedToSit flag.
+	 * This should only be called when the owner of a tame
+	 * ocelot commands it to sit or gives it a command to stand
+	 * when it did not seat itself.
+	 *
+	 * @param bool $command
+	 */
 
-    public function setCommandedToSit(bool $command = true){
-        $this->commandedToSit = $command;
-    }
+	public function setCommandedToSit(bool $command = true){
+		$this->commandedToSit = $command;
+	}
 
 	/**
 	 * Sets this entity tamed and belonging to the player
@@ -306,22 +306,22 @@ trait Tameable {
 	 * with ocelots.
 	 */
 
-    /**
-     * Entities should override this method to handle unique needs when a tame
-     * attempt is successful.
-     *
-     * @param Player $player
-     */
+	/**
+	 * Entities should override this method to handle unique needs when a tame
+	 * attempt is successful.
+	 *
+	 * @param Player $player
+	 */
 	private function onTameSuccess(Player $player){
 		return;
 	}
 
-    /**
-     * Entities should override this method to handle unique needs when a tame
-     * attempt fails.
-     *
-     * @param Player $player
-     */
+	/**
+	 * Entities should override this method to handle unique needs when a tame
+	 * attempt fails.
+	 *
+	 * @param Player $player
+	 */
 	private function onTameFail(Player $player){
 		return;
 	}

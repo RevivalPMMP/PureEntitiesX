@@ -45,11 +45,11 @@ class Rabbit extends JumpingAnimal{
 		return [];
 	}
 
-    /**
-     * Returns the amount of XP this mob will drop on death.
-     * @return int
-     */
-    public function getXpDropAmount() : int{
+	/**
+	 * Returns the amount of XP this mob will drop on death.
+	 * @return int
+	 */
+	public function getXpDropAmount() : int{
 		// breeding drop 1-4 (not implemented yet)
 		return mt_rand(1, 3);
 	}

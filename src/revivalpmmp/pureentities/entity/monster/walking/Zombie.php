@@ -37,7 +37,7 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monster {
+class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monster{
 
 
 	use Breedable, Feedable;

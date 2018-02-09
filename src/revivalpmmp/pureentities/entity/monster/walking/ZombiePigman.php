@@ -37,7 +37,7 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monster {
+class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monster{
 
 	// Base Derived from Zombie
 	// TODO Update Methods to be Zombie Pigman Specific
@@ -189,7 +189,7 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 	}
 
 	public function getXpDropAmount() : int{
-		if($this->getBreedingComponent()->isBaby()) {
+		if($this->getBreedingComponent()->isBaby()){
 			return 12;
 		}
 		return 5;

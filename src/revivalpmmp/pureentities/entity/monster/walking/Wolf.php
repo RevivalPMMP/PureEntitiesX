@@ -183,8 +183,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	 */
 	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-		    parent::loadNBT();
-		    $this->loadTameNBT();
+			parent::loadNBT();
+			$this->loadTameNBT();
 			if(($angry = $this->namedtag->getInt(NBTConst::NBT_KEY_ANGRY, NBTConst::NBT_INVALID_INT)) !== NBTConst::NBT_INVALID_INT){
 				$this->setAngry($angry);
 			}
@@ -302,7 +302,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 		if($this->tamed){
 			$this->collarColor = $collarColor;
 
-			if(($color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLLAR_COLOR, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE) {
+			if(($color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLLAR_COLOR, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE){
 				$this->namedtag->setByte(NBTConst::NBT_KEY_COLLAR_COLOR, $collarColor); // set collar color
 				$this->getDataPropertyManager()->setPropertyValue(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $collarColor);
 

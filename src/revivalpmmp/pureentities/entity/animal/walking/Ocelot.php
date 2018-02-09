@@ -187,8 +187,8 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 	 */
 	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-		    parent::loadNBT();
-		    if(($catType = $this->namedtag->getByte(NBTConst::NBT_KEY_CATTYPE, NBTConst::NBT_INVALID_BYTE) !== NBTConst::NBT_INVALID_BYTE)){
+			parent::loadNBT();
+			if(($catType = $this->namedtag->getByte(NBTConst::NBT_KEY_CATTYPE, NBTConst::NBT_INVALID_BYTE) !== NBTConst::NBT_INVALID_BYTE)){
 				$this->setCatType($catType);
 			}
 		}
@@ -198,7 +198,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_CATTYPE, $this->catType); // sets ocelot skin
-            $this->breedableClass->saveNBT();
+			$this->breedableClass->saveNBT();
 		}
 
 	}
@@ -224,7 +224,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 	}
 
 	private function onTameFail(Player $player){
-	    $this->getBreedingComponent()->feed($player);
+		$this->getBreedingComponent()->feed($player);
 		return;
 	}
 

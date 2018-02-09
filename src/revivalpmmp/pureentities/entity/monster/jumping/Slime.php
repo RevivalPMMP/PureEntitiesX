@@ -52,19 +52,19 @@ class Slime extends JumpingMonster{
 	}
 
 	public function saveNBT(){
-        if(PluginConfiguration::getInstance()->getEnableNBT()) {
-            parent::saveNBT();
-            $this->namedtag->setByte(NBTConst::NBT_KEY_CUBE_SIZE, $this->cubeSize);
-        }
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::saveNBT();
+			$this->namedtag->setByte(NBTConst::NBT_KEY_CUBE_SIZE, $this->cubeSize);
+		}
 	}
 
 	public function loadNBT(){
-        if(PluginConfiguration::getInstance()->getEnableNBT()){
-            parent::loadNBT();
-            if(($cubeSize = $this->namedtag->getByte(NBTConst::NBT_KEY_CUBE_SIZE, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE){
-                $this->cubeSize = $cubeSize;
-            }
-        }
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::loadNBT();
+			if(($cubeSize = $this->namedtag->getByte(NBTConst::NBT_KEY_CUBE_SIZE, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE){
+				$this->cubeSize = $cubeSize;
+			}
+		}
 	}
 
 	public function getName() : string{

@@ -93,9 +93,9 @@ class AutoSpawnTask extends PluginTask{
 								PureEntities::logOutput("AutoSpawnTask: suitable spawn coordinate not found.  Pass $pass.", PureEntities::WARN);
 								$pass++;
 								if($pass >= 300){
-                                    PureEntities::logOutput("AutoSpawnTask: Max number of attempts reached.", PureEntities::WARN);
-								    break;
-                                }
+									PureEntities::logOutput("AutoSpawnTask: Max number of attempts reached.", PureEntities::WARN);
+									break;
+								}
 							}
 						}
 					}

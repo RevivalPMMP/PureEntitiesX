@@ -52,19 +52,19 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 
 	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-		    parent::loadNBT();
-			if(($sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, NBTConst::NBT_INVALID_BYTE) != NBTConst::NBT_INVALID_BYTE)) {
-                $this->sheared = boolval($sheared);
-            }
+			parent::loadNBT();
+			if(($sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, NBTConst::NBT_INVALID_BYTE) != NBTConst::NBT_INVALID_BYTE)){
+				$this->sheared = boolval($sheared);
+			}
 		}
 	}
 
 	public function saveNBT(){
-        if(PluginConfiguration::getInstance()->getEnableNBT()) {
-            parent::saveNBT();
-            $this->breedableClass->saveNBT();
-            $this->namedtag->setByte(NBTConst::NBT_KEY_SHEARED, $this->isSheared() ? 0 : 1);
-        }
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::saveNBT();
+			$this->breedableClass->saveNBT();
+			$this->namedtag->setByte(NBTConst::NBT_KEY_SHEARED, $this->isSheared() ? 0 : 1);
+		}
 	}
 
 	public function getDrops() : array{
