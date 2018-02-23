@@ -89,7 +89,7 @@ class Creeper extends WalkingMonster implements Explosive{
 			}
 			$explosion->explodeB();
 		}
-		$this->flagForDespawn();
+		$this->kill();
 	}
 
 	public function onUpdate(int $currentTick) : bool{
