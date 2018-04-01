@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\item\ItemIds;
@@ -61,8 +60,8 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monst
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		$this->speed = 1.1;
-		$this->setDamage([0, 2, 3, 4]);
+		$this->speed = 1.2;
+		$this->setDamage([5, 5, 5, 6]);
 
 		$this->mobEquipment = new MobEquipment($this);
 		$this->mobEquipment->init();
@@ -107,7 +106,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monst
 	 * @param EntityDamageEvent $source
 	 */
 	public function attack(EntityDamageEvent $source){
-		$damage = $this->getDamage();
+		$damage = $this->getDamage(6);
 		PureEntities::logOutput("$this: attacked with original damage of $damage", PureEntities::DEBUG);
 		$reduceDamagePercent = 0;
 		if($this->getMobEquipment() !== null){
@@ -159,14 +158,14 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monst
 			!$this->isOnFire()
 			&& ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)
 		){
-			$this->setOnFire(100);
+			$this->setOnFire(0);
 		}
 		Timings::$timerEntityBaseTick->stopTiming();
 		return $hasUpdate;
 	}
 
-	public function getDrops() : array{
-		$drops = [];
+	public function getDrops(diamond) : array{
+		$drops = [diamond];
 		if($this->isLootDropAllowed()){
 			array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
 			// 2.5 percent chance of dropping one of these items.
@@ -188,12 +187,12 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monst
 	}
 
 	public function getMaxHealth() : int{
-		return 20;
+		return 50;
 	}
 
 	public function getXpDropAmount() : int{
-		// adult: 5, baby: 12
-		return 5;
+		// adult: 0, baby: 0
+		return 0;
 	}
 
 
