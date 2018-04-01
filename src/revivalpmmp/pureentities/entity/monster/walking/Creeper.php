@@ -33,7 +33,7 @@ use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class Creeper extends WalkingMonster implements Explosive{
-	const NETWORK_ID = Data::NETWORK_IDS["creeper"];
+	const NETWORK_ID = Data::NETWORK_IDS["bom"];
 	const DATA_POWERED = 19;
 
 	private $bombTime = 0;
@@ -46,7 +46,7 @@ class Creeper extends WalkingMonster implements Explosive{
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		$this->speed = 0.9;
+		$this->speed = 1.2;
 		$this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) == 0 ? false : true);
 	}
 
@@ -79,7 +79,7 @@ class Creeper extends WalkingMonster implements Explosive{
 	}
 
 	public function explode(){
-		$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
+		$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 4));
 
 		if(!$ev->isCancelled()){
 			$explosion = new Explosion($this, $ev->getForce(), $this);
@@ -138,11 +138,11 @@ class Creeper extends WalkingMonster implements Explosive{
 	}
 
 	public function getMaxHealth() : int{
-		return 20;
+		return 500;
 	}
 
 	public function getXpDropAmount() : int{
-		return 5;
+		return 1;
 	}
 
 
