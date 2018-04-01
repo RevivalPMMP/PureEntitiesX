@@ -32,7 +32,7 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class IronGolem extends WalkingMonster{
-	const NETWORK_ID = Data::NETWORK_IDS["iron_golem"];
+	const NETWORK_ID = Data::NETWORK_IDS["golem"];
 
 
 	public function initEntity(){
@@ -40,16 +40,16 @@ class IronGolem extends WalkingMonster{
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
 		$this->speed = 0.8;
-		$this->setMaxHealth(20);
-		$this->setHealth(20);
+		$this->setMaxHealth(1000);
+		$this->setHealth(1000);
 
 		$this->setFriendly(true);
-		$this->setDamage([0, 21, 21, 21]);
-		$this->setMinDamage([0, 7, 7, 7]);
+		$this->setDamage([20, 21, 26,,30]);
+		$this->setMinDamage([7, 7, 7, 7]);
 	}
 
 	public function getName() : string{
-		return "IronGolem";
+		return "golem";
 	}
 
 	/**
@@ -78,7 +78,7 @@ class IronGolem extends WalkingMonster{
 	}
 
 	public function getDrops() : array{
-		$drops = [];
+		$drops = [diamond];
 		if($this->isLootDropAllowed()){
 			array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));
 			array_push($drops, Item::get(Item::POPPY, 0, mt_rand(0, 2)));
