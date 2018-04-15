@@ -24,7 +24,7 @@ use revivalpmmp\pureentities\entity\SwimmingEntity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\Timings;
+// use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -152,7 +152,7 @@ abstract class SwimmingMonster extends SwimmingEntity implements Monster{
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
 		if($this->isClosed() or $this->getLevel() == null) return false;
-		Timings::$timerEntityBaseTick->startTiming();
+		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
@@ -170,7 +170,7 @@ abstract class SwimmingMonster extends SwimmingEntity implements Monster{
 			$this->getDataPropertyManager()->setPropertyValue(self::DATA_AIR, self::DATA_TYPE_SHORT, 300);
 		}
 
-		Timings::$timerEntityBaseTick->stopTiming();
+		// Timings::$timerEntityBaseTick->stopTiming();
 		return $hasUpdate;
 	}
 
