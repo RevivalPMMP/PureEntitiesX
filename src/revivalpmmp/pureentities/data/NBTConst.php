@@ -52,6 +52,21 @@ interface NBTConst{
 	const NBT_KEY_SITTING = "Sitting"; // 1 or 0 (true/false)
 	const NBT_KEY_WALL_CHECK = "WallCheck";
 
+
+	const NBT_KEY_IDLE_SETTINGS = "IdleSettings"; // compound tag
+	const NBT_KEY_IDLING = "Idling"; // IntTag
+	const NBT_KEY_IDLING_COUNTER = "IdlingCounter"; // IntTag
+	const NBT_KEY_MAX_IDLING_COUNTER = "MaxIdlingCounter"; // IntTag
+	const NBT_KEY_IDLING_TICK_COUNTER = "IdlingTickCounter"; // IntTag
+	const NBT_KEY_MAX_IDLING_TICK_COUNTER = "MaxIdlingTickCounter"; // IntTag
+	const NBT_KEY_LAST_IDLE_STATUS = "LastIdleStatus"; // IntTag
+
+	const NBT_KEY_HAND_ITEMS = "HandItems";			// ListTag
+	const NBT_KEY_ARMOR_ITEMS = "ArmorItems";		// ListTag
+	const NBT_KEY_ARMOR_COUNT = "Count";			// IntTag
+	const NBT_KEY_ARMOR_DAMAGE = "Damage";			// IntTag
+	const NBT_KEY_ARMOR_ID = "id";					// IntTag
+
 	// this is our own tag - only for server side ...
 	const NBT_SERVER_KEY_OWNER_NAME = "OwnerName";
 }
