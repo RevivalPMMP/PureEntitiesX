@@ -76,7 +76,7 @@ trait Tameable{
 
 	/**
 	 * This determines how likely it is that the creature will be tamed
-	 * during an attempt.  To determing the correct value of this number
+	 * during an attempt.  To determine the correct value of this number
 	 * you use use the second number in the ratio.  eg. Ocelots have a
 	 * 1:3 chance of being tamed so $tameChance = 3.
 	 *
