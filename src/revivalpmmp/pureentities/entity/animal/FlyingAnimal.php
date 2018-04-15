@@ -27,7 +27,7 @@ use revivalpmmp\pureentities\features\IntfTameable;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\Timings;
+// use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
@@ -50,14 +50,14 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 	}
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
-		Timings::$timerEntityBaseTick->startTiming();
+		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		// BaseEntity::entityBaseTick checks and can trigger despawn.  After calling it, we need to verify
 		// that the entity is still valid for updates before performing any other tasks on it.
 		if($this->isClosed() or !$this->isAlive()){
-			Timings::$timerEntityBaseTick->stopTiming();
+			// Timings::$timerEntityBaseTick->stopTiming();
 			return false;
 		}
 
@@ -74,7 +74,7 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 			$this->getDataPropertyManager()->setPropertyValue(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, 300);
 		}
 
-		Timings::$timerEntityBaseTick->stopTiming();
+		// Timings::$timerEntityBaseTick->stopTiming();
 		return $hasUpdate;
 	}
 
