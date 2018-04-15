@@ -24,7 +24,7 @@ use revivalpmmp\pureentities\entity\SwimmingEntity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\Timings;
+// use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
@@ -47,7 +47,7 @@ abstract class SwimmingAnimal extends SwimmingEntity implements Animal{
 	}
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
-		Timings::$timerEntityBaseTick->startTiming();
+		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
@@ -64,7 +64,7 @@ abstract class SwimmingAnimal extends SwimmingEntity implements Animal{
 			$this->getDataPropertyManager()->setPropertyValue(Entity::DATA_AIR, Entity::DATA_TYPE_SHORT, 300);
 		}
 
-		Timings::$timerEntityBaseTick->stopTiming();
+		// Timings::$timerEntityBaseTick->stopTiming();
 		return $hasUpdate;
 	}
 
