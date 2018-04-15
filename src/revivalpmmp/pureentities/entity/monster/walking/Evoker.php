@@ -25,7 +25,7 @@ use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\Timings;
+// use pocketmine\event\Timings;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
@@ -69,14 +69,14 @@ class Evoker extends WalkingMonster implements Monster{
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
 		if($this->isClosed() or $this->getLevel() == null) return false;
-		Timings::$timerEntityBaseTick->startTiming();
+		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		// BaseEntity::entityBaseTick checks and can trigger despawn.  After calling it, we need to verify
 		// that the entity is still valid for updates before performing any other tasks on it.
 		if($this->isClosed() or !$this->isAlive()){
-			Timings::$timerEntityBaseTick->stopTiming();
+			// Timings::$timerEntityBaseTick->stopTiming();
 			return false;
 		}
 		$time = $this->getLevel()->getTime() % Level::TIME_FULL;
@@ -87,7 +87,7 @@ class Evoker extends WalkingMonster implements Monster{
 			$this->setOnFire(100);
 		}
 
-		Timings::$timerEntityBaseTick->stopTiming();
+		// Timings::$timerEntityBaseTick->stopTiming();
 		return $hasUpdate;
 	}
 
