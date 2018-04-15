@@ -28,7 +28,7 @@ use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\Timings;
+//use pocketmine\event\Timings;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
@@ -148,7 +148,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monst
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
 		if($this->isClosed()) return false;
-		Timings::$timerEntityBaseTick->startTiming();
+		//Timings::$timerEntityBaseTick->startTiming();
 
 		$this->getMobEquipment()->entityBaseTick($tickDiff);
 
@@ -161,7 +161,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monst
 		){
 			$this->setOnFire(100);
 		}
-		Timings::$timerEntityBaseTick->stopTiming();
+		//Timings::$timerEntityBaseTick->stopTiming();
 		return $hasUpdate;
 	}
 
