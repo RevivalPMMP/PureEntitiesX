@@ -402,7 +402,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 					foreach(Server::getInstance()->getLevels() as $level){
 						foreach($level->getEntities() as $entity){
 							if(count($args) === 0){
-								if(!$entity instanceof Player and isset($entity->namedtag->generatedByPEX)){
+								if(!$entity instanceof Player and $entity->namedtag->hasTag("generatedByPEX")){
 									$entitiesRemoved[] = clone($entity);
 									$entity->close();
 									$entitiesRemoved[] = $entity;
