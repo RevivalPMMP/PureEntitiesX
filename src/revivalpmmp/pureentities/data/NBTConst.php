@@ -67,6 +67,20 @@ interface NBTConst{
 	const NBT_KEY_ARMOR_DAMAGE = "Damage";			// IntTag
 	const NBT_KEY_ARMOR_ID = "id";					// IntTag
 
+	const NBT_KEY_SPAWNER_IS_MOVABLE = "isMovable";							// ByteTag
+	const NBT_KEY_SPAWNER_DELAY = "Delay";									// ShortTag
+	const NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES = "MaxNearbyEntities";		// ShortTag
+	const NBT_KEY_SPAWNER_MAX_SPAWN_DELAY = "MaxSpawnDelay";				// ShortTag
+	const NBT_KEY_SPAWNER_MIN_SPAWN_DELAY = "MinSawnDelay";					// ShortTag
+	const NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE = "RequiredPlayerRange";	// ShortTag
+	const NBT_KEY_SPAWNER_SPAWN_COUNT = "SpawnCount";						// ShortTag
+	const NBT_KEY_SPAWNER_SPAWN_RANGE = "SpawnRange"; 						// ShortTag
+	const NBT_KEY_SPAWNER_ENTITY_ID = "EntityId";							// IntTag
+	const NBT_KEY_SPAWNER_DISPLAY_ENTITY_HEIGHT = "DisplayEntityHeight";	// FloatTag
+	const NBT_KEY_SPAWNER_DISPLAY_ENTITY_SCALE = "DisplayEntityScale";		// FloatTag
+	const NBT_KEY_SPAWNER_DISPLAY_ENTITY_WIDTH = "DisplayEntityWidth";		// FloatTag
+	const NBT_KEY_SPAWNER_SPAWN_DATA = "SpawnData";							// ShortTag
+
 	// this is our own tag - only for server side ...
 	const NBT_SERVER_KEY_OWNER_NAME = "OwnerName";
 }
