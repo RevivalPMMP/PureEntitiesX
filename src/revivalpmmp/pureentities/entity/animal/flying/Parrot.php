@@ -50,7 +50,7 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
 			Item::WHEAT_SEEDS
 		);
 		if(empty($this->birdType)){
-			$this->setBirdType(mt_rand(0, 4));
+			$this->setBirdType($this->getRandomBirdType());
 		}
 
 		if($this->isTamed()){
@@ -64,7 +64,8 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
 	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::loadNBT();
-			if(($birdType = $this->namedtag->getByte(NBTConst::NBT_KEY_BIRDTYPE, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_BIRDTYPE)){
+				$birdType = $this->namedtag->getByte(NBTConst::NBT_KEY_BIRDTYPE, $this->getRandomBirdType(), true);
 				$this->setBirdType($birdType);
 			}
 		}
@@ -73,9 +74,8 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->setByte(NBTConst::NBT_KEY_BIRDTYPE, $this->birdType);
+			$this->namedtag->setByte(NBTConst::NBT_KEY_BIRDTYPE, $this->birdType, true);
 		}
-
 	}
 
 	public function getName() : string{
@@ -92,6 +92,10 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
 
 	public function getMaxHealth() : int{
 		return 6;
+	}
+
+	public function getRandomBirdType() : int{
+		return mt_rand(0, 4);
 	}
 
 	public function setBirdType(int $type){
