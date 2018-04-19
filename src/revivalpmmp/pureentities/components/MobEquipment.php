@@ -120,7 +120,7 @@ class MobEquipment{
 	 * @param int $tickDiff
 	 */
 	public function entityBaseTick($tickDiff = 1){
-		if($this->pickupTimer->isTicksExpired($tickDiff) and !$this->entity->getBaseTarget() instanceof \pocketmine\entity\Item){
+		if($this->pickupTimer->isTicksExpired($tickDiff) and !$this->entity->getBaseTarget() instanceof ItemEntity){
 			$entityConfig = MobEquipmentConfigHolder::getConfig($this->entity->getName());
 			$pickupByChance = mt_rand(0, 100) <= $entityConfig->getWearPickupChance()->getCanPickupLootChance();
 			PureEntities::logOutput($this->entity . ": got mob equipment config: " . ($entityConfig !== null) .
@@ -144,9 +144,9 @@ class MobEquipment{
 	/**
 	 * This is called from WalkingEntity when the item is reached by the entity which was desired.
 	 *
-	 * @param \pocketmine\entity\Item $item
+	 * @param ItemEntity $item
 	 */
-	public function itemReached(\pocketmine\entity\Item $item){
+	public function itemReached(ItemEntity $item){
 		PureEntities::logOutput($this->entity . ": reached $item. Pick it up!", PureEntities::DEBUG);
 		$this->entity->stayTime = 50; // first: stay here!
 		$this->entity->getLevel()->removeEntity($item); // remove item from level
