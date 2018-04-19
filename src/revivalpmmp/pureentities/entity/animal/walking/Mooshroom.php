@@ -58,8 +58,8 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SHEARED)){
 
-			$sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, false, true);
-				$this->sheared = (bool)$sheared;
+				$sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, false, true);
+				$this->sheared = (bool) $sheared;
 			}
 		}
 	}
