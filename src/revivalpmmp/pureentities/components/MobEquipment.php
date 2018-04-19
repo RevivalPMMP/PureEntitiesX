@@ -272,13 +272,17 @@ class MobEquipment{
 	 * @param Player $player the player to send the data packet to
 	 */
 	public function sendEquipmentUpdate(Player $player){
-		if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_ARMOR_ITEMS)){
-			PureEntities::logOutput("sendEquipmentUpdate: armor to " . $player->getName(), PureEntities::DEBUG);
-			$player->dataPacket($this->createArmorEquipPacket());
-		}
-		if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_HAND_ITEMS)){
-			PureEntities::logOutput("sendEquipmentUpdate: hand items to " . $player->getName(), PureEntities::DEBUG);
-			$player->dataPacket($this->createHandItemsEquipPacket());
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_ARMOR_ITEMS)){
+				PureEntities::logOutput("sendEquipmentUpdate: armor to " . $player->getName(), PureEntities::DEBUG);
+				$player->dataPacket($this->createArmorEquipPacket());
+			}
+			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_HAND_ITEMS)){
+				PureEntities::logOutput("sendEquipmentUpdate: hand items to " . $player->getName(), PureEntities::DEBUG);
+				$player->dataPacket($this->createHandItemsEquipPacket());
+			}
+		} else {
+			PureEntities::logOutput("sendEquipmentUpdate called when EnableNBT is false.", PureEntities::WARN);
 		}
 	}
 
