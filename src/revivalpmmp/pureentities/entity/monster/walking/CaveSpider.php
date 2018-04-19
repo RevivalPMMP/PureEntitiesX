@@ -21,6 +21,7 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -56,7 +57,10 @@ class CaveSpider extends WalkingMonster{
 			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
 				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
 			$player->attack($ev);
-			Effect::getEffect(Effect::POISON)->applyEffect($player);
+			$poisonInstance = new EffectInstance(Effect::getEffect(Effect::POISON));
+			// TODO: Change Effect details to work with difficulty settings.
+			$poisonInstance->setAmplifier(1);
+			Effect::getEffect(Effect::POISON)->applyEffect($player, $poisonInstance);
 			$this->checkTamedMobsAttack($player);
 		}
 	}
