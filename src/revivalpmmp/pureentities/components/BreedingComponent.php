@@ -131,19 +131,20 @@ class BreedingComponent{
 
 	public function loadFromNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(($age = $this->entity->namedtag->getInt(NBTConst::NBT_KEY_AGE, NBTConst::NBT_INVALID_INT)) !== NBTConst::NBT_INVALID_INT){
-				$this->age = $age;
+
+			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_AGE)){
+				$this->age = $this->entity->namedtag->getInt(NBTConst::NBT_KEY_AGE, 0, true);
 			}
-			if(($inLove = $this->entity->namedtag->getInt(NBTConst::NBT_KEY_IN_LOVE, NBTConst::NBT_INVALID_INT)) !== NBTConst::NBT_INVALID_INT){
-				$this->inLove = $this->entity->namedtag[NBTConst::NBT_KEY_IN_LOVE];
+			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_IN_LOVE)){
+				$this->inLove = $this->entity->namedtag->getInt(NBTConst::NBT_KEY_IN_LOVE, 0, true);
 			}
 		}
 	}
 
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			$this->entity->namedtag->setInt(NBTConst::NBT_KEY_AGE, $this->age);
-			$this->entity->namedtag->setInt(NBTConst::NBT_KEY_IN_LOVE, $this->inLove);
+			$this->entity->namedtag->setInt(NBTConst::NBT_KEY_AGE, $this->age, true);
+			$this->entity->namedtag->setInt(NBTConst::NBT_KEY_IN_LOVE, $this->inLove, true);
 		}
 	}
 
@@ -152,8 +153,8 @@ class BreedingComponent{
 	 */
 	public function init(){
 		$this->loadFromNBT();
-		$this->setAge($this->getAge());
-		$this->setInLove($this->getInLove());
+		$this->setAge($this->age);
+		$this->setInLove($this->inLove);
 	}
 
 	/**
