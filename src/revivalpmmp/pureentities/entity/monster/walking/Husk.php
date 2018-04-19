@@ -21,6 +21,7 @@
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\entity\Effect;
+use pocketmine\entity\EffectInstance;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Ageable;
 use pocketmine\entity\Entity;
@@ -81,8 +82,9 @@ class Husk extends WalkingMonster implements Ageable{
 			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
 				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
 			$player->attack($ev);
-			$effect = Effect::getEffect(17)->setDuration(1800)->setAmplifier(1);
-			$effect->applyEffect($player);
+			$effect = Effect::getEffect(Effect::HUNGER);
+			$hungerInstance = new EffectInstance($effect, 1800, 1);
+			$effect->applyEffect($player, $hungerInstance);
 
 			$this->checkTamedMobsAttack($player);
 		}
