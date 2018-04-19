@@ -42,7 +42,7 @@ class Slime extends JumpingMonster{
 	public function initEntity(){
 		parent::initEntity();
 		if($this->cubeSize == -1){
-			$this->cubeSize = mt_rand(0, 2);
+			$this->cubeSize = self::getRandomSlimeSize();
 			$this->saveNBT();
 		}
 
@@ -56,14 +56,15 @@ class Slime extends JumpingMonster{
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->setByte(NBTConst::NBT_KEY_CUBE_SIZE, $this->cubeSize);
+			$this->namedtag->setByte(NBTConst::NBT_KEY_CUBE_SIZE, $this->cubeSize, true);
 		}
 	}
 
 	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::loadNBT();
-			if(($cubeSize = $this->namedtag->getByte(NBTConst::NBT_KEY_CUBE_SIZE, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_CUBE_SIZE)){
+				$cubeSize = $this->namedtag->getByte(NBTConst::NBT_KEY_CUBE_SIZE, self::getRandomSlimeSize());
 				$this->cubeSize = $cubeSize;
 			}
 		}
@@ -71,6 +72,10 @@ class Slime extends JumpingMonster{
 
 	public function getName() : string{
 		return "Slime";
+	}
+
+	public static function getRandomSlimeSize() : int{
+		return mt_rand(0, 2);
 	}
 
 	/**

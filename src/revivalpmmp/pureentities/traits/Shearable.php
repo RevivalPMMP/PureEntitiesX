@@ -48,7 +48,6 @@ trait Shearable{
 			return false;
 		}else{
 			$meta = ($this instanceof Sheep ? $this->color : 0);
-			$dropCount;
 			if($this->maxShearDrops <= 1){
 				$dropCount = ($this->maxShearDrops == 1 ? 1 : 0);
 			}else{

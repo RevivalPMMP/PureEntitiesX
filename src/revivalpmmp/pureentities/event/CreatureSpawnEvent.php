@@ -43,6 +43,7 @@ class CreatureSpawnEvent extends PluginEvent implements Cancellable{
 	 */
 	public function __construct(PureEntities $plugin, Position $pos, int $entityid, Level $level, string $type){
 		parent::__construct($plugin);
+		PureEntities::logOutput("New Creature Spawn Event! Entity ID = $entityid and Type $type");
 		$this->pos = $pos;
 		$this->entityid = $entityid;
 		$this->level = $level;

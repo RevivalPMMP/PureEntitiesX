@@ -187,10 +187,12 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::loadNBT();
 			$this->loadTameNBT();
-			if(($angry = $this->namedtag->getInt(NBTConst::NBT_KEY_ANGRY, NBTConst::NBT_INVALID_INT)) !== NBTConst::NBT_INVALID_INT){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_ANGRY)){
+				$angry = $this->namedtag->getInt(NBTConst::NBT_KEY_ANGRY, 0, true);
 				$this->setAngry($angry);
 			}
-			if(($color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLLAR_COLOR, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_COLLAR_COLOR)){
+				$color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLLAR_COLOR, Color::RED);
 				$this->setCollarColor($color);
 			}
 		}
@@ -205,8 +207,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
 			$this->saveTameNBT();
-			$this->namedtag->setInt(NBTConst::NBT_KEY_ANGRY, $this->angryValue);
-			$this->namedtag->setByte(NBTConst::NBT_KEY_COLLAR_COLOR, $this->collarColor); // set collar color
+			$this->namedtag->setInt(NBTConst::NBT_KEY_ANGRY, $this->angryValue, true);
+			$this->namedtag->setByte(NBTConst::NBT_KEY_COLLAR_COLOR, $this->collarColor, true); // set collar color
 		}
 		$this->breedableClass->saveNBT();
 	}

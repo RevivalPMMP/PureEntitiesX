@@ -51,7 +51,7 @@ class AutoSpawnTask extends PluginTask{
 	private $hostileMobs = 0;
 	private $passiveDryMobs = 0;
 	private $passiveWetMobs = 0;
-	private $mobCap = 255;
+	private $mobCap = 60;
 
 	public function __construct(PureEntities $plugin){
 		parent::__construct($plugin);
@@ -259,11 +259,11 @@ class AutoSpawnTask extends PluginTask{
 	}
 
 	private function isValidDrySpawnLocation(Position $spawnLocation) {
-		if(!$spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y, $spawnLocation->z)->isTransparent()
-			and ($spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 1, $spawnLocation->z)->isTransparent() and
-				$spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 1, $spawnLocation->z)->getId() != Block::WATER)
-			and ($spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 2, $spawnLocation->z)->isTransparent()
-				and $spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 2, $spawnLocation->z)->getId() != Block::WATER)
+		if(!$spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y - 1, $spawnLocation->z)->isTransparent()
+			and ($spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y, $spawnLocation->z)->isTransparent() and
+				$spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y, $spawnLocation->z)->getId() != Block::WATER)
+			and ($spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 1, $spawnLocation->z)->isTransparent()
+				and $spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 1, $spawnLocation->z)->getId() != Block::WATER)
 			) {
 			return true;
 		}

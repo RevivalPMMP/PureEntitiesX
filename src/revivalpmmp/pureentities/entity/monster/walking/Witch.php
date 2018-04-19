@@ -28,7 +28,7 @@ use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\Timings;
+//use pocketmine\event\Timings;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
@@ -123,7 +123,7 @@ class Witch extends WalkingMonster implements Monster{
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
 		if($this->isClosed()) return false;
-		Timings::$timerEntityBaseTick->startTiming();
+		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
@@ -134,7 +134,7 @@ class Witch extends WalkingMonster implements Monster{
 		){
 			$this->setOnFire(100);
 		}
-		Timings::$timerEntityBaseTick->stopTiming();
+		// Timings::$timerEntityBaseTick->stopTiming();
 		return $hasUpdate;
 	}
 

@@ -35,6 +35,7 @@ use revivalpmmp\pureentities\entity\BaseEntity;
  * updating movement code for getting owner positions.
  */
 trait Tameable{
+
 	// -----------------------------------------------------------------------------------------------
 	// Variables
 	// -----------------------------------------------------------------------------------------------
@@ -76,7 +77,7 @@ trait Tameable{
 
 	/**
 	 * This determines how likely it is that the creature will be tamed
-	 * during an attempt.  To determing the correct value of this number
+	 * during an attempt.  To determine the correct value of this number
 	 * you use use the second number in the ratio.  eg. Ocelots have a
 	 * 1:3 chance of being tamed so $tameChance = 3.
 	 *
@@ -90,24 +91,26 @@ trait Tameable{
 
 
 	public function saveTameNBT(){
+
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			$this->namedtag->setByte(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0);
+			$this->namedtag->setByte(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0, true);
 			if($this->getOwnerName() !== null){
-				$this->namedtag->setString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName()); // only for our own (server side)
+				$this->namedtag->setString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName(), true); // only for our own (server side)
 			}
 			if($this->owner !== null){
-				$this->namedtag->setString(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString()); // set owner UUID
-				$this->namedtag->setLong(NBTConst::NBT_KEY_OWNER_EID, $this->propertyManager->getLong(Entity::DATA_OWNER_EID));
+				$this->namedtag->setString(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString(), true); // set owner UUID
+				$this->namedtag->setLong(NBTConst::NBT_KEY_OWNER_EID, $this->propertyManager->getLong(Entity::DATA_OWNER_EID), true);
 			}
-
 		}
 	}
 
 	public function loadTameNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(($owner = $this->namedtag->getString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, NBTConst::NBT_INVALID_STRING)) !== NBTConst::NBT_INVALID_STRING){
-				$this->ownerName = $owner;
-				if(($ownerEID = $this->namedtag->getLong(NBTConst::NBT_KEY_OWNER_EID, NBTConst::NBT_INVALID_LONG)) !== NBTConst::NBT_INVALID_LONG){
+			if($this->namedtag->hasTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME)){
+				$owner = $this->namedtag->getString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, NBTConst::NBT_INVALID_STRING);
+				$ownerEID = $this->namedtag->getLong(NBTConst::NBT_KEY_OWNER_EID, NBTConst::NBT_INVALID_LONG, true);
+				if(($owner !== NBTConst::NBT_INVALID_LONG) and ($ownerEID !== NBTConst::NBT_INVALID_LONG)){
+					$this->ownerName = $owner;
 					$this->propertyManager->setLong(Entity::DATA_OWNER_EID, $ownerEID);
 				}
 				$this->setTamed(true);
@@ -119,14 +122,14 @@ trait Tameable{
 				}
 			}
 
-			if(($sitting = $this->namedtag->getByte(NBTConst::NBT_KEY_SITTING, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
-				$this->setSitting(boolval($sitting));
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SITTING)){
+				$sitting = $this->namedtag->getByte(NBTConst::NBT_KEY_SITTING, false, true);
+				$this->setSitting((bool) $sitting);
 
 				// Until an appropriate NBT key can be attached to this, if the entity is sitting when loaded,
 				// commandedToSit will be set to true so that it doesn't teleport to it's owner by accident.
 				$this->setCommandedToSit($this->isSitting());
 			}
-
 		}
 	}
 

@@ -27,7 +27,7 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
-use pocketmine\event\Timings;
+// use pocketmine\event\Timings;
 use pocketmine\item\Bow;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
@@ -114,7 +114,7 @@ class Stray extends WalkingMonster implements ProjectileSource{
 	}
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
-		Timings::$timerEntityBaseTick->startTiming();
+		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
@@ -126,7 +126,7 @@ class Stray extends WalkingMonster implements ProjectileSource{
 			$this->setOnFire(100);
 		}
 
-		Timings::$timerEntityBaseTick->stopTiming();
+		// Timings::$timerEntityBaseTick->stopTiming();
 		return $hasUpdate;
 	}
 

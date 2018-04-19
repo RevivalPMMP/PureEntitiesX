@@ -25,7 +25,7 @@ use revivalpmmp\pureentities\entity\FlyingEntity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\Timings;
+// use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Server;
 
@@ -139,7 +139,7 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
 		if($this->isClosed() or $this->getLevel() == null) return false;
-		Timings::$timerEntityBaseTick->startTiming();
+		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
@@ -157,7 +157,7 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 			$this->getDataPropertyManager()->setPropertyValue(self::DATA_AIR, self::DATA_TYPE_SHORT, 300);
 		}
 
-		Timings::$timerEntityBaseTick->stopTiming();
+		// Timings::$timerEntityBaseTick->stopTiming();
 		return $hasUpdate;
 	}
 

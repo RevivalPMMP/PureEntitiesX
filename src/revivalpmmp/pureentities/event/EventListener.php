@@ -38,6 +38,7 @@ use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\Server;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\data\Color;
+use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Ocelot;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
@@ -74,18 +75,19 @@ class EventListener implements Listener{
 
 			$tile = $block->level->getTile($block);
 			if($tile != null && $tile instanceof Spawner){
+				PureEntities::logOutput("EventListener:: Calling setSpawnEntityType");
 				$tile->setSpawnEntityType($item->getDamage());
 			}else{
 				if($tile != null){
 					$tile->close();
 				}
-				$nbt = new CompoundTag("", [
-					new StringTag("id", Tile::MOB_SPAWNER),
-					new IntTag("EntityId", $item->getDamage()),
-					new IntTag("x", $block->x),
-					new IntTag("y", $block->y),
-					new IntTag("z", $block->z),
-				]);
+				PureEntities::logOutput("Creating New Spawner");
+				$nbt = new CompoundTag("");
+				$nbt->setString(Tile::TAG_ID, Tile::MOB_SPAWNER);
+				$nbt->setInt(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $item->getDamage());
+				$nbt->setInt(Tile::TAG_X, $block->x);
+				$nbt->setInt(Tile::TAG_Y, $block->y);
+				$nbt->setInt(Tile::TAG_Z, $block->z);
 				new Spawner($block->getLevel(), $nbt);
 			}
 		}
