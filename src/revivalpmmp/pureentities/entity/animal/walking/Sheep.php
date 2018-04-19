@@ -123,13 +123,14 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 	 */
 	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(($sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
-				$this->sheared = boolval($sheared);
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SHEARED)){
+			$sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, false, true);
+				$this->sheared = (bool)$sheared;
 			}
-			if(($color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLOR, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
-				$this->color = intval($color);
-			}else{
-				$this->color = Sheep::getRandomColor();
+
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_COLOR)){
+			$color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLOR, self::getRandomColor());
+				$this->color = (int)$color;
 			}
 		}
 	}
@@ -140,8 +141,8 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->setTag(new ByteTag(NBTConst::NBT_KEY_SHEARED, $this->sheared));
-			$this->namedtag->setTag(new ByteTag(NBTConst::NBT_KEY_COLOR, $this->color));
+			$this->namedtag->setTag(new ByteTag(NBTConst::NBT_KEY_SHEARED, $this->sheared, true));
+			$this->namedtag->setTag(new ByteTag(NBTConst::NBT_KEY_COLOR, $this->color, true));
 		}
 		$this->breedableClass->saveNBT();
 	}
