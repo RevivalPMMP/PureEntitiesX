@@ -97,7 +97,7 @@ abstract class BaseEntity extends Creature{
 			$this->eyeHeight = $this->height / 2 + 0.1;
 		} */
 		if(!$this->isFlaggedForDespawn()){
-			$this->namedtag->setByte("generatedByPEX", 1);
+			$this->namedtag->setByte("generatedByPEX", 1, true);
 		}
 	}
 
@@ -202,9 +202,9 @@ abstract class BaseEntity extends Creature{
 	public function saveNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->setByte(NBTConst::NBT_KEY_MOVEMENT, $this->isMovement());
-			$this->namedtag->setByte(NBTConst::NBT_KEY_WALL_CHECK, $this->isWallCheck());
-			$this->namedtag->setInt(NBTConst::NBT_KEY_AGE_IN_TICKS, $this->age);
+			$this->namedtag->setByte(NBTConst::NBT_KEY_MOVEMENT, $this->isMovement(), true);
+			$this->namedtag->setByte(NBTConst::NBT_KEY_WALL_CHECK, $this->isWallCheck(), true);
+			$this->namedtag->setInt(NBTConst::NBT_KEY_AGE_IN_TICKS, $this->age, true);
 
 			// No reason to attempt this if getEnableNBT is false.
 			$this->idlingComponent->saveNBT();
@@ -213,15 +213,17 @@ abstract class BaseEntity extends Creature{
 
 	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if(($movement = $this->namedtag->getByte(NBTConst::NBT_KEY_MOVEMENT, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
-				$this->setMovement(boolval($movement));
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_MOVEMENT)){
+				$movement = $this->namedtag->getByte(NBTConst::NBT_KEY_MOVEMENT, false, true);
+				$this->setMovement((bool) $movement);
 			}
 
-			if(($wallCheck = $this->namedtag->getByte(NBTConst::NBT_KEY_WALL_CHECK, NBTConst::NBT_INVALID_BYTE)) != NBTConst::NBT_INVALID_BYTE){
-				$this->setWallCheck(boolval($wallCheck));
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_WALL_CHECK)){
+				$wallCheck = $this->namedtag->getByte(NBTConst::NBT_KEY_WALL_CHECK, false, true);
+				$this->setWallCheck((bool) $wallCheck);
 			}
-
-			if(($age = $this->namedtag->getInt(NBTConst::NBT_KEY_AGE_IN_TICKS, NBTConst::NBT_INVALID_INT)) != NBTConst::NBT_INVALID_INT){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_AGE_IN_TICKS)){
+				$age = $this->namedtag->getInt(NBTConst::NBT_KEY_AGE_IN_TICKS, 0, true);
 				$this->age = $age;
 			}
 		}
@@ -246,7 +248,7 @@ abstract class BaseEntity extends Creature{
 		}
 	}
 
-	public function updateMovement(bool $teleport = false): void{
+	public function updateMovement(bool $teleport = false) : void{
 		if(!$this->isClosed() && $this->getLevel() !== null){
 			parent::updateMovement($teleport);
 		}
@@ -355,7 +357,7 @@ abstract class BaseEntity extends Creature{
 		return false;
 	}
 
-	public function move(float $dx, float $dy, float $dz): void{
+	public function move(float $dx, float $dy, float $dz) : void{
 		//Timings::$entityMoveTimer->startTiming();
 
 		$movX = $dx;
