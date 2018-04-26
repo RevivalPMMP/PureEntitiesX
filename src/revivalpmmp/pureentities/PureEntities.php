@@ -212,7 +212,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 
 		self::$instance = $this;
 
-		$this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Originally written by milk0417. Currently maintained by RevivalPMMP for PMMP 'REDACTED'.");
+		$this->getServer()->getLogger()->info("[PureEntitiesX] Originally written by milk0417. Currently maintained by RevivalPMMP for PMMP 'REDACTED'.");
 	}
 
 	public function onEnable(){
