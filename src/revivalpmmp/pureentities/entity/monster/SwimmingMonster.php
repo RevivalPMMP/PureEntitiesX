@@ -126,6 +126,9 @@ abstract class SwimmingMonster extends SwimmingEntity implements Monster{
 		$this->entityBaseTick($tickDiff);
 
 		$target = $this->updateMove($tickDiff);
+		if($player instanceof Player && !$player->isSurvival()) {
+			return true;
+		}
 		if($this->isFriendly()){
 			if(!($target instanceof Player)){
 				if($target instanceof Entity){
