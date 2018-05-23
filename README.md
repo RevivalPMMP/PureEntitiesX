@@ -6,7 +6,7 @@
 [![Poggit-CI](https://poggit.pmmp.io/ci.badge/RevivalPMMP/PureEntitiesX/PureEntitiesX)](https://poggit.pmmp.io/ci/RevivalPMMP/PureEntitiesX/PureEntitiesX)
 =====
 
-### Compatible PocketMine-MP Versions: 1.7dev-937  https://github.com/pmmp/PocketMine-MP/releases/tag/api%2F3.0.0-ALPHA12
+### Compatible PocketMine-MP Versions: 1.7dev-1001  https://github.com/pmmp/PocketMine-MP/releases/tag/1.7dev-1001
 
 Currently being revived by 95CivicSi - Stay tuned for more updates
 
