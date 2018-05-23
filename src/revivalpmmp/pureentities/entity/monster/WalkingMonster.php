@@ -69,6 +69,9 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 				return;
 			}
 		}
+		if(!$player->isSurvival()) {
+			return;
+		}
 		$this->attackEntity($player);
 	}
 
