@@ -126,9 +126,6 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 		$this->entityBaseTick($tickDiff);
 
 		$target = $this->updateMove($tickDiff);
-		if($player instanceof Player && !$player->isSurvival()) {
-			return true;
-		}
 		if($target instanceof Player){
 			$this->attackEntity($target);
 		}elseif(
