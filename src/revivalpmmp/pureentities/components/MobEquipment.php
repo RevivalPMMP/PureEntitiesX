@@ -281,7 +281,7 @@ class MobEquipment{
 				PureEntities::logOutput("sendEquipmentUpdate: hand items to " . $player->getName(), PureEntities::DEBUG);
 				$player->dataPacket($this->createHandItemsEquipPacket());
 			}
-		} else {
+		}else{
 			PureEntities::logOutput("sendEquipmentUpdate called when EnableNBT is false.", PureEntities::WARN);
 		}
 	}

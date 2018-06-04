@@ -213,7 +213,7 @@ class IdlingComponent{
 			if($namedTag->hasTag(NBTConst::NBT_KEY_IDLE_SETTINGS)){
 				$nbt = $namedTag->getCompoundTag(NBTConst::NBT_KEY_IDLE_SETTINGS);
 				/**
-				 * @var CompoundTag $nbt;
+				 * @var CompoundTag $nbt ;
 				 */
 				$this->idling = $nbt->getInt(NBTConst::NBT_KEY_IDLING, 1, true);
 				if($this->idling){

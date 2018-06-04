@@ -106,10 +106,10 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 			// http://minecraft.gamepedia.com/Sheep - drop 1 wool when not a baby and died
 			array_push($drops, Item::get(Item::WOOL, self::getColor(), 1));
 			if($this->isOnFire()){
-        array_push($drops, Item::get(Item::MUTTON_COOKED, 0, mt_rand(1,2)));
-      } else {
-        array_push($drops, Item::get(Item::MUTTON_RAW,0, mt_rand(1,2)));
-        }
+				array_push($drops, Item::get(Item::MUTTON_COOKED, 0, mt_rand(1, 2)));
+			}else{
+				array_push($drops, Item::get(Item::MUTTON_RAW, 0, mt_rand(1, 2)));
+			}
 		}
 		return $drops;
 	}

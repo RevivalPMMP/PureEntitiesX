@@ -72,12 +72,12 @@ class AutoSpawnTask extends PluginTask{
 			$this->passiveWetMobs = 0;
 
 			// For now, spawning as overworld only.
-			foreach($level->getEntities() as $entity) {
+			foreach($level->getEntities() as $entity){
 				if(in_array(array_search($entity::NETWORK_ID, Data::NETWORK_IDS), MobTypeMaps::OVERWORLD_HOSTILE_MOBS)){
 					$this->hostileMobs++;
-				} elseif(in_array(array_search($entity::NETWORK_ID, Data::NETWORK_IDS), MobTypeMaps::PASSIVE_DRY_MOBS)) {
+				}elseif(in_array(array_search($entity::NETWORK_ID, Data::NETWORK_IDS), MobTypeMaps::PASSIVE_DRY_MOBS)){
 					$this->passiveDryMobs++;
-				} elseif(in_array(array_search($entity::NETWORK_ID, Data::NETWORK_IDS), MobTypeMaps::PASSIVE_WET_MOBS)){
+				}elseif(in_array(array_search($entity::NETWORK_ID, Data::NETWORK_IDS), MobTypeMaps::PASSIVE_WET_MOBS)){
 					$this->passiveWetMobs++;
 				}
 			}
@@ -86,7 +86,7 @@ class AutoSpawnTask extends PluginTask{
 			PureEntities::logOutput("AutoSpawnTask: Passives(Wet) = $this->passiveWetMobs");
 			$total = ($this->hostileMobs + $this->passiveWetMobs + $this->passiveDryMobs);
 
-			if($total >= $this->mobCap) {
+			if($total >= $this->mobCap){
 				PureEntities::logOutput("AutoSpawnTask: Stopping AutoSpawn due to MobCap", PureEntities::NORM);
 				PureEntities::logOutput("AutoSpawnTask: Mob Total = $total");
 
@@ -99,7 +99,7 @@ class AutoSpawnTask extends PluginTask{
 
 			if(count($level->getPlayers()) > 0){
 				foreach($level->getPlayers() as $player){
-					if ($player->spawned){
+					if($player->spawned){
 
 						/* Intentionally not converting directly to chunks here so
 						 * spawn locations can be compared to player locations to meet
@@ -113,7 +113,7 @@ class AutoSpawnTask extends PluginTask{
 
 				// Check if this pass needs to spawn passive mobs.
 				// Passive mobs only attempt to spawn every 20 seconds (400 ticks).
-				if($currentTick - $this->lastFriendlyTick >= 400) {
+				if($currentTick - $this->lastFriendlyTick >= 400){
 					$this->spawnFriendlyMobsAllowed = true;
 					$this->lastFriendlyTick = $currentTick;
 				}
@@ -158,14 +158,14 @@ class AutoSpawnTask extends PluginTask{
 		$convertedChunkList = [];
 		$spawnMap = [];
 
-		if(count($playerLocations) > 0) {
+		if(count($playerLocations) > 0){
 			// This will take the location of each player, determine what chunk
 			// they are in, and store the chunk in $convertedChunkList.
 
 			/**
 			 * @var Position $playerPos
 			 */
-			foreach($playerLocations as $playerPos) {
+			foreach($playerLocations as $playerPos){
 
 				$chunkHash = Level::chunkHash($playerPos->x >> 4, $playerPos->z >> 4);
 
@@ -185,14 +185,14 @@ class AutoSpawnTask extends PluginTask{
 			 * @var Chunk $chunk
 			 */
 			foreach($convertedChunkList as $chunk){
-				for($x = -7; $x <= 7; $x++) {
+				for($x = -7; $x <= 7; $x++){
 					for($z = -7; $z <= 7; $z++){
 						$trialX = $chunk->getX() + $x;
 						$trialZ = $chunk->getZ() + $z;
 						PureEntities::logOutput("AutoSpawnTask: Testing Chunk X: $trialX, Z: $trialZ.");
 						$trialChunk = Level::chunkHash($trialX, $trialZ);
 						if(!isset($spawnMap[$trialChunk])){
-							$spawnMap[$trialChunk] = $playerPos->getLevel()->getChunk($trialX,$trialZ);
+							$spawnMap[$trialChunk] = $playerPos->getLevel()->getChunk($trialX, $trialZ);
 							PureEntities::logOutput("AutoSpawnTask: Chunk added to Spawn Map.");
 						}
 					}
@@ -209,10 +209,10 @@ class AutoSpawnTask extends PluginTask{
 	 * @param Vector2 $chunk
 	 * @return Vector3
 	 */
-	private function getRandomLocationInChunk(Vector2 $chunk) : Vector3 {
-		$x = mt_rand($chunk->x * 16,(($chunk->x * 16) + 15));
-		$y = mt_rand(0,255);
-		$z = mt_rand($chunk->y * 16,(($chunk->y * 16) + 15));
+	private function getRandomLocationInChunk(Vector2 $chunk) : Vector3{
+		$x = mt_rand($chunk->x * 16, (($chunk->x * 16) + 15));
+		$y = mt_rand(0, 255);
+		$z = mt_rand($chunk->y * 16, (($chunk->y * 16) + 15));
 
 		return new Vector3($x, $y, $z);
 	}
@@ -220,23 +220,23 @@ class AutoSpawnTask extends PluginTask{
 	private function isValidPackCenter(Vector3 $center, Level $level) : bool{
 		if($level->getBlockAt($center->x, $center->y, $center->z)->isTransparent()){
 			return true;
-		} else {
+		}else{
 			return false;
 		}
 	}
 
-	protected function spawnPackToLevel(Vector3 $center, int $entityId, Level $level, string $type, bool $isBaby = false) {
+	protected function spawnPackToLevel(Vector3 $center, int $entityId, Level $level, string $type, bool $isBaby = false){
 
 		// TODO Update to change $maxPackSize based on Mob
 		$maxPackSize = 4;
 		$currentPackSize = 0;
 
 		for($attempts = 0; $attempts <= 12 and $currentPackSize < $maxPackSize; $attempts++){
-			$x = mt_rand(-20,20) + $center->x;
-			$z = mt_rand(-20,20) + $center->z;
+			$x = mt_rand(-20, 20) + $center->x;
+			$z = mt_rand(-20, 20) + $center->z;
 			$pos = new Position($x, $center->y, $z, $level);
 
-			if($this->isValidDrySpawnLocation($pos) and $this->isSpawnAllowedByBiome($entityId, $level->getBiomeId($x,$z))){
+			if($this->isValidDrySpawnLocation($pos) and $this->isSpawnAllowedByBiome($entityId, $level->getBiomeId($x, $z))){
 				PureEntities::logOutput("AutoSpawnTask: Spawning Mob (ID = $entityId) to location: $x, $center->y, $z", PureEntities::NORM);
 				$success = PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityId, $level, $type, $isBaby) !== null;
 				if($success){
@@ -249,22 +249,22 @@ class AutoSpawnTask extends PluginTask{
 
 	}
 
-	private function isValidSpawnLocation(Position $spawnLocation) {
+	private function isValidSpawnLocation(Position $spawnLocation){
 		if(!$spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y, $spawnLocation->z)->isTransparent()
 			and $spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 1, $spawnLocation->z)->isTransparent()
-			and $spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 2, $spawnLocation->z)->isTransparent()) {
+			and $spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 2, $spawnLocation->z)->isTransparent()){
 			return true;
 		}
 		return false;
 	}
 
-	private function isValidDrySpawnLocation(Position $spawnLocation) {
+	private function isValidDrySpawnLocation(Position $spawnLocation){
 		if(!$spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y - 1, $spawnLocation->z)->isTransparent()
 			and ($spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y, $spawnLocation->z)->isTransparent() and
 				$spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y, $spawnLocation->z)->getId() != Block::WATER)
 			and ($spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 1, $spawnLocation->z)->isTransparent()
 				and $spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 1, $spawnLocation->z)->getId() != Block::WATER)
-			) {
+		){
 			return true;
 		}
 		return false;
@@ -277,11 +277,11 @@ class AutoSpawnTask extends PluginTask{
 	 * @param Chunk $chunk
 	 * @param Level $level
 	 */
-	private function spawnPassiveMob(Chunk $chunk, Level $level) {
+	private function spawnPassiveMob(Chunk $chunk, Level $level){
 		PureEntities::logOutput("AutoSpawnTask: Attempting to spawn passive mob.");
 		$packCenter = $this->getRandomLocationInChunk(new Vector2($chunk->getX(), $chunk->getZ()));
 		$lightLevel = $level->getFullLightAt($packCenter->x, $packCenter->y, $packCenter->z);
-		if($this->isValidPackCenter($packCenter, $level) and $lightLevel > 7) {
+		if($this->isValidPackCenter($packCenter, $level) and $lightLevel > 7){
 			$mobId = Data::NETWORK_IDS[MobTypeMaps::PASSIVE_DRY_MOBS[array_rand(MobTypeMaps::PASSIVE_DRY_MOBS)]];
 			$this->spawnPackToLevel($packCenter, $mobId, $level, "passive");
 		}
@@ -289,13 +289,13 @@ class AutoSpawnTask extends PluginTask{
 
 	}
 
-	private function spawnHostileMob(Chunk $chunk, Level $level) {
+	private function spawnHostileMob(Chunk $chunk, Level $level){
 		PureEntities::logOutput("AutoSpawnTask: Attempting to spawn hostile mob.");
 		$packCenter = $this->getRandomLocationInChunk(new Vector2($chunk->getX(), $chunk->getZ()));
 		PureEntities::logOutput("AutoSpawnTask: Chosen Pack Center at $packCenter->x, $packCenter->y, $packCenter->z.");
 		$lightLevel = $level->getFullLightAt($packCenter->x, $packCenter->y, $packCenter->z);
 		PureEntities::logOutput("AutoSpawnTask: light level at trial pack center is $lightLevel");
-		if($this->isValidPackCenter($packCenter, $level) and $lightLevel < 7) {
+		if($this->isValidPackCenter($packCenter, $level) and $lightLevel < 7){
 
 			PureEntities::logOutput("AutoSpawnTask: light level at valid pack center is $lightLevel");
 			$mobId = Data::NETWORK_IDS[MobTypeMaps::OVERWORLD_HOSTILE_MOBS[array_rand(MobTypeMaps::OVERWORLD_HOSTILE_MOBS)]];
@@ -304,9 +304,9 @@ class AutoSpawnTask extends PluginTask{
 		PureEntities::logOutput("AutoSpawnTask: Not a valid pack center.");
 	}
 
-	private function isSpawnAllowedByBiome(int $entityId, int $trialBiome): bool {
+	private function isSpawnAllowedByBiome(int $entityId, int $trialBiome) : bool{
 		if(in_array($entityId, BiomeInfo::ALLOWED_ENTITIES_BY_BIOME[$trialBiome])
-			or (($trialBiome !== Biome::HELL and $trialBiome !== 9) and in_array($entityId, BiomeInfo::OVERWORLD_BIOME_EXEMPT))) {
+			or (($trialBiome !== Biome::HELL and $trialBiome !== 9) and in_array($entityId, BiomeInfo::OVERWORLD_BIOME_EXEMPT))){
 			return true;
 		}
 		PureEntities::logOutput("Biome test failed with Entity: $entityId and Biome: $trialBiome", PureEntities::NORM);

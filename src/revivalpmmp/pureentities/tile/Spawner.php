@@ -112,7 +112,7 @@ class Spawner extends Spawnable{
 		}
 	}
 
-	public function loadNBT(): void{
+	public function loadNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID)){

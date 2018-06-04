@@ -151,9 +151,9 @@ abstract class BaseEntity extends Creature{
 	 * @param $baseTarget
 	 */
 	public function setBaseTarget($baseTarget){
-	  if($baseTarget instanceof Player and $baseTarget->getGamemode() === Player::SPECTATOR){
-	    return;
-    }
+		if($baseTarget instanceof Player and $baseTarget->getGamemode() === Player::SPECTATOR){
+			return;
+		}
 		if($baseTarget !== $this->baseTarget){
 			PureEntities::logOutput("$this: setBaseTarget to $baseTarget", PureEntities::DEBUG);
 			$this->baseTarget = $baseTarget;
