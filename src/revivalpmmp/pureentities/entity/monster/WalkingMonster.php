@@ -188,7 +188,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 				}elseif(
 					$target instanceof Vector3
 					&& (($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
-					&& $this->motionY == 0
+					&& $this->motion->y == 0
 				){
 					$this->moveTime = 0;
 				}
@@ -199,7 +199,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 			}elseif(
 				$target instanceof Vector3
 				&& $this->distanceSquared($target) <= 1
-				&& $this->motionY == 0
+				&& $this->motion->y == 0
 			){
 				$this->moveTime = 0;
 			}

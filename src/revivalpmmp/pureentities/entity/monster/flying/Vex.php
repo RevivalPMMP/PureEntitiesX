@@ -108,14 +108,14 @@ class Vex extends FlyingMonster implements Monster{
 	 * @return bool
 	 */
 	protected function checkJump($dx, $dz){
-		if($this->motionY < 0){
+		if($this->motion->y < 0){
 			return false;
 		}
 
-		if($this->motionY == $this->gravity * 2){
+		if($this->motion->y == $this->gravity * 2){
 			return $this->level->getBlock(new Vector3(Math::floorFloat($this->x), (int) $this->y, Math::floorFloat($this->z))) instanceof Liquid;
 		}else if($this->level->getBlock(new Vector3(Math::floorFloat($this->x), (int) ($this->y + 0.8), Math::floorFloat($this->z))) instanceof Liquid){
-			$this->motionY = $this->gravity * 2;
+			$this->motion->y = $this->gravity * 2;
 			return true;
 		}
 
@@ -125,7 +125,7 @@ class Vex extends FlyingMonster implements Monster{
 
 		$block = $this->level->getBlock($this->add($dx, 0, $dz));
 		if($block instanceof StoneSlab || $block instanceof Stair){
-			$this->motionY = 0.5;
+			$this->motion->y = 0.5;
 			return true;
 		}
 		return false;
@@ -137,7 +137,7 @@ class Vex extends FlyingMonster implements Monster{
 		}
 
 		if($this->isKnockback()){
-			$this->move($this->motionX * $tickDiff, $this->motionY * $tickDiff, $this->motionZ * $tickDiff);
+			$this->move($this->motion->x * $tickDiff, $this->motion->y * $tickDiff, $this->motion->z * $tickDiff);
 			$this->updateMovement();
 			return null;
 		}
@@ -151,35 +151,35 @@ class Vex extends FlyingMonster implements Monster{
 
 			$diff = abs($x) + abs($z);
 			if($x ** 2 + $z ** 2 < 0.5){
-				$this->motionX = 0;
-				$this->motionZ = 0;
+				$this->motion->x = 0;
+				$this->motion->z = 0;
 			}else{
 				if($this->getBaseTarget() instanceof Creature){
-					$this->motionX = 0;
-					$this->motionZ = 0;
+					$this->motion->x = 0;
+					$this->motion->z = 0;
 					if($this->distance($this->getBaseTarget()) > $this->y - $this->getLevel()->getHighestBlockAt((int) $this->x, (int) $this->z)){
-						$this->motionY = $this->gravity;
+						$this->motion->y = $this->gravity;
 					}else{
-						$this->motionY = 0;
+						$this->motion->y = 0;
 					}
 				}elseif($diff > 0){
-					$this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
-					$this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
+					$this->motion->x = $this->getSpeed() * 0.15 * ($x / $diff);
+					$this->motion->z = $this->getSpeed() * 0.15 * ($z / $diff);
 				}
 			}
 			if($diff > 0) $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
 			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
 		}
 
-		$dx = $this->motionX * $tickDiff;
-		$dz = $this->motionZ * $tickDiff;
+		$dx = $this->motion->x * $tickDiff;
+		$dz = $this->motion->z * $tickDiff;
 		$isJump = $this->checkJump($dx, $dz);
 		if($this->stayTime > 0){
 			$this->stayTime -= $tickDiff;
-			$this->move(0, $this->motionY * $tickDiff, 0);
+			$this->move(0, $this->motion->y * $tickDiff, 0);
 		}else{
 			$be = new Vector2($this->x + $dx, $this->z + $dz);
-			$this->move($dx, $this->motionY * $tickDiff, $dz);
+			$this->move($dx, $this->motion->y * $tickDiff, $dz);
 			$af = new Vector2($this->x, $this->z);
 
 			if(($be->x != $af->x || $be->y != $af->y) && !$isJump){
@@ -189,11 +189,11 @@ class Vex extends FlyingMonster implements Monster{
 
 		if(!$isJump){
 			if($this->onGround){
-				$this->motionY = 0;
-			}elseif($this->motionY > -$this->gravity * 4){
-				$this->motionY = -$this->gravity * 4;
+				$this->motion->y = 0;
+			}elseif($this->motion->y > -$this->gravity * 4){
+				$this->motion->y = -$this->gravity * 4;
 			}else{
-				$this->motionY -= $this->gravity;
+				$this->motion->y -= $this->gravity;
 			}
 		}
 		$this->updateMovement();

@@ -117,8 +117,8 @@ class Creeper extends WalkingMonster implements Explosive{
 				}
 			}
 			if($diff > 0){
-				$this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
-				$this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
+				$this->motion->x = $this->getSpeed() * 0.15 * ($x / $diff);
+				$this->motion->z = $this->getSpeed() * 0.15 * ($z / $diff);
 				$this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
 			}
 			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));

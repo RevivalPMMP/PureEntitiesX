@@ -86,8 +86,8 @@ abstract class SwimmingEntity extends BaseEntity{
 		}
 
 		if($this->isKnockback()){
-			$this->move($this->motionX * $tickDiff, $this->motionY, $this->motionZ * $tickDiff);
-			$this->motionY -= 0.2 * $tickDiff;
+			$this->move($this->motion->x * $tickDiff, $this->motion->y, $this->motion->z * $tickDiff);
+			$this->motion->y -= 0.2 * $tickDiff;
 			$this->updateMovement();
 			return null;
 		}
@@ -101,24 +101,24 @@ abstract class SwimmingEntity extends BaseEntity{
 
 			$diff = abs($x) + abs($z);
 			if($x ** 2 + $z ** 2 < 0.7){
-				$this->motionX = 0;
-				$this->motionZ = 0;
+				$this->motion->x = 0;
+				$this->motion->z = 0;
 			}elseif($diff > 0){
-				$this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
-				$this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
+				$this->motion->x = $this->getSpeed() * 0.15 * ($x / $diff);
+				$this->motion->z = $this->getSpeed() * 0.15 * ($z / $diff);
 				$this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
 			}
 			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
 		}
 
-		$dx = $this->motionX * $tickDiff;
-		$dz = $this->motionZ * $tickDiff;
+		$dx = $this->motion->x * $tickDiff;
+		$dz = $this->motion->z * $tickDiff;
 		if($this->stayTime > 0){
 			$this->stayTime -= $tickDiff;
-			$this->move(0, $this->motionY * $tickDiff, 0);
+			$this->move(0, $this->motion->y * $tickDiff, 0);
 		}else{
 			$be = new Vector2($this->x + $dx, $this->z + $dz);
-			$this->move($dx, $this->motionY * $tickDiff, $dz);
+			$this->move($dx, $this->motion->y * $tickDiff, $dz);
 			$af = new Vector2($this->x, $this->z);
 
 			if(($be->x != $af->x || $be->y != $af->y)){
