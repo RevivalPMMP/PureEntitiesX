@@ -268,7 +268,7 @@ abstract class BaseEntity extends Creature{
 	 *
 	 * @param EntityDamageEvent $source the damage event
 	 */
-	public function attack(EntityDamageEvent $source){
+	public function attack(EntityDamageEvent $source) : void{
 
 		if($this->isClosed() || $source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)){
 			return;

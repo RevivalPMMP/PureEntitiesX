@@ -239,7 +239,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	 *
 	 * @param EntityDamageEvent $source
 	 */
-	public function attack(EntityDamageEvent $source){
+	public function attack(EntityDamageEvent $source) : void{
 		parent::attack($source);
 
 		if(!$source->isCancelled()){
