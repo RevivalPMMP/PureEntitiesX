@@ -45,7 +45,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 	private $dropEggTime = 0;
 
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 		$this->setNetworkId(Data::NETWORK_IDS["chicken"]);
 		$this->width = Data::WIDTHS[$this->getNetworkId()];

@@ -42,7 +42,7 @@ class Creeper extends WalkingMonster implements Explosive{
 
 	private $powered = 0;
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];

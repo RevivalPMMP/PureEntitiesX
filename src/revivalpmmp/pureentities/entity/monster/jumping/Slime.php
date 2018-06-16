@@ -39,7 +39,7 @@ class Slime extends JumpingMonster{
 	private $cubeDimensions = array(0.51, 1.02, 2.04);
 
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 		if($this->cubeSize == -1){
 			$this->cubeSize = self::getRandomSlimeSize();

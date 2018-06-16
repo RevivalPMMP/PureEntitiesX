@@ -48,7 +48,7 @@ class Vex extends FlyingMonster implements Monster{
 	// TODO create methods specific to Vexes
 	const NETWORK_ID = Data::NETWORK_IDS["vex"];
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];

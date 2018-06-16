@@ -192,7 +192,7 @@ abstract class BaseEntity extends Creature{
 		return $this->maxJumpHeight;
 	}
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 
 		$this->loadNBT();

@@ -37,7 +37,7 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
 	const NETWORK_ID = Data::NETWORK_IDS["parrot"];
 	private $birdType; // 0 = red, 1 = blue, 2 = green, 3 = cyan, 4 = silver
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];

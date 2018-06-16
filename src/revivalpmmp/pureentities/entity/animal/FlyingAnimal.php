@@ -37,7 +37,7 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 		return 0.7;
 	}
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 
 		if($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null){
