@@ -304,7 +304,7 @@ abstract class BaseEntity extends Creature{
 		$this->checkAttackByTamedEntities($source);
 	}
 
-	public function knockBack(Entity $attacker, float $damage, float $x, float $z, float $base = 0.4){
+	public function knockBack(Entity $attacker, float $damage, float $x, float $z, float $base = 0.4) : void{
 
 	}
 
