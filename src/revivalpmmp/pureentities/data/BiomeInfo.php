@@ -20,7 +20,8 @@
 namespace revivalpmmp\pureentities\data;
 
 
-use pocketmine\level\generator\biome\Biome;
+
+use pocketmine\level\biome\Biome;
 
 class BiomeInfo{
 

@@ -20,8 +20,8 @@
 namespace revivalpmmp\pureentities\task;
 
 use pocketmine\block\Block;
+use pocketmine\level\biome\Biome;
 use pocketmine\level\format\Chunk;
-use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector2;
