@@ -22,7 +22,7 @@ namespace revivalpmmp\pureentities\task;
 
 
 use pocketmine\entity\Living;
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task;
 use revivalpmmp\pureentities\entity\monster\walking\Enderman;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -35,7 +35,7 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task
  */
-class EndermanLookingTask extends PluginTask{
+class EndermanLookingTask extends Task{
 
 	/**
 	 * @var PureEntities
@@ -45,7 +45,6 @@ class EndermanLookingTask extends PluginTask{
 	private $isInteractiveButtonCorrectionSet = false;
 
 	public function __construct(PureEntities $plugin){
-		parent::__construct($plugin);
 		$this->plugin = $plugin;
 		$this->isInteractiveButtonCorrectionSet = PluginConfiguration::getInstance()->isInteractiveButtonCorrection();
 	}

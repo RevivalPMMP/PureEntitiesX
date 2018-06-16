@@ -26,7 +26,7 @@ use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task;
 use revivalpmmp\pureentities\data\BiomeInfo;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\MobTypeMaps;
@@ -35,7 +35,7 @@ use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\utils\PeTimings;
 
 
-class AutoSpawnTask extends PluginTask{
+class AutoSpawnTask extends Task{
 
 	const HOSTILE_CAP_CONSTANT = 70;
 	const PASSIVE_WET_CAP_CONSTANT = 10;
@@ -54,7 +54,6 @@ class AutoSpawnTask extends PluginTask{
 	private $mobCap = 60;
 
 	public function __construct(PureEntities $plugin){
-		parent::__construct($plugin);
 		$this->plugin = $plugin;
 		$this->spawnerWorlds = PluginConfiguration::getInstance()->getEnabledWorlds();
 	}

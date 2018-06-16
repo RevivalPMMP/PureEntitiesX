@@ -219,11 +219,11 @@ class PureEntities extends PluginBase implements CommandExecutor{
 		new PluginConfiguration($this); // create plugin configuration
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 		if(PluginConfiguration::getInstance()->getEnableSpawning()){
-			$this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
+			$this->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
 		}
 		if(PluginConfiguration::getInstance()->getEnableLookingTasks()){
-			$this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
-			$this->getServer()->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
+			$this->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
+			$this->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
 		}
 
 		$enabled = self::$loggingEnabled = PluginConfiguration::getInstance()->getLogEnabled();

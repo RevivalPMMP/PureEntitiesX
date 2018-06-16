@@ -22,7 +22,7 @@ namespace revivalpmmp\pureentities\task\delayed;
 
 
 use pocketmine\Player;
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\PureEntities;
@@ -37,7 +37,7 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task\delayed
  */
-class ShowMobEquipmentTask extends PluginTask{
+class ShowMobEquipmentTask extends Task{
 
 	/**
 	 * @var PureEntities
@@ -52,7 +52,6 @@ class ShowMobEquipmentTask extends PluginTask{
 	 * @param Player       $playerJoined
 	 */
 	public function __construct(PureEntities $plugin, Player $playerJoined){
-		parent::__construct($plugin);
 		$this->plugin = $plugin;
 		$this->playerJoined = $playerJoined;
 	}

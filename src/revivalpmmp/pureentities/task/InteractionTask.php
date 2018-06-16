@@ -21,7 +21,7 @@
 namespace revivalpmmp\pureentities\task;
 
 
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -36,7 +36,7 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task
  */
-class InteractionTask extends PluginTask{
+class InteractionTask extends Task{
 
 	/**
 	 * @var PureEntities
@@ -44,7 +44,6 @@ class InteractionTask extends PluginTask{
 	private $plugin;
 
 	public function __construct(PureEntities $plugin){
-		parent::__construct($plugin);
 		$this->plugin = $plugin;
 	}
 

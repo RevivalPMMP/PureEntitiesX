@@ -21,7 +21,7 @@
 namespace revivalpmmp\pureentities\task\delayed;
 
 
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PureEntities;
 
@@ -34,7 +34,7 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task\delayed
  */
-class SetTamedOwnerTask extends PluginTask{
+class SetTamedOwnerTask extends Task{
 
 	/**
 	 * @var PureEntities
@@ -52,7 +52,6 @@ class SetTamedOwnerTask extends PluginTask{
 	 * @param IntfTameable $tameableEntity
 	 */
 	public function __construct(PureEntities $plugin, IntfTameable $tameableEntity){
-		parent::__construct($plugin);
 		$this->plugin = $plugin;
 		$this->tameableEntity = $tameableEntity;
 	}
