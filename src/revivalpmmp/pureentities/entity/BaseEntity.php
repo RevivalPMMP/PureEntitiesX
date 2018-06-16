@@ -111,7 +111,7 @@ abstract class BaseEntity extends Creature{
 		return 0; // default no experience drops
 	}
 
-	public function getSaveId(){
+	public function getSaveId() : string{
 		$class = new \ReflectionClass(get_class($this));
 		return $class->getShortName();
 	}
