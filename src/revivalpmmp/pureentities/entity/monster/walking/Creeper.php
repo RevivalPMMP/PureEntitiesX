@@ -69,7 +69,7 @@ class Creeper extends WalkingMonster implements Explosive{
 		}
 	}
 
-	public function saveNBT(){
+	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
 			$this->namedtag->setInt(NBTConst::NBT_KEY_POWERED, $this->powered, true);

@@ -71,7 +71,7 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
 		}
 	}
 
-	public function saveNBT(){
+	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_BIRDTYPE, $this->birdType, true);

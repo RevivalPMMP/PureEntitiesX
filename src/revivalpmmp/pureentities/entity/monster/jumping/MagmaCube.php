@@ -52,7 +52,7 @@ class MagmaCube extends JumpingMonster{
 		$this->setDamage([0, 3, 4, 6]);
 	}
 
-	public function saveNBT(){
+	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_CUBE_SIZE, $this->cubeSize, true);

@@ -202,7 +202,7 @@ abstract class BaseEntity extends Creature{
 		$this->idlingComponent->loadFromNBT();
 	}
 
-	public function saveNBT(){
+	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_MOVEMENT, $this->isMovement(), true);
