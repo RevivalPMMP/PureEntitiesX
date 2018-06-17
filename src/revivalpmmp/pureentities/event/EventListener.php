@@ -35,7 +35,6 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
-use pocketmine\Server;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\data\NBTConst;
