@@ -66,7 +66,7 @@ class Witch extends WalkingMonster implements Monster{
 		return "Witch";
 	}
 
-	public function setHealth(float $amount){
+	public function setHealth(float $amount) : void{
 		parent::setHealth($amount);
 
 		if($this->isAlive()){
