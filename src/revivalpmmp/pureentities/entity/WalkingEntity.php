@@ -23,7 +23,7 @@ namespace revivalpmmp\pureentities\entity;
 use pocketmine\block\Block;
 use pocketmine\block\StoneSlab;
 use pocketmine\block\Stair;
-use pocketmine\entity\Item;
+use pocketmine\entity\object\ItemEntity;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
@@ -146,10 +146,11 @@ abstract class WalkingEntity extends BaseEntity{
 				$this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
 			}
 			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
-		}else if(($target = $this->getBaseTarget()) instanceof Item and $this instanceof IntfCanEquip){ // mob equipment
+
+		}else if(($target = $this->getBaseTarget()) instanceof ItemEntity and $this instanceof IntfCanEquip){ // mob equipment
 			$distance = $this->distanceSquared($this->getBaseTarget());
 			if($distance <= 1.5){
-				/** @var Item $target */
+				/** @var ItemEntity $target */
 				$this->getMobEquipment()->itemReached($target);
 			}
 		}
