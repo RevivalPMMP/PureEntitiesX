@@ -61,7 +61,7 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 			return false;
 		}
 
-		if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()){
+		if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isUnderwater()){
 			$hasUpdate = true;
 			$airTicks = $this->getDataPropertyManager()->getPropertyValue(self::DATA_AIR, Entity::DATA_TYPE_SHORT) - $tickDiff;
 			if($airTicks <= -20){

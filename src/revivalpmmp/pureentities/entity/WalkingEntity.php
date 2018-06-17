@@ -157,7 +157,7 @@ abstract class WalkingEntity extends BaseEntity{
 		$dx = $this->motion->x * $tickDiff;
 		$dz = $this->motion->z * $tickDiff;
 		$isJump = false;
-		if($this->isCollidedHorizontally or $this->isInsideOfWater()){
+		if($this->isCollidedHorizontally or $this->isUnderwater()){
 			$isJump = $this->checkJump($dx, $dz);
 		}
 		if($this->stayTime > 0){

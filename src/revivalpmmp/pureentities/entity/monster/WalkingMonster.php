@@ -228,7 +228,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 				$this->move(mt_rand(-20, 20), mt_rand(-20, 20), mt_rand(-20, 20));
 			}
 		}elseif($this->getLevel() !== null){
-			if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()){
+			if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isUnderwater()){
 				$hasUpdate = true;
 				$airTicks = $this->getDataPropertyManager()->getPropertyValue(self::DATA_AIR, Entity::DATA_TYPE_SHORT) - $tickDiff;
 				if($airTicks <= -20){

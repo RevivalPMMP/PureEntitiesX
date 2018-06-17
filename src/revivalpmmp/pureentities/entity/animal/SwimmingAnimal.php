@@ -51,7 +51,7 @@ abstract class SwimmingAnimal extends SwimmingEntity implements Animal{
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
-		if(!$this->hasEffect(Effect::WATER_BREATHING) && !$this->isInsideOfWater()){
+		if(!$this->hasEffect(Effect::WATER_BREATHING) && !$this->isUnderwater()){
 			$hasUpdate = true;
 			$airTicks = $this->getDataPropertyManager()->getPropertyValue(self::DATA_AIR, Entity::DATA_TYPE_SHORT) - $tickDiff;
 			if($airTicks <= -20){
