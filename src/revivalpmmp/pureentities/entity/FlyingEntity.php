@@ -156,7 +156,7 @@ abstract class FlyingEntity extends BaseEntity{
 
 		if($this instanceof Blaze){
 			if($this->onGround && !$isJump){
-				$this->motionY = 0;
+				$this->motion->y = 0;
 			}else if(!$isJump){
 				if($this->motion->y > -$this->gravity * 4){
 					$this->motion->y = -$this->gravity * 4;
