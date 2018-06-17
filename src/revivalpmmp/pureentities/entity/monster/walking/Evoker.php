@@ -26,7 +26,6 @@ use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 // use pocketmine\event\Timings;
-use pocketmine\item\Item;
 use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
