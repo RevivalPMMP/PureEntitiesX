@@ -24,7 +24,6 @@ use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\monster\FlyingMonster;
 use revivalpmmp\pureentities\entity\projectile\SmallFireball;
-use revivalpmmp\pureentities\PureEntities;
 use pocketmine\block\Liquid;
 use pocketmine\block\StoneSlab;
 use pocketmine\block\Stair;
