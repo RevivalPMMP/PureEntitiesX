@@ -92,7 +92,7 @@ abstract class FireBall extends Projectile{
 		return $hasUpdate;
 	}
 
-	public function spawnTo(Player $player){
+	public function spawnTo(Player $player) : void{
 		$pk = new AddEntityPacket();
 		$pk->type = self::NETWORK_ID;
 		$pk->entityRuntimeId = $this->getId();
