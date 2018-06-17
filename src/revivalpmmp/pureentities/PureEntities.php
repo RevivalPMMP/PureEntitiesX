@@ -24,6 +24,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\entity\object\ItemEntity;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
@@ -429,7 +430,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 					$sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
 					self::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", self::NORM);
 					foreach($entitiesRemoved as $entity){
-						$name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
+						$name = $entity instanceof ItemEntity ? $entity->getItem()->getName() : $entity->getName();
 						self::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", self::NORM);
 					}
 					unset($entitiesRemoved);
