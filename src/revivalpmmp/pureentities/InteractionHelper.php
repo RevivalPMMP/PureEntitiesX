@@ -71,7 +71,7 @@ class InteractionHelper{
 
 		// just a fix because player MAY not be fully initialized
 		if($player->temporalVector !== null){
-			$nearbyEntities = $player->getLevel()->getNearbyEntities($player->boundingBox->grow($maxDistance, $maxDistance, $maxDistance), $player);
+			$nearbyEntities = $player->getLevel()->getNearbyEntities($player->boundingBox->expandedCopy($maxDistance, $maxDistance, $maxDistance), $player);
 
 			// get all blocks in looking direction until the max interact distance is reached (it's possible that startblock isn't found!)
 			try{
