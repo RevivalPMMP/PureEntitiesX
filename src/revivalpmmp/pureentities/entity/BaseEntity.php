@@ -367,7 +367,7 @@ abstract class BaseEntity extends Creature{
 		$movY = $dy;
 		$movZ = $dz;
 
-		$list = $this->level->getCollisionCubes($this, $this->level->getTickRate() > 1 ? $this->boundingBox->getOffsetBoundingBox($dx, $dy, $dz) : $this->boundingBox->addCoord($dx, $dy, $dz));
+		$list = $this->level->getCollisionCubes($this, $this->level->getTickRate() > 1 ? $this->boundingBox->offsetCopy($dx, $dy, $dz) : $this->boundingBox->addCoord($dx, $dy, $dz));
 		if($this->isWallCheck()){
 			foreach($list as $bb){
 				$dx = $bb->calculateXOffset($this->boundingBox, $dx);

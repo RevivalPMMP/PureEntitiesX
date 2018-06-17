@@ -157,7 +157,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 				// Need to reconsider this method and test response when multiple matches are within
 				// the bounding box across multiple checks.  Ocelots should be able to 'stalk' a target
 				// after choosing one instead of jumping between multiple entities as targets.
-				foreach($this->getLevel()->getNearbyEntities($this->boundingBox->grow(10, 10, 10), $this) as $entity){
+				foreach($this->getLevel()->getNearbyEntities($this->boundingBox->expandedCopy(10, 10, 10), $this) as $entity){
 					if($entity instanceof Chicken and $entity->isAlive()){
 						$this->setBaseTarget($entity); // set the given entity as target ...
 						return;
