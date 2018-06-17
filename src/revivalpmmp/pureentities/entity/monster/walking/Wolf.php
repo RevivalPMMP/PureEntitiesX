@@ -143,7 +143,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 		if(($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip){
 			if(!$this->isTamed() and !$this->getBaseTarget() instanceof Monster){
 				// is there any entity around that is attackable (skeletons, rabbits, sheep)
-				foreach($this->getLevel()->getNearbyEntities($this->boundingBox->grow(10, 10, 10), $this) as $entity){
+				foreach($this->getLevel()->getNearbyEntities($this->boundingBox->expandedCopy(10, 10, 10), $this) as $entity){
 					if($entity instanceof Skeleton or $entity instanceof Rabbit or $entity instanceof Sheep and
 						$entity->isAlive()
 					){
