@@ -80,7 +80,7 @@ class Vindicator extends WalkingMonster implements IntfCanEquip, IntfCanBreed, M
 		return "Zombie";
 	}
 
-	public function setHealth(float $amount){
+	public function setHealth(float $amount) : void{
 		parent::setHealth($amount);
 
 		if($this->isAlive()){
