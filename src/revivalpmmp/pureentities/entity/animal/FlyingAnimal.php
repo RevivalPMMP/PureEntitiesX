@@ -37,7 +37,7 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 		return 0.7;
 	}
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 
 		if($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null){
@@ -61,7 +61,7 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 			return false;
 		}
 
-		if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()){
+		if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isUnderwater()){
 			$hasUpdate = true;
 			$airTicks = $this->getDataPropertyManager()->getPropertyValue(self::DATA_AIR, Entity::DATA_TYPE_SHORT) - $tickDiff;
 			if($airTicks <= -20){

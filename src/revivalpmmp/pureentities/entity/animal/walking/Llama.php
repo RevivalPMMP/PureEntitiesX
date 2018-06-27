@@ -35,7 +35,7 @@ class Llama extends WalkingAnimal implements Rideable{
 	const NETWORK_ID = Data::NETWORK_IDS["llama"];
 
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];

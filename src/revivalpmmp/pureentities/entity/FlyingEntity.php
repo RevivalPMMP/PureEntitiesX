@@ -82,7 +82,7 @@ abstract class FlyingEntity extends BaseEntity{
 		}
 
 		if($this->isKnockback()){
-			$this->move($this->motionX * $tickDiff, $this->motionY * $tickDiff, $this->motionZ * $tickDiff);
+			$this->move($this->motion->x * $tickDiff, $this->motion->y * $tickDiff, $this->motion->z * $tickDiff);
 			$this->updateMovement();
 			return null;
 		}
@@ -96,12 +96,12 @@ abstract class FlyingEntity extends BaseEntity{
 
 			$diff = abs($x) + abs($z);
 			if($x ** 2 + $z ** 2 < 0.5){
-				$this->motionX = 0;
-				$this->motionZ = 0;
+				$this->motion->x = 0;
+				$this->motion->z = 0;
 			}elseif($diff > 0){
-				$this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
-				$this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
-				$this->motionY = $this->getSpeed() * 0.27 * ($y / $diff);
+				$this->motion->x = $this->getSpeed() * 0.15 * ($x / $diff);
+				$this->motion->z = $this->getSpeed() * 0.15 * ($z / $diff);
+				$this->motion->y = $this->getSpeed() * 0.27 * ($y / $diff);
 				$this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
 			}
 			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
@@ -109,9 +109,9 @@ abstract class FlyingEntity extends BaseEntity{
 
 		$target = $this->getBaseTarget();
 		$isJump = false;
-		$dx = $this->motionX * $tickDiff;
-		$dy = $this->motionY * $tickDiff;
-		$dz = $this->motionZ * $tickDiff;
+		$dx = $this->motion->x * $tickDiff;
+		$dy = $this->motion->y * $tickDiff;
+		$dz = $this->motion->z * $tickDiff;
 
 		$be = new Vector2($this->x + $dx, $this->z + $dz);
 		$this->move($dx, $dy, $dz);
@@ -134,14 +134,14 @@ abstract class FlyingEntity extends BaseEntity{
 				if(!$block->canPassThrough()){
 					$bb = $block2->getBoundingBox();
 					if(
-						$this->motionY > -$this->gravity * 4
+						$this->motion->y > -$this->gravity * 4
 						&& ($block2->canPassThrough() || ($bb == null || $bb->maxY - $this->y <= 1))
 					){
 						$isJump = true;
-						if($this->motionY >= 0.3){
-							$this->motionY += $this->gravity;
+						if($this->motion->y >= 0.3){
+							$this->motion->y += $this->gravity;
 						}else{
-							$this->motionY = 0.3;
+							$this->motion->y = 0.3;
 						}
 					}
 				}
@@ -156,12 +156,12 @@ abstract class FlyingEntity extends BaseEntity{
 
 		if($this instanceof Blaze){
 			if($this->onGround && !$isJump){
-				$this->motionY = 0;
+				$this->motion->y = 0;
 			}else if(!$isJump){
-				if($this->motionY > -$this->gravity * 4){
-					$this->motionY = -$this->gravity * 4;
+				if($this->motion->y > -$this->gravity * 4){
+					$this->motion->y = -$this->gravity * 4;
 				}else{
-					$this->motionY -= $this->gravity;
+					$this->motion->y -= $this->gravity;
 				}
 			}
 		}

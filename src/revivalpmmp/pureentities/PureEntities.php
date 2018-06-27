@@ -24,6 +24,7 @@ use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
+use pocketmine\entity\object\ItemEntity;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
@@ -219,11 +220,11 @@ class PureEntities extends PluginBase implements CommandExecutor{
 		new PluginConfiguration($this); // create plugin configuration
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
 		if(PluginConfiguration::getInstance()->getEnableSpawning()){
-			$this->getServer()->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
+			$this->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
 		}
 		if(PluginConfiguration::getInstance()->getEnableLookingTasks()){
-			$this->getServer()->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
-			$this->getServer()->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
+			$this->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
+			$this->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
 		}
 
 		$enabled = self::$loggingEnabled = PluginConfiguration::getInstance()->getLogEnabled();
@@ -429,7 +430,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 					$sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
 					self::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", self::NORM);
 					foreach($entitiesRemoved as $entity){
-						$name = $entity instanceof \pocketmine\entity\Item ? $entity->getItem()->getName() : $entity->getName();
+						$name = $entity instanceof ItemEntity ? $entity->getItem()->getName() : $entity->getName();
 						self::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", self::NORM);
 					}
 					unset($entitiesRemoved);

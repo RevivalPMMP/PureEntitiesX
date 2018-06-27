@@ -144,7 +144,7 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		$this->attackDelay += $tickDiff;
-		if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()){
+		if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isUnderwater()){
 			$hasUpdate = true;
 			$airTicks = $this->getDataPropertyManager()->getPropertyValue(self::DATA_AIR, Entity::DATA_TYPE_SHORT) - $tickDiff;
 			if($airTicks <= -20){

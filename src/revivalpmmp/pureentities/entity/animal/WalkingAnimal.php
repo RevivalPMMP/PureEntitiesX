@@ -33,7 +33,6 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\features\IntfCanBreed;
-use revivalpmmp\pureentities\features\IntfFeedable;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\InteractionHelper;
@@ -62,7 +61,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 			return false;
 		}
 
-		if($this->getLevel() !== null && !$this->hasEffect(Effect::WATER_BREATHING) && $this->isInsideOfWater()){
+		if($this->getLevel() !== null && !$this->hasEffect(Effect::WATER_BREATHING) && $this->isUnderwater()){
 			$hasUpdate = true;
 			$airTicks = $this->getDataPropertyManager()->getPropertyValue(self::DATA_AIR, Entity::DATA_TYPE_SHORT) - $tickDiff;
 			if($airTicks <= -20){

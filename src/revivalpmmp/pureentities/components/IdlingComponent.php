@@ -185,11 +185,11 @@ class IdlingComponent{
 			}
 
 			$this->baseEntity->setRotation($yaw, $pitch);
-			if($this->baseEntity->motionX != 0){
-				$this->baseEntity->motionX = 0;
+			if($this->baseEntity->getMotion()->x != 0){
+				$this->baseEntity->getMotion()->x = 0;
 			}
-			if($this->baseEntity->motionZ != 0){
-				$this->baseEntity->motionZ = 0;
+			if($this->baseEntity->getMotion()->z != 0){
+				$this->baseEntity->getMotion()->z = 0;
 			}
 			$this->baseEntity->updateMovement();
 		}

@@ -42,7 +42,7 @@ class Creeper extends WalkingMonster implements Explosive{
 
 	private $powered = 0;
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -69,7 +69,7 @@ class Creeper extends WalkingMonster implements Explosive{
 		}
 	}
 
-	public function saveNBT(){
+	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
 			$this->namedtag->setInt(NBTConst::NBT_KEY_POWERED, $this->powered, true);
@@ -117,8 +117,8 @@ class Creeper extends WalkingMonster implements Explosive{
 				}
 			}
 			if($diff > 0){
-				$this->motionX = $this->getSpeed() * 0.15 * ($x / $diff);
-				$this->motionZ = $this->getSpeed() * 0.15 * ($z / $diff);
+				$this->motion->x = $this->getSpeed() * 0.15 * ($x / $diff);
+				$this->motion->z = $this->getSpeed() * 0.15 * ($z / $diff);
 				$this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
 			}
 			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));

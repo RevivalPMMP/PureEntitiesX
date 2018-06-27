@@ -19,7 +19,7 @@
 
 namespace revivalpmmp\pureentities\task;
 
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task;
 use revivalpmmp\pureentities\PureEntities;
 
 /**
@@ -29,11 +29,10 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task
  */
-class EndermenTeleportTask extends PluginTask{
+class EndermenTeleportTask extends Task{
 	private $plugin;
 
 	public function __construct(PureEntities $plugin){
-		parent::__construct($plugin);
 		$this->plugin = $plugin;
 	}
 

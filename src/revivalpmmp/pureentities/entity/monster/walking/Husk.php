@@ -34,7 +34,7 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class Husk extends WalkingMonster implements Ageable{
 	const NETWORK_ID = Data::NETWORK_IDS["husk"];
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -54,7 +54,7 @@ class Husk extends WalkingMonster implements Ageable{
 		return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
 	}
 
-	public function setHealth(float $amount){
+	public function setHealth(float $amount) : void{
 		parent::setHealth($amount);
 
 		if($this->isAlive()){

@@ -296,7 +296,7 @@ class MobEquipment{
 	public function getLootOfInterest(int $blocksAround){
 		$itemsAround = [];
 
-		foreach($this->entity->getLevel()->getNearbyEntities($this->entity->boundingBox->grow($blocksAround, $blocksAround, $blocksAround)) as $entity){
+		foreach($this->entity->getLevel()->getNearbyEntities($this->entity->boundingBox->expandedCopy($blocksAround, $blocksAround, $blocksAround)) as $entity){
 			if($entity instanceof ItemEntity and in_array($entity->getItem()->getId(), $this->entity->getPickupLoot())){
 				PureEntities::logOutput($this->entity . ": found interesting loot: " . $entity->getItem(), PureEntities::DEBUG);
 				$itemsAround[] = $entity;

@@ -35,7 +35,7 @@ use revivalpmmp\pureentities\utils\MobDamageCalculator;
 class WitherSkeleton extends WalkingMonster{
 	const NETWORK_ID = Data::NETWORK_IDS["wither_skeleton"];
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -47,7 +47,7 @@ class WitherSkeleton extends WalkingMonster{
 		return "Wither Skeleton";
 	}
 
-	public function setHealth(float $amount){
+	public function setHealth(float $amount): void{
 		parent::setHealth($amount);
 
 		if($this->isAlive()){
@@ -63,7 +63,7 @@ class WitherSkeleton extends WalkingMonster{
 		}
 	}
 
-	public function spawnTo(Player $player){
+	public function spawnTo(Player $player) : void{
 		parent::spawnTo($player);
 
 		$pk = new MobEquipmentPacket();

@@ -111,7 +111,7 @@ abstract class BaseEntity extends Creature{
 		return 0; // default no experience drops
 	}
 
-	public function getSaveId(){
+	public function getSaveId() : string{
 		$class = new \ReflectionClass(get_class($this));
 		return $class->getShortName();
 	}
@@ -192,7 +192,7 @@ abstract class BaseEntity extends Creature{
 		return $this->maxJumpHeight;
 	}
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 
 		$this->loadNBT();
@@ -202,7 +202,7 @@ abstract class BaseEntity extends Creature{
 		$this->idlingComponent->loadFromNBT();
 	}
 
-	public function saveNBT(){
+	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_MOVEMENT, $this->isMovement(), true);
@@ -232,7 +232,7 @@ abstract class BaseEntity extends Creature{
 		}
 	}
 
-	public function spawnTo(Player $player){
+	public function spawnTo(Player $player) : void{
 		if(
 			!isset($this->hasSpawned[$player->getLoaderId()])
 			&& isset($player->usedChunks[Level::chunkHash($this->chunk->getX(), $this->chunk->getZ())])
@@ -268,7 +268,7 @@ abstract class BaseEntity extends Creature{
 	 *
 	 * @param EntityDamageEvent $source the damage event
 	 */
-	public function attack(EntityDamageEvent $source){
+	public function attack(EntityDamageEvent $source) : void{
 
 		if($this->isClosed() || $source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)){
 			return;
@@ -286,13 +286,13 @@ abstract class BaseEntity extends Creature{
 
 		$sourceOfDamage = $source->getDamager();
 		$motion = (new Vector3($this->x - $sourceOfDamage->x, $this->y - $sourceOfDamage->y, $this->z - $sourceOfDamage->z))->normalize();
-		$this->motionX = $motion->x * 0.19;
-		$this->motionZ = $motion->z * 0.19;
+		$this->motion->x = $motion->x * 0.19;
+		$this->motion->z = $motion->z * 0.19;
 
 		if(($this instanceof FlyingEntity) && !($this instanceof Blaze)){
-			$this->motionY = $motion->y * 0.19;
+			$this->motion->y = $motion->y * 0.19;
 		}else{
-			$this->motionY = 0.6;
+			$this->motion->y = 0.6;
 		}
 
 		// panic mode - here we check if the entity can enter panic mode and so on
@@ -304,7 +304,7 @@ abstract class BaseEntity extends Creature{
 		$this->checkAttackByTamedEntities($source);
 	}
 
-	public function knockBack(Entity $attacker, float $damage, float $x, float $z, float $base = 0.4){
+	public function knockBack(Entity $attacker, float $damage, float $x, float $z, float $base = 0.4) : void{
 
 	}
 
@@ -367,7 +367,7 @@ abstract class BaseEntity extends Creature{
 		$movY = $dy;
 		$movZ = $dz;
 
-		$list = $this->level->getCollisionCubes($this, $this->level->getTickRate() > 1 ? $this->boundingBox->getOffsetBoundingBox($dx, $dy, $dz) : $this->boundingBox->addCoord($dx, $dy, $dz));
+		$list = $this->level->getCollisionCubes($this, $this->level->getTickRate() > 1 ? $this->boundingBox->offsetCopy($dx, $dy, $dz) : $this->boundingBox->addCoord($dx, $dy, $dz));
 		if($this->isWallCheck()){
 			foreach($list as $bb){
 				$dx = $bb->calculateXOffset($this->boundingBox, $dx);

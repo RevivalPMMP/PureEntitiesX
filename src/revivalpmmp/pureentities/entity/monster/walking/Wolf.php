@@ -66,7 +66,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 
 	private $collarColor = Color::RED;
 
-	public function initEntity(){
+	public function initEntity() : void{
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -143,7 +143,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 		if(($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip){
 			if(!$this->isTamed() and !$this->getBaseTarget() instanceof Monster){
 				// is there any entity around that is attackable (skeletons, rabbits, sheep)
-				foreach($this->getLevel()->getNearbyEntities($this->boundingBox->grow(10, 10, 10), $this) as $entity){
+				foreach($this->getLevel()->getNearbyEntities($this->boundingBox->expandedCopy(10, 10, 10), $this) as $entity){
 					if($entity instanceof Skeleton or $entity instanceof Rabbit or $entity instanceof Sheep and
 						$entity->isAlive()
 					){
@@ -203,7 +203,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	/**
 	 * Saves important variables to the NBT
 	 */
-	public function saveNBT(){
+	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
 			$this->saveTameNBT();
@@ -239,7 +239,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	 *
 	 * @param EntityDamageEvent $source
 	 */
-	public function attack(EntityDamageEvent $source){
+	public function attack(EntityDamageEvent $source) : void{
 		parent::attack($source);
 
 		if(!$source->isCancelled()){
