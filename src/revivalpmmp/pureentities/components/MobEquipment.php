@@ -396,13 +396,9 @@ class MobEquipment{
 	private function getWeaponDamage() : int{
 		$damageToAdd = 0;
 		$itemInMain = $this->getMainHand();
-		/**
-		 * @var $itemInMain Item
-		 */
-		if($itemInMain !== null and $itemInMain->getId() !== ItemIds::AIR){
-			// is wearing something in main hand
-			if($this->isSwordWorn()){
-				$tier = $itemInMain->isSword();
+		if($itemInMain !== null and $itemInMain->getId() instanceof TieredTool){
+			if($itemInMain instanceof Sword){
+				$tier = $itemInMain->getTier();
 				switch($tier){
 					case TieredTool::TIER_WOODEN:
 					case TieredTool::TIER_GOLD:
