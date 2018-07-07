@@ -27,7 +27,6 @@ use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\tile\Spawnable;
 
 class Spawner extends Spawnable{
