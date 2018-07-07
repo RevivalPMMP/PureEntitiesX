@@ -169,6 +169,10 @@ class Spawner extends Spawnable{
 				$this->maxSpawnDelay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY, 800, true);
 			}
 
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_DELAY)){
+				$this->delay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_DELAY, 0, true);
+			}
+
 			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES)){
 				$this->maxNearbyEntities = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES, 6, true);
 			}
