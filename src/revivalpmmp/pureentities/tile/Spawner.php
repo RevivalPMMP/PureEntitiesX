@@ -136,7 +136,18 @@ class Spawner extends Spawnable{
 	}
 
 	public function addAdditionalSpawnData(CompoundTag $nbt) : void{
+		$nbt->setByte(NBTConst::NBT_KEY_SPAWNER_IS_MOVABLE, 1);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_DELAY, 0);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES, $this->maxNearbyEntities);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY, $this->maxSpawnDelay);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY, $this->minSpawnDelay);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE, $this->requiredPlayerRange);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT, $this->spawnCount);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE, $this->spawnRange);
 		$nbt->setInt(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId);
+		//$spawnData = new CompoundTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA, [new StringTag("id", $this->entityId)]);
+		//$nbt->setTag($spawnData);
+		$this->scheduleUpdate();
 	}
 
 	public function readSaveData(CompoundTag $nbt) : void{
@@ -190,21 +201,7 @@ class Spawner extends Spawnable{
 
 	public function writeSaveData(CompoundTag $nbt) : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-
-			$nbt->setByte(NBTConst::NBT_KEY_SPAWNER_IS_MOVABLE, 1);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_DELAY, 0);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES, $this->maxNearbyEntities);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY, $this->maxSpawnDelay);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY, $this->minSpawnDelay);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE, $this->requiredPlayerRange);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT, 0);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE, $this->spawnRange);
-			$nbt->setInt(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId);
-			$nbt->setFloat(NBTConst::NBT_KEY_SPAWNER_DISPLAY_ENTITY_HEIGHT, 1);
-			$nbt->setFloat(NBTConst::NBT_KEY_SPAWNER_DISPLAY_ENTITY_SCALE, 1);
-			$nbt->setFloat(NBTConst::NBT_KEY_SPAWNER_DISPLAY_ENTITY_WIDTH, 0.5);
-			$spawnData = new CompoundTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA, [new IntTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId)]);
-			$nbt->setTag($spawnData);
+			$this->addAdditionalSpawnData($nbt);
 		}
 	}
 
