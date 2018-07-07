@@ -46,6 +46,16 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 		return true;
 	}
 
+
+	/**
+	 * This method replaces the event listener that was being used for spawn eggs.
+	 * It will need to be updated in the future when additional tags are supported.
+	 *
+	 *
+	 * @param Item        $item
+	 * @param Player|null $player
+	 * @return bool
+	 */
 	public function onActivate(Item $item, Player $player = null) : bool{
 		if($item->getId() !== Item::SPAWN_EGG){
 			return false;
@@ -55,6 +65,20 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 		return true;
 	}
 
+
+	/**
+	 * Additional method for updating MobSpawner tile detals.  This will also need
+	 * to be updated in the future when additional tag info is supported.
+	 *
+	 *
+	 * @param Item        $item
+	 * @param Block       $blockReplace
+	 * @param Block       $blockClicked
+	 * @param int         $face
+	 * @param Vector3     $clickVector
+	 * @param Player|null $player
+	 * @return bool
+	 */
 	public function place(Item $item, Block $blockReplace, Block $blockClicked, int $face, Vector3 $clickVector, Player $player = null) : bool{
 		$return = parent::place($item, $blockReplace, $blockClicked, $face, $clickVector, $player);
 
@@ -68,6 +92,11 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 		return $return;
 	}
 
+
+	/**
+	 * Checks for the presence of a MobSpawner in the same location as the MonsterSpawner block.
+	 * If not there, it creates one, then updates the EntityId.
+	 */
 	private function generateSpawnerTile() {
 		$tile = $this->getLevel()->getTile($this);
 		if(!$tile instanceof MobSpawner){
@@ -80,6 +109,14 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 		$tile->setSpawnEntityType($this->entityId);
 	}
 
+
+	/**
+	 * Vanilla MonsterSpanwers don't drop themselves under any circumstance.  May add the ability
+	 * drop itself through config options.
+	 *
+	 * @param Item $item
+	 * @return array
+	 */
 	public function getSilkTouchDrops(Item $item) : array{
 		return [];
 	}
