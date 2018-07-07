@@ -195,10 +195,10 @@ class Spawner extends Spawnable{
 			// the default vanilla spawning properties for this mob, including potentially randomized armor (this is true even
 			// if SpawnPotentials does exist). Warning: If SpawnPotentials exists, this tag will get overwritten after the
 			// next spawning attempt: see above for more details.
-			if(!$nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA)){
-				$spawnData = new CompoundTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA, [new IntTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId)]);
-				$nbt->setTag($spawnData);
-			}
+			// if(!$nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA)){
+			//	 $spawnData = new CompoundTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA, [new IntTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId)]);
+			//	 $nbt->setTag($spawnData);
+			// }
 
 		}
 	}
