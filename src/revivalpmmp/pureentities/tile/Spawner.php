@@ -41,6 +41,7 @@ class Spawner extends Spawnable{
 
 	protected $minSpawnDelay = 200;
 	protected $maxSpawnDelay = 800;
+	protected $spawnCount = 0;
 
 	public function __construct(Level $level, CompoundTag $nbt){
 
@@ -165,6 +166,10 @@ class Spawner extends Spawnable{
 				$this->requiredPlayerRange = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE, 16);
 			}
 
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT)){
+				$this->spawnCount = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT, 0, true);
+			}
+
 			// TODO: add SpawnData: Contains tags to copy to the next spawned entity(s) after spawning. Any of the entity or
 			// mob tags may be used. Note that if a spawner specifies any of these tags, almost all variable data such as mob
 			// equipment, villager profession, sheep wool color, etc., will not be automatically generated, and must also be
@@ -180,7 +185,6 @@ class Spawner extends Spawnable{
 				$nbt->setTag($spawnData);
 			}
 
-			// TODO: add SpawnCount: How many mobs to attempt to spawn each time. Note: Requires the MinSpawnDelay property to also be set.
 		}
 	}
 
@@ -204,4 +208,7 @@ class Spawner extends Spawnable{
 		}
 	}
 
+	public function getSpawnCount() : int{
+		return $this->spawnCount;
+	}
 }
