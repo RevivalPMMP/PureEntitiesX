@@ -111,7 +111,7 @@ class Spawner extends Spawnable{
 	}
 
 	public function setMaxSpawnDelay(int $maxDelay){
-		if($this->minSpawnDelay > $maxDelay){
+		if($this->minSpawnDelay > $maxDelay or $maxDelay === 0){
 			return;
 		}
 
