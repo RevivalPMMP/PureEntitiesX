@@ -95,9 +95,10 @@ class Spawner extends Spawnable{
 		PureEntities::logOutput("setSpawnEntityType called with EntityID of $entityId");
 		$this->entityId = $entityId;
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			$this->saveNBT();
+			$this->writeSaveData($tag = new CompoundTag());
 		}
-		$this->spawnToAll();
+		$this->onChanged();
+		$this->scheduleUpdate();
 	}
 
 	public function setMinSpawnDelay(int $minDelay){
