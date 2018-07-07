@@ -89,7 +89,7 @@ use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\task\EndermanLookingTask;
 use revivalpmmp\pureentities\task\InteractionTask;
-use revivalpmmp\pureentities\tile\Spawner;
+use revivalpmmp\pureentities\tile\MobSpawner;
 use revivalpmmp\pureentities\utils\MobEquipper;
 
 class PureEntities extends PluginBase implements CommandExecutor{
@@ -205,7 +205,8 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			}
 		}
 
-		Tile::registerTile(Spawner::class);
+		Tile::registerTile(MobSpawner::class);
+
 
 		$this->saveDefaultConfig();
 

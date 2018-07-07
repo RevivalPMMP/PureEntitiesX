@@ -29,7 +29,7 @@ use revivalpmmp\pureentities\PureEntities;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\tile\Spawnable;
 
-class Spawner extends Spawnable{
+class MobSpawner extends Spawnable{
 
 	protected $entityId = -1;
 	protected $spawnRange = 8;
@@ -47,7 +47,7 @@ class Spawner extends Spawnable{
 		parent::__construct($level, $nbt);
 
 		$this->scheduleUpdate();
-		PureEntities::logOutput("Spawner Created with EntityID of $this->entityId");
+		PureEntities::logOutput("MobSpawner Created with EntityID of $this->entityId");
 	}
 
 	public function onUpdate() : bool{
@@ -82,7 +82,7 @@ class Spawner extends Spawnable{
 				$pos->y += Data::HEIGHTS[$this->entityId];
 				$entity = PureEntities::create($this->entityId, $pos);
 				if($entity != null){
-					PureEntities::logOutput("Spawner: spawn $entity to $pos");
+					PureEntities::logOutput("MobSpawner: spawn $entity to $pos");
 					$entity->spawnToAll();
 				}
 			}
