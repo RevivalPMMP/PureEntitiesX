@@ -27,10 +27,9 @@ use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\IntTag;
 use pocketmine\tile\Spawnable;
 
-class Spawner extends Spawnable{
+class MobSpawner extends Spawnable{
 
 	protected $entityId = -1;
 	protected $spawnRange = 8;
@@ -41,13 +40,14 @@ class Spawner extends Spawnable{
 
 	protected $minSpawnDelay = 200;
 	protected $maxSpawnDelay = 800;
+	protected $spawnCount = 0;
 
 	public function __construct(Level $level, CompoundTag $nbt){
 
 		parent::__construct($level, $nbt);
 
 		$this->scheduleUpdate();
-		PureEntities::logOutput("Spawner Created with EntityID of $this->entityId");
+		PureEntities::logOutput("MobSpawner Created with EntityID of $this->entityId");
 	}
 
 	public function onUpdate() : bool{
@@ -82,7 +82,7 @@ class Spawner extends Spawnable{
 				$pos->y += Data::HEIGHTS[$this->entityId];
 				$entity = PureEntities::create($this->entityId, $pos);
 				if($entity != null){
-					PureEntities::logOutput("Spawner: spawn $entity to $pos");
+					PureEntities::logOutput("MobSpawner: spawn $entity to $pos");
 					$entity->spawnToAll();
 				}
 			}
@@ -95,9 +95,10 @@ class Spawner extends Spawnable{
 		PureEntities::logOutput("setSpawnEntityType called with EntityID of $entityId");
 		$this->entityId = $entityId;
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			$this->saveNBT();
+			$this->writeSaveData($tag = new CompoundTag());
 		}
-		$this->spawnToAll();
+		$this->onChanged();
+		$this->scheduleUpdate();
 	}
 
 	public function setMinSpawnDelay(int $minDelay){
@@ -109,7 +110,7 @@ class Spawner extends Spawnable{
 	}
 
 	public function setMaxSpawnDelay(int $maxDelay){
-		if($this->minSpawnDelay > $maxDelay){
+		if($this->minSpawnDelay > $maxDelay or $maxDelay === 0){
 			return;
 		}
 
@@ -134,7 +135,18 @@ class Spawner extends Spawnable{
 	}
 
 	public function addAdditionalSpawnData(CompoundTag $nbt) : void{
+		$nbt->setByte(NBTConst::NBT_KEY_SPAWNER_IS_MOVABLE, 1);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_DELAY, 0);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES, $this->maxNearbyEntities);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY, $this->maxSpawnDelay);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY, $this->minSpawnDelay);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE, $this->requiredPlayerRange);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT, $this->spawnCount);
+		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE, $this->spawnRange);
 		$nbt->setInt(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId);
+		//$spawnData = new CompoundTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA, [new StringTag("id", $this->entityId)]);
+		//$nbt->setTag($spawnData);
+		$this->scheduleUpdate();
 	}
 
 	public function readSaveData(CompoundTag $nbt) : void{
@@ -156,12 +168,20 @@ class Spawner extends Spawnable{
 				$this->maxSpawnDelay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY, 800, true);
 			}
 
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_DELAY)){
+				$this->delay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_DELAY, 0, true);
+			}
+
 			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES)){
 				$this->maxNearbyEntities = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES, 6, true);
 			}
 
 			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE)){
 				$this->requiredPlayerRange = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE, 16);
+			}
+
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT)){
+				$this->spawnCount = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT, 0, true);
 			}
 
 			// TODO: add SpawnData: Contains tags to copy to the next spawned entity(s) after spawning. Any of the entity or
@@ -174,33 +194,21 @@ class Spawner extends Spawnable{
 			// the default vanilla spawning properties for this mob, including potentially randomized armor (this is true even
 			// if SpawnPotentials does exist). Warning: If SpawnPotentials exists, this tag will get overwritten after the
 			// next spawning attempt: see above for more details.
-			if(!$nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA)){
-				$spawnData = new CompoundTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA, [new IntTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId)]);
-				$nbt->setTag($spawnData);
-			}
+			// if(!$nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA)){
+			//	 $spawnData = new CompoundTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA, [new IntTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId)]);
+			//	 $nbt->setTag($spawnData);
+			// }
 
-			// TODO: add SpawnCount: How many mobs to attempt to spawn each time. Note: Requires the MinSpawnDelay property to also be set.
 		}
 	}
 
 	public function writeSaveData(CompoundTag $nbt) : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-
-			$nbt->setByte(NBTConst::NBT_KEY_SPAWNER_IS_MOVABLE, 1);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_DELAY, 0);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES, $this->maxNearbyEntities);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY, $this->maxSpawnDelay);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY, $this->minSpawnDelay);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE, $this->requiredPlayerRange);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT, 0);
-			$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE, $this->spawnRange);
-			$nbt->setInt(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId);
-			$nbt->setFloat(NBTConst::NBT_KEY_SPAWNER_DISPLAY_ENTITY_HEIGHT, 1);
-			$nbt->setFloat(NBTConst::NBT_KEY_SPAWNER_DISPLAY_ENTITY_SCALE, 1);
-			$nbt->setFloat(NBTConst::NBT_KEY_SPAWNER_DISPLAY_ENTITY_WIDTH, 0.5);
-			$spawnData = new CompoundTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA, [new IntTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId)]);
-			$nbt->setTag($spawnData);
+			$this->addAdditionalSpawnData($nbt);
 		}
 	}
 
+	public function getSpawnCount() : int{
+		return $this->spawnCount;
+	}
 }

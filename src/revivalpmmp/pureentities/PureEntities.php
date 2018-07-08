@@ -20,6 +20,7 @@
 
 namespace revivalpmmp\pureentities;
 
+use pocketmine\block\BlockFactory;
 use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
@@ -35,6 +36,7 @@ use pocketmine\Server;
 use pocketmine\ThreadManager;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
+use revivalpmmp\pureentities\block\MonsterSpawnerPEX;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\flying\Bat;
 use revivalpmmp\pureentities\entity\animal\flying\Parrot;
@@ -89,7 +91,7 @@ use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\task\AutoSpawnTask;
 use revivalpmmp\pureentities\task\EndermanLookingTask;
 use revivalpmmp\pureentities\task\InteractionTask;
-use revivalpmmp\pureentities\tile\Spawner;
+use revivalpmmp\pureentities\tile\MobSpawner;
 use revivalpmmp\pureentities\utils\MobEquipper;
 
 class PureEntities extends PluginBase implements CommandExecutor{
@@ -205,7 +207,8 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			}
 		}
 
-		Tile::registerTile(Spawner::class);
+		Tile::registerTile(MobSpawner::class);
+		BlockFactory::registerBlock(new MonsterSpawnerPEX(), true);
 
 		$this->saveDefaultConfig();
 

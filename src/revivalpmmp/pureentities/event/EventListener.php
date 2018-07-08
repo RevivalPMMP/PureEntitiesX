@@ -23,21 +23,15 @@ namespace revivalpmmp\pureentities\event;
 use pocketmine\block\Air;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\IntTag;
-use pocketmine\nbt\tag\StringTag;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
-use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\data\Color;
-use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Ocelot;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
@@ -52,7 +46,6 @@ use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\task\delayed\SetTamedOwnerTask;
 use revivalpmmp\pureentities\task\delayed\ShowMobEquipmentTask;
-use revivalpmmp\pureentities\tile\Spawner;
 
 class EventListener implements Listener{
 
@@ -60,36 +53,6 @@ class EventListener implements Listener{
 
 	public function __construct(PureEntities $plugin){
 		$this->plugin = $plugin;
-	}
-
-	public function PlayerInteractEvent(PlayerInteractEvent $ev){
-		if($ev->getFace() == 255 || $ev->getAction() != PlayerInteractEvent::RIGHT_CLICK_BLOCK){
-			return;
-		}
-
-		$item = $ev->getItem();
-		$block = $ev->getBlock();
-		if($item->getId() === Item::SPAWN_EGG && $block->getId() == Item::MONSTER_SPAWNER){
-			$ev->setCancelled();
-
-			$tile = $block->level->getTile($block);
-			if($tile != null && $tile instanceof Spawner){
-				PureEntities::logOutput("EventListener:: Calling setSpawnEntityType");
-				$tile->setSpawnEntityType($item->getDamage());
-			}else{
-				if($tile != null){
-					$tile->close();
-				}
-				PureEntities::logOutput("Creating New Spawner");
-				$nbt = new CompoundTag("");
-				$nbt->setString(Tile::TAG_ID, Tile::MOB_SPAWNER);
-				$nbt->setInt(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $item->getDamage());
-				$nbt->setInt(Tile::TAG_X, $block->x);
-				$nbt->setInt(Tile::TAG_Y, $block->y);
-				$nbt->setInt(Tile::TAG_Z, $block->z);
-				new Spawner($block->getLevel(), $nbt);
-			}
-		}
 	}
 
 	/**
