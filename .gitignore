@@ -8,6 +8,6 @@ Travis.php
 .pullapprove.yml
 .gitignore
 icon.jpg
-phpstorm_codeformatting.xml
+Project.xml
 config.yml
 logs/
