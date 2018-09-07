@@ -55,7 +55,7 @@ class AutoSpawnTask extends Task{
 
 	public function __construct(PureEntities $plugin){
 		$this->plugin = $plugin;
-		$this->spawnerWorlds = PluginConfiguration::getInstance()->getEnabledWorlds();
+		$this->spawnerWorlds = PluginConfiguration::$enabledWorlds;
 	}
 
 	public function onRun(int $currentTick){

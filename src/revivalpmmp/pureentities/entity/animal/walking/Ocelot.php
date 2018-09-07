@@ -107,8 +107,8 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 
 		$this->breedableClass->init();
 
-		$this->teleportDistance = PluginConfiguration::getInstance()->getTamedTeleportBlocks();
-		$this->followDistance = PluginConfiguration::getInstance()->getTamedPlayerMaxDistance();
+		$this->teleportDistance = PluginConfiguration::$tamedTeleportBlocks;
+		$this->followDistance = PluginConfiguration::$tamedPlayerMaxDistance;
 	}
 
 	/**
@@ -188,7 +188,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 	 * Loads data from nbt and stores to local variables
 	 */
 	public function loadNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			parent::loadNBT();
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_CATTYPE)){
 				$catType = $this->namedtag->getByte(NBTConst::NBT_KEY_CATTYPE, 0, true);
@@ -198,7 +198,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 	}
 
 	public function saveNBT() : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_CATTYPE, $this->catType, true); // sets ocelot skin
 			$this->breedableClass->saveNBT();

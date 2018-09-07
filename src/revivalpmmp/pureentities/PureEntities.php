@@ -206,10 +206,10 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	public function onEnable(){
 		new PluginConfiguration($this); // create plugin configuration
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
-		if(PluginConfiguration::getInstance()->getEnableSpawning()){
+		if(PluginConfiguration::$enableNBT){
 			$this->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
 		}
-		if(PluginConfiguration::getInstance()->getEnableLookingTasks()){
+		if(PluginConfiguration::$enableLookingTasks){
 			$this->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
 			$this->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
 		}

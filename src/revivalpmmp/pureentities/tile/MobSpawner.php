@@ -94,7 +94,7 @@ class MobSpawner extends Spawnable{
 	public function setSpawnEntityType(int $entityId){
 		PureEntities::logOutput("setSpawnEntityType called with EntityID of $entityId");
 		$this->entityId = $entityId;
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			$this->writeSaveData($tag = new CompoundTag());
 		}
 		$this->onChanged();
@@ -150,7 +150,7 @@ class MobSpawner extends Spawnable{
 	}
 
 	public function readSaveData(CompoundTag $nbt) : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 
 			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID)){
 				$this->setSpawnEntityType($nbt->getInt(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, -1, true));
@@ -203,7 +203,7 @@ class MobSpawner extends Spawnable{
 	}
 
 	public function writeSaveData(CompoundTag $nbt) : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			$this->addAdditionalSpawnData($nbt);
 		}
 	}

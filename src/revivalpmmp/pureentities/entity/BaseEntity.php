@@ -90,8 +90,8 @@ abstract class BaseEntity extends Creature{
 
 	public function __construct(Level $level, CompoundTag $nbt){
 		$this->idlingComponent = new IdlingComponent($this);
-		$this->checkTargetSkipTicks = PluginConfiguration::getInstance()->getCheckTargetSkipTicks();
-		$this->maxAge = PluginConfiguration::getInstance()->getMaxAge();
+		$this->checkTargetSkipTicks = PluginConfiguration::$checkTargetSkipTicks;
+		$this->maxAge = PluginConfiguration::$maxAge;
 		$this->maxDeadTicks = 23;
 		parent::__construct($level, $nbt);
 		/* if ($this->eyeHeight === null) {
@@ -204,7 +204,7 @@ abstract class BaseEntity extends Creature{
 	}
 
 	public function saveNBT() : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_MOVEMENT, $this->isMovement(), true);
 			$this->namedtag->setByte(NBTConst::NBT_KEY_WALL_CHECK, $this->isWallCheck(), true);
@@ -216,7 +216,7 @@ abstract class BaseEntity extends Creature{
 	}
 
 	public function loadNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_MOVEMENT)){
 				$movement = $this->namedtag->getByte(NBTConst::NBT_KEY_MOVEMENT, false, true);
 				$this->setMovement((bool) $movement);

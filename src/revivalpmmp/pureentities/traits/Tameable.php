@@ -92,7 +92,7 @@ trait Tameable{
 
 	public function saveTameNBT(){
 
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			$this->namedtag->setByte(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0, true);
 			if($this->getOwnerName() !== null){
 				$this->namedtag->setString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName(), true); // only for our own (server side)
@@ -105,7 +105,7 @@ trait Tameable{
 	}
 
 	public function loadTameNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			if($this->namedtag->hasTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME)){
 				$owner = $this->namedtag->getString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, NBTConst::NBT_INVALID_STRING);
 				$ownerEID = $this->namedtag->getLong(NBTConst::NBT_KEY_OWNER_EID, NBTConst::NBT_INVALID_LONG, true);

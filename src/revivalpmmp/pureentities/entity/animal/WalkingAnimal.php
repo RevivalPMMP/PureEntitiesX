@@ -127,7 +127,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 		if($this->blockInterestTime > 0){ // we take a look at interesting blocks only each 300 ticks!
 			$this->blockInterestTime--;
 		}else{ // it's time to check for any interesting block the entity is on
-			$this->blockInterestTime = PluginConfiguration::getInstance()->getBlockOfInterestTicks();
+			$this->blockInterestTime = PluginConfiguration::$blockOfInterestTicks;
 			$temporalVector = new Vector3($this->x, $this->y - $this->height / 2, $this->z);
 			$block = $this->level->getBlock($temporalVector);
 		}
@@ -175,10 +175,10 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 				$itemInHand = $creature->getInventory()->getItemInHand()->getId();
 				if($this instanceof IntfTameable){
 					$tameFood = $this->getTameFoods();
-					if(!$this->isTamed() and in_array($itemInHand, $tameFood) and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()){
+					if(!$this->isTamed() and in_array($itemInHand, $tameFood) and $distance <= PluginConfiguration::$maxInteractDistance){
 						$targetOption = true;
 					}else if($this instanceof IntfCanBreed){
-						if($this->isTamed() and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()){ // tamed - it can breed!!!
+						if($this->isTamed() and $distance <= PluginConfiguration::$maxInteractDistance){ // tamed - it can breed!!!
 							$feedableItems = $this->getFeedableItems();
 							$hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
 							if($hasFeedableItemsInHand){

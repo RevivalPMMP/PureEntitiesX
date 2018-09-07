@@ -142,7 +142,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	 * loads data from nbt and fills internal variables
 	 */
 	public function loadNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			if(($pumpkin = $this->namedtag->getByte(NBTConst::NBT_KEY_PUMPKIN, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE){
 				$this->sheared = boolval($pumpkin);
 			}
@@ -153,7 +153,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	 * Stores internal variables to NBT
 	 */
 	public function saveNBT() : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			parent::saveNBT();
 			$this->namedtag->setInt(NBTConst::NBT_KEY_PUMPKIN, $this->sheared ? 0 : 1); // default: has pumpkin on his head (1 - pumpkin on head, 0 - pumpkin off!)
 		}

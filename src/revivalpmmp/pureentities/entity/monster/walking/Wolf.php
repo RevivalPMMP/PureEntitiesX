@@ -105,8 +105,8 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 		}
 		$this->breedableClass->init();
 
-		$this->teleportDistance = PluginConfiguration::getInstance()->getTamedTeleportBlocks();
-		$this->followDistance = PluginConfiguration::getInstance()->getTamedPlayerMaxDistance();
+		$this->teleportDistance = PluginConfiguration::$tamedTeleportBlocks;
+		$this->followDistance = PluginConfiguration::$tamedPlayerMaxDistance;
 	}
 
 	/**
@@ -184,7 +184,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	 * Loads data from NBT and stores to local variables
 	 */
 	public function loadNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			parent::loadNBT();
 			$this->loadTameNBT();
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_ANGRY)){
@@ -204,7 +204,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	 * Saves important variables to the NBT
 	 */
 	public function saveNBT() : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			parent::saveNBT();
 			$this->saveTameNBT();
 			$this->namedtag->setInt(NBTConst::NBT_KEY_ANGRY, $this->angryValue, true);

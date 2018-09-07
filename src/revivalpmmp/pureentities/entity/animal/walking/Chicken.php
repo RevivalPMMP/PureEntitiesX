@@ -64,7 +64,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 	}
 
 	public function saveNBT() : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			parent::saveNBT();
 			$this->breedableClass->saveNBT();
 		}

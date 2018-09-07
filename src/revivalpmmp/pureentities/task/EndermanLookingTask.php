@@ -46,7 +46,7 @@ class EndermanLookingTask extends Task{
 
 	public function __construct(PureEntities $plugin){
 		$this->plugin = $plugin;
-		$this->isInteractiveButtonCorrectionSet = PluginConfiguration::getInstance()->isInteractiveButtonCorrection();
+		$this->isInteractiveButtonCorrectionSet = PluginConfiguration::$interactiveButtonCorrection;
 	}
 
 	/**

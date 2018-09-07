@@ -108,7 +108,7 @@ class MobEquipment{
 
 	public function __construct(BaseEntity $entity){
 		$this->entity = $entity;
-		$this->pickupTimer = new TickCounter(PluginConfiguration::getInstance()->getPickupLootTicks());
+		$this->pickupTimer = new TickCounter(PluginConfiguration::$pickupLootTicks);
 	}
 
 	/**
@@ -272,7 +272,7 @@ class MobEquipment{
 	 * @param Player $player the player to send the data packet to
 	 */
 	public function sendEquipmentUpdate(Player $player){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_ARMOR_ITEMS)){
 				PureEntities::logOutput("sendEquipmentUpdate: armor to " . $player->getName(), \LogLevel::DEBUG);
 				$player->dataPacket($this->createArmorEquipPacket());
@@ -532,7 +532,7 @@ class MobEquipment{
 	}
 
 	private function storeToNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			// feet, legs, chest, head - store armor content to NBT
 			$armor[0] = new CompoundTag("0", [
 				"Count" => new IntTag("Count", 1),
@@ -570,7 +570,7 @@ class MobEquipment{
 	}
 
 	private function loadFromNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			PureEntities::logOutput("MobEquipment: loadFromNBT for " . $this->entity, \LogLevel::DEBUG);
 			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_ARMOR_ITEMS)){
 				PureEntities::logOutput("MobEquipment: armorItems set for " . $this->entity, \LogLevel::DEBUG);

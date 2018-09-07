@@ -126,11 +126,11 @@ class BreedingComponent{
 		$this->adultHeight = $belongsTo->height;
 		$this->adultWidth = $belongsTo->width;
 		$this->adultSpeed = $belongsTo->getSpeed();
-		$this->emitLoveParticles = PluginConfiguration::getInstance()->getEmitLoveParticlesConstantly();
+		$this->emitLoveParticles = PluginConfiguration::$emitLoveParticlesConstantly;
 	}
 
 	public function loadFromNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 
 			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_AGE)){
 				$this->age = $this->entity->namedtag->getInt(NBTConst::NBT_KEY_AGE, 0, true);
@@ -142,7 +142,7 @@ class BreedingComponent{
 	}
 
 	public function saveNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			$this->entity->namedtag->setInt(NBTConst::NBT_KEY_AGE, $this->age, true);
 			$this->entity->namedtag->setInt(NBTConst::NBT_KEY_IN_LOVE, $this->inLove, true);
 		}
@@ -341,7 +341,7 @@ class BreedingComponent{
 			if($this->partnerSearchTimer >= self::SEARCH_FOR_PARTNER_DELAY and
 				$this->getBreedPartner() == null
 			){
-				$validTarget = $this->findAnotherEntityInLove(PluginConfiguration::getInstance()->getMaxFindPartnerDistance()); // find another target within 20 blocks
+				$validTarget = $this->findAnotherEntityInLove(PluginConfiguration::$maxFindPartnerDistance); // find another target within 20 blocks
 				if($validTarget != false){
 					$this->setBreedPartner($validTarget); // now my target is my "in love" partner - this entity will move to the other entity
 					/**

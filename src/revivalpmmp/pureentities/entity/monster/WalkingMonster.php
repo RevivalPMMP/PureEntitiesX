@@ -337,10 +337,10 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 					$itemInHand = $creature->getInventory()->getItemInHand()->getId();
 					if($this instanceof IntfTameable){
 						$tameFood = $this->getTameFoods();
-						if(!$this->isTamed() and in_array($itemInHand, $tameFood) and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()){
+						if(!$this->isTamed() and in_array($itemInHand, $tameFood) and $distance <= PluginConfiguration::$maxInteractDistance){
 							$targetOption = true;
 						}else if($this instanceof IntfCanBreed){
-							if($this->isTamed() and $distance <= PluginConfiguration::getInstance()->getMaxInteractDistance()){ // tamed - it can breed!!!
+							if($this->isTamed() and $distance <= PluginConfiguration::$maxInteractDistance){ // tamed - it can breed!!!
 								$feedableItems = $this->getFeedableItems();
 								$hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
 								if($hasFeedableItemsInHand){

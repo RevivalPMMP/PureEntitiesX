@@ -53,7 +53,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 	}
 
 	public function loadNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			parent::loadNBT();
 
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SHEARED)){
@@ -65,7 +65,7 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 	}
 
 	public function saveNBT() : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			parent::saveNBT();
 			$this->breedableClass->saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_SHEARED, $this->isSheared() ? 0 : 1, true);

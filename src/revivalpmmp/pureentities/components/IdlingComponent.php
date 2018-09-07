@@ -87,11 +87,10 @@ class IdlingComponent{
 
 	public function __construct(BaseEntity $baseEntity){
 		$this->baseEntity = $baseEntity;
-		$pluginConfig = PluginConfiguration::getInstance();
-		$this->idleChance = $pluginConfig->getIdleChance();
-		$this->idleTimeBetween = $pluginConfig->getIdleTimeBetween();
-		$this->idleMin = $pluginConfig->getIdleMin();
-		$this->idleMax = $pluginConfig->getIdleMax();
+		$this->idleChance = PluginConfiguration::$idleChance;
+		$this->idleTimeBetween = PluginConfiguration::$idleTimeBetween;
+		$this->idleMin = PluginConfiguration::$idleMin;
+		$this->idleMax = PluginConfiguration::$idleMax;
 
 		// prevent crash while save/restore NBT
 		$this->idlingTickCounter = new TickCounter(0);
@@ -208,7 +207,7 @@ class IdlingComponent{
 	 * Loads the data for this component from entity's nbt
 	 */
 	public function loadFromNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			$namedTag = $this->baseEntity->namedtag;
 			if($namedTag->hasTag(NBTConst::NBT_KEY_IDLE_SETTINGS)){
 				$nbt = $namedTag->getCompoundTag(NBTConst::NBT_KEY_IDLE_SETTINGS);
@@ -234,7 +233,7 @@ class IdlingComponent{
 	 * Stores local data to NBT
 	 */
 	public function saveNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
+		if(PluginConfiguration::$enableNBT){
 			$entityTag = $this->baseEntity->namedtag;
 			$idleCompound = new CompoundTag(NBTConst::NBT_KEY_IDLE_SETTINGS);
 			if($this->idling){

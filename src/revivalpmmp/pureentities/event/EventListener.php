@@ -199,11 +199,11 @@ class EventListener implements Listener{
 		PureEntities::logOutput("[EventListener] playerJoin: " . $ev->getPlayer()->getName(), \LogLevel::DEBUG);
 		foreach($ev->getPlayer()->getLevel()->getEntities() as $entity){
 			if($entity->isAlive() and !$entity->isClosed() and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster and
-				PluginConfiguration::getInstance()->getEnableAsyncTasks()
+				PluginConfiguration::$enableAsyncTasks
 			){
 				$this->plugin->getScheduler()->scheduleDelayedTask(new ShowMobEquipmentTask(
 					PureEntities::getInstance(), $ev->getPlayer()), 20); // send mob equipment after 20 ticks
-			}else if($entity->isAlive() and $entity instanceof IntfTameable and $entity->getOwner() === null and PluginConfiguration::getInstance()->getEnableAsyncTasks()){
+			}else if($entity->isAlive() and $entity instanceof IntfTameable and $entity->getOwner() === null and PluginConfiguration::$enableAsyncTasks){
 				// sometimes tamed wolves don't get their owner back when the player logs back in again. so we
 				// need to do that at this point to be SURE that the wolf when respawned belongs to the correct player
 				$this->plugin->getScheduler()->scheduleDelayedTask(new SetTamedOwnerTask(
