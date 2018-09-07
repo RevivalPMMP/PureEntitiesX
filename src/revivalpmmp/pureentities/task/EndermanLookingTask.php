@@ -60,7 +60,7 @@ class EndermanLookingTask extends Task{
 			// Exceeding a max distance of 30 seems to cause problems with entity detection.
 			// TODO: Find route cause of failures above max distance of 30.
 			$entity = InteractionHelper::getEntityPlayerLookingAt($player, 30, $this->isInteractiveButtonCorrectionSet);
-			PureEntities::logOutput("EndermanLookingTask: $player is looking at $entity", PureEntities::DEBUG);
+			PureEntities::logOutput("EndermanLookingTask: $player is looking at $entity", \LogLevel::DEBUG);
 			if($entity !== null and $entity instanceof Enderman and !$entity->getBaseTarget() instanceof Living){ // player is looking at an enderman
 				$entity->playerLooksAt($player);
 			}

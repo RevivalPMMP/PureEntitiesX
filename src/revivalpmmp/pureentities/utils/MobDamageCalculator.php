@@ -109,7 +109,7 @@ class MobDamageCalculator{
 							}
 						}
 					}else{
-						PureEntities::logOutput("MobDamageCalculator: undefined armor item set: $armorItem", PureEntities::WARN);
+						PureEntities::logOutput("MobDamageCalculator: undefined armor item set: $armorItem", \LogLevel::WARNING);
 					}
 				}
 

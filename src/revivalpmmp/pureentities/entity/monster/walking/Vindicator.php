@@ -103,18 +103,18 @@ class Vindicator extends WalkingMonster implements IntfCanEquip, IntfCanBreed, M
 	 */
 	public function attack(EntityDamageEvent $source) : void{
 		$damage = $this->getDamage();
-		PureEntities::logOutput("$this: attacked with original damage of $damage", PureEntities::DEBUG);
+		PureEntities::logOutput("$this: attacked with original damage of $damage", \LogLevel::DEBUG);
 		$reduceDamagePercent = 0;
 		if($this->getMobEquipment() !== null){
 			$reduceDamagePercent = $this->getMobEquipment()->getArmorDamagePercentToReduce();
 		}
 		if($reduceDamagePercent > 0){
 			$reduceBy = $damage * $reduceDamagePercent / 100;
-			PureEntities::logOutput("$this: reduce damage by $reduceBy", PureEntities::DEBUG);
+			PureEntities::logOutput("$this: reduce damage by $reduceBy", \LogLevel::DEBUG);
 			$damage = $damage - $reduceBy;
 		}
 
-		PureEntities::logOutput("$this: attacked with final damage of $damage", PureEntities::DEBUG);
+		PureEntities::logOutput("$this: attacked with final damage of $damage", \LogLevel::DEBUG);
 
 		parent::attack($source);
 	}

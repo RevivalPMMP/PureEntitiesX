@@ -33,9 +33,7 @@ use pocketmine\level\Level;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
-use pocketmine\ThreadManager;
 use pocketmine\tile\Tile;
-use pocketmine\utils\TextFormat;
 use revivalpmmp\pureentities\block\MonsterSpawnerPEX;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\flying\Bat;
@@ -99,16 +97,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	/** @var  PureEntities $instance */
 	private static $instance;
 
-	/** @var string $loglevel */
-	private static $loglevel;
-	/** @var PEXCustomLogger $logger */
-	private static $logger;
-
-	// logging constants for method call 'logOutput'
-	const NORM = \LogLevel::INFO;
-	const WARN = \LogLevel::WARNING;
-	const DEBUG = \LogLevel::DEBUG;
-
 	// button texts ...
 	// TODO Move these into their own Class under Data.
 	const BUTTON_TEXT_SHEAR = "Shear";
@@ -122,15 +110,10 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	private static $registeredClasses = [];
 
 	/**
-	 * @var bool
-	 */
-	private static $loggingEnabled = false;
-
-	/**
 	 * Returns the plugin instance to get access to config e.g.
-	 * @return PureEntities the current instance of the plugin main class
+	 * @return PureEntities The plugin instance on the Main thread
 	 */
-	public static function getInstance() : PureEntities{
+	public static function getInstance() : self {
 		return self::$instance;
 	}
 
@@ -207,6 +190,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			}
 		}
 
+		/** @noinspection PhpUnhandledExceptionInspection */
 		Tile::registerTile(MobSpawner::class);
 		BlockFactory::registerBlock(new MonsterSpawnerPEX(), true);
 
@@ -229,25 +213,11 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			$this->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
 			$this->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
 		}
-
-		$enabled = self::$loggingEnabled = PluginConfiguration::getInstance()->getLogEnabled();
-		if($enabled){
-			$level = self::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", self::NORM));
-			self::$logger = new PEXCustomLogger(strcmp($level, self::DEBUG) === 0);
-			self::$logger->registerClassLoader();
-			self::$logger->registerStatic();
-			ThreadManager::getInstance()->{spl_object_hash(self::$logger)} = self::$logger; // just in case the logger isn't shut down by the plugin
-			$this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . $level);
-
-			$this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
-			$this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
-		}
+		$this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
+		$this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
 	}
 
 	public function onDisable(){
-		if(static::$loggingEnabled){
-			self::$logger->quit();
-		}
 		$this->getServer()->getLogger()->notice("[PureEntitiesX] Disabled!");
 	}
 
@@ -294,7 +264,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 					$entity->setTamed(true);
 					$entity->setOwner($owner);
 				}
-				self::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", self::DEBUG);
+				self::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", \LogLevel::DEBUG);
 				$entity->spawnToAll();
 
 				// additionally: mob equipment
@@ -304,7 +274,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 
 				return $entity;
 			}
-			self::logOutput("Cannot create entity [entityId:$entityid]", self::WARN);
+			self::logOutput("Cannot create entity [entityId:$entityid]", \LogLevel::WARNING);
 			return null;
 		}
 	}
@@ -313,25 +283,20 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 * Logs an output to the plugin's logfile ...
 	 * @param string $logline the output to be appended
 	 * @param string $type the type of output to log
-	 * @return bool returns false on failure
 	 */
-	public static function logOutput(string $logline, string $type = self::DEBUG){
-		if(self::$loggingEnabled){
-			switch($type){
-				case self::DEBUG:
-					self::$logger->debug($logline);
-					break;
-				case self::WARN:
-					self::$logger->warning($logline);
-					break;
-				case self::NORM:
-				default:
-					self::$logger->info($logline);
-					break;
-			}
-			return true;
+	public static function logOutput(string $logline, string $type = \LogLevel::DEBUG){
+		switch($type){
+			case \LogLevel::DEBUG:
+				self::$instance->getLogger()->debug($logline);
+			break;
+			case \LogLevel::WARNING:
+				self::$instance->getLogger()->warning($logline);
+			break;
+			case \LogLevel::INFO:
+			default:
+				self::$instance->getLogger()->info($logline);
+			break;
 		}
-		return false;
 	}
 
 	/**
@@ -389,10 +354,12 @@ class PureEntities extends PluginBase implements CommandExecutor{
 
 	/**
 	 * @param CommandSender $sender
-	 * @param Command       $command
-	 * @param string        $label
-	 * @param array         $args
+	 * @param Command $command
+	 * @param string $label
+	 * @param array $args
+	 *
 	 * @return bool
+	 * @throws \ReflectionException
 	 */
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		$commandSuccessful = false;
@@ -431,10 +398,10 @@ class PureEntities extends PluginBase implements CommandExecutor{
 						}
 					}
 					$sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
-					self::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", self::NORM);
+					self::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", \LogLevel::INFO);
 					foreach($entitiesRemoved as $entity){
 						$name = $entity instanceof ItemEntity ? $entity->getItem()->getName() : $entity->getName();
-						self::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", self::NORM);
+						self::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", \LogLevel::INFO);
 					}
 					unset($entitiesRemoved);
 					$commandSuccessful = true;
@@ -455,7 +422,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 							// find a mob with the name issued
 							$mobName = strtolower($args[0]);
 							foreach(self::$registeredClasses as $registeredClass){
-								if(strcmp($mobName, strtolower($this->getShortClassName($registeredClass))) == 0){
+								if(strcmp($mobName, (new \ReflectionClass($registeredClass))->getShortName())){
 									self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster", $isBaby);
 									$sender->sendMessage("Spawned $mobName");
 									return true;
@@ -474,33 +441,10 @@ class PureEntities extends PluginBase implements CommandExecutor{
 		return $commandSuccessful;
 	}
 
-	/**
-	 * Returns the "short" name of a class without namespace ...
-	 *
-	 * @param string $longClassName
-	 * @return string
-	 */
-	private function getShortClassName(string $longClassName) : string{
-		$short = "";
-		$longClassName = strtok($longClassName, "\\");
-		while($longClassName !== false){
-			$short = $longClassName;
-			$longClassName = strtok("\\");
-		}
-		return $short;
-	}
-
-	/**
-	 * @return array
-	 */
-	public static function getRegisteredClasses() : array{
-		return self::$registeredClasses;
-	}
-
 	public static function getPositionNearPlayer(Player $player, int $minimumDistanceToPlayer = 8, int $maximumDistanceToPlayer = 40) : Position{
 		// Random method used to get 8 block difference from player to entity spawn)
-		$x = $player->x + (random_int($minimumDistanceToPlayer, $maximumDistanceToPlayer) * (random_int(0, 1) === 0 ? 1 : -1));
-		$z = $player->z + (random_int($minimumDistanceToPlayer, $maximumDistanceToPlayer) * (random_int(0, 1) === 0 ? 1 : -1));
+		$x = $player->x + (mt_rand($minimumDistanceToPlayer, $maximumDistanceToPlayer) * (mt_rand(0, 1) === 0 ? 1 : -1));
+		$z = $player->z + (mt_rand($minimumDistanceToPlayer, $maximumDistanceToPlayer) * (mt_rand(0, 1) === 0 ? 1 : -1));
 
 		return new Position($x, $player->y, $z, $player->getLevel());
 	}

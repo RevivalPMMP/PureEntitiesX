@@ -2,34 +2,28 @@ https://github.com/RevivalPMMP/PureEntitiesX/wiki/Issue-Reporting-Guidelines
 If you do not follow the guidelines at the above link, your issue will be closed with a Resolution Status of "Invalid".
 
 
-<!-- REQUIRED INFORMATION - Labels should be self explainatory, failure to fill out this section will get your issued closed with Resolution status of "Invalid". -->
-## Required Information
-  __PocketMine-MP Version:__ (insert commit hash or version number here)
-  __Plugin Version:__ (insert commit hash or version number here)
-  Where you got the plugin: (url where the plugin was downloaded from.)
+<!-- put an 'x' in the brackets -->
+- [x] This issue isn't duplicated - you can check if it is by using the search bar located at the top left hand corner and select "Issues" on the left.
+- [x] This issue includes appropriate markdown for sections - e.g. code blocks for crash dumps.
+- [x] This issue is understandable - feel free to use your native language to write issues if you are not comfortable with English.
 
+<!-- ISSUE DESCRIPTION - write a SHORT title about what problem you're having. -->
+## Issue description
+What problem do you have?
+
+<!-- REPRODUCE ISSUE STEPS - how can this issue be reproduced? -->
+## Reproducing the issue
+1. ...
+2. ...
+
+<!-- CLIENT INFORMATION - what is the plugin version, PHP version, and server build you're running? -->
+## Client information
+PocketMine-MP Version: <!-- use the 'version' command in PocketMine-MP. "LATEST" is not a valid version -->
+Plugin Version: 
+PHP version: 7.2.9 (default)
 
 <!-- OPTIONAL INFORMATION - use this section for posting crash dumps, backtraces or other files(please use code markdown!) -->
-## Optional Information
-  __PHP version:__ 
-  __Other Installed Plugins:__ 
-  __OS Version:__
-    
-    
-<!-- STEPS TO REPRODUCE - Don't fill this out if the problem occurs immediately after install. -->
-## Steps to reproduce the issue.
-1.  
-2.  
-...
-
-<!-- Description of the Problem - A detailed description of the problem and any related information about how the issue was discovered. -->
-## Description
-  
-
-
-
+## Optional information
 ```
-
-Replace this text with console / error logs or crash dumps. (Do not remove the triple backticks above and below this.)
-
+Put a console error here, but please make sure you have your debug level set to 2 in your pocketmine.yml
 ```

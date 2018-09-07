@@ -48,7 +48,8 @@ class InteractionHelper{
 	 * Returns the button text which is currently displayed to the player
 	 *
 	 * @param Player $player the player to get the button text for
-	 * @return ?string           the button text, may be empty or NULL
+	 *
+	 * @return null|string ?string           the button text, may be empty or NULL
 	 */
 	public static function getButtonText(Player $player) : ?string{
 		return $player->getDataPropertyManager()->getPropertyValue(Entity::DATA_INTERACTIVE_TAG, Entity::DATA_TYPE_STRING);

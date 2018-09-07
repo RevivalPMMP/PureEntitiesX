@@ -65,7 +65,7 @@ class WearPickupChance{
 
 		$this->server = Server::getInstance();
 
-		PureEntities::logOutput("WearPickupChance successfully loaded for $entityName", PureEntities::NORM);
+		PureEntities::logOutput("WearPickupChance successfully loaded for $entityName", \LogLevel::INFO);
 	}
 
 	public function getCanPickupLootChance(){

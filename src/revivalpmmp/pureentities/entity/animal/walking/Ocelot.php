@@ -101,7 +101,7 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 		if($this->isTamed()){
 			$this->mapOwner();
 			if($this->owner === null){
-				PureEntities::logOutput("Ocelot($this): is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", PureEntities::NORM);
+				PureEntities::logOutput("Ocelot($this): is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", \LogLevel::INFO);
 			}
 		}
 

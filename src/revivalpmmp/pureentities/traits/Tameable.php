@@ -296,7 +296,7 @@ trait Tameable{
 			foreach($this->getLevel()->getPlayers() as $player){
 				if(strcasecmp($this->ownerName, $player->getName()) == 0){
 					$this->owner = $player;
-					PureEntities::logOutput("$this: mapOwner to $player", PureEntities::NORM);
+					PureEntities::logOutput("$this: mapOwner to $player", \LogLevel::INFO);
 					break;
 				}
 			}

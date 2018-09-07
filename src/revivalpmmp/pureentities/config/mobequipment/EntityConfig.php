@@ -68,7 +68,7 @@ class EntityConfig{
 			$this->wearChances = new WearChances($this->entityName);
 			$this->armorTypeChances = new ArmorTypeChances($this->entityName);
 		}else{
-			PureEntities::logOutput("Cannot load mob equipment parameters from config for " . $this->entityName, PureEntities::WARN);
+			PureEntities::logOutput("Cannot load mob equipment parameters from config for " . $this->entityName, \LogLevel::WARNING);
 		}
 	}
 

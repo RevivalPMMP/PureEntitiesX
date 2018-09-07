@@ -23,6 +23,7 @@ namespace revivalpmmp\pureentities\entity;
 use pocketmine\block\Block;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use Psr\Log\LogLevel;
 use revivalpmmp\pureentities\components\IdlingComponent;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
@@ -155,7 +156,7 @@ abstract class BaseEntity extends Creature{
 			return;
 		}
 		if($baseTarget !== $this->baseTarget){
-			PureEntities::logOutput("$this: setBaseTarget to $baseTarget", PureEntities::DEBUG);
+			PureEntities::logOutput("$this: setBaseTarget to $baseTarget", \LogLevel::DEBUG);
 			$this->baseTarget = $baseTarget;
 		}
 	}
@@ -353,7 +354,7 @@ abstract class BaseEntity extends Creature{
 		if($this->age > $this->maxAge and
 			(!$this instanceof IntfTameable or ($this instanceof IntfTameable and !$this->isTamed()))
 		){
-			PureEntities::logOutput("Despawn entity " . $this->getName(), PureEntities::NORM);
+			PureEntities::logOutput("Despawn entity " . $this->getName(), \LogLevel::INFO);
 			$this->close();
 			return true;
 		}

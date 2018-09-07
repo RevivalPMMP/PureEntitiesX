@@ -56,7 +56,7 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
 		if($this->isTamed()){
 			$this->mapOwner();
 			if($this->owner === null){
-				PureEntities::logOutput("$this: is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", PureEntities::NORM);
+				PureEntities::logOutput("$this: is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", \LogLevel::INFO);
 			}
 		}
 	}

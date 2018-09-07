@@ -46,7 +46,7 @@ class ArmorTypeChances{
 		$this->iron = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.iron");
 		$this->diamond = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.diamond");
 
-		PureEntities::logOutput("ArmorTypeChances successfully loaded for $entityName", PureEntities::NORM);
+		PureEntities::logOutput("ArmorTypeChances successfully loaded for $entityName", \LogLevel::INFO);
 	}
 
 	/**

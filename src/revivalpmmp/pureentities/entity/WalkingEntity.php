@@ -230,7 +230,7 @@ abstract class WalkingEntity extends BaseEntity{
 			try{
 				$blockingBlock = $this->getTargetBlock(2); // just for correction use 2 blocks ...
 			}catch(\InvalidStateException $ex){
-				PureEntities::logOutput("Caught InvalidStateException for getTargetBlock", PureEntities::DEBUG);
+				PureEntities::logOutput("Caught InvalidStateException for getTargetBlock", \LogLevel::DEBUG);
 				return false;
 			}
 		}
@@ -243,25 +243,25 @@ abstract class WalkingEntity extends BaseEntity{
 			if($upperBlock->canPassThrough() && $secondUpperBlock->canPassThrough()){
 				if($blockingBlock instanceof Fence || $blockingBlock instanceof FenceGate){ // cannot pass fence or fence gate ...
 					$this->motion->y = $this->gravity;
-					PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
+					PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", \LogLevel::DEBUG);
 				}else if($blockingBlock instanceof StoneSlab or $blockingBlock instanceof Stair){ // on stairs entities shouldn't jump THAT high
 					$this->motion->y = $this->gravity * 4;
-					PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
+					PureEntities::logOutput("$this: checkJump(): found slab or stair!", \LogLevel::DEBUG);
 				}else if($this->motion->y < ($this->gravity * 3.2)){ // Magic
-					PureEntities::logOutput("$this: checkJump(): set motion to gravity * 3.2!", PureEntities::DEBUG);
+					PureEntities::logOutput("$this: checkJump(): set motion to gravity * 3.2!", \LogLevel::DEBUG);
 					$this->motion->y = $this->gravity * 3.2;
 				}else{
-					PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
+					PureEntities::logOutput("$this: checkJump(): nothing else!", \LogLevel::DEBUG);
 					$this->motion->y += $this->gravity * 0.25;
 				}
 				return true;
 			}elseif(!$upperBlock->canPassThrough()){
-				PureEntities::logOutput("$this: checkJump(): cannot pass through the upper blocks!", PureEntities::DEBUG);
+				PureEntities::logOutput("$this: checkJump(): cannot pass through the upper blocks!", \LogLevel::DEBUG);
 				$this->yaw = $this->getYaw() + mt_rand(-120, 120) / 10;
 			}
 		}else{
 			PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $blockingBlock->canPassThrough() . "] " .
-				"[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $blockingBlock . "]", PureEntities::DEBUG);
+				"[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $blockingBlock . "]", \LogLevel::DEBUG);
 		}
 		return false;
 	}

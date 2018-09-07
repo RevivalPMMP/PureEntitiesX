@@ -1,19 +1,19 @@
-<!-- replace the ' ' with 'x' in the brackets -->
-- [ ] This PR actually submits something - don't use this system as a messaging service!
-- [ ] This PR isn't duplicated - you can check if it is by scanning the small list - link is on the navigation bar for this repository.
-- [ ] This PR includes appropriate markdown for sections - e.g. code blocks for suggested code.
-- [ ] This PR description and comments in code is understandable - feel free to use your native language to write if you are not comfortable with English.
-- [ ] This PR has a single branch for itself in your fork - don't just commit to the master branch of your repository!
-- [ ] This PR has comments written in clear English - please don't write unreadable comments just for your eyes.
+<!-- DO NOT DELETE - LEAVE THIS IN YOUR PR -->
+<!-- Welcome to the PureEntitiesX pull request system! -->
+<!-- Before you make an issue, make sure your pull request matches the criteria below. -->
+<!-- PLEASE TICK THE CHECKBOXES -->
+- [x] This PR actually submits something - don't use this system as a messaging service!
+- [x] This PR isn't duplicated - you can check if it is by scanning the small list - link is on the navigation bar for this repository.
+- [x] This PR includes appropriate markdown for sections - e.g. code blocks for suggested code.
+- [x] This PR description and comments in code is understandable - feel free to use your native language to write if you are not comfortable with English.
+- [x] This PR has a single branch for itself in your fork - don't just commit to the master branch of your repository!
+- [x] This PR has comments written in clear English - please don't write unreadable comments just for your eyes.
 
+<!-- If your PR matches this criteria, hooray! Submit this PR with no worries. If your PR doesn't match this criteria, please consider editing your PR to match it. Thanks for contributing to PureEntitiesX! -->
 <!-- PR DESCRIPTION - write a bit about what you've achieved in this pull request. -->
 ## Pull Request description
-...
-
-<!-- PR branch - what branch is being changed? -->
-## Changed Branch
-...
+{Type something here}
 
 <!-- OPTIONAL INFORMATION - use this section for posting crash dumps, backtraces or other files(please use code markdown!) -->
 ## Optional information
-...
+{Type something here}
