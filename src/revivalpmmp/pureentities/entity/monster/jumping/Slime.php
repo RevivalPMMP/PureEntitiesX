@@ -21,6 +21,8 @@
 namespace revivalpmmp\pureentities\entity\monster\jumping;
 
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\level\Level;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\JumpingMonster;
@@ -36,18 +38,21 @@ class Slime extends JumpingMonster{
 	const NETWORK_ID = Data::NETWORK_IDS["slime"];
 
 	private $cubeSize = -1; // 0 = Tiny, 1 = Small, 2 = Big
-	private $cubeDimensions = array(0.51, 1.02, 2.04);
 
+	public function __construct(Level $level, CompoundTag $nbt){
+		$this->loadFromNBT($nbt);
+		if($this->cubeSize == -1){
+			$this->cubeSize = self::getRandomSlimeSize();
+		}
+
+		$this->width = 0.51;
+		$this->height = 0.51;
+		parent::__construct($level, $nbt);
+		$this->setScale($this->cubeSize);
+	}
 
 	public function initEntity() : void{
 		parent::initEntity();
-		if($this->cubeSize == -1){
-			$this->cubeSize = self::getRandomSlimeSize();
-			$this->saveNBT();
-		}
-
-		$this->width = $this->cubeDimensions[$this->cubeSize];
-		$this->height = $this->cubeDimensions[$this->cubeSize];
 		$this->speed = 0.8;
 
 		$this->setDamage([0, 2, 2, 3]);
@@ -60,11 +65,10 @@ class Slime extends JumpingMonster{
 		}
 	}
 
-	public function loadNBT(){
+	public function loadFromNBT(CompoundTag $nbt){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			parent::loadNBT();
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_CUBE_SIZE)){
-				$cubeSize = $this->namedtag->getByte(NBTConst::NBT_KEY_CUBE_SIZE, self::getRandomSlimeSize());
+			if($nbt->hasTag(NBTConst::NBT_KEY_CUBE_SIZE)){
+				$cubeSize = $nbt->getByte(NBTConst::NBT_KEY_CUBE_SIZE, self::getRandomSlimeSize());
 				$this->cubeSize = $cubeSize;
 			}
 		}
@@ -75,7 +79,8 @@ class Slime extends JumpingMonster{
 	}
 
 	public static function getRandomSlimeSize() : int{
-		return mt_rand(0, 2);
+		($size = mt_rand(1, 3)) !== 3 ?: $size = 4;
+		return $size;
 	}
 
 	/**
