@@ -324,18 +324,8 @@ abstract class BaseEntity extends Creature{
 			return false;
 		}
 
-		if($this->isInsideOfSolid()){
-			$hasUpdate = true;
-			$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_SUFFOCATION, 1);
-			$this->attack($ev);
-		}
-
 		if($this->moveTime > 0){
 			$this->moveTime -= $tickDiff;
-		}
-
-		if($this->attackTime > 0){
-			$this->attackTime -= $tickDiff;
 		}
 
 		// check panic tick
