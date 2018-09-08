@@ -313,9 +313,8 @@ abstract class BaseEntity extends Creature{
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
 		//Timings::$timerEntityBaseTick->startTiming();
-		// check if it needs to despawn
 
-		$hasUpdate = Entity::entityBaseTick($tickDiff);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		// Checking this first because there's no reason to keep going if we know
 		// we're going to despawn the entity.
