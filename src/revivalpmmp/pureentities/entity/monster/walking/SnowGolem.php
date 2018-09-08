@@ -23,6 +23,7 @@ namespace revivalpmmp\pureentities\entity\monster\walking;
 use pocketmine\entity\projectile\Projectile;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
+use pocketmine\level\Level;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
@@ -46,10 +47,14 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	use Shearable;
 	const NETWORK_ID = Data::NETWORK_IDS["snow_golem"];
 
-	public function initEntity() : void{
-		parent::initEntity();
+	public function __construct(Level $level, CompoundTag $nbt){
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		parent::__construct($level, $nbt);
+	}
+
+	public function initEntity() : void{
+		parent::initEntity();
 
 		$this->setFriendly(true);
 		$this->setSheared($this->isSheared()); // set data from NBT

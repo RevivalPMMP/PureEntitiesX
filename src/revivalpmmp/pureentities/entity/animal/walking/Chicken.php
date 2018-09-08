@@ -20,7 +20,9 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\level\Level;
 use pocketmine\level\sound\PopSound;
+use pocketmine\nbt\tag\CompoundTag;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
@@ -44,12 +46,15 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 	private $dropEggTimer = 0;
 	private $dropEggTime = 0;
 
+	public function __construct(Level $level, CompoundTag $nbt){
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		parent::__construct($level, $nbt);
+	}
+
 
 	public function initEntity() : void{
 		parent::initEntity();
-		$this->setNetworkId(Data::NETWORK_IDS["chicken"]);
-		$this->width = Data::WIDTHS[$this->getNetworkId()];
-		$this->height = Data::HEIGHTS[$this->getNetworkId()];
 		$this->eyeHeight = 0.6;
 		$this->gravity = 0.08;
 

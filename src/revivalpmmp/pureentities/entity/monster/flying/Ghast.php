@@ -21,6 +21,8 @@
 namespace revivalpmmp\pureentities\entity\monster\flying;
 
 use pocketmine\item\Item;
+use pocketmine\level\Level;
+use pocketmine\nbt\tag\CompoundTag;
 use revivalpmmp\pureentities\entity\monster\FlyingMonster;
 use revivalpmmp\pureentities\entity\projectile\LargeFireball;
 use pocketmine\entity\Creature;
@@ -36,10 +38,14 @@ use revivalpmmp\pureentities\data\Data;
 class Ghast extends FlyingMonster implements ProjectileSource{
 	const NETWORK_ID = Data::NETWORK_IDS["ghast"];
 
-	public function initEntity() : void{
-		parent::initEntity();
+	public function __construct(Level $level, CompoundTag $nbt){
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		parent::__construct($level, $nbt);
+	}
+
+	public function initEntity() : void{
+		parent::initEntity();
 		$this->speed = 1.2;
 		$this->fireProof = true;
 		$this->setDamage([0, 0, 0, 0]);

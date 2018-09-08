@@ -21,6 +21,8 @@
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
 use pocketmine\entity\Creature;
+use pocketmine\level\Level;
+use pocketmine\nbt\tag\CompoundTag;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
@@ -72,14 +74,18 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 
 	private $catType = 0; // 0 = Wild Ocelot, 1 = Tuxedo, 2 = Tabby, 3 = Siamese
 
+	public function __construct(Level $level, CompoundTag $nbt){
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		parent::__construct($level, $nbt);
+	}
+
 	public function getBeggingSpeed() : float{
 		return 0.8;
 	}
 
 	public function initEntity() : void{
 		parent::initEntity();
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
 		$this->speed = 1.2;
 		$this->setNormalSpeed($this->speed);
 		$this->setPanicSpeed(1.4);
