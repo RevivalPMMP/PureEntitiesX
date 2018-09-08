@@ -21,8 +21,6 @@
 namespace revivalpmmp\pureentities\entity\monster\swimming;
 
 use pocketmine\entity\Entity;
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use revivalpmmp\pureentities\entity\monster\SwimmingMonster;
@@ -32,12 +30,6 @@ class ElderGuardian extends SwimmingMonster implements Monster{
 	// TODO: Implement ElderGuardian Specific Methods
 
 	const NETWORK_ID = Data::NETWORK_IDS["elder_guardian"];
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function attackEntity(Entity $player){
 		parent::attackEntity($player);

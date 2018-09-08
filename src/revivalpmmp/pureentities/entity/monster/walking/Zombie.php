@@ -20,25 +20,25 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\item\ItemIds;
-use pocketmine\nbt\tag\CompoundTag;
-use revivalpmmp\pureentities\components\BreedingComponent;
-use revivalpmmp\pureentities\components\MobEquipment;
-use revivalpmmp\pureentities\entity\monster\Monster;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-//use pocketmine\event\Timings;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
+use revivalpmmp\pureentities\components\BreedingComponent;
+use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\Monster;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
+
+//use pocketmine\event\Timings;
 
 class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monster{
 
@@ -57,12 +57,6 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monst
 	 * @var array
 	 */
 	private $pickUpLoot = [ItemIds::IRON_SWORD, ItemIds::IRON_SHOVEL];
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function initEntity() : void{
 		parent::initEntity();

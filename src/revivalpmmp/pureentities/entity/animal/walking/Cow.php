@@ -20,19 +20,17 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\BreedingComponent;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
@@ -41,12 +39,6 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
 
 	use Breedable, CanPanic, Feedable;
 	const NETWORK_ID = Data::NETWORK_IDS["cow"];
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function initEntity() : void{
 		parent::initEntity();

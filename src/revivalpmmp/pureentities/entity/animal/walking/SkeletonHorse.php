@@ -20,14 +20,12 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
-use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
+use pocketmine\entity\Creature;
 use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
 use pocketmine\Player;
-use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 
 class SkeletonHorse extends WalkingAnimal implements Rideable{
 
@@ -35,12 +33,6 @@ class SkeletonHorse extends WalkingAnimal implements Rideable{
 	// TODO Implement specific Methods for Skeleton Horse.
 
 	const NETWORK_ID = Data::NETWORK_IDS["skeleton_horse"];
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function initEntity() : void{
 		parent::initEntity();

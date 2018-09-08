@@ -25,16 +25,14 @@ use pocketmine\block\Block;
 use pocketmine\block\Dirt;
 use pocketmine\block\Grass;
 use pocketmine\block\TallGrass;
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\protocol\EntityEventPacket;
-use revivalpmmp\pureentities\components\BreedingComponent;
-use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use pocketmine\nbt\tag\ByteTag;
+use pocketmine\network\mcpe\protocol\EntityEventPacket;
+use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
+use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
@@ -57,12 +55,6 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 	 * @var int
 	 */
 	private $color = Color::WHITE; // default: white
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function getName() : string{
 		return "Sheep";

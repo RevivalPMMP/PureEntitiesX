@@ -20,25 +20,17 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Spider extends WalkingMonster{
 	const NETWORK_ID = Data::NETWORK_IDS["spider"];
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function initEntity() : void{
 		parent::initEntity();

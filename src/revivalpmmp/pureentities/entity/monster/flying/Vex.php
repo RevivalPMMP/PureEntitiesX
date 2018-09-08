@@ -20,15 +20,9 @@
 
 namespace revivalpmmp\pureentities\entity\monster\flying;
 
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
-use revivalpmmp\pureentities\entity\animal\Animal;
-use revivalpmmp\pureentities\entity\BaseEntity;
-use revivalpmmp\pureentities\entity\monster\FlyingMonster;
-use revivalpmmp\pureentities\entity\monster\Monster;
 use pocketmine\block\Liquid;
-use pocketmine\block\StoneSlab;
 use pocketmine\block\Stair;
+use pocketmine\block\StoneSlab;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\math\Math;
@@ -36,18 +30,16 @@ use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\animal\Animal;
+use revivalpmmp\pureentities\entity\BaseEntity;
+use revivalpmmp\pureentities\entity\monster\FlyingMonster;
+use revivalpmmp\pureentities\entity\monster\Monster;
 
 class Vex extends FlyingMonster implements Monster{
 
 	// Base created from Blaze
 	// TODO create methods specific to Vexes
 	const NETWORK_ID = Data::NETWORK_IDS["vex"];
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function initEntity() : void{
 		parent::initEntity();

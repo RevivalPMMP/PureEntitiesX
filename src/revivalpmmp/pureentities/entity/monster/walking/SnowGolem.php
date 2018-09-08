@@ -20,38 +20,31 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\entity\projectile\Projectile;
-use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
-use pocketmine\level\Level;
-use revivalpmmp\pureentities\data\NBTConst;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
+use pocketmine\entity\projectile\Projectile;
 use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\ProjectileLaunchEvent;
+use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\sound\LaunchSound;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\data\NBTConst;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\traits\Shearable;
 
 class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract, IntfShearable{
 	use Shearable;
 	const NETWORK_ID = Data::NETWORK_IDS["snow_golem"];
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function initEntity() : void{
 		parent::initEntity();

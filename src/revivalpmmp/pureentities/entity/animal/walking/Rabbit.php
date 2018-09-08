@@ -21,12 +21,10 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\item\Item;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
@@ -39,12 +37,6 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
 
 	use Breedable, CanPanic, Feedable;
 	const NETWORK_ID = Data::NETWORK_IDS["rabbit"];
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function initEntity() : void{
 		parent::initEntity();

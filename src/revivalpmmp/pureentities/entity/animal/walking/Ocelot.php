@@ -21,20 +21,18 @@
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
 use pocketmine\entity\Creature;
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
-use revivalpmmp\pureentities\data\NBTConst;
-use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\BreedingComponent;
+use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\data\NBTConst;
+use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
@@ -73,12 +71,6 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 	private $followDistance = 10;
 
 	private $catType = 0; // 0 = Wild Ocelot, 1 = Tuxedo, 2 = Tabby, 3 = Siamese
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function getBeggingSpeed() : float{
 		return 0.8;

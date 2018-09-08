@@ -22,27 +22,19 @@ namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\block\Pumpkin;
 use pocketmine\entity\Creature;
-use pocketmine\item\Item;
-use pocketmine\level\Level;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\Player;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\Item;
+use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
 class Enderman extends WalkingMonster{
 	// TODO: Add item in hand options.
 
 	const NETWORK_ID = Data::NETWORK_IDS["enderman"];
-
-	public function __construct(Level $level, CompoundTag $nbt){
-		$this->width = Data::WIDTHS[self::NETWORK_ID];
-		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		parent::__construct($level, $nbt);
-	}
 
 	public function initEntity() : void{
 		parent::initEntity();

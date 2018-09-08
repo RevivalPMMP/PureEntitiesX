@@ -24,6 +24,7 @@ use pocketmine\block\Block;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use revivalpmmp\pureentities\components\IdlingComponent;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\Monster;
@@ -88,6 +89,8 @@ abstract class BaseEntity extends Creature{
 	}
 
 	public function __construct(Level $level, CompoundTag $nbt){
+		$this->width = Data::WIDTHS[static::NETWORK_ID];
+		$this->height = Data::HEIGHTS[static::NETWORK_ID];
 		$this->idlingComponent = new IdlingComponent($this);
 		$this->checkTargetSkipTicks = PluginConfiguration::getInstance()->getCheckTargetSkipTicks();
 		$this->maxAge = PluginConfiguration::getInstance()->getMaxAge();
