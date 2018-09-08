@@ -304,9 +304,11 @@ class AutoSpawnTask extends Task{
 	}
 
 	private function isSpawnAllowedByBiome(int $entityId, int $trialBiome) : bool{
-		if(in_array($entityId, BiomeInfo::ALLOWED_ENTITIES_BY_BIOME[$trialBiome])
-			or (($trialBiome !== Biome::HELL and $trialBiome !== 9) and in_array($entityId, BiomeInfo::OVERWORLD_BIOME_EXEMPT))){
-			return true;
+		if(isset(BiomeInfo::ALLOWED_ENTITIES_BY_BIOME[$trialBiome])){
+			if(in_array($entityId, BiomeInfo::ALLOWED_ENTITIES_BY_BIOME[$trialBiome])
+				or (($trialBiome !== Biome::HELL and $trialBiome !== 9) and in_array($entityId, BiomeInfo::OVERWORLD_BIOME_EXEMPT))){
+				return true;
+			}
 		}
 		PureEntities::logOutput("Biome test failed with Entity: $entityId and Biome: $trialBiome", PureEntities::NORM);
 		return false;
