@@ -170,9 +170,9 @@ class MobEquipment{
 	}
 
 	/**
-	 * @return mixed
+	 * @return null|Item
 	 */
-	public function getMainHand(){
+	public function getMainHand(): ?Item{
 		return $this->mainHand;
 	}
 
