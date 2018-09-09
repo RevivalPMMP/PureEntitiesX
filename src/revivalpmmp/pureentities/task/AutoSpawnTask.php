@@ -46,12 +46,10 @@ class AutoSpawnTask extends Task{
 	private $spawnerWorlds = [];
 
 	// Friendly Mobs only generate every 400 ticks
-	private $lastFriendlyTick;
-	private $spawnFriendlyMobsAllowed;
 	private $hostileMobs = 0;
 	private $passiveDryMobs = 0;
 	private $passiveWetMobs = 0;
-	private $mobCap = 60;
+	private $ambientMobs = 0;
 
 	public function __construct(PureEntities $plugin){
 		$this->plugin = $plugin;
@@ -85,14 +83,6 @@ class AutoSpawnTask extends Task{
 			PureEntities::logOutput("AutoSpawnTask: Passives(Wet) = $this->passiveWetMobs");
 			$total = ($this->hostileMobs + $this->passiveWetMobs + $this->passiveDryMobs);
 
-			if($total >= $this->mobCap){
-				PureEntities::logOutput("AutoSpawnTask: Stopping AutoSpawn due to MobCap", PureEntities::NORM);
-				PureEntities::logOutput("AutoSpawnTask: Mob Total = $total");
-
-				PeTimings::stopTiming("AutoSpawnTask");
-				return;
-			}
-
 			$playerLocations = [];
 
 
@@ -108,15 +98,6 @@ class AutoSpawnTask extends Task{
 					}
 				}
 
-				$this->spawnFriendlyMobsAllowed = false;
-
-				// Check if this pass needs to spawn passive mobs.
-				// Passive mobs only attempt to spawn every 20 seconds (400 ticks).
-				if($currentTick - $this->lastFriendlyTick >= 400){
-					$this->spawnFriendlyMobsAllowed = true;
-					$this->lastFriendlyTick = $currentTick;
-				}
-
 				// List of chunks eligible to spawn new mobs.
 				$spawnMap = $this->generateSpawnMap($playerLocations);
 
@@ -124,16 +105,25 @@ class AutoSpawnTask extends Task{
 
 				if(($totalChunks = count($spawnMap)) > 0){
 					PureEntities::logOutput("AutoSpawnTask: Spawn Map is populated.");
+					$hostileCap = self::HOSTILE_CAP_CONSTANT * $totalChunks / 256;
+					$passiveDryCap = self::PASSIVE_DRY_CAP_CONSTANT * $totalChunks / 256;
+					$passiveWetCap = self::PASSIVE_WET_CAP_CONSTANT * $totalChunks / 256;
+					$ambientCap = self::AMBIENT_CAP_CONSTANT * $totalChunks / 256;
 
 					foreach($spawnMap as $chunk){
 						// TODO Find source of null chunks
 						if($chunk != null){
-							if($this->spawnFriendlyMobsAllowed and mt_rand(0, 1) === 1){
-								// TODO: Spawn water creatures.
-								$this->spawnPassiveMob($chunk, $level);
-							}else{
+							if($hostileCap > $this->hostileMobs){
 								$this->spawnHostileMob($chunk, $level);
 							}
+							if($passiveDryCap > $this->passiveDryMobs){
+								$this->spawnPassiveMob($chunk, $level);
+							}
+							if($passiveWetCap > $this->passiveWetMobs){
+								// TODO: Implement Passive Wet Spawns
+								// $this->spawnPassiveWet($chunk, $level);
+							}
+							// TODO: Implement Ambient Spawning.
 						}
 					}
 				}
