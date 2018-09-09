@@ -33,15 +33,6 @@ use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 //use pocketmine\event\Timings;
-use pocketmine\level\Level;
-use pocketmine\math\Math;
-use pocketmine\math\Vector3;
-use pocketmine\Player;
-use revivalpmmp\pureentities\entity\monster\walking\Wolf;
-use revivalpmmp\pureentities\features\IntfCanPanic;
-use revivalpmmp\pureentities\features\IntfTameable;
-use revivalpmmp\pureentities\PluginConfiguration;
-use revivalpmmp\pureentities\PureEntities;
 
 abstract class BaseEntity extends Creature{
 
@@ -289,7 +280,7 @@ abstract class BaseEntity extends Creature{
 	}
 
 	public function knockBack(Entity $attacker, float $damage, float $x, float $z, float $base = 0.4) : void{
-
+		parent::knockBack($attacker, $damage, $x, $z, $base);
 	}
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
