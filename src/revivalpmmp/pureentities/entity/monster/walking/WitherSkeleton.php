@@ -101,4 +101,8 @@ class WitherSkeleton extends Skeleton{
 		return $drops;
 	}
 
+	protected function equipDefaultMainHand() : void{
+		$this->mobEquipment->setMainHand(ItemFactory::get(Item::STONE_SWORD));
+	}
+
 }
