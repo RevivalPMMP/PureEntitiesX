@@ -255,7 +255,7 @@ abstract class BaseEntity extends Creature{
 	 */
 	public function attack(EntityDamageEvent $source) : void{
 
-		if($this->isClosed() || $source->isCancelled() || !($source instanceof EntityDamageByEntityEvent)){
+		if($this->isClosed() || $source->isCancelled()){
 			return;
 		}
 
@@ -269,21 +269,23 @@ abstract class BaseEntity extends Creature{
 		$this->stayTime = 0;
 		$this->moveTime = 0;
 
-		$sourceOfDamage = $source->getDamager();
-		$motion = (new Vector3($this->x - $sourceOfDamage->x, $this->y - $sourceOfDamage->y, $this->z - $sourceOfDamage->z))->normalize();
-		$this->motion->x = $motion->x * 0.19;
-		$this->motion->z = $motion->z * 0.19;
+		if($source instanceof EntityDamageByEntityEvent){
+			$sourceOfDamage = $source->getDamager();
+			$motion = (new Vector3($this->x - $sourceOfDamage->x, $this->y - $sourceOfDamage->y, $this->z - $sourceOfDamage->z))->normalize();
+			$this->motion->x = $motion->x * 0.19;
+			$this->motion->z = $motion->z * 0.19;
 
-		if(($this instanceof FlyingEntity) && !($this instanceof Blaze)){
-			$this->motion->y = $motion->y * 0.19;
-		}else{
-			$this->motion->y = 0.6;
-		}
+			if(($this instanceof FlyingEntity) && !($this instanceof Blaze)){
+				$this->motion->y = $motion->y * 0.19;
+			}else{
+				$this->motion->y = 0.6;
+			}
 
-		// panic mode - here we check if the entity can enter panic mode and so on
-		if($this instanceof IntfCanPanic and $sourceOfDamage instanceof Player and !$this->isInPanic() and $this->panicEnabled()){
-			$this->setBaseTarget(new Vector3($this->x - ($sourceOfDamage->x * 10), $this->y - $sourceOfDamage->y, ($this->z - $sourceOfDamage->z * 10)));
-			$this->setInPanic(); // this should prevent to search for other targets and increase run speed
+			// panic mode - here we check if the entity can enter panic mode and so on
+			if($this instanceof IntfCanPanic and $sourceOfDamage instanceof Player and !$this->isInPanic() and $this->panicEnabled()){
+				$this->setBaseTarget(new Vector3($this->x - ($sourceOfDamage->x * 10), $this->y - $sourceOfDamage->y, ($this->z - $sourceOfDamage->z * 10)));
+				$this->setInPanic(); // this should prevent to search for other targets and increase run speed
+			}
 		}
 
 		$this->checkAttackByTamedEntities($source);
