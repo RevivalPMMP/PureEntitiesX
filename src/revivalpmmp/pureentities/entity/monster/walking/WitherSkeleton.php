@@ -29,10 +29,9 @@ use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class WitherSkeleton extends WalkingMonster{
+class WitherSkeleton extends Skeleton{
 	const NETWORK_ID = Data::NETWORK_IDS["wither_skeleton"];
 
 	public function initEntity() : void{
@@ -92,8 +91,7 @@ class WitherSkeleton extends WalkingMonster{
 	public function getDrops() : array{
 		$drops = [];
 		if($this->isLootDropAllowed()){
-			array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));
-			array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
+			$drops = parent::getDrops();
 			switch(mt_rand(0, 8)){
 				case 1:
 					array_push($drops, Item::get(Item::MOB_HEAD, 1, mt_rand(0, 2)));
@@ -101,14 +99,6 @@ class WitherSkeleton extends WalkingMonster{
 			}
 		}
 		return $drops;
-	}
-
-	public function getMaxHealth() : int{
-		return 20;
-	}
-
-	public function getXpDropAmount() : int{
-		return 5;
 	}
 
 }
