@@ -35,7 +35,7 @@ class MobEquipmentConfigHolder{
 	 * Returns mob equipment configuration for a specific entity name
 	 *
 	 * @param string $entityName
-	 * @return mixed null|EntityConfig
+	 * @return null|EntityConfig
 	 */
 	public static function getConfig(string $entityName){
 		// check if configuration already cached - if not create it and store it
