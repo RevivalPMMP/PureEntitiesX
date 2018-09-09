@@ -402,14 +402,11 @@ class PureEntities extends PluginBase implements CommandExecutor{
 				if(count($args) <= 1){
 					$counterLivingEntities = 0;
 					$counterOtherEntities = 0;
-					$entitiesRemoved = [];
 					foreach(Server::getInstance()->getLevels() as $level){
 						foreach($level->getEntities() as $entity){
 							if(count($args) === 0){
 								if(!$entity instanceof Player and $entity->namedtag->hasTag("generatedByPEX")){
-									$entitiesRemoved[] = clone($entity);
 									$entity->close();
-									$entitiesRemoved[] = $entity;
 									if($entity instanceof BaseEntity){
 										$counterLivingEntities++;
 									}else{
@@ -418,9 +415,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 								}
 							}elseif(strcmp(strtolower($args[0]), "all") == 0){
 								if(!$entity instanceof Player){
-									$entitiesRemoved[] = clone($entity);
 									$entity->close();
-									$entitiesRemoved[] = $entity;
 									if($entity instanceof BaseEntity){
 										$counterLivingEntities++;
 									}else{
@@ -432,11 +427,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 					}
 					$sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
 					self::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", self::NORM);
-					foreach($entitiesRemoved as $entity){
-						$name = $entity instanceof ItemEntity ? $entity->getItem()->getName() : $entity->getName();
-						self::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", self::NORM);
-					}
-					unset($entitiesRemoved);
 					$commandSuccessful = true;
 				}else{
 					$sender->sendMessage("Usage: peremove <opt:all>");
