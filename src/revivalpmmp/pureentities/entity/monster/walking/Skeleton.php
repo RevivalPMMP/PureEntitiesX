@@ -34,6 +34,7 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\Player;
 use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
@@ -58,6 +59,11 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 		if($this->mobEquipment->getMainHand() === null){
 			$this->equipDefaultMainHand();
 		}
+	}
+
+	protected function sendSpawnPacket(Player $player) : void {
+		parent::sendSpawnPacket($player);
+		$this->mobEquipment->sendEquipmentUpdate($player);
 	}
 
 	public function getName() : string{

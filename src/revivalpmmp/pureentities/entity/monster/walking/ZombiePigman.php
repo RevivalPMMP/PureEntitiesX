@@ -26,6 +26,7 @@ use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
+use pocketmine\Player;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\data\Data;
@@ -75,8 +76,11 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 		$this->breedableClass = new BreedingComponent($this);
 		$this->breedableClass->init();
 		$this->mobEquipment->setMainHand(Item::get(ItemIds::GOLDEN_SWORD));
-		$this->mobEquipment->sendHandItemsToAllClients();
+	}
 
+	protected function sendSpawnPacket(Player $player) : void {
+		parent::sendSpawnPacket($player);
+		$this->mobEquipment->sendEquipmentUpdate($player);
 	}
 
 	public function getName() : string{
