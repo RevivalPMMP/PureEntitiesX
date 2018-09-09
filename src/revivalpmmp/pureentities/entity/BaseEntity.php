@@ -235,25 +235,6 @@ abstract class BaseEntity extends Creature{
 		}
 	}
 
-	public function spawnTo(Player $player) : void{
-		if(
-			!isset($this->hasSpawned[$player->getLoaderId()])
-			&& isset($player->usedChunks[Level::chunkHash($this->chunk->getX(), $this->chunk->getZ())])
-		){
-			$pk = new AddEntityPacket();
-			$pk->entityRuntimeId = $this->getID();
-			$pk->type = static::NETWORK_ID;
-			$pk->position = $this->asVector3();
-			$pk->motion = $this->getMotion();
-			$pk->yaw = $this->yaw;
-			$pk->pitch = $this->pitch;
-			$pk->metadata = $this->propertyManager->getAll();
-			$player->dataPacket($pk);
-
-			$this->hasSpawned[$player->getLoaderId()] = $player;
-		}
-	}
-
 	public function updateMovement(bool $teleport = false) : void{
 		if(!$this->isClosed() && $this->getLevel() !== null){
 			parent::updateMovement($teleport);
