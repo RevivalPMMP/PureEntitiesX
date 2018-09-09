@@ -26,7 +26,7 @@ use revivalpmmp\pureentities\PureEntities;
  * Class ArmorTypeChances
  * @package revivalpmmp\pureentities\config\mobequipment\helper
  */
-class ArmorTypeChances{
+class ArmorTypeChances {
 
 	private $leather = 0;
 
@@ -38,7 +38,7 @@ class ArmorTypeChances{
 
 	private $diamond = 0;
 
-	public function __construct(string $entityName){
+	public function __construct(string $entityName) {
 		$plugin = PureEntities::getInstance();
 		$this->leather = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.leather");
 		$this->gold = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.gold");
@@ -52,35 +52,35 @@ class ArmorTypeChances{
 	/**
 	 * @return int|mixed
 	 */
-	public function getLeather(){
+	public function getLeather() {
 		return $this->leather;
 	}
 
 	/**
 	 * @return int|mixed
 	 */
-	public function getGold(){
+	public function getGold() {
 		return $this->gold;
 	}
 
 	/**
 	 * @return int|mixed
 	 */
-	public function getChain(){
+	public function getChain() {
 		return $this->chain;
 	}
 
 	/**
 	 * @return int|mixed
 	 */
-	public function getIron(){
+	public function getIron() {
 		return $this->iron;
 	}
 
 	/**
 	 * @return int|mixed
 	 */
-	public function getDiamond(){
+	public function getDiamond() {
 		return $this->diamond;
 	}
 

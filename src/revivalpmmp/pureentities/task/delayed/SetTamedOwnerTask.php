@@ -34,7 +34,7 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task\delayed
  */
-class SetTamedOwnerTask extends Task{
+class SetTamedOwnerTask extends Task {
 
 	/**
 	 * @var PureEntities
@@ -48,10 +48,11 @@ class SetTamedOwnerTask extends Task{
 
 	/**
 	 * ShowMobEquipmentTask constructor.
+	 *
 	 * @param PureEntities $plugin
 	 * @param IntfTameable $tameableEntity
 	 */
-	public function __construct(PureEntities $plugin, IntfTameable $tameableEntity){
+	public function __construct(PureEntities $plugin, IntfTameable $tameableEntity) {
 		$this->plugin = $plugin;
 		$this->tameableEntity = $tameableEntity;
 	}
@@ -63,7 +64,7 @@ class SetTamedOwnerTask extends Task{
 	 *
 	 * @param $currentTick
 	 */
-	public function onRun(int $currentTick){
+	public function onRun(int $currentTick) {
 		$this->tameableEntity->mapOwner();
 	}
 

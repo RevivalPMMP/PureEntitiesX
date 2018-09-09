@@ -39,7 +39,7 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\utils
  */
-class MobDamageCalculator{
+class MobDamageCalculator {
 
 	/**
 	 * Damage reduction by armor item in percent (while 1 armor point takes 4% damage which
@@ -47,7 +47,7 @@ class MobDamageCalculator{
 	 *
 	 * @var array
 	 */
-	private static $REDUCTION_DEFINITIONS = array(
+	private static $REDUCTION_DEFINITIONS = [
 		# no armor
 		ItemIds::AIR => 0, # no armor points
 		# helmets
@@ -70,40 +70,41 @@ class MobDamageCalculator{
 		ItemIds::GOLD_CHESTPLATE => 20, # 5 armor points
 		ItemIds::IRON_CHESTPLATE => 24, # 6 armor points
 		ItemIds::DIAMOND_CHESTPLATE => 32 # 8 armor points
-	);
+	];
 
 	/**
 	 * Returns the final damage for a specific player and the amount of base damage coming in
 	 *
 	 * @param Entity $player the player to be checked
-	 * @param float  $damageFromEntity the final damage from the entity
+	 * @param float $damageFromEntity the final damage from the entity
+	 *
 	 * @return float the final damage calculated with respect to armor etc. pp worn by player
 	 */
-	public static function calculateFinalDamage(Entity $player, float $damageFromEntity) : float{
-		if($player instanceof Player and $player->getArmorInventory() !== null){
+	public static function calculateFinalDamage(Entity $player, float $damageFromEntity) : float {
+		if($player instanceof Player and $player->getArmorInventory() !== null) {
 			$playerArmor = $player->getArmorInventory();
 			$armorItems = [$playerArmor->getHelmet(), $playerArmor->getChestplate(), $playerArmor->getLeggings(), $playerArmor->getBoots()];
 
-			if($armorItems !== null and sizeof($armorItems) > 0){
+			if($armorItems !== null and sizeof($armorItems) > 0) {
 				// complete damage reduction in percent
 				$reductionInPercent = 0;
 				$enchantEpf = 0; // for items enchanted max capped to 20 (EPF = Enchantment Protection Factor)
 
 				// check each worn armor
-				foreach($armorItems as $armorItem){
+				foreach($armorItems as $armorItem) {
 					/**
 					 * @var $armorItem Item
 					 */
-					if(array_key_exists($armorItem->getId(), self::$REDUCTION_DEFINITIONS)){ // TODO: there are some armor items out which are not defined here
+					if(array_key_exists($armorItem->getId(), self::$REDUCTION_DEFINITIONS)) { // TODO: there are some armor items out which are not defined here
 						$reduction = self::$REDUCTION_DEFINITIONS[$armorItem->getId()];
-						if($reduction !== null and $reduction > 0){
+						if($reduction !== null and $reduction > 0) {
 							$reductionInPercent += $reduction;
 						}
 
 						$enchantments = $armorItem->getEnchantments();
-						if($enchantments !== null and sizeof($enchantments) > 0){
-							foreach($enchantments as $enchantment){
-								if($enchantment->getId() === Enchantment::PROTECTION){
+						if($enchantments !== null and sizeof($enchantments) > 0) {
+							foreach($enchantments as $enchantment) {
+								if($enchantment->getId() === Enchantment::PROTECTION) {
 									$enchantEpf += $enchantment->getLevel(); // see http://minecraft.gamepedia.com/Armor#Enchantments
 								}
 							}
@@ -115,13 +116,13 @@ class MobDamageCalculator{
 
 				$totalDamage = $damageFromEntity;
 				// reduce damage by x percent - depending on which armor is worn by player
-				if($reductionInPercent > 0){
+				if($reductionInPercent > 0) {
 					PureEntities::logOutput("MobDamageCalculator: damage of entity reduced by $reductionInPercent by armor worn");
 					$totalDamage = $totalDamage - ($totalDamage * $reductionInPercent / 100);
 				}
 				// now check enchantments
-				if($enchantEpf > 0){
-					if($enchantEpf > 20){
+				if($enchantEpf > 0) {
+					if($enchantEpf > 20) {
 						$enchantEpf = 20;
 					}
 					PureEntities::logOutput("MobDamageCalculator: damage of entity will be reduced by $enchantEpf EPF points.");

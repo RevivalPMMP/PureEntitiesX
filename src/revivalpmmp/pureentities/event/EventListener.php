@@ -47,11 +47,11 @@ use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\task\delayed\SetTamedOwnerTask;
 use revivalpmmp\pureentities\task\delayed\ShowMobEquipmentTask;
 
-class EventListener implements Listener{
+class EventListener implements Listener {
 
 	private $plugin;
 
-	public function __construct(PureEntities $plugin){
+	public function __construct(PureEntities $plugin) {
 		$this->plugin = $plugin;
 	}
 
@@ -59,61 +59,62 @@ class EventListener implements Listener{
 	 * We receive a DataPacketReceiveEvent - which we need for interaction with entities
 	 *
 	 * @param DataPacketReceiveEvent $event
+	 *
 	 * @return bool
 	 */
-	public function dataPacketReceiveEvent(DataPacketReceiveEvent $event){
+	public function dataPacketReceiveEvent(DataPacketReceiveEvent $event) {
 		$packet = $event->getPacket();
 		$player = $event->getPlayer();
 		$return = false;
-		if($packet->pid() === ProtocolInfo::INVENTORY_TRANSACTION_PACKET){
+		if($packet->pid() === ProtocolInfo::INVENTORY_TRANSACTION_PACKET) {
 
 			// TODO Clean this method up.
 			/**
 			 * @var $packet InventoryTransactionPacket
 			 */
 			$btnTxt = InteractionHelper::getButtonText($player);
-			if($packet->transactionType === InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY){
+			if($packet->transactionType === InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY) {
 				$entity = $player->level->getEntity($packet->trData->entityRuntimeId);
 				PureEntities::logOutput("$entity with button text $btnTxt", \LogLevel::DEBUG);
 				if($entity instanceof IntfShearable and !$entity->isSheared() and
-					strcmp($btnTxt, PureEntities::BUTTON_TEXT_SHEAR) == 0){
+				                                        strcmp($btnTxt, PureEntities::BUTTON_TEXT_SHEAR) == 0) {
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->shear", \LogLevel::DEBUG);
 					$return = $entity->shear($player);
-				}else if($entity instanceof Cow and strcmp($btnTxt, PureEntities::BUTTON_TEXT_MILK) == 0){
+				}elseif($entity instanceof Cow and strcmp($btnTxt, PureEntities::BUTTON_TEXT_MILK) == 0){
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->milk", \LogLevel::DEBUG);
 					$return = $entity->milk($player);
-				}else if($entity instanceof IntfCanBreed and
-					strcmp($btnTxt, PureEntities::BUTTON_TEXT_FEED) == 0 and
-					$entity->getBreedingComponent() !== false
+				}elseif($entity instanceof IntfCanBreed and
+				        strcmp($btnTxt, PureEntities::BUTTON_TEXT_FEED) == 0 and
+				        $entity->getBreedingComponent() !== false
 				){ // normally, this shouldn't be needed (because IntfCanBreed needs this method!
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->feed", \LogLevel::DEBUG);
 					$return = $entity->getBreedingComponent()->feed($player); // feed the entity
 					// decrease food in players hand
 					$itemInHand = $player->getInventory()->getItemInHand();
-					if($itemInHand != null){
+					if($itemInHand != null) {
 						$player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
 					}
-				}else if($entity instanceof IntfTameable and !$entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_TAME) == 0){
+				}elseif($entity instanceof IntfTameable and !$entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_TAME) == 0){
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame", \LogLevel::DEBUG);
 					$return = $entity->attemptToTame($player);
-				}else if($entity instanceof IntfTameable and $entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_SIT) == 0){
+				}elseif($entity instanceof IntfTameable and $entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_SIT) == 0){
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit", \LogLevel::DEBUG);
 					$entity->setSitting(true);
-					if($entity instanceof Ocelot){
+					if($entity instanceof Ocelot) {
 						$entity->setCommandedToSit(true);
 					}
 					$return = true;
-				}else if($entity instanceof IntfTameable and $entity->isTamed() and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_STAND) == 0){
+				}elseif($entity instanceof IntfTameable and $entity->isTamed() and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_STAND) == 0){
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->stand", \LogLevel::DEBUG);
 					$entity->setSitting(false);
-					if($entity instanceof Ocelot){
+					if($entity instanceof Ocelot) {
 						$entity->setCommandedToSit(false);
 					}
 					$return = true;
-				}else if((($entity instanceof Wolf) or ($entity instanceof Sheep)) and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_DYE) == 0){
+				}elseif((($entity instanceof Wolf) or ($entity instanceof Sheep)) and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_DYE) == 0){
 					$color = Color::convert($player->getInventory()->getItemInHand()->getDamage());
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->dye with color: $color", \LogLevel::DEBUG);
-					if($entity instanceof Wolf){
+					if($entity instanceof Wolf) {
 						$entity->setCollarColor($color);
 					}elseif($entity instanceof Sheep){
 						$entity->setColor($color);
@@ -125,22 +126,22 @@ class EventListener implements Listener{
 		return $return;
 	}
 
-	public function BlockPlaceEvent(BlockPlaceEvent $ev){
-		if($ev->isCancelled()){
+	public function BlockPlaceEvent(BlockPlaceEvent $ev) {
+		if($ev->isCancelled()) {
 			return;
 		}
 
 		$block = $ev->getBlock();
-		if($block->getId() == Item::JACK_O_LANTERN || $block->getId() == Item::PUMPKIN){
+		if($block->getId() == Item::JACK_O_LANTERN || $block->getId() == Item::PUMPKIN) {
 			if(
 				$block->getSide(Vector3::SIDE_DOWN)->getId() == Item::SNOW_BLOCK
 				&& $block->getSide(Vector3::SIDE_DOWN, 2)->getId() == Item::SNOW_BLOCK
-			){
-				for($y = 1; $y < 3; $y++){
+			) {
+				for($y = 1; $y < 3; $y++) {
 					$block->getLevel()->setBlock($block->add(0, -$y, 0), new Air());
 				}
 				$entity = PureEntities::create("SnowGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
-				if($entity != null){
+				if($entity != null) {
 					$entity->spawnToAll();
 				}
 				$ev->setCancelled();
@@ -153,7 +154,7 @@ class EventListener implements Listener{
 				if(
 					$first->getId() == Item::IRON_BLOCK
 					&& $second->getId() == Item::IRON_BLOCK
-				){
+				) {
 					$block->getLevel()->setBlock($first, new Air());
 					$block->getLevel()->setBlock($second, new Air());
 				}else{
@@ -162,7 +163,7 @@ class EventListener implements Listener{
 					if(
 						$first->getId() == Item::IRON_BLOCK
 						&& $second->getId() == Item::IRON_BLOCK
-					){
+					) {
 						$block->getLevel()->setBlock($first, new Air());
 						$block->getLevel()->setBlock($second, new Air());
 					}else{
@@ -170,9 +171,9 @@ class EventListener implements Listener{
 					}
 				}
 
-				if($second != null){
+				if($second != null) {
 					$entity = PureEntities::create("IronGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
-					if($entity != null){
+					if($entity != null) {
 						$entity->spawnToAll();
 					}
 
@@ -195,19 +196,19 @@ class EventListener implements Listener{
 	 *
 	 * @param PlayerJoinEvent $ev
 	 */
-	public function playerJoin(PlayerJoinEvent $ev){
+	public function playerJoin(PlayerJoinEvent $ev) {
 		PureEntities::logOutput("[EventListener] playerJoin: " . $ev->getPlayer()->getName(), \LogLevel::DEBUG);
-		foreach($ev->getPlayer()->getLevel()->getEntities() as $entity){
+		foreach($ev->getPlayer()->getLevel()->getEntities() as $entity) {
 			if($entity->isAlive() and !$entity->isClosed() and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster and
-				PluginConfiguration::$enableAsyncTasks
-			){
+			                                                                                       PluginConfiguration::$enableAsyncTasks
+			) {
 				$this->plugin->getScheduler()->scheduleDelayedTask(new ShowMobEquipmentTask(
-					PureEntities::getInstance(), $ev->getPlayer()), 20); // send mob equipment after 20 ticks
-			}else if($entity->isAlive() and $entity instanceof IntfTameable and $entity->getOwner() === null and PluginConfiguration::$enableAsyncTasks){
+					                                                   PureEntities::getInstance(), $ev->getPlayer()), 20); // send mob equipment after 20 ticks
+			}elseif($entity->isAlive() and $entity instanceof IntfTameable and $entity->getOwner() === null and PluginConfiguration::$enableAsyncTasks){
 				// sometimes tamed wolves don't get their owner back when the player logs back in again. so we
 				// need to do that at this point to be SURE that the wolf when respawned belongs to the correct player
 				$this->plugin->getScheduler()->scheduleDelayedTask(new SetTamedOwnerTask(
-					PureEntities::getInstance(), $entity), 20); // map owner after 20 ticks
+					                                                   PureEntities::getInstance(), $entity), 20); // map owner after 20 ticks
 			}
 		}
 	}
@@ -218,12 +219,12 @@ class EventListener implements Listener{
 	 *
 	 * @param PlayerQuitEvent $ev
 	 */
-	public function playerQuit(PlayerQuitEvent $ev){
+	public function playerQuit(PlayerQuitEvent $ev) {
 		PureEntities::logOutput("[EventListener] playerQuit: " . $ev->getPlayer()->getName(), \LogLevel::DEBUG);
-		foreach($ev->getPlayer()->getLevel()->getEntities() as $entity){
+		foreach($ev->getPlayer()->getLevel()->getEntities() as $entity) {
 			if($entity instanceof IntfTameable and $entity->getOwner() !== null and
-				strcasecmp($entity->getOwner()->getName(), $ev->getPlayer()->getName()) == 0
-			){
+			                                       strcasecmp($entity->getOwner()->getName(), $ev->getPlayer()->getName()) == 0
+			) {
 				$entity->teleport($ev->getPlayer());
 				$entity->despawnFromAll();
 				PureEntities::logOutput("$entity: despawned from level because player quit: " . $ev->getPlayer());

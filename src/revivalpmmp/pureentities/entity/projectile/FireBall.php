@@ -20,19 +20,17 @@
 
 namespace revivalpmmp\pureentities\entity\projectile;
 
+use pocketmine\entity\Entity;
+use pocketmine\entity\projectile\Projectile;
 use pocketmine\event\entity\ExplosionPrimeEvent;
+use pocketmine\level\Explosion;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
-use pocketmine\entity\projectile\Projectile;
-use pocketmine\entity\Entity;
-use pocketmine\level\Explosion;
-use revivalpmmp\pureentities\data\Data;
-use pocketmine\math\Vector3;
 
-abstract class FireBall extends Projectile{
+abstract class FireBall extends Projectile {
 
 	protected $damage = 4;
 
@@ -42,21 +40,21 @@ abstract class FireBall extends Projectile{
 	protected $isCritical;
 	protected $canExplode = false;
 
-	public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
+	public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false) {
 		parent::__construct($level, $nbt, $shootingEntity);
 		$this->isCritical = $critical;
 	}
 
-	public function isExplode() : bool{
+	public function isExplode() : bool {
 		return $this->canExplode;
 	}
 
-	public function setExplode(bool $bool){
+	public function setExplode(bool $bool) {
 		$this->canExplode = $bool;
 	}
 
-	public function onUpdate(int $currentTick) : bool{
-		if($this->isClosed()){
+	public function onUpdate(int $currentTick) : bool {
+		if($this->isClosed()) {
 			return false;
 		}
 
@@ -64,7 +62,7 @@ abstract class FireBall extends Projectile{
 
 		$hasUpdate = parent::onUpdate($currentTick);
 
-		if(!$this->hadCollision and $this->isCritical){
+		if(!$this->hadCollision and $this->isCritical) {
 			$this->level->addParticle(new CriticalParticle($this->add(
 				$this->width / 2 + mt_rand(-100, 100) / 500,
 				$this->height / 2 + mt_rand(-100, 100) / 500,
@@ -73,12 +71,12 @@ abstract class FireBall extends Projectile{
 			$this->isCritical = false;
 		}
 
-		if($this->age > 1200 or $this->isCollided){
-			if($this->isCollided and $this->canExplode){
+		if($this->age > 1200 or $this->isCollided) {
+			if($this->isCollided and $this->canExplode) {
 				$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
-				if(!$ev->isCancelled() && $this->getLevel() != null){
+				if(!$ev->isCancelled() && $this->getLevel() != null) {
 					$explosion = new Explosion($this, $ev->getForce(), $this->getOwningEntity());
-					if($ev->isBlockBreaking()){
+					if($ev->isBlockBreaking()) {
 						$explosion->explodeA();
 					}
 					$explosion->explodeB();
@@ -92,7 +90,7 @@ abstract class FireBall extends Projectile{
 		return $hasUpdate;
 	}
 
-	public function spawnTo(Player $player) : void{
+	public function spawnTo(Player $player) : void {
 		$pk = new AddEntityPacket();
 		$pk->type = self::NETWORK_ID;
 		$pk->entityRuntimeId = $this->getId();

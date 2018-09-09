@@ -20,33 +20,33 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\entity\projectile\Projectile;
-use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
-use revivalpmmp\pureentities\data\NBTConst;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
+use pocketmine\entity\projectile\Projectile;
 use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\ProjectileLaunchEvent;
+use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\sound\LaunchSound;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\data\NBTConst;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\traits\Shearable;
 
-class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract, IntfShearable{
+class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract, IntfShearable {
 	use Shearable;
 	const NETWORK_ID = Data::NETWORK_IDS["snow_golem"];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -56,7 +56,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 		$this->maxShearDrops = 0;
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "SnowGolem";
 	}
 
@@ -65,8 +65,8 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 23 && $this->distanceSquared($player) <= 55){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 23 && $this->distanceSquared($player) <= 55) {
 			$this->attackDelay = 0;
 
 			$f = 1.2;
@@ -94,7 +94,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 			$snowball->setMotion($snowball->getMotion()->multiply($f));
 
 			$this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($snowball));
-			if($launch->isCancelled()){
+			if($launch->isCancelled()) {
 				$snowball->kill();
 			}else{
 				$snowball->spawnToAll();
@@ -105,15 +105,15 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 		}
 	}
 
-	public function getDrops() : array{
-		if($this->isLootDropAllowed()){
+	public function getDrops() : array {
+		if($this->isLootDropAllowed()) {
 			return [Item::get(Item::SNOWBALL, 0, mt_rand(0, 15))];
 		}else{
 			return [];
 		}
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 4;
 	}
 
@@ -128,9 +128,9 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	 *
 	 * @param Player $player the player to show a button eventually to
 	 */
-	public function showButton(Player $player){
-		if($player->getInventory() != null){ // sometimes, we get null on getInventory?! F**k
-			if($player->getInventory()->getItemInHand()->getId() === ItemIds::SHEARS && !$this->isSheared()){
+	public function showButton(Player $player) {
+		if($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+			if($player->getInventory()->getItemInHand()->getId() === ItemIds::SHEARS && !$this->isSheared()) {
 				InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $player);
 				return;
 			}
@@ -141,9 +141,9 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	/**
 	 * loads data from nbt and fills internal variables
 	 */
-	public function loadNBT(){
-		if(PluginConfiguration::$enableNBT){
-			if(($pumpkin = $this->namedtag->getByte(NBTConst::NBT_KEY_PUMPKIN, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE){
+	public function loadNBT() {
+		if(PluginConfiguration::$enableNBT) {
+			if(($pumpkin = $this->namedtag->getByte(NBTConst::NBT_KEY_PUMPKIN, NBTConst::NBT_INVALID_BYTE)) !== NBTConst::NBT_INVALID_BYTE) {
 				$this->sheared = boolval($pumpkin);
 			}
 		}
@@ -152,8 +152,8 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	/**
 	 * Stores internal variables to NBT
 	 */
-	public function saveNBT() : void{
-		if(PluginConfiguration::$enableNBT){
+	public function saveNBT() : void {
+		if(PluginConfiguration::$enableNBT) {
 			parent::saveNBT();
 			$this->namedtag->setInt(NBTConst::NBT_KEY_PUMPKIN, $this->sheared ? 0 : 1); // default: has pumpkin on his head (1 - pumpkin on head, 0 - pumpkin off!)
 		}

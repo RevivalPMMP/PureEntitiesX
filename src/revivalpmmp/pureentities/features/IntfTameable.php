@@ -23,7 +23,7 @@ namespace revivalpmmp\pureentities\features;
 
 use pocketmine\Player;
 
-interface IntfTameable{
+interface IntfTameable {
 
 	public function setTamed(bool $tamed);
 
@@ -47,6 +47,7 @@ interface IntfTameable{
 	 * Called when an entity gets tamed by a player
 	 *
 	 * @param Player $player
+	 *
 	 * @return mixed
 	 */
 	public function attemptToTame(Player $player);

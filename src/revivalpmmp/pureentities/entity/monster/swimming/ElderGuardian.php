@@ -25,17 +25,17 @@ use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use revivalpmmp\pureentities\entity\monster\SwimmingMonster;
 
-class ElderGuardian extends SwimmingMonster implements Monster{
+class ElderGuardian extends SwimmingMonster implements Monster {
 
 	// TODO: Implement ElderGuardian Specific Methods
 
 	const NETWORK_ID = Data::NETWORK_IDS["elder_guardian"];
 
-	public function attackEntity(Entity $player){
+	public function attackEntity(Entity $player) {
 		parent::attackEntity($player);
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "ElderGuardian";
 	}
 }

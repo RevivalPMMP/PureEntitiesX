@@ -20,7 +20,7 @@
 
 namespace revivalpmmp\pureentities\data;
 
-class Color{
+class Color {
 
 	const COLOR_DYE_BLACK = 0;//dye colors
 	const COLOR_DYE_RED = 1;
@@ -64,14 +64,14 @@ class Color{
 	private $green = 0;
 	private $blue = 0;
 
-	public function __construct($r, $g, $b){
+	public function __construct($r, $g, $b) {
 		$this->red = $r;
 		$this->green = $g;
 		$this->blue = $b;
 	}
 
-	public static function init(){
-		if(self::$dyeColors === null){
+	public static function init() {
+		if(self::$dyeColors === null) {
 			self::$dyeColors = new \SplFixedArray(16); //What's the point of making a 256-long array for 16 objects?
 			self::$dyeColors[self::COLOR_DYE_BLACK] = Color::getRGB(30, 27, 27);
 			self::$dyeColors[self::COLOR_DYE_RED] = Color::getRGB(179, 49, 44);
@@ -91,7 +91,7 @@ class Color{
 			self::$dyeColors[self::COLOR_DYE_WHITE] = Color::getRGB(240, 240, 240);
 		}
 
-		if(self::$convertedColors === null){
+		if(self::$convertedColors === null) {
 			self::$convertedColors = new \SplFixedArray(16);
 			self::$convertedColors[self::COLOR_DYE_BLACK] = self::BLACK;
 			self::$convertedColors[self::COLOR_DYE_RED] = self::RED;
@@ -112,16 +112,16 @@ class Color{
 		}
 	}
 
-	public static function getRGB($r, $g, $b){
+	public static function getRGB($r, $g, $b) {
 		return new Color((int) $r, (int) $g, (int) $b);
 	}
 
-	public static function averageColor(Color ...$colors){
+	public static function averageColor(Color ...$colors) {
 		$tr = 0;//total red
 		$tg = 0;//green
 		$tb = 0;//blue
 		$count = 0;
-		foreach($colors as $c){
+		foreach($colors as $c) {
 			$tr += $c->getRed();
 			$tg += $c->getGreen();
 			$tb += $c->getBlue();
@@ -130,40 +130,41 @@ class Color{
 		return Color::getRGB($tr / $count, $tg / $count, $tb / $count);
 	}
 
-	public function getRed(){
+	public function getRed() {
 		return (int) $this->red;
 	}
 
-	public function getGreen(){
+	public function getGreen() {
 		return (int) $this->green;
 	}
 
-	public function getBlue(){
+	public function getBlue() {
 		return (int) $this->blue;
 	}
 
-	public static function getDyeColor($id){
-		if(isset(self::$dyeColors[$id])){
+	public static function getDyeColor($id) {
+		if(isset(self::$dyeColors[$id])) {
 			return clone self::$dyeColors[$id];
 		}
 		return Color::getRGB(0, 0, 0);
-	}
-
-	public function getColorCode(){
-		return ($this->red << 16 | $this->green << 8 | $this->blue) & 0xffffff;
 	}
 
 	/**
 	 * Converts dye color to "real" color that can be used e.g. for tamed wolves
 	 *
 	 * @param int $dyeColor
+	 *
 	 * @return int
 	 */
-	public static function convert(int $dyeColor) : int{
+	public static function convert(int $dyeColor) : int {
 		return self::$convertedColors[$dyeColor];
 	}
 
-	public function __toString(){
+	public function getColorCode() {
+		return ($this->red << 16 | $this->green << 8 | $this->blue) & 0xffffff;
+	}
+
+	public function __toString() {
 		return "Color(red:" . $this->red . ", green:" . $this->green . ", blue:" . $this->blue . ")";
 	}
 }

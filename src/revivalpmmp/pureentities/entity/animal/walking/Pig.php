@@ -20,12 +20,12 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
-use revivalpmmp\pureentities\components\BreedingComponent;
-use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
-use revivalpmmp\pureentities\features\IntfCanBreed;
+use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
+use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -33,37 +33,37 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
 
-class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanInteract, IntfCanPanic{
+class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanInteract, IntfCanPanic {
 
 	use Breedable, CanPanic, Feedable;
 	const NETWORK_ID = Data::NETWORK_IDS["pig"];
 
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		$this->feedableItems = array(
+		$this->feedableItems = [
 			Item::CARROT,
-			Item::BEETROOT);
+			Item::BEETROOT];
 		$this->breedableClass = new BreedingComponent($this);
 		$this->breedableClass->init();
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Pig";
 	}
 
-	public function saveNBT() : void{
-		if(PluginConfiguration::$enableNBT){
+	public function saveNBT() : void {
+		if(PluginConfiguration::$enableNBT) {
 			parent::saveNBT();
 			$this->breedableClass->saveNBT();
 		}
 	}
 
-	public function getDrops() : array{
-		if($this->isLootDropAllowed()){
-			if($this->isOnFire()){
+	public function getDrops() : array {
+		if($this->isLootDropAllowed()) {
+			if($this->isOnFire()) {
 				return [Item::get(Item::COOKED_PORKCHOP, 0, mt_rand(1, 3))];
 			}else{
 				return [Item::get(Item::RAW_PORKCHOP, 0, mt_rand(1, 3))];
@@ -73,12 +73,12 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
 		}
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 10;
 	}
 
-	public function getXpDropAmount() : int{
-		if($this->getBreedingComponent()->isBaby()){
+	public function getXpDropAmount() : int {
+		if($this->getBreedingComponent()->isBaby()) {
 			return mt_rand(1, 7);
 		}
 		return mt_rand(1, 3);
@@ -87,7 +87,7 @@ class Pig extends WalkingAnimal implements Rideable, IntfCanBreed, IntfCanIntera
 	/**
 	 * @return null
 	 */
-	public function getRidePosition(){
+	public function getRidePosition() {
 		return null;
 	}
 

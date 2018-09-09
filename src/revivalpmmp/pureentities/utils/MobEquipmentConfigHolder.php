@@ -24,7 +24,7 @@ namespace revivalpmmp\pureentities\utils;
 
 use revivalpmmp\pureentities\config\mobequipment\EntityConfig;
 
-class MobEquipmentConfigHolder{
+class MobEquipmentConfigHolder {
 
 	/**
 	 * @var array
@@ -35,11 +35,12 @@ class MobEquipmentConfigHolder{
 	 * Returns mob equipment configuration for a specific entity name
 	 *
 	 * @param string $entityName
+	 *
 	 * @return mixed null|EntityConfig
 	 */
-	public static function getConfig(string $entityName){
+	public static function getConfig(string $entityName) {
 		// check if configuration already cached - if not create it and store it
-		if(!array_key_exists($entityName, self::$config)){
+		if(!array_key_exists($entityName, self::$config)) {
 			self::$config[$entityName] = new EntityConfig($entityName);
 		}
 

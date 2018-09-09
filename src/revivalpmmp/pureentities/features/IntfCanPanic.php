@@ -28,7 +28,7 @@ namespace revivalpmmp\pureentities\features;
  *
  * @package revivalpmmp\pureentities\features
  */
-interface IntfCanPanic{
+interface IntfCanPanic {
 
 
 	public function setPanicSpeed(float $panicSpeed);
@@ -43,6 +43,7 @@ interface IntfCanPanic{
 	 * This has to be called by onUpdate / entityBaseTick
 	 *
 	 * @param int $tickDiff
+	 *
 	 * @return bool true if the entity is still in panic
 	 */
 	public function panicTick(int $tickDiff = 1) : bool;

@@ -20,14 +20,14 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
-use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
+use pocketmine\entity\Creature;
 use pocketmine\entity\Rideable;
 use pocketmine\item\Item;
 use pocketmine\Player;
-use pocketmine\entity\Creature;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 
-class SkeletonHorse extends WalkingAnimal implements Rideable{
+class SkeletonHorse extends WalkingAnimal implements Rideable {
 
 	// Base created from Horse
 	// TODO Implement specific Methods for Skeleton Horse.
@@ -35,43 +35,43 @@ class SkeletonHorse extends WalkingAnimal implements Rideable{
 	const NETWORK_ID = Data::NETWORK_IDS["skeleton_horse"];
 
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "SkeletonHorse";
 	}
 
-	public function targetOption(Creature $creature, float $distance) : bool{
-		if($creature instanceof Player){
+	public function targetOption(Creature $creature, float $distance) : bool {
+		if($creature instanceof Player) {
 			return $creature->spawned && $creature->isAlive() && !$creature->isClosed() && $creature->getInventory()->getItemInHand()->getId() == Item::APPLE && $distance <= 49;
 		}
 		return false;
 	}
 
-	public function getDrops() : array{
-		if($this->isLootDropAllowed()){
+	public function getDrops() : array {
+		if($this->isLootDropAllowed()) {
 			return [Item::get(Item::LEATHER, 0, mt_rand(0, 2))];
 		}else{
 			return [];
 		}
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 20;
 	}
 
-	public function getXpDropAmount() : int{
+	public function getXpDropAmount() : int {
 		return mt_rand(1, 3);
 	}
 
 	/**
 	 * @return null
 	 */
-	public function getRidePosition(){
+	public function getRidePosition() {
 		return null;
 	}
 }

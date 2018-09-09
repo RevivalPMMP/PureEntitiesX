@@ -20,19 +20,19 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Spider extends WalkingMonster{
+class Spider extends WalkingMonster {
 	const NETWORK_ID = Data::NETWORK_IDS["spider"];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -41,7 +41,7 @@ class Spider extends WalkingMonster{
 		$this->setDamage([0, 2, 2, 3]);
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Spider";
 	}
 
@@ -50,23 +50,23 @@ class Spider extends WalkingMonster{
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 10 && (($this->isFriendly() && !($player instanceof Player)) || !$this->isFriendly())){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 10 && (($this->isFriendly() && !($player instanceof Player)) || !$this->isFriendly())) {
 			$this->attackDelay = 0;
 
 			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			                                    MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
 			$player->attack($ev);
 
 			$this->checkTamedMobsAttack($player);
 		}
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed()){
+		if($this->isLootDropAllowed()) {
 			array_push($drops, Item::get(Item::STRING, 0, mt_rand(0, 2)));
-			switch(mt_rand(0, 2)){
+			switch(mt_rand(0, 2)) {
 				case 0:
 					array_push($drops, Item::get(Item::SPIDER_EYE, 0, 1));
 					break;
@@ -75,11 +75,11 @@ class Spider extends WalkingMonster{
 		return $drops;
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 16;
 	}
 
-	public function getXpDropAmount() : int{
+	public function getXpDropAmount() : int {
 		return 5;
 	}
 

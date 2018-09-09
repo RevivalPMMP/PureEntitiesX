@@ -24,7 +24,7 @@ namespace revivalpmmp\pureentities\features;
 
 use pocketmine\Player;
 
-interface IntfShearable{
+interface IntfShearable {
 
 	public function shear(Player $player) : bool;
 

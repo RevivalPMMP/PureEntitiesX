@@ -20,22 +20,22 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
+use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\math\Vector3;
-use pocketmine\entity\Creature;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class IronGolem extends WalkingMonster{
+class IronGolem extends WalkingMonster {
 	const NETWORK_ID = Data::NETWORK_IDS["iron_golem"];
 
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -48,7 +48,7 @@ class IronGolem extends WalkingMonster{
 		$this->setMinDamage([0, 7, 7, 7]);
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "IronGolem";
 	}
 
@@ -57,12 +57,12 @@ class IronGolem extends WalkingMonster{
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 10 && $this->distanceSquared($player) < 4){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 4) {
 			$this->attackDelay = 0;
 
 			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			                                    MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
 			$player->attack($ev);
 			$player->setMotion(new Vector3(0, 0.7, 0));
 
@@ -70,23 +70,23 @@ class IronGolem extends WalkingMonster{
 		}
 	}
 
-	public function targetOption(Creature $creature, float $distance) : bool{
-		if(!($creature instanceof Player)){
+	public function targetOption(Creature $creature, float $distance) : bool {
+		if(!($creature instanceof Player)) {
 			return $creature->isAlive() && $distance <= 60;
 		}
 		return false;
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed()){
+		if($this->isLootDropAllowed()) {
 			array_push($drops, Item::get(Item::IRON_INGOT, 0, mt_rand(3, 5)));
 			array_push($drops, Item::get(Item::POPPY, 0, mt_rand(0, 2)));
 		}
 		return $drops;
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 20;
 	}
 

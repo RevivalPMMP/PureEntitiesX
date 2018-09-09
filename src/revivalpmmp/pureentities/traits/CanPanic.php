@@ -23,7 +23,7 @@ use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\TickCounter;
 
-trait CanPanic{
+trait CanPanic {
 	private $normalSpeed = 1.0;
 	private $panicSpeed = 1.2;
 	/**
@@ -42,32 +42,25 @@ trait CanPanic{
 	 * Considering an initPanic function.
 	 */
 
-	public function setPanicSpeed(float $panicSpeed){
-		$this->panicSpeed = $panicSpeed;
-	}
-
-	public function getPanicSpeed() : float{
-		return $this->panicSpeed;
-	}
-
-	public function setNormalSpeed(float $normalSpeed){
-		$this->normalSpeed = $normalSpeed;
-	}
-
-	public function getNormalSpeed() : float{
+	public function getNormalSpeed() : float {
 		return $this->normalSpeed;
+	}
+
+	public function setNormalSpeed(float $normalSpeed) {
+		$this->normalSpeed = $normalSpeed;
 	}
 
 	/**
 	 * This has to be called by onUpdate / entityBaseTick
 	 *
 	 * @param int $tickDiff
+	 *
 	 * @return bool true if the entity is still in panic
 	 */
-	public function panicTick(int $tickDiff = 1) : bool{
-		if($this->isInPanic()){
+	public function panicTick(int $tickDiff = 1) : bool {
+		if($this->isInPanic()) {
 			PureEntities::logOutput("$this: is in panic. Checking if expired.");
-			if($this->panicCounter->isTicksExpired($tickDiff)){
+			if($this->panicCounter->isTicksExpired($tickDiff)) {
 				PureEntities::logOutput("$this: panic expired. Resetting entity status.");
 				$this->unsetInPanic();
 				return false; // not in panic anymore
@@ -84,29 +77,14 @@ trait CanPanic{
 	 *
 	 * @return bool
 	 */
-	public function isInPanic() : bool{
+	public function isInPanic() : bool {
 		return $this->panicCounter !== null;
-	}
-
-	/**
-	 * Sets an entity in panic mode.
-	 */
-	public function setInPanic(){
-		$this->panicCounter = new TickCounter($this->panicTicks); // x ticks in panic
-		/**
-		 * @var $this IntfCanPanic
-		 */
-		if(!$this instanceof IntfCanBreed or ($this instanceof IntfCanBreed && !$this->getBreedingComponent()->isBaby())){
-			$this->speed = $this->getPanicSpeed();
-		}
-		$this->moveTime = $this->panicTicks; // move for x ticks
-		PureEntities::logOutput("$this: in panic now [speed:" . $this->speed . "] [duration:" . $this->panicTicks . "]");
 	}
 
 	/**
 	 * Unsets panic for an entity
 	 */
-	public function unsetInPanic(){
+	public function unsetInPanic() {
 		$this->panicCounter = null;
 		/**
 		 * @var $this IntfCanPanic
@@ -116,7 +94,30 @@ trait CanPanic{
 		PureEntities::logOutput("$this: unset panic now [speed:" . $this->speed . "]");
 	}
 
-	public function panicEnabled() : bool{
+	/**
+	 * Sets an entity in panic mode.
+	 */
+	public function setInPanic() {
+		$this->panicCounter = new TickCounter($this->panicTicks); // x ticks in panic
+		/**
+		 * @var $this IntfCanPanic
+		 */
+		if(!$this instanceof IntfCanBreed or ($this instanceof IntfCanBreed && !$this->getBreedingComponent()->isBaby())) {
+			$this->speed = $this->getPanicSpeed();
+		}
+		$this->moveTime = $this->panicTicks; // move for x ticks
+		PureEntities::logOutput("$this: in panic now [speed:" . $this->speed . "] [duration:" . $this->panicTicks . "]");
+	}
+
+	public function getPanicSpeed() : float {
+		return $this->panicSpeed;
+	}
+
+	public function setPanicSpeed(float $panicSpeed) {
+		$this->panicSpeed = $panicSpeed;
+	}
+
+	public function panicEnabled() : bool {
 		return $this->panicEnabled;
 	}
 }

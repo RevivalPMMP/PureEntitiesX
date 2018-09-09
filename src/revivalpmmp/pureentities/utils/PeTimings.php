@@ -31,7 +31,7 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\utils
  */
-class PeTimings{
+class PeTimings {
 
 	private static $timingsHolder = [];
 
@@ -41,7 +41,7 @@ class PeTimings{
 	 *
 	 * @param string $description
 	 */
-	public static function startTiming(string $description){
+	public static function startTiming(string $description) {
 		self::$timingsHolder[$description] = round(microtime(1));
 	}
 
@@ -49,13 +49,14 @@ class PeTimings{
 	 * This stops the timing and returns the expired time between start and stop in milliseconds
 	 *
 	 * @param string $description
-	 * @param bool   $logToFile
+	 * @param bool $logToFile
+	 *
 	 * @return float
 	 */
-	public static function stopTiming(string $description, bool $logToFile = false){
+	public static function stopTiming(string $description, bool $logToFile = false) {
 		$timeExpired = round(microtime(1)) - self::$timingsHolder[$description];
 
-		if($logToFile){
+		if($logToFile) {
 			PureEntities::logOutput("PeTimings[$description]: took $timeExpired microseconds to complete.");
 		}
 

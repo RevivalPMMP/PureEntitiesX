@@ -22,21 +22,21 @@ namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\block\Pumpkin;
 use pocketmine\entity\Creature;
-use pocketmine\item\Item;
-use pocketmine\Player;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\Item;
+use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Enderman extends WalkingMonster{
+class Enderman extends WalkingMonster {
 	// TODO: Add item in hand options.
 
 	const NETWORK_ID = Data::NETWORK_IDS["enderman"];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -45,7 +45,7 @@ class Enderman extends WalkingMonster{
 		$this->setDamage([0, 4, 7, 10]);
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Enderman";
 	}
 
@@ -54,30 +54,30 @@ class Enderman extends WalkingMonster{
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 10 && $this->distanceSquared($player) < 1){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 1) {
 			$this->attackDelay = 0;
 			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			                                    MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
 			$player->attack($ev);
 			$this->checkTamedMobsAttack($player);
 		}
 	}
 
-	public function getDrops() : array{
-		if($this->lastDamageCause instanceof EntityDamageByEntityEvent){
+	public function getDrops() : array {
+		if($this->lastDamageCause instanceof EntityDamageByEntityEvent) {
 			return [Item::get(368, 0, 1)];
 		}
 		return [];
 	}
 
-	public function targetOption(Creature $creature, float $distance) : bool{
+	public function targetOption(Creature $creature, float $distance) : bool {
 		// enderman don't attack alone. they only attack when looked at
 		return false;
 	}
 
 
-	public function getXpDropAmount() : int{
+	public function getXpDropAmount() : int {
 		return 5;
 	}
 
@@ -87,9 +87,9 @@ class Enderman extends WalkingMonster{
 	 * @param Player $player
 	 */
 
-	public function playerLooksAt(Player $player){
+	public function playerLooksAt(Player $player) {
 		// if the player wears a pumpkin, the enderman doesn't attack the player
-		if(!$player->getArmorInventory()->getHelmet() instanceof Pumpkin){
+		if(!$player->getArmorInventory()->getHelmet() instanceof Pumpkin) {
 			$this->setBaseTarget($player);
 		}
 

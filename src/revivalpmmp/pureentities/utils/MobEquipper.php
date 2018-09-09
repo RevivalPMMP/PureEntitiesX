@@ -37,7 +37,7 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\utils
  */
-class MobEquipper{
+class MobEquipper {
 
 
 	const DIAMOND = "diamond";
@@ -50,11 +50,11 @@ class MobEquipper{
 	 *
 	 * @param BaseEntity $entity
 	 */
-	public static function equipMob(BaseEntity $entity){
-		if($entity instanceof IntfCanEquip){
+	public static function equipMob(BaseEntity $entity) {
+		if($entity instanceof IntfCanEquip) {
 			// check if configuration already cached - if not create it and store it
 			$entityConfig = MobEquipmentConfigHolder::getConfig($entity->getName());
-			if($entityConfig === null){
+			if($entityConfig === null) {
 				return;
 			}
 
@@ -68,7 +68,7 @@ class MobEquipper{
 			$wearWeapon = (mt_rand(0, 100) <= $wearPickupChance->getWeaponChance());
 			$wearArmor = (mt_rand(0, 100) <= $wearPickupChance->getArmorChance());
 
-			if($wearWeapon){
+			if($wearWeapon) {
 				// 1/3 chance of iron sword, 2/3 iron shovel
 				$weaponItem = Item::get((mt_rand(0, 3) <= 1) ? ItemIds::IRON_SWORD : ItemIds::IRON_SHOVEL);
 				$entity->getMobEquipment()->setMainHand($weaponItem);
@@ -77,24 +77,24 @@ class MobEquipper{
 				PureEntities::logOutput("[MobEquipper] set nothing as weapon for " . $entity, \LogLevel::DEBUG);
 			}
 
-			if($wearArmor){
+			if($wearArmor) {
 				$armorType = self::getArmorType($armorTypeChance);
-				if(mt_rand(0, 100) <= $wearChances->getFullChance()){ // full armor
+				if(mt_rand(0, 100) <= $wearChances->getFullChance()) { // full armor
 					$entity->getMobEquipment()->setHelmet(self::getHelmet($armorType));
 					$entity->getMobEquipment()->setLeggings(self::getLeggings($armorType));
 					$entity->getMobEquipment()->setBoots(self::getBoots($armorType));
 					$entity->getMobEquipment()->setChestplate(self::getChestplate($armorType));
 					PureEntities::logOutput("Full $armorType armor for $entity", \LogLevel::DEBUG);
-				}else if(mt_rand(0, 100) <= $wearChances->getHelmetChestplateLeggingsChance()){ // all without boots
+				}elseif(mt_rand(0, 100) <= $wearChances->getHelmetChestplateLeggingsChance()){ // all without boots
 					$entity->getMobEquipment()->setHelmet(self::getHelmet($armorType));
 					$entity->getMobEquipment()->setLeggings(self::getLeggings($armorType));
 					$entity->getMobEquipment()->setChestplate(self::getChestplate($armorType));
 					PureEntities::logOutput("Helmet, leggings and chestplate of $armorType for $entity", \LogLevel::DEBUG);
-				}else if(mt_rand(0, 100) <= $wearChances->getHelmetChestplateChance()){ // only helmet and chestplate
+				}elseif(mt_rand(0, 100) <= $wearChances->getHelmetChestplateChance()){ // only helmet and chestplate
 					$entity->getMobEquipment()->setHelmet(self::getHelmet($armorType));
 					$entity->getMobEquipment()->setChestplate(self::getChestplate($armorType));
 					PureEntities::logOutput("Helmet and chestplate of type $armorType for $entity", \LogLevel::DEBUG);
-				}else if(mt_rand(0, 100) <= $wearChances->getHelmetChance()){ // only helmet
+				}elseif(mt_rand(0, 100) <= $wearChances->getHelmetChance()){ // only helmet
 					$entity->getMobEquipment()->setHelmet(self::getHelmet($armorType));
 					PureEntities::logOutput("$armorType helmet for $entity", \LogLevel::DEBUG);
 				}else{
@@ -107,53 +107,36 @@ class MobEquipper{
 	}
 
 	/**
-	 * Returns the boot item in correct type
+	 * Returns the armor to be worn by the entity by chance
 	 *
-	 * @param string $armorType
-	 * @return Item
-	 */
-	private static function getBoots(string $armorType) : Item{
-		switch($armorType){
-			case self::LEATHER:
-				return Item::get(ItemIds::LEATHER_BOOTS);
-			case self::IRON:
-				return Item::get(ItemIds::IRON_BOOTS);
-			case self::GOLD:
-				return Item::get(ItemIds::GOLD_BOOTS);
-			case self::DIAMOND:
-				return Item::get(ItemIds::DIAMOND_BOOTS);
-		}
-		return Item::get(ItemIds::AIR);
-	}
-
-	/**
-	 * Returns the chestplate / tunic item in correct type
+	 * @param $chances ArmorTypeChances
 	 *
-	 * @param string $armorType
-	 * @return Item
+	 * @return string
 	 */
-	private static function getChestplate(string $armorType) : Item{
-		switch($armorType){
-			case self::LEATHER:
-				return Item::get(ItemIds::LEATHER_TUNIC);
-			case self::IRON:
-				return Item::get(ItemIds::IRON_CHESTPLATE);
-			case self::GOLD:
-				return Item::get(ItemIds::GOLD_CHESTPLATE);
-			case self::DIAMOND:
-				return Item::get(ItemIds::DIAMOND_CHESTPLATE);
+	private static function getArmorType(ArmorTypeChances $chances) : string {
+		if(mt_rand(0, 100) <= $chances->getDiamond()) {
+			return self::DIAMOND;
+		}elseif(mt_rand(0, 100) <= $chances->getGold()){
+			return self::GOLD;
+		}elseif(mt_rand(0, 100) <= $chances->getIron()){
+			return self::IRON;
+		}elseif(mt_rand(0, 100) <= $chances->getLeather()){
+			return self::LEATHER;
+		}else{
+			PureEntities::logOutput("[MobEquipper] No type of armor selected. Fallback to leather", \LogLevel::DEBUG);
 		}
-		return Item::get(ItemIds::AIR);
+		return self::LEATHER;
 	}
 
 	/**
 	 * Returns the helmet item in correct type
 	 *
 	 * @param string $armorType
+	 *
 	 * @return Item
 	 */
-	private static function getHelmet(string $armorType) : Item{
-		switch($armorType){
+	private static function getHelmet(string $armorType) : Item {
+		switch($armorType) {
 			case self::LEATHER:
 				return Item::get(ItemIds::LEATHER_CAP);
 			case self::IRON:
@@ -170,10 +153,11 @@ class MobEquipper{
 	 * Returns the leggings item in correct type
 	 *
 	 * @param string $armorType
+	 *
 	 * @return Item
 	 */
-	private static function getLeggings(string $armorType) : Item{
-		switch($armorType){
+	private static function getLeggings(string $armorType) : Item {
+		switch($armorType) {
 			case self::LEATHER:
 				return Item::get(ItemIds::LEATHER_PANTS);
 			case self::IRON:
@@ -187,24 +171,45 @@ class MobEquipper{
 	}
 
 	/**
-	 * Returns the armor to be worn by the entity by chance
+	 * Returns the boot item in correct type
 	 *
-	 * @param $chances ArmorTypeChances
-	 * @return string
+	 * @param string $armorType
+	 *
+	 * @return Item
 	 */
-	private static function getArmorType(ArmorTypeChances $chances) : string{
-		if(mt_rand(0, 100) <= $chances->getDiamond()){
-			return self::DIAMOND;
-		}else if(mt_rand(0, 100) <= $chances->getGold()){
-			return self::GOLD;
-		}else if(mt_rand(0, 100) <= $chances->getIron()){
-			return self::IRON;
-		}else if(mt_rand(0, 100) <= $chances->getLeather()){
-			return self::LEATHER;
-		}else{
-			PureEntities::logOutput("[MobEquipper] No type of armor selected. Fallback to leather", \LogLevel::DEBUG);
+	private static function getBoots(string $armorType) : Item {
+		switch($armorType) {
+			case self::LEATHER:
+				return Item::get(ItemIds::LEATHER_BOOTS);
+			case self::IRON:
+				return Item::get(ItemIds::IRON_BOOTS);
+			case self::GOLD:
+				return Item::get(ItemIds::GOLD_BOOTS);
+			case self::DIAMOND:
+				return Item::get(ItemIds::DIAMOND_BOOTS);
 		}
-		return self::LEATHER;
+		return Item::get(ItemIds::AIR);
+	}
+
+	/**
+	 * Returns the chestplate / tunic item in correct type
+	 *
+	 * @param string $armorType
+	 *
+	 * @return Item
+	 */
+	private static function getChestplate(string $armorType) : Item {
+		switch($armorType) {
+			case self::LEATHER:
+				return Item::get(ItemIds::LEATHER_TUNIC);
+			case self::IRON:
+				return Item::get(ItemIds::IRON_CHESTPLATE);
+			case self::GOLD:
+				return Item::get(ItemIds::GOLD_CHESTPLATE);
+			case self::DIAMOND:
+				return Item::get(ItemIds::DIAMOND_CHESTPLATE);
+		}
+		return Item::get(ItemIds::AIR);
 	}
 
 }

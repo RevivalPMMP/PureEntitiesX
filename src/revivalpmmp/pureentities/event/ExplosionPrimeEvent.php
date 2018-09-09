@@ -28,18 +28,18 @@ use pocketmine\event\entity\EntityEvent;
 /**
  * Called when a entity decides to explode
  */
-class ExplosionPrimeEvent extends EntityEvent implements Cancellable{
+class ExplosionPrimeEvent extends EntityEvent implements Cancellable {
 	public static $handlerList = null;
 
 	protected $force;
-	private $blockBreaking;
 	protected $entity;
+	private $blockBreaking;
 
 	/**
 	 * @param Entity $entity
-	 * @param float  $force
+	 * @param float $force
 	 */
-	public function __construct(Entity $entity, $force){
+	public function __construct(Entity $entity, $force) {
 		$this->entity = $entity;
 		$this->force = $force;
 		$this->blockBreaking = true;
@@ -48,25 +48,25 @@ class ExplosionPrimeEvent extends EntityEvent implements Cancellable{
 	/**
 	 * @return float
 	 */
-	public function getForce(){
+	public function getForce() {
 		return $this->force;
 	}
 
-	public function setForce($force){
+	public function setForce($force) {
 		$this->force = (float) $force;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function isBlockBreaking(){
+	public function isBlockBreaking() {
 		return $this->blockBreaking;
 	}
 
 	/**
 	 * @param bool $affectsBlocks
 	 */
-	public function setBlockBreaking($affectsBlocks){
+	public function setBlockBreaking($affectsBlocks) {
 		$this->blockBreaking = (bool) $affectsBlocks;
 	}
 

@@ -63,7 +63,7 @@ use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\MobEquipmentConfigHolder;
 use revivalpmmp\pureentities\utils\TickCounter;
 
-class MobEquipment{
+class MobEquipment {
 
 	/**
 	 * @var Item|null
@@ -106,7 +106,7 @@ class MobEquipment{
 	 */
 	private $pickupTimer = null;
 
-	public function __construct(BaseEntity $entity){
+	public function __construct(BaseEntity $entity) {
 		$this->entity = $entity;
 		$this->pickupTimer = new TickCounter(PluginConfiguration::$pickupLootTicks);
 	}
@@ -119,18 +119,18 @@ class MobEquipment{
 	 *
 	 * @param int $tickDiff
 	 */
-	public function entityBaseTick($tickDiff = 1){
-		if($this->pickupTimer->isTicksExpired($tickDiff) and !$this->entity->getBaseTarget() instanceof ItemEntity){
+	public function entityBaseTick($tickDiff = 1) {
+		if($this->pickupTimer->isTicksExpired($tickDiff) and !$this->entity->getBaseTarget() instanceof ItemEntity) {
 			$entityConfig = MobEquipmentConfigHolder::getConfig($this->entity->getName());
 			$pickupByChance = mt_rand(0, 100) <= $entityConfig->getWearPickupChance()->getCanPickupLootChance();
 			PureEntities::logOutput($this->entity . ": got mob equipment config: " . ($entityConfig !== null) .
-				" and pickupByChance is $pickupByChance", \LogLevel::DEBUG);
+			                        " and pickupByChance is $pickupByChance", \LogLevel::DEBUG);
 			/**
 			 * @var $entityConfig EntityConfig
 			 */
-			if($entityConfig !== null and $pickupByChance){
+			if($entityConfig !== null and $pickupByChance) {
 				$itemsOfInterest = $this->getLootOfInterest(2); // check 2 blocks around ...
-				if($itemsOfInterest !== null && sizeof($itemsOfInterest) > 0){
+				if($itemsOfInterest !== null && sizeof($itemsOfInterest) > 0) {
 					// we need some additional checks if the items to be picked up are better than the items currently holding
 					PureEntities::logOutput($this->entity . ": found interesting loot. Set target to " . $itemsOfInterest[0], \LogLevel::DEBUG);
 					$this->entity->setBaseTarget($itemsOfInterest[0]);
@@ -142,11 +142,31 @@ class MobEquipment{
 	}
 
 	/**
+	 * This method checks all blocks around for any interesting loot that is on ground and
+	 * interesting for the contained entity.
+	 *
+	 * @param int $blocksAround
+	 *
+	 * @return mixed
+	 */
+	public function getLootOfInterest(int $blocksAround) {
+		$itemsAround = [];
+
+		foreach($this->entity->getLevel()->getNearbyEntities($this->entity->boundingBox->expandedCopy($blocksAround, $blocksAround, $blocksAround)) as $entity) {
+			if($entity instanceof ItemEntity and in_array($entity->getItem()->getId(), $this->entity->getPickupLoot())) {
+				PureEntities::logOutput($this->entity . ": found interesting loot: " . $entity->getItem(), \LogLevel::DEBUG);
+				$itemsAround[] = $entity;
+			}
+		}
+		return $itemsAround;
+	}
+
+	/**
 	 * This is called from WalkingEntity when the item is reached by the entity which was desired.
 	 *
 	 * @param ItemEntity $item
 	 */
-	public function itemReached(ItemEntity $item){
+	public function itemReached(ItemEntity $item) {
 		PureEntities::logOutput($this->entity . ": reached $item. Pick it up!", \LogLevel::DEBUG);
 		$this->entity->stayTime = 50; // first: stay here!
 		$this->entity->getLevel()->removeEntity($item); // remove item from level
@@ -163,44 +183,112 @@ class MobEquipment{
 	}
 
 	/**
-	 * Initializes the MobEquipment
+	 * Puts the item in the correct slot
+	 *
+	 * @param Item $item
 	 */
-	public function init(){
-		$this->loadFromNBT();
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getMainHand(){
-		return $this->mainHand;
-	}
-
-	/**
-	 * @param mixed $mainHand
-	 */
-	public function setMainHand($mainHand){
-		if($this->mainHand !== $mainHand){
-			$this->mainHand = $mainHand;
-			$this->recalculateDamageIncreaseByWeapon();
-			$this->storeToNBT();
-			$this->sendHandItemsToAllClients();
+	private function putInCorrectSlot(Item $item) {
+		if($item instanceof Armor) {
+			if($item instanceof LeatherCap or $item instanceof IronHelmet or $item instanceof GoldHelmet or $item instanceof DiamondHelmet) {
+				$this->setHelmet($item);
+			}elseif($item instanceof LeatherPants or $item instanceof IronLeggings or $item instanceof GoldLeggings or $item instanceof DiamondLeggings){
+				$this->setLeggings($item);
+			}elseif($item instanceof LeatherBoots or $item instanceof IronBoots or $item instanceof GoldBoots or $item instanceof DiamondBoots){
+				$this->setBoots($item);
+			}elseif($item instanceof LeatherTunic or $item instanceof IronChestplate or $item instanceof GoldChestplate or $item instanceof DiamondChestplate){
+				$this->setChestplate($item);
+			}
+		}else{
+			$this->setMainHand($item);
 		}
 	}
 
 	/**
-	 * @return mixed
+	 * Initializes the MobEquipment
 	 */
-	public function getHelmet(){
-		return $this->helmet;
+	public function init() {
+		$this->loadFromNBT();
+	}
+
+	private function loadFromNBT() {
+		if(PluginConfiguration::$enableNBT) {
+			PureEntities::logOutput("MobEquipment: loadFromNBT for " . $this->entity, \LogLevel::DEBUG);
+			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_ARMOR_ITEMS)) {
+				PureEntities::logOutput("MobEquipment: armorItems set for " . $this->entity, \LogLevel::DEBUG);
+				$nbt = $this->entity->namedtag->getListTag(NBTConst::NBT_KEY_ARMOR_ITEMS);
+				if($nbt instanceof ListTag) {
+					$itemId = $nbt->get(0)->getInt(NBTConst::NBT_KEY_ARMOR_ID);
+					$this->boots = Item::get($itemId);
+					$itemId = $nbt->get(1)->getInt(NBTConst::NBT_KEY_ARMOR_ID);
+					$this->leggings = Item::get($itemId);
+					$itemId = $nbt->get(2)->getInt(NBTConst::NBT_KEY_ARMOR_ID);
+					$this->chestplate = Item::get($itemId);
+					$itemId = $nbt->get(3)->getInt(NBTConst::NBT_KEY_ARMOR_ID);
+					$this->helmet = Item::get($itemId);
+					PureEntities::logOutput("MobEquipment: loaded from NBT [boots:" . $this->boots . "] [legs:" . $this->leggings . "] " .
+					                        "[chest:" . $this->chestplate . "] [helmet:" . $this->helmet . "]", \LogLevel::DEBUG);
+				}
+			}
+
+			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_HAND_ITEMS)) {
+				PureEntities::logOutput("MobEquipment: handItems set for " . $this->entity, \LogLevel::DEBUG);
+				$nbt = $this->entity->namedtag->getListTag(NBTConst::NBT_KEY_HAND_ITEMS);
+				if($nbt instanceof ListTag) {
+					$itemId = $nbt[0]["id"];
+					PureEntities::logOutput("MobEquipment: found hand item (id): $itemId -> set it now!", \LogLevel::DEBUG);
+					$this->mainHand = Item::get($itemId);
+				}
+			}
+			$this->recalculateArmorDamageReduction();
+			$this->recalculateDamageIncreaseByWeapon();
+		}
 	}
 
 	/**
-	 * @param mixed $helmet
+	 * Recalculate the damage reduction in percent for all armor worn by entity
 	 */
-	public function setHelmet($helmet){
-		if($this->helmet !== $helmet){
-			$this->helmet = $helmet;
+	private function recalculateArmorDamageReduction() {
+		$this->damageReductionInPercent = $this->getChestplateArmorPoints() + $this->getBootsArmorPoints() + $this->getHelmetArmorPoints() +
+		                                  $this->getLeggingsArmorPoints();
+	}
+
+	/**
+	 * Returns armor points to be added by checking which chestplate the entity wears.
+	 *
+	 * Check this: Each defense point will reduce any damage dealt to the player which is absorbed by armor by 4%
+	 *
+	 * @return int
+	 */
+	private function getChestplateArmorPoints() : int {
+		$armor = 0;
+		$item = $this->getChestplate();
+		if($item !== null && $item->getId() !== ItemIds::AIR) {
+			if($item instanceof LeatherTunic) {
+				$armor = 3;
+			}elseif($item instanceof GoldChestplate){
+				$armor = 5;
+			}elseif($item instanceof IronChestplate){
+				$armor = 6;
+			}elseif($item instanceof DiamondChestplate){
+				$armor = 8;
+			}
+		}
+		return $armor * 4;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getChestplate() {
+		return $this->chestplate;
+	}
+
+	/**
+	 * @param mixed $chestplate
+	 */
+	public function setChestplate($chestplate) {
+		if($this->chestplate !== $chestplate) {
+			$this->chestplate = $chestplate;
 			$this->recalculateArmorDamageReduction();
 			$this->storeToNBT();
 			$this->sendArmorUpdateToAllClients();
@@ -208,17 +296,41 @@ class MobEquipment{
 	}
 
 	/**
+	 * Returns armor points to be added by checking which boots the entity wears
+	 *
+	 * Check this: Each defense point will reduce any damage dealt to the player which is absorbed by armor by 4%
+	 *
+	 * @return int
+	 */
+	private function getBootsArmorPoints() : int {
+		$armor = 0;
+		$item = $this->getBoots();
+		if($item !== null && $item->getId() !== ItemIds::AIR) {
+			if($item instanceof LeatherBoots) {
+				$armor = 1;
+			}elseif($item instanceof GoldBoots){
+				$armor = 1;
+			}elseif($item instanceof IronBoots){
+				$armor = 2;
+			}elseif($item instanceof DiamondBoots){
+				$armor = 3;
+			}
+		}
+		return $armor * 4;
+	}
+
+	/**
 	 * @return mixed
 	 */
-	public function getBoots(){
+	public function getBoots() {
 		return $this->boots;
 	}
 
 	/**
 	 * @param mixed $boots
 	 */
-	public function setBoots($boots){
-		if($this->boots !== $boots){
+	public function setBoots($boots) {
+		if($this->boots !== $boots) {
 			$this->boots = $boots;
 			$this->recalculateArmorDamageReduction();
 			$this->storeToNBT();
@@ -228,178 +340,90 @@ class MobEquipment{
 	}
 
 	/**
-	 * @return mixed
-	 */
-	public function getLeggings(){
-		return $this->leggings;
-	}
-
-	/**
-	 * @param mixed $leggings
-	 */
-	public function setLeggings($leggings){
-		if($this->leggings !== $leggings){
-			$this->leggings = $leggings;
-			$this->recalculateArmorDamageReduction();
-			$this->storeToNBT();
-			$this->sendArmorUpdateToAllClients();
-		}
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getChestplate(){
-		return $this->chestplate;
-	}
-
-	/**
-	 * @param mixed $chestplate
-	 */
-	public function setChestplate($chestplate){
-		if($this->chestplate !== $chestplate){
-			$this->chestplate = $chestplate;
-			$this->recalculateArmorDamageReduction();
-			$this->storeToNBT();
-			$this->sendArmorUpdateToAllClients();
-		}
-	}
-
-	/**
-	 * This should be called as soon as a player enters the server / level to update the entities
-	 * holding any MobEquipment class.
+	 * Returns armor points to be added by checking which helmet the entity wears
 	 *
-	 * @param Player $player the player to send the data packet to
-	 */
-	public function sendEquipmentUpdate(Player $player){
-		if(PluginConfiguration::$enableNBT){
-			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_ARMOR_ITEMS)){
-				PureEntities::logOutput("sendEquipmentUpdate: armor to " . $player->getName(), \LogLevel::DEBUG);
-				$player->dataPacket($this->createArmorEquipPacket());
-			}
-			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_HAND_ITEMS)){
-				PureEntities::logOutput("sendEquipmentUpdate: hand items to " . $player->getName(), \LogLevel::DEBUG);
-				$player->dataPacket($this->createHandItemsEquipPacket());
-			}
-		}else{
-			PureEntities::logOutput("sendEquipmentUpdate called when EnableNBT is false.", \LogLevel::WARNING);
-		}
-	}
-
-	/**
-	 * This method checks all blocks around for any interesting loot that is on ground and
-	 * interesting for the contained entity.
-	 *
-	 * @param int $blocksAround
-	 * @return mixed
-	 */
-	public function getLootOfInterest(int $blocksAround){
-		$itemsAround = [];
-
-		foreach($this->entity->getLevel()->getNearbyEntities($this->entity->boundingBox->expandedCopy($blocksAround, $blocksAround, $blocksAround)) as $entity){
-			if($entity instanceof ItemEntity and in_array($entity->getItem()->getId(), $this->entity->getPickupLoot())){
-				PureEntities::logOutput($this->entity . ": found interesting loot: " . $entity->getItem(), \LogLevel::DEBUG);
-				$itemsAround[] = $entity;
-			}
-		}
-		return $itemsAround;
-	}
-
-
-	/**
-	 * Returns the damage reduce amount in percent by the armor the entity wears
-	 *
-	 * @return int the damage reduction in percent!
-	 */
-	public function getArmorDamagePercentToReduce() : int{
-		return $this->damageReductionInPercent;
-	}
-
-	/**
-	 * Returns the damage to add to "original" damage done by the entity by taking weapon into account
+	 * Check this: Each defense point will reduce any damage dealt to the player which is absorbed by armor by 4%
 	 *
 	 * @return int
 	 */
-	public function getWeaponDamageToAdd() : int{
-		return $this->damageIncreaseByWeapon;
+	private function getHelmetArmorPoints() : int {
+		$armor = 0;
+		$item = $this->getHelmet();
+		if($item !== null && $item->getId() !== ItemIds::AIR) {
+			if($item instanceof LeatherCap) {
+				$armor = 1;
+			}elseif($item instanceof GoldHelmet){
+				$armor = 2;
+			}elseif($item instanceof IronHelmet){
+				$armor = 2;
+			}elseif($item instanceof DiamondHelmet){
+				$armor = 3;
+			}
+		}
+		return $armor * 4;
 	}
 
 	/**
-	 * This method adds loot to the given drops array by checking with a 9% chance if anything is worn. If so,
-	 * the drop array will be extended by the equipment the entity wears
-	 *
-	 * @param $existingDrops array the existing drops containing none or any item already
+	 * @return mixed
 	 */
-	public function addLoot(array $existingDrops){
-		// Some monsters can spawn with a sword, and have a 8.5% (9.5% with Looting I, 10.5% with Looting II and 11.5% with Looting III)
-		// see: http://minecraft.gamepedia.com/Sword (section: mobs)
-		if(mt_rand(0, 100) <= 9){
-			// drop all equipment
-			if($this->mainHand !== null && $this->mainHand->getId() !== ItemIds::AIR){
-				array_push($existingDrops, $this->mainHand);
-			}
-			if($this->helmet !== null && $this->helmet->getId() !== ItemIds::AIR){
-				array_push($existingDrops, $this->helmet);
-			}
-			if($this->boots !== null && $this->boots->getId() !== ItemIds::AIR){
-				array_push($existingDrops, $this->boots);
-			}
-			if($this->chestplate !== null && $this->chestplate->getId() !== ItemIds::AIR){
-				array_push($existingDrops, $this->chestplate);
-			}
-			if($this->leggings !== null && $this->leggings->getId() !== ItemIds::AIR){
-				array_push($existingDrops, $this->leggings);
-			}
+	public function getHelmet() {
+		return $this->helmet;
+	}
+
+	/**
+	 * @param mixed $helmet
+	 */
+	public function setHelmet($helmet) {
+		if($this->helmet !== $helmet) {
+			$this->helmet = $helmet;
+			$this->recalculateArmorDamageReduction();
+			$this->storeToNBT();
+			$this->sendArmorUpdateToAllClients();
 		}
 	}
 
 	/**
-	 * Puts the item in the correct slot
+	 * Returns armor points to be added by checking which leggings the entity wears
 	 *
-	 * @param Item $item
+	 * Check this: Each defense point will reduce any damage dealt to the player which is absorbed by armor by 4%
+	 *
+	 * @return int
 	 */
-	private function putInCorrectSlot(Item $item){
-		if($item instanceof Armor){
-			if($item instanceof LeatherCap or $item instanceof IronHelmet or $item instanceof GoldHelmet or $item instanceof DiamondHelmet){
-				$this->setHelmet($item);
-			}else if($item instanceof LeatherPants or $item instanceof IronLeggings or $item instanceof GoldLeggings or $item instanceof DiamondLeggings){
-				$this->setLeggings($item);
-			}else if($item instanceof LeatherBoots or $item instanceof IronBoots or $item instanceof GoldBoots or $item instanceof DiamondBoots){
-				$this->setBoots($item);
-			}else if($item instanceof LeatherTunic or $item instanceof IronChestplate or $item instanceof GoldChestplate or $item instanceof DiamondChestplate){
-				$this->setChestplate($item);
+	private function getLeggingsArmorPoints() : int {
+		$armor = 0;
+		$item = $this->getBoots();
+		if($item !== null && $item->getId() !== ItemIds::AIR) {
+			if($item instanceof LeatherPants) {
+				$armor = 2;
+			}elseif($item instanceof GoldLeggings){
+				$armor = 3;
+			}elseif($item instanceof IronLeggings){
+				$armor = 5;
+			}elseif($item instanceof DiamondLeggings){
+				$armor = 6;
 			}
-		}else{
-			$this->setMainHand($item);
 		}
+		return $armor * 4;
 	}
 
 	/**
 	 * Recalculates the weapon damage points to be added when entity attacks
 	 */
-	private function recalculateDamageIncreaseByWeapon(){
+	private function recalculateDamageIncreaseByWeapon() {
 		$this->damageIncreaseByWeapon = $this->getWeaponDamage();
-	}
-
-	/**
-	 * Recalculate the damage reduction in percent for all armor worn by entity
-	 */
-	private function recalculateArmorDamageReduction(){
-		$this->damageReductionInPercent = $this->getChestplateArmorPoints() + $this->getBootsArmorPoints() + $this->getHelmetArmorPoints() +
-			$this->getLeggingsArmorPoints();
 	}
 
 	/**
 	 * Returns the damage to be added to normal damage when wielding at least a weapon
 	 * @return int
 	 */
-	private function getWeaponDamage() : int{
+	private function getWeaponDamage() : int {
 		$damageToAdd = 0;
 		$itemInMain = $this->getMainHand();
-		if($itemInMain !== null and $itemInMain->getId() instanceof TieredTool){
-			if($itemInMain instanceof Sword){
+		if($itemInMain !== null and $itemInMain->getId() instanceof TieredTool) {
+			if($itemInMain instanceof Sword) {
 				$tier = $itemInMain->getTier();
-				switch($tier){
+				switch($tier) {
 					case TieredTool::TIER_WOODEN:
 					case TieredTool::TIER_GOLD:
 						$damageToAdd = 5;
@@ -426,113 +450,152 @@ class MobEquipment{
 	}
 
 	/**
-	 * Returns armor points to be added by checking which chestplate the entity wears.
-	 *
-	 * Check this: Each defense point will reduce any damage dealt to the player which is absorbed by armor by 4%
-	 *
-	 * @return int
+	 * @return mixed
 	 */
-	private function getChestplateArmorPoints() : int{
-		$armor = 0;
-		$item = $this->getChestplate();
-		if($item !== null && $item->getId() !== ItemIds::AIR){
-			if($item instanceof LeatherTunic){
-				$armor = 3;
-			}else if($item instanceof GoldChestplate){
-				$armor = 5;
-			}else if($item instanceof IronChestplate){
-				$armor = 6;
-			}else if($item instanceof DiamondChestplate){
-				$armor = 8;
-			}
-		}
-		return $armor * 4;
+	public function getMainHand() {
+		return $this->mainHand;
 	}
 
 	/**
-	 * Returns armor points to be added by checking which helmet the entity wears
-	 *
-	 * Check this: Each defense point will reduce any damage dealt to the player which is absorbed by armor by 4%
-	 *
-	 * @return int
+	 * @param mixed $mainHand
 	 */
-	private function getHelmetArmorPoints() : int{
-		$armor = 0;
-		$item = $this->getHelmet();
-		if($item !== null && $item->getId() !== ItemIds::AIR){
-			if($item instanceof LeatherCap){
-				$armor = 1;
-			}else if($item instanceof GoldHelmet){
-				$armor = 2;
-			}else if($item instanceof IronHelmet){
-				$armor = 2;
-			}else if($item instanceof DiamondHelmet){
-				$armor = 3;
-			}
+	public function setMainHand($mainHand) {
+		if($this->mainHand !== $mainHand) {
+			$this->mainHand = $mainHand;
+			$this->recalculateDamageIncreaseByWeapon();
+			$this->storeToNBT();
+			$this->sendHandItemsToAllClients();
 		}
-		return $armor * 4;
 	}
 
 	/**
-	 * Returns armor points to be added by checking which boots the entity wears
-	 *
-	 * Check this: Each defense point will reduce any damage dealt to the player which is absorbed by armor by 4%
-	 *
-	 * @return int
+	 * Sends all armor items equipment to the clients for the embedded entity
 	 */
-	private function getBootsArmorPoints() : int{
-		$armor = 0;
-		$item = $this->getBoots();
-		if($item !== null && $item->getId() !== ItemIds::AIR){
-			if($item instanceof LeatherBoots){
-				$armor = 1;
-			}else if($item instanceof GoldBoots){
-				$armor = 1;
-			}else if($item instanceof IronBoots){
-				$armor = 2;
-			}else if($item instanceof DiamondBoots){
-				$armor = 3;
-			}
-		}
-		return $armor * 4;
+	public function sendHandItemsToAllClients() {
+		$pk = $this->createHandItemsEquipPacket();
+		$this->sendPacketToPlayers($pk);
 	}
 
 	/**
-	 * Returns armor points to be added by checking which leggings the entity wears
-	 *
-	 * Check this: Each defense point will reduce any damage dealt to the player which is absorbed by armor by 4%
-	 *
-	 * @return int
+	 * Sends all armor items equipment to the clients for the embedded entity
 	 */
-	private function getLeggingsArmorPoints() : int{
-		$armor = 0;
-		$item = $this->getBoots();
-		if($item !== null && $item->getId() !== ItemIds::AIR){
-			if($item instanceof LeatherPants){
-				$armor = 2;
-			}else if($item instanceof GoldLeggings){
-				$armor = 3;
-			}else if($item instanceof IronLeggings){
-				$armor = 5;
-			}else if($item instanceof DiamondLeggings){
-				$armor = 6;
-			}
-		}
-		return $armor * 4;
+	public function sendArmorUpdateToAllClients() {
+		$pk = $this->createArmorEquipPacket();
+		$this->sendPacketToPlayers($pk);
 	}
 
 	/**
-	 * Returns true when the item held in main hand is a sword
-	 *
-	 * @return bool
+	 * @return mixed
 	 */
-	private function isSwordWorn() : bool{
-		return $this->getMainHand() !== null and $this->getMainHand()->getId() !== ItemIds::AIR and
-			($this->getMainHand() instanceof Sword);
+	public function getLeggings() {
+		return $this->leggings;
 	}
 
-	private function storeToNBT(){
-		if(PluginConfiguration::$enableNBT){
+	/**
+	 * @param mixed $leggings
+	 */
+	public function setLeggings($leggings) {
+		if($this->leggings !== $leggings) {
+			$this->leggings = $leggings;
+			$this->recalculateArmorDamageReduction();
+			$this->storeToNBT();
+			$this->sendArmorUpdateToAllClients();
+		}
+	}
+
+	/**
+	 * This should be called as soon as a player enters the server / level to update the entities
+	 * holding any MobEquipment class.
+	 *
+	 * @param Player $player the player to send the data packet to
+	 */
+	public function sendEquipmentUpdate(Player $player) {
+		if(PluginConfiguration::$enableNBT) {
+			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_ARMOR_ITEMS)) {
+				PureEntities::logOutput("sendEquipmentUpdate: armor to " . $player->getName(), \LogLevel::DEBUG);
+				$player->dataPacket($this->createArmorEquipPacket());
+			}
+			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_HAND_ITEMS)) {
+				PureEntities::logOutput("sendEquipmentUpdate: hand items to " . $player->getName(), \LogLevel::DEBUG);
+				$player->dataPacket($this->createHandItemsEquipPacket());
+			}
+		}else{
+			PureEntities::logOutput("sendEquipmentUpdate called when EnableNBT is false.", \LogLevel::WARNING);
+		}
+	}
+
+	private function createArmorEquipPacket() : MobArmorEquipmentPacket {
+		$pk = new MobArmorEquipmentPacket();
+		$pk->entityRuntimeId = $this->entity->getId();
+		$pk->slots = [
+			$this->helmet !== null ? $this->helmet : Item::get(ItemIds::AIR),
+			$this->chestplate !== null ? $this->chestplate : Item::get(ItemIds::AIR),
+			$this->leggings !== null ? $this->leggings : Item::get(ItemIds::AIR),
+			$this->boots !== null ? $this->boots : Item::get(ItemIds::AIR)
+		];
+		$pk->encode();
+		$pk->isEncoded = true;
+		return $pk;
+	}
+
+	private function createHandItemsEquipPacket() : MobEquipmentPacket {
+		$pk = new MobEquipmentPacket();
+		$pk->entityRuntimeId = $this->entity->getId();
+		$pk->item = $this->mainHand !== null ? $this->mainHand : Item::get(ItemIds::AIR);
+		$pk->inventorySlot = 0;
+		$pk->hotbarSlot = 0;
+		return $pk;
+	}
+
+	/**
+	 * Returns the damage reduce amount in percent by the armor the entity wears
+	 *
+	 * @return int the damage reduction in percent!
+	 */
+	public function getArmorDamagePercentToReduce() : int {
+		return $this->damageReductionInPercent;
+	}
+
+	/**
+	 * Returns the damage to add to "original" damage done by the entity by taking weapon into account
+	 *
+	 * @return int
+	 */
+	public function getWeaponDamageToAdd() : int {
+		return $this->damageIncreaseByWeapon;
+	}
+
+	/**
+	 * This method adds loot to the given drops array by checking with a 9% chance if anything is worn. If so,
+	 * the drop array will be extended by the equipment the entity wears
+	 *
+	 * @param $existingDrops array the existing drops containing none or any item already
+	 */
+	public function addLoot(array $existingDrops) {
+		// Some monsters can spawn with a sword, and have a 8.5% (9.5% with Looting I, 10.5% with Looting II and 11.5% with Looting III)
+		// see: http://minecraft.gamepedia.com/Sword (section: mobs)
+		if(mt_rand(0, 100) <= 9) {
+			// drop all equipment
+			if($this->mainHand !== null && $this->mainHand->getId() !== ItemIds::AIR) {
+				array_push($existingDrops, $this->mainHand);
+			}
+			if($this->helmet !== null && $this->helmet->getId() !== ItemIds::AIR) {
+				array_push($existingDrops, $this->helmet);
+			}
+			if($this->boots !== null && $this->boots->getId() !== ItemIds::AIR) {
+				array_push($existingDrops, $this->boots);
+			}
+			if($this->chestplate !== null && $this->chestplate->getId() !== ItemIds::AIR) {
+				array_push($existingDrops, $this->chestplate);
+			}
+			if($this->leggings !== null && $this->leggings->getId() !== ItemIds::AIR) {
+				array_push($existingDrops, $this->leggings);
+			}
+		}
+	}
+
+	private function storeToNBT() {
+		if(PluginConfiguration::$enableNBT) {
 			// feet, legs, chest, head - store armor content to NBT
 			$armor[0] = new CompoundTag("0", [
 				"Count" => new IntTag("Count", 1),
@@ -569,83 +632,20 @@ class MobEquipment{
 		}
 	}
 
-	private function loadFromNBT(){
-		if(PluginConfiguration::$enableNBT){
-			PureEntities::logOutput("MobEquipment: loadFromNBT for " . $this->entity, \LogLevel::DEBUG);
-			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_ARMOR_ITEMS)){
-				PureEntities::logOutput("MobEquipment: armorItems set for " . $this->entity, \LogLevel::DEBUG);
-				$nbt = $this->entity->namedtag->getListTag(NBTConst::NBT_KEY_ARMOR_ITEMS);
-				if($nbt instanceof ListTag){
-					$itemId = $nbt->get(0)->getInt(NBTConst::NBT_KEY_ARMOR_ID);
-					$this->boots = Item::get($itemId);
-					$itemId = $nbt->get(1)->getInt(NBTConst::NBT_KEY_ARMOR_ID);
-					$this->leggings = Item::get($itemId);
-					$itemId = $nbt->get(2)->getInt(NBTConst::NBT_KEY_ARMOR_ID);
-					$this->chestplate = Item::get($itemId);
-					$itemId = $nbt->get(3)->getInt(NBTConst::NBT_KEY_ARMOR_ID);
-					$this->helmet = Item::get($itemId);
-					PureEntities::logOutput("MobEquipment: loaded from NBT [boots:" . $this->boots . "] [legs:" . $this->leggings . "] " .
-						"[chest:" . $this->chestplate . "] [helmet:" . $this->helmet . "]", \LogLevel::DEBUG);
-				}
-			}
-
-			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_HAND_ITEMS)){
-				PureEntities::logOutput("MobEquipment: handItems set for " . $this->entity, \LogLevel::DEBUG);
-				$nbt = $this->entity->namedtag->getListTag(NBTConst::NBT_KEY_HAND_ITEMS);
-				if($nbt instanceof ListTag){
-					$itemId = $nbt[0]["id"];
-					PureEntities::logOutput("MobEquipment: found hand item (id): $itemId -> set it now!", \LogLevel::DEBUG);
-					$this->mainHand = Item::get($itemId);
-				}
-			}
-			$this->recalculateArmorDamageReduction();
-			$this->recalculateDamageIncreaseByWeapon();
-		}
-	}
-
-	/**
-	 * Sends all armor items equipment to the clients for the embedded entity
-	 */
-	public function sendArmorUpdateToAllClients(){
-		$pk = $this->createArmorEquipPacket();
-		$this->sendPacketToPlayers($pk);
-	}
-
-	/**
-	 * Sends all armor items equipment to the clients for the embedded entity
-	 */
-	public function sendHandItemsToAllClients(){
-		$pk = $this->createHandItemsEquipPacket();
-		$this->sendPacketToPlayers($pk);
-	}
-
-	private function createArmorEquipPacket() : MobArmorEquipmentPacket{
-		$pk = new MobArmorEquipmentPacket();
-		$pk->entityRuntimeId = $this->entity->getId();
-		$pk->slots = [
-			$this->helmet !== null ? $this->helmet : Item::get(ItemIds::AIR),
-			$this->chestplate !== null ? $this->chestplate : Item::get(ItemIds::AIR),
-			$this->leggings !== null ? $this->leggings : Item::get(ItemIds::AIR),
-			$this->boots !== null ? $this->boots : Item::get(ItemIds::AIR)
-		];
-		$pk->encode();
-		$pk->isEncoded = true;
-		return $pk;
-	}
-
-	private function createHandItemsEquipPacket() : MobEquipmentPacket{
-		$pk = new MobEquipmentPacket();
-		$pk->entityRuntimeId = $this->entity->getId();
-		$pk->item = $this->mainHand !== null ? $this->mainHand : Item::get(ItemIds::AIR);
-		$pk->inventorySlot = 0;
-		$pk->hotbarSlot = 0;
-		return $pk;
-	}
-
-	private function sendPacketToPlayers(DataPacket $packet){
-		foreach($this->entity->getLevel()->getServer()->getOnlinePlayers() as $player){
+	private function sendPacketToPlayers(DataPacket $packet) {
+		foreach($this->entity->getLevel()->getServer()->getOnlinePlayers() as $player) {
 			$player->dataPacket($packet);
 		}
+	}
+
+	/**
+	 * Returns true when the item held in main hand is a sword
+	 *
+	 * @return bool
+	 */
+	private function isSwordWorn() : bool {
+		return $this->getMainHand() !== null and $this->getMainHand()->getId() !== ItemIds::AIR and
+		                                         ($this->getMainHand() instanceof Sword);
 	}
 
 

@@ -20,20 +20,20 @@
 
 namespace revivalpmmp\pureentities\entity;
 
-abstract class JumpingEntity extends BaseEntity{
+abstract class JumpingEntity extends BaseEntity {
 
 	/*
 	 * For slimes and Magma Cubes ONLY
 	 * Not to be confused for normal entity jumping
 	 */
 
-	protected function checkTarget(bool $checkSkip = true){
-		//TODO
-	}
-
-	public function updateMove($tickDiff){
+	public function updateMove($tickDiff) {
 		// TODO
 		$this->jump();
 		return null;
+	}
+
+	protected function checkTarget(bool $checkSkip = true) {
+		//TODO
 	}
 }

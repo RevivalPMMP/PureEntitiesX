@@ -21,15 +21,15 @@
 namespace revivalpmmp\pureentities\tile;
 
 use pocketmine\level\Level;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
+use pocketmine\tile\Spawnable;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\tile\Spawnable;
 
-class MobSpawner extends Spawnable{
+class MobSpawner extends Spawnable {
 
 	protected $entityId = -1;
 	protected $spawnRange = 8;
@@ -42,7 +42,7 @@ class MobSpawner extends Spawnable{
 	protected $maxSpawnDelay = 800;
 	protected $spawnCount = 0;
 
-	public function __construct(Level $level, CompoundTag $nbt){
+	public function __construct(Level $level, CompoundTag $nbt) {
 
 		parent::__construct($level, $nbt);
 
@@ -50,23 +50,23 @@ class MobSpawner extends Spawnable{
 		PureEntities::logOutput("MobSpawner Created with EntityID of $this->entityId");
 	}
 
-	public function onUpdate() : bool{
-		if($this->isClosed()){
+	public function onUpdate() : bool {
+		if($this->isClosed()) {
 			return false;
 		}
-		if($this->entityId === -1){
+		if($this->entityId === -1) {
 			PureEntities::logOutput("onUpdate Called with EntityID of -1");
 			return false;
 		}
 
-		if($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)){
+		if($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)) {
 			$this->delay = 0;
 
 			$list = [];
 			$isValid = false;
-			foreach($this->level->getEntities() as $entity){
-				if($entity->distance($this) <= $this->requiredPlayerRange){
-					if($entity instanceof Player){
+			foreach($this->level->getEntities() as $entity) {
+				if($entity->distance($this) <= $this->requiredPlayerRange) {
+					if($entity instanceof Player) {
 						$isValid = true;
 					}
 					$list[] = $entity;
@@ -74,14 +74,14 @@ class MobSpawner extends Spawnable{
 				}
 			}
 
-			if($isValid && count($list) <= $this->maxNearbyEntities){
+			if($isValid && count($list) <= $this->maxNearbyEntities) {
 				$y = $this->y;
 				$x = $this->x + mt_rand(-$this->spawnRange, $this->spawnRange);
 				$z = $this->z + mt_rand(-$this->spawnRange, $this->spawnRange);
 				$pos = PureEntities::getSuitableHeightPosition($x, $y, $z, $this->level);
 				$pos->y += Data::HEIGHTS[$this->entityId];
 				$entity = PureEntities::create($this->entityId, $pos);
-				if($entity != null){
+				if($entity != null) {
 					PureEntities::logOutput("MobSpawner: spawn $entity to $pos");
 					$entity->spawnToAll();
 				}
@@ -91,34 +91,32 @@ class MobSpawner extends Spawnable{
 		return true;
 	}
 
-	public function setSpawnEntityType(int $entityId){
+	public function setMinSpawnDelay(int $minDelay) {
+		if($minDelay > $this->maxSpawnDelay) {
+			return;
+		}
+
+		$this->minSpawnDelay = $minDelay;
+	}
+
+	public function setMaxSpawnDelay(int $maxDelay) {
+		if($this->minSpawnDelay > $maxDelay or $maxDelay === 0) {
+			return;
+		}
+
+		$this->maxSpawnDelay = $maxDelay;
+	}	public function setSpawnEntityType(int $entityId) {
 		PureEntities::logOutput("setSpawnEntityType called with EntityID of $entityId");
 		$this->entityId = $entityId;
-		if(PluginConfiguration::$enableNBT){
+		if(PluginConfiguration::$enableNBT) {
 			$this->writeSaveData($tag = new CompoundTag());
 		}
 		$this->onChanged();
 		$this->scheduleUpdate();
 	}
 
-	public function setMinSpawnDelay(int $minDelay){
-		if($minDelay > $this->maxSpawnDelay){
-			return;
-		}
-
-		$this->minSpawnDelay = $minDelay;
-	}
-
-	public function setMaxSpawnDelay(int $maxDelay){
-		if($this->minSpawnDelay > $maxDelay or $maxDelay === 0){
-			return;
-		}
-
-		$this->maxSpawnDelay = $maxDelay;
-	}
-
-	public function setSpawnDelay(int $minDelay, int $maxDelay){
-		if($minDelay > $maxDelay){
+	public function setSpawnDelay(int $minDelay, int $maxDelay) {
+		if($minDelay > $maxDelay) {
 			return;
 		}
 
@@ -126,15 +124,21 @@ class MobSpawner extends Spawnable{
 		$this->maxSpawnDelay = $maxDelay;
 	}
 
-	public function setRequiredPlayerRange(int $range){
+	public function setRequiredPlayerRange(int $range) {
 		$this->requiredPlayerRange = $range;
 	}
 
-	public function setMaxNearbyEntities(int $count){
+	public function setMaxNearbyEntities(int $count) {
 		$this->maxNearbyEntities = $count;
 	}
 
-	public function addAdditionalSpawnData(CompoundTag $nbt) : void{
+	public function getSpawnCount() : int {
+		return $this->spawnCount;
+	}
+
+
+
+	public function addAdditionalSpawnData(CompoundTag $nbt) : void {
 		$nbt->setByte(NBTConst::NBT_KEY_SPAWNER_IS_MOVABLE, 1);
 		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_DELAY, 0);
 		$nbt->setShort(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES, $this->maxNearbyEntities);
@@ -149,38 +153,38 @@ class MobSpawner extends Spawnable{
 		$this->scheduleUpdate();
 	}
 
-	public function readSaveData(CompoundTag $nbt) : void{
-		if(PluginConfiguration::$enableNBT){
+	public function readSaveData(CompoundTag $nbt) : void {
+		if(PluginConfiguration::$enableNBT) {
 
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID)){
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID)) {
 				$this->setSpawnEntityType($nbt->getInt(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, -1, true));
 			}
 
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE)){
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE)) {
 				$this->spawnRange = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE, 8, true);
 			}
 
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY)){
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY)) {
 				$this->minSpawnDelay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY, 200, true);
 			}
 
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY)){
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY)) {
 				$this->maxSpawnDelay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY, 800, true);
 			}
 
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_DELAY)){
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_DELAY)) {
 				$this->delay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_DELAY, 0, true);
 			}
 
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES)){
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES)) {
 				$this->maxNearbyEntities = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES, 6, true);
 			}
 
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE)){
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE)) {
 				$this->requiredPlayerRange = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE, 16);
 			}
 
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT)){
+			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT)) {
 				$this->spawnCount = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT, 0, true);
 			}
 
@@ -202,13 +206,11 @@ class MobSpawner extends Spawnable{
 		}
 	}
 
-	public function writeSaveData(CompoundTag $nbt) : void{
-		if(PluginConfiguration::$enableNBT){
+	public function writeSaveData(CompoundTag $nbt) : void {
+		if(PluginConfiguration::$enableNBT) {
 			$this->addAdditionalSpawnData($nbt);
 		}
 	}
 
-	public function getSpawnCount() : int{
-		return $this->spawnCount;
-	}
+
 }

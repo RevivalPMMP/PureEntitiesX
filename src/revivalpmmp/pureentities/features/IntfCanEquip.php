@@ -29,7 +29,7 @@ use revivalpmmp\pureentities\components\MobEquipment;
  *
  * @package revivalpmmp\pureentities\features
  */
-interface IntfCanEquip{
+interface IntfCanEquip {
 
 	/**
 	 * Has to return the mob equipment class which should be initialized in initEntity

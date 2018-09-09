@@ -20,12 +20,12 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\item\Item;
 use pocketmine\level\sound\PopSound;
 use revivalpmmp\pureentities\components\BreedingComponent;
-use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use pocketmine\item\Item;
-use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
+use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -33,7 +33,7 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
 
-class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic{
+class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
 	use Feedable, Breedable, CanPanic;
 
 	const NETWORK_ID = Data::NETWORK_IDS["chicken"];
@@ -45,7 +45,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 	private $dropEggTime = 0;
 
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->setNetworkId(Data::NETWORK_IDS["chicken"]);
 		$this->width = Data::WIDTHS[$this->getNetworkId()];
@@ -56,33 +56,33 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 		$this->breedableClass = new BreedingComponent($this);
 		$this->breedableClass->init();
 
-		$this->feedableItems = array(
+		$this->feedableItems = [
 			Item::WHEAT_SEEDS,
 			Item::PUMPKIN_SEEDS,
 			Item::MELON_SEEDS,
-			Item::BEETROOT_SEEDS);
+			Item::BEETROOT_SEEDS];
 	}
 
-	public function saveNBT() : void{
-		if(PluginConfiguration::$enableNBT){
+	public function saveNBT() : void {
+		if(PluginConfiguration::$enableNBT) {
 			parent::saveNBT();
 			$this->breedableClass->saveNBT();
 		}
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Chicken";
 	}
 
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
 
-		if($this->isLootDropAllowed()){
+		if($this->isLootDropAllowed()) {
 			// only adult chicken drop something ...
-			if($this->breedableClass != null && !$this->breedableClass->isBaby()){
+			if($this->breedableClass != null && !$this->breedableClass->isBaby()) {
 				array_push($drops, Item::get(Item::FEATHER, 0, mt_rand(0, 2)));
-				if($this->isOnFire()){
+				if($this->isOnFire()) {
 					array_push($drops, Item::get(Item::COOKED_CHICKEN, 0, 1));
 				}else{
 					array_push($drops, Item::get(Item::RAW_CHICKEN, 0, 1));
@@ -92,18 +92,18 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 		return $drops;
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 4;
 	}
 
 
 	// ----- functionality to lay an eg ... -------------
-	public function entityBaseTick(int $tickDiff = 1) : bool{
-		if($this->dropEggTime === 0){
+	public function entityBaseTick(int $tickDiff = 1) : bool {
+		if($this->dropEggTime === 0) {
 			$this->dropEggTime = mt_rand(self::DROP_EGG_DELAY_MIN, self::DROP_EGG_DELAY_MAX);
 		}
 
-		if($this->dropEggTimer >= $this->dropEggTime){ // drop an egg!
+		if($this->dropEggTimer >= $this->dropEggTime) { // drop an egg!
 			$this->layEgg();
 		}else{
 			$this->dropEggTimer += $tickDiff;
@@ -113,7 +113,7 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 		return true;
 	}
 
-	private function layEgg(){
+	private function layEgg() {
 		$item = Item::get(Item::EGG, 0, 1);
 		$this->getLevel()->dropItem($this, $item);
 		$this->getLevel()->addSound(new PopSound($this), $this->getViewers());
@@ -122,8 +122,8 @@ class Chicken extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, In
 		$this->dropEggTime = 0;
 	}
 
-	public function getXpDropAmount() : int{
-		if($this->getBreedingComponent()->isBaby()){
+	public function getXpDropAmount() : int {
+		if($this->getBreedingComponent()->isBaby()) {
 			return mt_rand(1, 7);
 		}
 		return mt_rand(1, 3);

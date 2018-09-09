@@ -37,7 +37,7 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task\delayed
  */
-class ShowMobEquipmentTask extends Task{
+class ShowMobEquipmentTask extends Task {
 
 	/**
 	 * @var PureEntities
@@ -48,10 +48,11 @@ class ShowMobEquipmentTask extends Task{
 
 	/**
 	 * ShowMobEquipmentTask constructor.
+	 *
 	 * @param PureEntities $plugin
-	 * @param Player       $playerJoined
+	 * @param Player $playerJoined
 	 */
-	public function __construct(PureEntities $plugin, Player $playerJoined){
+	public function __construct(PureEntities $plugin, Player $playerJoined) {
 		$this->plugin = $plugin;
 		$this->playerJoined = $playerJoined;
 	}
@@ -63,9 +64,9 @@ class ShowMobEquipmentTask extends Task{
 	 *
 	 * @param $currentTick
 	 */
-	public function onRun(int $currentTick){
-		foreach($this->playerJoined->getLevel()->getEntities() as $entity){
-			if($entity->isAlive() and !$entity->isClosed() and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster){
+	public function onRun(int $currentTick) {
+		foreach($this->playerJoined->getLevel()->getEntities() as $entity) {
+			if($entity->isAlive() and !$entity->isClosed() and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster) {
 				$entity->getMobEquipment()->sendEquipmentUpdate($this->playerJoined);
 			}
 		}

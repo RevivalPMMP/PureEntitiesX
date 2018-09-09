@@ -22,7 +22,7 @@ namespace revivalpmmp\pureentities\data;
 
 use pocketmine\level\biome\Biome;
 
-class BiomeInfo{
+class BiomeInfo {
 
 	const ALLOWED_ENTITIES_BY_BIOME = [
 		16 => [],                            // Beaches

@@ -20,6 +20,6 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-class PigZombie extends ZombiePigman{
+class PigZombie extends ZombiePigman {
 	// Why is this here?
 }

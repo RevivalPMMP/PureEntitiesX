@@ -20,41 +20,42 @@
 
 namespace revivalpmmp\pureentities\entity\animal;
 
-use revivalpmmp\pureentities\entity\SwimmingEntity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
-// use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use revivalpmmp\pureentities\entity\SwimmingEntity;
 
-abstract class SwimmingAnimal extends SwimmingEntity implements Animal{
+// use pocketmine\event\Timings;
 
-	public function getSpeed() : float{
+abstract class SwimmingAnimal extends SwimmingEntity implements Animal {
+
+	public function getSpeed() : float {
 		return 1.0;
 	}
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 
-		if($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null){
+		if($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null) {
 			$this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
 		}
 	}
 
-	public function isBaby() : bool{
+	public function isBaby() : bool {
 		return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
 	}
 
-	public function entityBaseTick(int $tickDiff = 1) : bool{
+	public function entityBaseTick(int $tickDiff = 1) : bool {
 		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
-		if(!$this->hasEffect(Effect::WATER_BREATHING) && !$this->isUnderwater()){
+		if(!$this->hasEffect(Effect::WATER_BREATHING) && !$this->isUnderwater()) {
 			$hasUpdate = true;
 			$airTicks = $this->getDataPropertyManager()->getPropertyValue(self::DATA_AIR, Entity::DATA_TYPE_SHORT) - $tickDiff;
-			if($airTicks <= -20){
+			if($airTicks <= -20) {
 				$airTicks = 0;
 				$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
 				$this->attack($ev);
@@ -68,9 +69,9 @@ abstract class SwimmingAnimal extends SwimmingEntity implements Animal{
 		return $hasUpdate;
 	}
 
-	public function onUpdate(int $currentTick) : bool{
-		if(!$this->isAlive()){
-			if(++$this->deadTicks >= 23){
+	public function onUpdate(int $currentTick) : bool {
+		if(!$this->isAlive()) {
+			if(++$this->deadTicks >= 23) {
 				$this->close();
 				return false;
 			}
@@ -82,8 +83,8 @@ abstract class SwimmingAnimal extends SwimmingEntity implements Animal{
 		$this->entityBaseTick($tickDiff);
 
 		$target = $this->updateMove($tickDiff);
-		if($target instanceof Player){
-			if($this->distance($target) <= 2){
+		if($target instanceof Player) {
+			if($this->distance($target) <= 2) {
 				$this->pitch = 22;
 				$this->x = $this->lastX;
 				$this->y = $this->lastY;

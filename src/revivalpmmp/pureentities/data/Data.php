@@ -21,10 +21,10 @@
 namespace revivalpmmp\pureentities\data;
 
 
-interface Data{
+interface Data {
 
 	// Entity Network IDs
-	const NETWORK_IDS = array(
+	const NETWORK_IDS = [
 		"bat" => 19,
 		"blaze" => 43,
 		"cave_spider" => 40,
@@ -75,11 +75,11 @@ interface Data{
 		"zombie" => 32,
 		"zombie_pigman" => 36,
 		"zombie_villager" => 44
-	);
+	];
 
 
 	// Entity Widths
-	const WIDTHS = array(
+	const WIDTHS = [
 
 		self::NETWORK_IDS["bat"] => 0.484,
 		self::NETWORK_IDS["blaze"] => 1.25,
@@ -131,10 +131,10 @@ interface Data{
 		self::NETWORK_IDS["zombie"] => 1.031,
 		self::NETWORK_IDS["zombie_pigman"] => 2.0,
 		self::NETWORK_IDS["zombie_villager"] => 1.031
-	);
+	];
 
 	// Entity Heights
-	const HEIGHTS = array(
+	const HEIGHTS = [
 		self::NETWORK_IDS["bat"] => 0.5,
 		self::NETWORK_IDS["blaze"] => 1.5,
 		self::NETWORK_IDS["cave_spider"] => 0.547,
@@ -185,12 +185,12 @@ interface Data{
 		self::NETWORK_IDS["zombie"] => 2.01,
 		self::NETWORK_IDS["zombie_pigman"] => 2.0,
 		self::NETWORK_IDS["zombie_villager"] => 2.125
-	);
+	];
 
 	// Contains biomes that each entity is allowed to
 	// spawn into automatically.
-	const ALLOWED_BIOMES_BY_ENTITY_NAME = array(
-		"bat" => array(),
+	const ALLOWED_BIOMES_BY_ENTITY_NAME = [
+		"bat" => [],
 		"blaze" => 43,
 		"cave_spider" => 40,
 		"chicken" => 10,
@@ -227,6 +227,6 @@ interface Data{
 		"zombie" => 32,
 		"zombie_pigman" => 36,
 		"zombie_villager" => 44
-	);
+	];
 
 }

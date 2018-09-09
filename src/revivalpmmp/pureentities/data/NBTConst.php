@@ -20,7 +20,7 @@
 
 namespace revivalpmmp\pureentities\data;
 
-interface NBTConst{
+interface NBTConst {
 
 	// Invalid Check Keys
 	const NBT_INVALID_BYTE = 126;

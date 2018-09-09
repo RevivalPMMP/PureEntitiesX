@@ -20,35 +20,36 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\entity\projectile\Projectile;
-use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
+use pocketmine\entity\projectile\Projectile;
 use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
-// use pocketmine\event\Timings;
 use pocketmine\item\Bow;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\level\sound\LaunchSound;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\tag\FloatTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 
-class Skeleton extends WalkingMonster implements ProjectileSource{
+// use pocketmine\event\Timings;
+
+class Skeleton extends WalkingMonster implements ProjectileSource {
 	const NETWORK_ID = Data::NETWORK_IDS["skeleton"];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[$this::NETWORK_ID];
 		$this->height = Data::HEIGHTS[$this::NETWORK_ID];
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Skeleton";
 	}
 
@@ -57,8 +58,8 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distanceSquared($player) <= 55) {
 			$this->attackDelay = 0;
 
 			$f = 1.2;
@@ -88,11 +89,11 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
 			$this->server->getPluginManager()->callEvent($ev);
 
 			$projectile = $ev->getProjectile();
-			if($ev->isCancelled()){
+			if($ev->isCancelled()) {
 				$projectile->kill();
 			}elseif($projectile instanceof Projectile){
 				$this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($projectile));
-				if($launch->isCancelled()){
+				if($launch->isCancelled()) {
 					$projectile->kill();
 				}else{
 					$projectile->spawnToAll();
@@ -104,19 +105,20 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
 		}
 	}
 
-	public function spawnTo(Player $player) : void{
+	public function spawnTo(Player $player) : void {
 		parent::spawnTo($player);
 
 		$pk = new MobEquipmentPacket();
 		$pk->entityRuntimeId = $this->getId();
 		$pk->item = new Bow();
-		$pk->inventorySlot = 10;
-		$pk->hotbarSlot = 10;
+		$pk->inventorySlot = 0;
+		$pk->hotbarSlot = 0;
 		$player->dataPacket($pk);
 	}
 
-	public function entityBaseTick(int $tickDiff = 1) : bool{
-		if($this->isClosed() or $this->getLevel() == null) return false;
+	public function entityBaseTick(int $tickDiff = 1) : bool {
+		if($this->isClosed() or $this->getLevel() == null)
+			return false;
 		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
@@ -125,7 +127,7 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
 		if(
 			!$this->isOnFire()
 			&& ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)
-		){
+		) {
 			$this->setOnFire(100);
 		}
 
@@ -133,20 +135,20 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
 		return $hasUpdate;
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed()){
+		if($this->isLootDropAllowed()) {
 			array_push($drops, Item::get(Item::ARROW, 0, mt_rand(0, 2)));
 			array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
 		}
 		return $drops;
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 20;
 	}
 
-	public function getXpDropAmount() : int{
+	public function getXpDropAmount() : int {
 		return 5;
 	}
 }

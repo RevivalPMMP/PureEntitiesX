@@ -36,14 +36,14 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task
  */
-class InteractionTask extends Task{
+class InteractionTask extends Task {
 
 	/**
 	 * @var PureEntities
 	 */
 	private $plugin;
 
-	public function __construct(PureEntities $plugin){
+	public function __construct(PureEntities $plugin) {
 		$this->plugin = $plugin;
 	}
 
@@ -52,12 +52,12 @@ class InteractionTask extends Task{
 	 *
 	 * @param int $currentTick
 	 */
-	public function onRun(int $currentTick){
-		foreach($this->plugin->getServer()->getOnlinePlayers() as $player){
+	public function onRun(int $currentTick) {
+		foreach($this->plugin->getServer()->getOnlinePlayers() as $player) {
 			$entity = InteractionHelper::getEntityPlayerLookingAt($player, PluginConfiguration::$maxInteractDistance,
-				PluginConfiguration::$interactiveButtonCorrection);
+			                                                      PluginConfiguration::$interactiveButtonCorrection);
 			PureEntities::logOutput("InteractionTask: $player is looking at $entity", \LogLevel::DEBUG);
-			if($entity !== null and $entity instanceof IntfCanInteract){ // player is looking at an entity he can interact with
+			if($entity !== null and $entity instanceof IntfCanInteract) { // player is looking at an entity he can interact with
 				$entity->showButton($player);
 			}else{ // the player isn't looking at an entity
 				InteractionHelper::displayButtonText("", $player);

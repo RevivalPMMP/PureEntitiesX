@@ -20,28 +20,28 @@
 
 namespace revivalpmmp\pureentities\entity\monster\jumping;
 
+use pocketmine\entity\Creature;
+use pocketmine\entity\Entity;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\Item;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\JumpingMonster;
-use pocketmine\entity\Entity;
-use pocketmine\item\Item;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\entity\Creature;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Slime extends JumpingMonster{
+class Slime extends JumpingMonster {
 	const NETWORK_ID = Data::NETWORK_IDS["slime"];
 
 	private $cubeSize = -1; // 0 = Tiny, 1 = Small, 2 = Big
-	private $cubeDimensions = array(0.51, 1.02, 2.04);
+	private $cubeDimensions = [0.51, 1.02, 2.04];
 
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
-		if($this->cubeSize == -1){
+		if($this->cubeSize == -1) {
 			$this->cubeSize = self::getRandomSlimeSize();
 			$this->saveNBT();
 		}
@@ -53,29 +53,29 @@ class Slime extends JumpingMonster{
 		$this->setDamage([0, 2, 2, 3]);
 	}
 
-	public function saveNBT() : void{
-		if(PluginConfiguration::$enableNBT){
+	public static function getRandomSlimeSize() : int {
+		return mt_rand(0, 2);
+	}
+
+	public function saveNBT() : void {
+		if(PluginConfiguration::$enableNBT) {
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_CUBE_SIZE, $this->cubeSize, true);
 		}
 	}
 
-	public function loadNBT(){
-		if(PluginConfiguration::$enableNBT){
+	public function loadNBT() {
+		if(PluginConfiguration::$enableNBT) {
 			parent::loadNBT();
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_CUBE_SIZE)){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_CUBE_SIZE)) {
 				$cubeSize = $this->namedtag->getByte(NBTConst::NBT_KEY_CUBE_SIZE, self::getRandomSlimeSize());
 				$this->cubeSize = $cubeSize;
 			}
 		}
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Slime";
-	}
-
-	public static function getRandomSlimeSize() : int{
-		return mt_rand(0, 2);
 	}
 
 	/**
@@ -83,41 +83,41 @@ class Slime extends JumpingMonster{
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 10 && $this->distanceSquared($player) < 2){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
 			$this->attackDelay = 0;
 
 			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			                                    MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
 			$player->attack($ev);
 
 			$this->checkTamedMobsAttack($player);
 		}
 	}
 
-	public function targetOption(Creature $creature, float $distance) : bool{
-		if($creature instanceof Player){
+	public function targetOption(Creature $creature, float $distance) : bool {
+		if($creature instanceof Player) {
 			return $creature->isAlive() && $distance <= 25;
 		}
 		return false;
 	}
 
-	public function getDrops() : array{
-		if($this->isLootDropAllowed() and $this->cubeSize == 0){
+	public function getDrops() : array {
+		if($this->isLootDropAllowed() and $this->cubeSize == 0) {
 			return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
 		}else{
 			return [];
 		}
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 4;
 	}
 
-	public function getXpDropAmount() : int{
-		if($this->cubeSize == 2){
+	public function getXpDropAmount() : int {
+		if($this->cubeSize == 2) {
 			return 4;
-		}else if($this->cubeSize == 1){
+		}elseif($this->cubeSize == 1){
 			return 2;
 		}else{
 			return 1;

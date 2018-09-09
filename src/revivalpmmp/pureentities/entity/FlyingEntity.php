@@ -20,68 +20,22 @@
 
 namespace revivalpmmp\pureentities\entity;
 
-use revivalpmmp\pureentities\entity\animal\Animal;
-use revivalpmmp\pureentities\entity\monster\flying\Blaze;
+use pocketmine\entity\Creature;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
-use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\entity\animal\Animal;
+use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 
-abstract class FlyingEntity extends BaseEntity{
+abstract class FlyingEntity extends BaseEntity {
 
-	protected function checkTarget(bool $checkSkip = true){
-		if(($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip){
-			if($this->isKnockback()){
-				return;
-			}
-
-			$target = $this->getBaseTarget();
-			if(!($target instanceof Creature) or !$this->targetOption($target, $this->distanceSquared($target))){
-				$near = PHP_INT_MAX;
-				foreach($this->getLevel()->getEntities() as $creature){
-					if($creature === $this || !($creature instanceof Creature) || $creature instanceof Animal){
-						continue;
-					}
-
-					if($creature instanceof BaseEntity && $creature->isFriendly() == $this->isFriendly()){
-						continue;
-					}
-
-					if(($distance = $this->distanceSquared($creature)) > $near or !$this->targetOption($creature, $distance)){
-						continue;
-					}
-
-					$near = $distance;
-					$this->setBaseTarget($creature);
-				}
-			}
-
-			if($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->isAlive()){
-				return;
-			}
-
-			$maxY = max($this->getLevel()->getHighestBlockAt((int) $this->x, (int) $this->z) + 15, 120);
-			if($this->moveTime <= 0 or !$this->getBaseTarget() instanceof Vector3){
-				$x = mt_rand(20, 100);
-				$z = mt_rand(20, 100);
-				if($this->y > $maxY){
-					$y = mt_rand(-12, -4);
-				}else{
-					$y = mt_rand(-10, 10);
-				}
-				$this->moveTime = mt_rand(300, 1200);
-				$this->setBaseTarget($this->add(mt_rand(0, 1) ? $x : -$x, $y, mt_rand(0, 1) ? $z : -$z));
-			}
-		}
-	}
-
-	public function updateMove($tickDiff){
-		if(!$this->isMovement() or $this->isClosed()){
+	public function updateMove($tickDiff) {
+		if(!$this->isMovement() or $this->isClosed()) {
 			return null;
 		}
 
-		if($this->isKnockback()){
+		if($this->isKnockback()) {
 			$this->move($this->motion->x * $tickDiff, $this->motion->y * $tickDiff, $this->motion->z * $tickDiff);
 			$this->updateMovement();
 			return null;
@@ -89,13 +43,13 @@ abstract class FlyingEntity extends BaseEntity{
 
 		$before = $this->getBaseTarget();
 		$this->checkTarget();
-		if($this->getBaseTarget() instanceof Player or $before !== $this->getBaseTarget()){
+		if($this->getBaseTarget() instanceof Player or $before !== $this->getBaseTarget()) {
 			$x = $this->getBaseTarget()->x - $this->x;
 			$y = $this->getBaseTarget()->y - $this->y;
 			$z = $this->getBaseTarget()->z - $this->z;
 
 			$diff = abs($x) + abs($z);
-			if($x ** 2 + $z ** 2 < 0.5){
+			if($x ** 2 + $z ** 2 < 0.5) {
 				$this->motion->x = 0;
 				$this->motion->z = 0;
 			}elseif($diff > 0){
@@ -117,28 +71,28 @@ abstract class FlyingEntity extends BaseEntity{
 		$this->move($dx, $dy, $dz);
 		$af = new Vector2($this->x, $this->z);
 
-		if($be->x != $af->x || $be->y != $af->y){
-			if($this instanceof Blaze){
+		if($be->x != $af->x || $be->y != $af->y) {
+			if($this instanceof Blaze) {
 				$x = 0;
 				$z = 0;
-				if($be->x - $af->x != 0){
+				if($be->x - $af->x != 0) {
 					$x = $be->x > $af->x ? 1 : -1;
 				}
-				if($be->y - $af->y != 0){
+				if($be->y - $af->y != 0) {
 					$z = $be->y > $af->y ? 1 : -1;
 				}
 
 				$vec = new Vector3(Math::floorFloat($be->x) + $x, $this->y, Math::floorFloat($be->y) + $z);
 				$block = $this->level->getBlock($vec->add($x, 0, $z));
 				$block2 = $this->level->getBlock($vec->add($x, 1, $z));
-				if(!$block->canPassThrough()){
+				if(!$block->canPassThrough()) {
 					$bb = $block2->getBoundingBox();
 					if(
 						$this->motion->y > -$this->gravity * 4
 						&& ($block2->canPassThrough() || ($bb == null || $bb->maxY - $this->y <= 1))
-					){
+					) {
 						$isJump = true;
-						if($this->motion->y >= 0.3){
+						if($this->motion->y >= 0.3) {
 							$this->motion->y += $this->gravity;
 						}else{
 							$this->motion->y = 0.3;
@@ -146,7 +100,7 @@ abstract class FlyingEntity extends BaseEntity{
 					}
 				}
 
-				if(!$isJump){
+				if(!$isJump) {
 					$this->moveTime -= 90 * $tickDiff;
 				}
 			}else{
@@ -154,11 +108,11 @@ abstract class FlyingEntity extends BaseEntity{
 			}
 		}
 
-		if($this instanceof Blaze){
-			if($this->onGround && !$isJump){
+		if($this instanceof Blaze) {
+			if($this->onGround && !$isJump) {
 				$this->motion->y = 0;
-			}else if(!$isJump){
-				if($this->motion->y > -$this->gravity * 4){
+			}elseif(!$isJump){
+				if($this->motion->y > -$this->gravity * 4) {
 					$this->motion->y = -$this->gravity * 4;
 				}else{
 					$this->motion->y -= $this->gravity;
@@ -167,6 +121,52 @@ abstract class FlyingEntity extends BaseEntity{
 		}
 		$this->updateMovement();
 		return $target;
+	}
+
+	protected function checkTarget(bool $checkSkip = true) {
+		if(($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
+			if($this->isKnockback()) {
+				return;
+			}
+
+			$target = $this->getBaseTarget();
+			if(!($target instanceof Creature) or !$this->targetOption($target, $this->distanceSquared($target))) {
+				$near = PHP_INT_MAX;
+				foreach($this->getLevel()->getEntities() as $creature) {
+					if($creature === $this || !($creature instanceof Creature) || $creature instanceof Animal) {
+						continue;
+					}
+
+					if($creature instanceof BaseEntity && $creature->isFriendly() == $this->isFriendly()) {
+						continue;
+					}
+
+					if(($distance = $this->distanceSquared($creature)) > $near or !$this->targetOption($creature, $distance)) {
+						continue;
+					}
+
+					$near = $distance;
+					$this->setBaseTarget($creature);
+				}
+			}
+
+			if($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->isAlive()) {
+				return;
+			}
+
+			$maxY = max($this->getLevel()->getHighestBlockAt((int) $this->x, (int) $this->z) + 15, 120);
+			if($this->moveTime <= 0 or !$this->getBaseTarget() instanceof Vector3) {
+				$x = mt_rand(20, 100);
+				$z = mt_rand(20, 100);
+				if($this->y > $maxY) {
+					$y = mt_rand(-12, -4);
+				}else{
+					$y = mt_rand(-10, 10);
+				}
+				$this->moveTime = mt_rand(300, 1200);
+				$this->setBaseTarget($this->add(mt_rand(0, 1) ? $x : -$x, $y, mt_rand(0, 1) ? $z : -$z));
+			}
+		}
 	}
 
 }

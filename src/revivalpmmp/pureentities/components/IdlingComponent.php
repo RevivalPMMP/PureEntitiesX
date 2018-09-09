@@ -39,7 +39,7 @@ use revivalpmmp\pureentities\utils\TickCounter;
  *
  * @package revivalpmmp\pureentities\components
  */
-class IdlingComponent{
+class IdlingComponent {
 
 	protected $idling = false;
 	/**
@@ -85,7 +85,7 @@ class IdlingComponent{
 	 */
 	private $idleChance = 0;
 
-	public function __construct(BaseEntity $baseEntity){
+	public function __construct(BaseEntity $baseEntity) {
 		$this->baseEntity = $baseEntity;
 		$this->idleChance = PluginConfiguration::$idleChance;
 		$this->idleTimeBetween = PluginConfiguration::$idleTimeBetween;
@@ -102,15 +102,15 @@ class IdlingComponent{
 	 * While idling the entity just moves yaw and pitch.
 	 * @return bool when the entity was set to idle mode
 	 */
-	public function checkAndSetIdling() : bool{
+	public function checkAndSetIdling() : bool {
 		$setToIdle = false;
 		if(!$this->idling and // of course it should not idle currently
-			($this->baseEntity instanceof IntfCanBreed and $this->baseEntity->getBreedingComponent()->getInLove() <= 0) and // do not rest while in love!
-			!$this->baseEntity->getBaseTarget() instanceof Player and // chasing a player? no idle
-			!$this->baseEntity->getBaseTarget() instanceof Creature and // chasing a creature? no idle!
-			$this->isLastIdleLongEnough() // we do not want idling too often
-		){
-			if(mt_rand(0, 100) <= $this->idleChance){ // with a chance of x percent the entity starts to idle
+		   ($this->baseEntity instanceof IntfCanBreed and $this->baseEntity->getBreedingComponent()->getInLove() <= 0) and // do not rest while in love!
+		   !$this->baseEntity->getBaseTarget() instanceof Player and // chasing a player? no idle
+		   !$this->baseEntity->getBaseTarget() instanceof Creature and // chasing a creature? no idle!
+		   $this->isLastIdleLongEnough() // we do not want idling too often
+		) {
+			if(mt_rand(0, 100) <= $this->idleChance) { // with a chance of x percent the entity starts to idle
 				$this->idling = true;
 				$this->idlingTickCounter = new TickCounter(mt_rand($this->idleMin, $this->idleMax)); // idle x and x ticks
 				$this->baseEntity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_IDLING, true);
@@ -128,7 +128,7 @@ class IdlingComponent{
 	 *
 	 * @return bool
 	 */
-	public function isLastIdleLongEnough() : bool{
+	public function isLastIdleLongEnough() : bool {
 		return $this->lastIdleStatus == 0 || ($this->lastIdleStatus + $this->idleTimeBetween) < time();
 	}
 
@@ -137,17 +137,18 @@ class IdlingComponent{
 	 * entity idles to unset idle status in time. Additionally we can force to stop the idle mode (in case
 	 * of getting attacked by someone e.g.)
 	 *
-	 * @param int  $tickDiff
+	 * @param int $tickDiff
 	 * @param bool $immediately
+	 *
 	 * @return bool true when the entity idle status was set to false
 	 */
-	public function stopIdling(int $tickDiff = 1, bool $immediately = false) : bool{
+	public function stopIdling(int $tickDiff = 1, bool $immediately = false) : bool {
 		$wokeUp = false;
-		if($this->idling and ($this->idlingTickCounter->isTicksExpired($tickDiff) or $immediately)){
+		if($this->idling and ($this->idlingTickCounter->isTicksExpired($tickDiff) or $immediately)) {
 			$this->idling = false;
 			$this->baseEntity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_IDLING, false);
 			$wokeUp = true;
-		}else if(!$this->idling){ // should never happen!
+		}elseif(!$this->idling){ // should never happen!
 			$wokeUp = true;
 		}
 		return $wokeUp;
@@ -155,10 +156,11 @@ class IdlingComponent{
 
 	/**
 	 * Do just some idle stuff like nodding head or so
+	 *
 	 * @param $tickDiff
 	 */
-	public function doSomeIdleStuff(int $tickDiff = 1){
-		if($this->idlingCounter->isTicksExpired($tickDiff)){
+	public function doSomeIdleStuff(int $tickDiff = 1) {
+		if($this->idlingCounter->isTicksExpired($tickDiff)) {
 			// pitch: up and down, yaw: rotation around the y-axis
 
 			// a little about yaw/pitch: http://greyminecraftcoder.blogspot.de/2015/07/entity-rotations-and-animation.html
@@ -167,9 +169,9 @@ class IdlingComponent{
 
 			// rotate the entity: 0 degrees is south and increases clockwise
 			$yaw = mt_rand(0, 1) ? $yaw + mt_rand(15, 45) : $yaw - mt_rand(15, 45);
-			if($yaw > 360){
+			if($yaw > 360) {
 				$yaw = 360;
-			}else if($yaw < 0){
+			}elseif($yaw < 0){
 				$yaw = 0;
 			}
 
@@ -177,17 +179,17 @@ class IdlingComponent{
 			// 0 degrees is horizontal, -90 is up, 90 is down. but 90 degrees looks very silly - so 60 degrees is
 			// completely ok
 			$pitch = mt_rand(0, 1) ? $pitch + mt_rand(10, 20) : $pitch - mt_rand(10, 20);
-			if($pitch > 60){
+			if($pitch > 60) {
 				$pitch = 60;
-			}else if($pitch < -60){
+			}elseif($pitch < -60){
 				$pitch = -60;
 			}
 
 			$this->baseEntity->setRotation($yaw, $pitch);
-			if($this->baseEntity->getMotion()->x != 0){
+			if($this->baseEntity->getMotion()->x != 0) {
 				$this->baseEntity->getMotion()->x = 0;
 			}
-			if($this->baseEntity->getMotion()->z != 0){
+			if($this->baseEntity->getMotion()->z != 0) {
 				$this->baseEntity->getMotion()->z = 0;
 			}
 			$this->baseEntity->updateMovement();
@@ -199,23 +201,23 @@ class IdlingComponent{
 	 * Returns if the entity is currently idling
 	 * @return bool
 	 */
-	public function isIdling(){
+	public function isIdling() {
 		return $this->idling;
 	}
 
 	/**
 	 * Loads the data for this component from entity's nbt
 	 */
-	public function loadFromNBT(){
-		if(PluginConfiguration::$enableNBT){
+	public function loadFromNBT() {
+		if(PluginConfiguration::$enableNBT) {
 			$namedTag = $this->baseEntity->namedtag;
-			if($namedTag->hasTag(NBTConst::NBT_KEY_IDLE_SETTINGS)){
+			if($namedTag->hasTag(NBTConst::NBT_KEY_IDLE_SETTINGS)) {
 				$nbt = $namedTag->getCompoundTag(NBTConst::NBT_KEY_IDLE_SETTINGS);
 				/**
 				 * @var CompoundTag $nbt ;
 				 */
 				$this->idling = $nbt->getInt(NBTConst::NBT_KEY_IDLING, 1, true);
-				if($this->idling){
+				if($this->idling) {
 					$this->idlingCounter = new TickCounter($nbt->getInt(NBTConst::NBT_KEY_MAX_IDLING_COUNTER, 0, true));
 					$this->idlingCounter->setCurrentCounter($nbt->getInt(NBTConst::NBT_KEY_IDLING_COUNTER, 0, true));
 					$this->idlingTickCounter = new TickCounter($nbt->getInt(NBTConst::NBT_KEY_MAX_IDLING_TICK_COUNTER, 0, true));
@@ -232,11 +234,11 @@ class IdlingComponent{
 	/**
 	 * Stores local data to NBT
 	 */
-	public function saveNBT(){
-		if(PluginConfiguration::$enableNBT){
+	public function saveNBT() {
+		if(PluginConfiguration::$enableNBT) {
 			$entityTag = $this->baseEntity->namedtag;
 			$idleCompound = new CompoundTag(NBTConst::NBT_KEY_IDLE_SETTINGS);
-			if($this->idling){
+			if($this->idling) {
 				$idleCompound->setInt(NBTConst::NBT_KEY_IDLING, $this->idling);
 				$idleCompound->setInt(NBTConst::NBT_KEY_IDLING_COUNTER, $this->idlingCounter->getCurrentCounter());
 				$idleCompound->setInt(NBTConst::NBT_KEY_MAX_IDLING_COUNTER, $this->idlingCounter->getMaxCounter());

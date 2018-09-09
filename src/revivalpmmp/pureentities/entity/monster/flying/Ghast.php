@@ -20,23 +20,23 @@
 
 namespace revivalpmmp\pureentities\entity\monster\flying;
 
-use pocketmine\item\Item;
-use revivalpmmp\pureentities\entity\monster\FlyingMonster;
-use revivalpmmp\pureentities\entity\projectile\LargeFireball;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
-use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\entity\projectile\ProjectileSource;
+use pocketmine\event\entity\ProjectileLaunchEvent;
+use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\sound\LaunchSound;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\FlyingMonster;
+use revivalpmmp\pureentities\entity\projectile\LargeFireball;
 
-class Ghast extends FlyingMonster implements ProjectileSource{
+class Ghast extends FlyingMonster implements ProjectileSource {
 	const NETWORK_ID = Data::NETWORK_IDS["ghast"];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -45,16 +45,16 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 		$this->setDamage([0, 0, 0, 0]);
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Ghast";
 	}
 
-	public function targetOption(Creature $creature, float $distance) : bool{
+	public function targetOption(Creature $creature, float $distance) : bool {
 		return (!($creature instanceof Player) || ($creature->isSurvival() && $creature->spawned)) && $creature->isAlive() && !$creature->isClosed() && $distance <= 10000;
 	}
 
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distance($player) <= 100){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 30 && mt_rand(1, 32) < 4 && $this->distance($player) <= 100) {
 			$this->attackDelay = 0;
 
 			$f = 1.2;
@@ -76,13 +76,13 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 			);
 			$nbt = Entity::createBaseNBT($pos, $motion, $yaw, $pitch);
 			$fireball = Entity::createEntity("LargeFireball", $this->level, $nbt);
-			if(!($fireball instanceof LargeFireball)){
+			if(!($fireball instanceof LargeFireball)) {
 				return;
 			}
 			$fireball->setExplode(true);
 
 			$this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($fireball));
-			if($launch->isCancelled()){
+			if($launch->isCancelled()) {
 				$fireball->kill();
 			}else{
 				$fireball->spawnToAll();
@@ -91,19 +91,19 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 		}
 	}
 
-	public function getDrops() : array{
-		if($this->isLootDropAllowed()){
+	public function getDrops() : array {
+		if($this->isLootDropAllowed()) {
 			return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
 		}else{
 			return [];
 		}
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 10;
 	}
 
-	public function getXpDropAmount() : int{
+	public function getXpDropAmount() : int {
 		return 5;
 	}
 

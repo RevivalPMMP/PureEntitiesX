@@ -28,7 +28,7 @@ namespace revivalpmmp\pureentities;
  *
  * @package revivalpmmp\pureentities
  */
-class PluginConfiguration{
+class PluginConfiguration {
 
 	public static $maxInteractDistance = 4; // this is standard (may be overridden by config!)
 	public static $maxFindPartnerDistance = 49; // this is standard (may be overridden by config!)
@@ -57,54 +57,54 @@ class PluginConfiguration{
 	public static $idleMax = 500;
 	public static $idleTimeBetween = 60;
 
-	public function __construct(PureEntities $pluginBase){
+	public function __construct(PureEntities $pluginBase) {
 
-		self::$enabledWorlds = (array)$pluginBase->getConfig()->get("enabledworlds", []);
-		self::$enableSpawning = (bool)$pluginBase->getConfig()->getNested("tasks.spawn", true);
-		self::$enableAsyncTasks = (bool)$pluginBase->getConfig()->getNested("tasks.async", true);
-		self::$enableLookingTasks = (bool)$pluginBase->getConfig()->getNested("tasks.looking", true);
+		self::$enabledWorlds = (array) $pluginBase->getConfig()->get("enabledworlds", []);
+		self::$enableSpawning = (bool) $pluginBase->getConfig()->getNested("tasks.spawn", true);
+		self::$enableAsyncTasks = (bool) $pluginBase->getConfig()->getNested("tasks.async", true);
+		self::$enableLookingTasks = (bool) $pluginBase->getConfig()->getNested("tasks.looking", true);
 
 		// read some more config which we need internally (read once, give access to them via this class!)
-		self::$maxFindPartnerDistance = (int)$pluginBase->getConfig()->getNested("distances.find-partner", 49);
-		self::$maxInteractDistance = (int)$pluginBase->getConfig()->getNested("distances.interact", 4);
-		self::$tamedTeleportBlocks = (int)$pluginBase->getConfig()->getNested("distances.tamed-teleport", 12);
-		self::$tamedPlayerMaxDistance = (int)$pluginBase->getConfig()->getNested("distances.tamed-follow-player", 10);
+		self::$maxFindPartnerDistance = (int) $pluginBase->getConfig()->getNested("distances.find-partner", 49);
+		self::$maxInteractDistance = (int) $pluginBase->getConfig()->getNested("distances.interact", 4);
+		self::$tamedTeleportBlocks = (int) $pluginBase->getConfig()->getNested("distances.tamed-teleport", 12);
+		self::$tamedPlayerMaxDistance = (int) $pluginBase->getConfig()->getNested("distances.tamed-follow-player", 10);
 
-		self::$blockOfInterestTicks = (int)$pluginBase->getConfig()->getNested("ticks.block-interest", 300);
+		self::$blockOfInterestTicks = (int) $pluginBase->getConfig()->getNested("ticks.block-interest", 300);
 
-		self::$checkTargetSkipTicks = (int)$pluginBase->getConfig()->getNested("performance.check-target-tick-skip", 1); // default: do not skip ticks asking checkTarget method
-		self::$interactiveButtonCorrection = (bool)$pluginBase->getConfig()->getNested("performance.check-interactive-correction", false); // default: do not check other blocks for the entity for button display
-		self::$pickupLootTicks = (int)$pluginBase->getConfig()->getNested("performance.check-pickup-loot", 10); // default: check every 10 ticks for picking up loot
-		self::$enableNBT = (bool)$pluginBase->getConfig()->getNested("performance.enable-nbt-storage", true); // default: enable storage and loading of NBT
+		self::$checkTargetSkipTicks = (int) $pluginBase->getConfig()->getNested("performance.check-target-tick-skip", 1); // default: do not skip ticks asking checkTarget method
+		self::$interactiveButtonCorrection = (bool) $pluginBase->getConfig()->getNested("performance.check-interactive-correction", false); // default: do not check other blocks for the entity for button display
+		self::$pickupLootTicks = (int) $pluginBase->getConfig()->getNested("performance.check-pickup-loot", 10); // default: check every 10 ticks for picking up loot
+		self::$enableNBT = (bool) $pluginBase->getConfig()->getNested("performance.enable-nbt-storage", true); // default: enable storage and loading of NBT
 
-		self::$useBlockLightForSpawn = (bool)$pluginBase->getConfig()->getNested("spawn-task.use-block-light", false); // default: do not use block light
-		self::$useSkyLightForSpawn = (bool)$pluginBase->getConfig()->getNested("spawn-task.use-sky-light", false); // default: do not use block light
+		self::$useBlockLightForSpawn = (bool) $pluginBase->getConfig()->getNested("spawn-task.use-block-light", false); // default: do not use block light
+		self::$useSkyLightForSpawn = (bool) $pluginBase->getConfig()->getNested("spawn-task.use-sky-light", false); // default: do not use block light
 
-		self::$emitLoveParticlesConstantly = (bool)$pluginBase->getConfig()->getNested("breeding.emit-love-particles-constantly", false); // default: do not emit love particles constantly
+		self::$emitLoveParticlesConstantly = (bool) $pluginBase->getConfig()->getNested("breeding.emit-love-particles-constantly", false); // default: do not emit love particles constantly
 
-		self::$xpEnabled = (bool)$pluginBase->getConfig()->getNested("xp.enabled", false); // default: xp system not enabled
+		self::$xpEnabled = (bool) $pluginBase->getConfig()->getNested("xp.enabled", false); // default: xp system not enabled
 
-		self::$idleChance = (int)$pluginBase->getConfig()->getNested("idle.chance", 20); // default: 20 percent idle chance
-		self::$idleMin = (int)$pluginBase->getConfig()->getNested("idle.min-idle", 100); // default: 100 ticks
-		self::$idleMax = (int)$pluginBase->getConfig()->getNested("idle.max-idle", 500); // default: 500 ticks
-		self::$idleTimeBetween = (int)$pluginBase->getConfig()->getNested("idle.time-between-idle", 60); // default: 60 seconds
+		self::$idleChance = (int) $pluginBase->getConfig()->getNested("idle.chance", 20); // default: 20 percent idle chance
+		self::$idleMin = (int) $pluginBase->getConfig()->getNested("idle.min-idle", 100); // default: 100 ticks
+		self::$idleMax = (int) $pluginBase->getConfig()->getNested("idle.max-idle", 500); // default: 500 ticks
+		self::$idleTimeBetween = (int) $pluginBase->getConfig()->getNested("idle.time-between-idle", 60); // default: 60 seconds
 
-		self::$enablePanic = (bool)$pluginBase->getConfig()->getNested("panic.enabled", true); // default: enabled
-		self::$panicTicks = (int)$pluginBase->getConfig()->getNested("panic.ticks", 100); // default: 100 ticks
+		self::$enablePanic = (bool) $pluginBase->getConfig()->getNested("panic.enabled", true); // default: enabled
+		self::$panicTicks = (int) $pluginBase->getConfig()->getNested("panic.ticks", 100); // default: 100 ticks
 
-		self::$maxAge = (int)$pluginBase->getConfig()->getNested("despawn.after-ticks", 72000); // default: 72000 ticks
+		self::$maxAge = (int) $pluginBase->getConfig()->getNested("despawn.after-ticks", 72000); // default: 72000 ticks
 
 		// print effective configuration!
 		$pluginBase->getServer()->getLogger()->notice("[PureEntitiesX] Configuration loaded:" .
-			" [enableNBT:" . self::$enableNBT . "]" .
-			" [enableSpawn:" . self::$enableSpawning . "] [enableAsyncTasks:" . self::$enableAsyncTasks . "] [enableLookingTasks:" . self::$enableLookingTasks . "]" .
-			" [findPartnerDistance:" . self::$maxFindPartnerDistance . "] [interactDistance:" . self::$maxInteractDistance . "]" .
-			" [teleportTamedDistance:" . self::$tamedTeleportBlocks . "] [tamedFollowDistance:" . self::$tamedPlayerMaxDistance . "]" .
-			" [blockOfInterestTicks:" . self::$blockOfInterestTicks . "] [checkTargetSkipTicks:" . self::$checkTargetSkipTicks . "] [pickupLootTicks:" . self::$pickupLootTicks . "]" .
-			" [interactiveButtonCorrection:" . self::$interactiveButtonCorrection . "] [useBlockLight:" . self::$useBlockLightForSpawn . "] [useSkyLight:" . self::$useSkyLightForSpawn . "]" .
-			" [emitLoveParticles:" . self::$emitLoveParticlesConstantly . "] [xpEnabled:" . self::$xpEnabled . "]" .
-			" [idleChance:" . self::$idleChance . "] [idleMin:" . self::$idleMin . "] [idleMax:" . self::$idleMax . "] [idleTimeBetween:" . self::$idleTimeBetween . "secs]" .
-			" [panicEnabled:" . self::$enablePanic . "] [panicTicks:" . self::$panicTicks . "] [entityMaxAge:" . self::$maxAge . "]");
+		                                              " [enableNBT:" . self::$enableNBT . "]" .
+		                                              " [enableSpawn:" . self::$enableSpawning . "] [enableAsyncTasks:" . self::$enableAsyncTasks . "] [enableLookingTasks:" . self::$enableLookingTasks . "]" .
+		                                              " [findPartnerDistance:" . self::$maxFindPartnerDistance . "] [interactDistance:" . self::$maxInteractDistance . "]" .
+		                                              " [teleportTamedDistance:" . self::$tamedTeleportBlocks . "] [tamedFollowDistance:" . self::$tamedPlayerMaxDistance . "]" .
+		                                              " [blockOfInterestTicks:" . self::$blockOfInterestTicks . "] [checkTargetSkipTicks:" . self::$checkTargetSkipTicks . "] [pickupLootTicks:" . self::$pickupLootTicks . "]" .
+		                                              " [interactiveButtonCorrection:" . self::$interactiveButtonCorrection . "] [useBlockLight:" . self::$useBlockLightForSpawn . "] [useSkyLight:" . self::$useSkyLightForSpawn . "]" .
+		                                              " [emitLoveParticles:" . self::$emitLoveParticlesConstantly . "] [xpEnabled:" . self::$xpEnabled . "]" .
+		                                              " [idleChance:" . self::$idleChance . "] [idleMin:" . self::$idleMin . "] [idleMax:" . self::$idleMax . "] [idleTimeBetween:" . self::$idleTimeBetween . "secs]" .
+		                                              " [panicEnabled:" . self::$enablePanic . "] [panicTicks:" . self::$panicTicks . "] [entityMaxAge:" . self::$maxAge . "]");
 
 	}
 }

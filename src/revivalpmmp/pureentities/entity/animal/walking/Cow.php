@@ -20,55 +20,55 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\BreedingComponent;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
 
-class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic{
+class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic {
 
 	use Breedable, CanPanic, Feedable;
 	const NETWORK_ID = Data::NETWORK_IDS["cow"];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
 		$this->eyeHeight = 1;
 
-		$this->feedableItems = array(Item::WHEAT);
+		$this->feedableItems = [Item::WHEAT];
 
 		$this->breedableClass = new BreedingComponent($this);
 		$this->breedableClass->init();
 
 	}
 
-	public function saveNBT() : void{
-		if(PluginConfiguration::$enableNBT){
+	public function saveNBT() : void {
+		if(PluginConfiguration::$enableNBT) {
 			parent::saveNBT();
 			$this->breedableClass->saveNBT();
 		}
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Cow";
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed()){
+		if($this->isLootDropAllowed()) {
 			array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
-			if($this->isOnFire()){
+			if($this->isOnFire()) {
 				array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
 			}else{
 				array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
@@ -77,19 +77,44 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
 		return $drops;
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 10;
+	}
+
+	/**
+	 * This method is called when a player is looking at this entity. This
+	 * method shows an interactive button or not
+	 *
+	 * @param Player $player the player to show a button eventually to
+	 */
+	public function showButton(Player $player) {
+		if($player->getInventory() != null) { // sometimes, we get null on getInventory?! F**k
+			$itemInHand = $player->getInventory()->getItemInHand();
+			if($itemInHand->getId() === Item::BUCKET && $itemInHand->getDamage() === 0) { // empty bucket
+				InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $player);
+				return;
+			}
+		}
+		parent::showButton($player);
+	}
+
+	public function getXpDropAmount() : int {
+		if($this->getBreedingComponent()->isBaby()) {
+			return mt_rand(1, 7);
+		}
+		return mt_rand(1, 3);
 	}
 
 	/**
 	 * Simple method that milks this cow
 	 *
 	 * @param Player $player
+	 *
 	 * @return bool true if milking was successful, false if not
 	 */
-	public function milk(Player $player) : bool{
+	public function milk(Player $player) : bool {
 		$item = $player->getInventory()->getItemInHand();
-		if($item !== null && $item->getId() === Item::BUCKET){
+		if($item !== null && $item->getId() === Item::BUCKET) {
 			--$item->count;
 			$player->getInventory()->setItemInHand($item);
 			$bucketWithMilk = Item::get(Item::BUCKET, 0, 1);
@@ -99,31 +124,6 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
 			return true;
 		}
 		return false;
-	}
-
-
-	/**
-	 * This method is called when a player is looking at this entity. This
-	 * method shows an interactive button or not
-	 *
-	 * @param Player $player the player to show a button eventually to
-	 */
-	public function showButton(Player $player){
-		if($player->getInventory() != null){ // sometimes, we get null on getInventory?! F**k
-			$itemInHand = $player->getInventory()->getItemInHand();
-			if($itemInHand->getId() === Item::BUCKET && $itemInHand->getDamage() === 0){ // empty bucket
-				InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $player);
-				return;
-			}
-		}
-		parent::showButton($player);
-	}
-
-	public function getXpDropAmount() : int{
-		if($this->getBreedingComponent()->isBaby()){
-			return mt_rand(1, 7);
-		}
-		return mt_rand(1, 3);
 	}
 
 }

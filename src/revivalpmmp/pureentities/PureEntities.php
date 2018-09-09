@@ -27,9 +27,9 @@ use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\item\Item;
+use pocketmine\level\Level;
 use pocketmine\level\Location;
 use pocketmine\level\Position;
-use pocketmine\level\Level;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
@@ -39,20 +39,20 @@ use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\flying\Bat;
 use revivalpmmp\pureentities\entity\animal\flying\Parrot;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
-use revivalpmmp\pureentities\entity\animal\walking\Llama;
-use revivalpmmp\pureentities\entity\animal\walking\SkeletonHorse;
-use revivalpmmp\pureentities\entity\BaseEntity;
-use revivalpmmp\pureentities\entity\animal\walking\Villager;
-use revivalpmmp\pureentities\entity\animal\walking\Horse;
-use revivalpmmp\pureentities\entity\animal\walking\Mule;
-use revivalpmmp\pureentities\entity\animal\walking\Donkey;
 use revivalpmmp\pureentities\entity\animal\walking\Chicken;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
+use revivalpmmp\pureentities\entity\animal\walking\Donkey;
+use revivalpmmp\pureentities\entity\animal\walking\Horse;
+use revivalpmmp\pureentities\entity\animal\walking\Llama;
 use revivalpmmp\pureentities\entity\animal\walking\Mooshroom;
+use revivalpmmp\pureentities\entity\animal\walking\Mule;
 use revivalpmmp\pureentities\entity\animal\walking\Ocelot;
 use revivalpmmp\pureentities\entity\animal\walking\Pig;
 use revivalpmmp\pureentities\entity\animal\walking\Rabbit;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
+use revivalpmmp\pureentities\entity\animal\walking\SkeletonHorse;
+use revivalpmmp\pureentities\entity\animal\walking\Villager;
+use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\flying\Ghast;
 use revivalpmmp\pureentities\entity\monster\flying\Vex;
@@ -63,23 +63,23 @@ use revivalpmmp\pureentities\entity\monster\walking\Creeper;
 use revivalpmmp\pureentities\entity\monster\walking\Enderman;
 use revivalpmmp\pureentities\entity\monster\walking\Endermite;
 use revivalpmmp\pureentities\entity\monster\walking\Evoker;
+use revivalpmmp\pureentities\entity\monster\walking\Husk;
 use revivalpmmp\pureentities\entity\monster\walking\IronGolem;
 use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use revivalpmmp\pureentities\entity\monster\walking\PolarBear;
 use revivalpmmp\pureentities\entity\monster\walking\Shulker;
 use revivalpmmp\pureentities\entity\monster\walking\Silverfish;
 use revivalpmmp\pureentities\entity\monster\walking\Skeleton;
+use revivalpmmp\pureentities\entity\monster\walking\SnowGolem;
+use revivalpmmp\pureentities\entity\monster\walking\Spider;
+use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\monster\walking\Vindicator;
 use revivalpmmp\pureentities\entity\monster\walking\Witch;
 use revivalpmmp\pureentities\entity\monster\walking\WitherSkeleton;
-use revivalpmmp\pureentities\entity\monster\walking\SnowGolem;
-use revivalpmmp\pureentities\entity\monster\walking\Spider;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\entity\monster\walking\Zombie;
 use revivalpmmp\pureentities\entity\monster\walking\ZombiePigman;
 use revivalpmmp\pureentities\entity\monster\walking\ZombieVillager;
-use revivalpmmp\pureentities\entity\monster\walking\Husk;
-use revivalpmmp\pureentities\entity\monster\walking\Stray;
 use revivalpmmp\pureentities\entity\projectile\LargeFireball;
 use revivalpmmp\pureentities\entity\projectile\SmallFireball;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
@@ -92,10 +92,8 @@ use revivalpmmp\pureentities\task\InteractionTask;
 use revivalpmmp\pureentities\tile\MobSpawner;
 use revivalpmmp\pureentities\utils\MobEquipper;
 
-class PureEntities extends PluginBase implements CommandExecutor{
+class PureEntities extends PluginBase implements CommandExecutor {
 
-	/** @var  PureEntities $instance */
-	private static $instance;
 
 	// button texts ...
 	// TODO Move these into their own Class under Data.
@@ -107,6 +105,8 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	const BUTTON_TEXT_STAND = "Stand";
 	const BUTTON_TEXT_DYE = "Dye";
 
+	/** @var  PureEntities $instance */
+	private static $instance;
 	private static $registeredClasses = [];
 
 	/**
@@ -117,8 +117,69 @@ class PureEntities extends PluginBase implements CommandExecutor{
 		return self::$instance;
 	}
 
+	/**
+	 * Returns a suitable Y-position for spawning an entity, starting from the given coordinates.
+	 *
+	 * First, it's checked if the given position is AIR position. If so, we search down the y-coordinate
+	 * to get a first non-air block. When a non-air block is found the position returned is the last found air
+	 * position.
+	 *
+	 * When the given coordinates are NOT an AIR block coordinate we search upwards until the first air block is found
+	 * which is then returned to the caller.
+	 *
+	 * @param       $x                int the x position to start search
+	 * @param       $y                int the y position to start search
+	 * @param       $z                int the z position to start searching
+	 * @param Level $level Level the level object to search in
+	 *
+	 * @return null|Position    either NULL if no valid position was found or the final AIR spawn position
+	 */
+	public static function getSuitableHeightPosition($x, $y, $z, Level $level) {
+		$newPosition = null;
+		$id = $level->getBlockIdAt($x, $y, $z);
+		if($id == 0) { // we found an air block - we need to search down step by step to get the correct block which is not an "AIR" block
+			$air = true;
+			$y = $y - 1;
+			while($air) {
+				$id = $level->getBlockIdAt($x, $y, $z);
+				if($id != 0) { // this is an air block ...
+					$newPosition = new Position($x, $y + 1, $z, $level);
+					$air = false;
+				}else{
+					$y = $y - 1;
+					if($y < -255) {
+						break;
+					}
+				}
+			}
+		}else{ // something else than AIR block. search upwards for a valid air block
+			$air = false;
+			while(!$air) {
+				$id = $level->getBlockIdAt($x, $y, $z);
+				if($id == 0) { // this is an air block ...
+					$newPosition = new Position($x, $y, $z, $level);
+					$air = true;
+				}else{
+					$y = $y + 1;
+					if($y > 255) {
+						break;
+					}
+				}
+			}
+		}
 
-	public function onLoad(){
+		return $newPosition;
+	}
+
+	public static function getPositionNearPlayer(Player $player, int $minimumDistanceToPlayer = 8, int $maximumDistanceToPlayer = 40) : Position {
+		// Random method used to get 8 block difference from player to entity spawn)
+		$x = $player->x + (mt_rand($minimumDistanceToPlayer, $maximumDistanceToPlayer) * (mt_rand(0, 1) === 0 ? 1 : -1));
+		$z = $player->z + (mt_rand($minimumDistanceToPlayer, $maximumDistanceToPlayer) * (mt_rand(0, 1) === 0 ? 1 : -1));
+
+		return new Position($x, $player->y, $z, $player->getLevel());
+	}
+
+	public function onLoad() {
 		self::$registeredClasses = [
 			Bat::class,
 			Blaze::class,
@@ -173,7 +234,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 		];
 
 
-		foreach(self::$registeredClasses as $name){
+		foreach(self::$registeredClasses as $name) {
 			Entity::registerEntity($name);
 			if(
 				$name == IronGolem::class
@@ -181,11 +242,11 @@ class PureEntities extends PluginBase implements CommandExecutor{
 				|| $name == SmallFireball::class
 				|| $name == SnowGolem::class
 				|| $name == ZombieVillager::class
-			){
+			) {
 				continue;
 			}
 			$item = Item::get(Item::SPAWN_EGG, $name::NETWORK_ID);
-			if(!Item::isCreativeItem($item)){
+			if(!Item::isCreativeItem($item)) {
 				Item::addCreativeItem($item);
 			}
 		}
@@ -203,13 +264,13 @@ class PureEntities extends PluginBase implements CommandExecutor{
 		$this->getServer()->getLogger()->info("[PureEntitiesX] Originally written by milk0417. Currently maintained by RevivalPMMP for PMMP 'REDACTED'.");
 	}
 
-	public function onEnable(){
+	public function onEnable() {
 		new PluginConfiguration($this); // create plugin configuration
 		$this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
-		if(PluginConfiguration::$enableNBT){
+		if(PluginConfiguration::$enableNBT) {
 			$this->getScheduler()->scheduleRepeatingTask(new AutoSpawnTask($this), $this->getConfig()->getNested("spawn-task.trigger-ticks", 1000));
 		}
-		if(PluginConfiguration::$enableLookingTasks){
+		if(PluginConfiguration::$enableLookingTasks) {
 			$this->getScheduler()->scheduleRepeatingTask(new InteractionTask($this), $this->getConfig()->getNested("performance.check-interactive-ticks", 10));
 			$this->getScheduler()->scheduleRepeatingTask(new EndermanLookingTask($this), $this->getConfig()->getNested("performance.check-enderman-looking", 10));
 		}
@@ -217,139 +278,8 @@ class PureEntities extends PluginBase implements CommandExecutor{
 		$this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
 	}
 
-	public function onDisable(){
+	public function onDisable() {
 		$this->getServer()->getLogger()->notice("[PureEntitiesX] Disabled!");
-	}
-
-	/**
-	 * @param int|string $type
-	 * @param Position   $source
-	 * @param            $args
-	 *
-	 * @return Entity
-	 */
-	public static function create($type, Position $source, ...$args){
-
-		$nbt = Entity::createBaseNBT($source->asVector3(), null, $source instanceof Location ? $source->yaw : 0, $source instanceof Location ? $source->pitch : 0);
-
-		return Entity::createEntity($type, $source->getLevel(), $nbt, ...$args);
-	}
-
-	/**
-	 * @param Position    $pos
-	 * @param int         $entityid
-	 * @param Level       $level
-	 * @param string      $type
-	 * @param bool        $baby
-	 * @param Entity|null $parentEntity
-	 * @param Player|null $owner
-	 * @return null|Entity
-	 */
-	public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null, Player $owner = null){
-		$this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
-
-		if($event->isCancelled()){
-			return null;
-		}else{
-			$entity = self::create($entityid, $pos);
-			if($entity !== null){
-				if($entity instanceof IntfCanBreed and $baby and $entity->getBreedingComponent() !== false){
-					$entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheep)
-					if($parentEntity != null){
-						$entity->getBreedingComponent()->setParent($parentEntity);
-					}
-				}
-				// new: a baby's parent (like a wolf) may belong to a player - if so, the baby is also owned by the player!
-				if($owner !== null && $entity instanceof IntfTameable){
-					$entity->setTamed(true);
-					$entity->setOwner($owner);
-				}
-				self::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", \LogLevel::DEBUG);
-				$entity->spawnToAll();
-
-				// additionally: mob equipment
-				if($entity instanceof BaseEntity){
-					MobEquipper::equipMob($entity);
-				}
-
-				return $entity;
-			}
-			self::logOutput("Cannot create entity [entityId:$entityid]", \LogLevel::WARNING);
-			return null;
-		}
-	}
-
-	/**
-	 * Logs an output to the plugin's logfile ...
-	 * @param string $logline the output to be appended
-	 * @param string $type the type of output to log
-	 */
-	public static function logOutput(string $logline, string $type = \LogLevel::DEBUG){
-		switch($type){
-			case \LogLevel::DEBUG:
-				self::$instance->getLogger()->debug($logline);
-			break;
-			case \LogLevel::WARNING:
-				self::$instance->getLogger()->warning($logline);
-			break;
-			case \LogLevel::INFO:
-			default:
-				self::$instance->getLogger()->info($logline);
-			break;
-		}
-	}
-
-	/**
-	 * Returns a suitable Y-position for spawning an entity, starting from the given coordinates.
-	 *
-	 * First, it's checked if the given position is AIR position. If so, we search down the y-coordinate
-	 * to get a first non-air block. When a non-air block is found the position returned is the last found air
-	 * position.
-	 *
-	 * When the given coordinates are NOT an AIR block coordinate we search upwards until the first air block is found
-	 * which is then returned to the caller.
-	 *
-	 * @param       $x                int the x position to start search
-	 * @param       $y                int the y position to start search
-	 * @param       $z                int the z position to start searching
-	 * @param Level $level Level the level object to search in
-	 * @return null|Position    either NULL if no valid position was found or the final AIR spawn position
-	 */
-	public static function getSuitableHeightPosition($x, $y, $z, Level $level){
-		$newPosition = null;
-		$id = $level->getBlockIdAt($x, $y, $z);
-		if($id == 0){ // we found an air block - we need to search down step by step to get the correct block which is not an "AIR" block
-			$air = true;
-			$y = $y - 1;
-			while($air){
-				$id = $level->getBlockIdAt($x, $y, $z);
-				if($id != 0){ // this is an air block ...
-					$newPosition = new Position($x, $y + 1, $z, $level);
-					$air = false;
-				}else{
-					$y = $y - 1;
-					if($y < -255){
-						break;
-					}
-				}
-			}
-		}else{ // something else than AIR block. search upwards for a valid air block
-			$air = false;
-			while(!$air){
-				$id = $level->getBlockIdAt($x, $y, $z);
-				if($id == 0){ // this is an air block ...
-					$newPosition = new Position($x, $y, $z, $level);
-					$air = true;
-				}else{
-					$y = $y + 1;
-					if($y > 255){
-						break;
-					}
-				}
-			}
-		}
-
-		return $newPosition;
 	}
 
 	/**
@@ -361,34 +291,34 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 * @return bool
 	 * @throws \ReflectionException
 	 */
-	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
+	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool {
 		$commandSuccessful = false;
 
-		switch($command->getName()){
+		switch($command->getName()) {
 			case "peremove":
-				if(count($args) <= 1){
+				if(count($args) <= 1) {
 					$counterLivingEntities = 0;
 					$counterOtherEntities = 0;
 					$entitiesRemoved = [];
-					foreach(Server::getInstance()->getLevels() as $level){
-						foreach($level->getEntities() as $entity){
-							if(count($args) === 0){
-								if(!$entity instanceof Player and $entity->namedtag->hasTag("generatedByPEX")){
+					foreach(Server::getInstance()->getLevels() as $level) {
+						foreach($level->getEntities() as $entity) {
+							if(count($args) === 0) {
+								if(!$entity instanceof Player and $entity->namedtag->hasTag("generatedByPEX")) {
 									$entitiesRemoved[] = clone($entity);
 									$entity->close();
 									$entitiesRemoved[] = $entity;
-									if($entity instanceof BaseEntity){
+									if($entity instanceof BaseEntity) {
 										$counterLivingEntities++;
 									}else{
 										$counterOtherEntities++;
 									}
 								}
 							}elseif(strcmp(strtolower($args[0]), "all") == 0){
-								if(!$entity instanceof Player){
+								if(!$entity instanceof Player) {
 									$entitiesRemoved[] = clone($entity);
 									$entity->close();
 									$entitiesRemoved[] = $entity;
-									if($entity instanceof BaseEntity){
+									if($entity instanceof BaseEntity) {
 										$counterLivingEntities++;
 									}else{
 										$counterOtherEntities++;
@@ -399,7 +329,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 					}
 					$sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
 					self::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", \LogLevel::INFO);
-					foreach($entitiesRemoved as $entity){
+					foreach($entitiesRemoved as $entity) {
 						$name = $entity instanceof ItemEntity ? $entity->getItem()->getName() : $entity->getName();
 						self::logOutput("PeRemove: $name (id:" . $entity->getId() . ")", \LogLevel::INFO);
 					}
@@ -411,18 +341,18 @@ class PureEntities extends PluginBase implements CommandExecutor{
 				}
 				break;
 			case "pesummon":
-				if(($sender instanceof Player and count($args) >= 1 and count($args) <= 3) or (!$sender instanceof Player and count($args) > 1)){
+				if(($sender instanceof Player and count($args) >= 1 and count($args) <= 3) or (!$sender instanceof Player and count($args) > 1)) {
 					$playerName = count($args) == 1 ? $sender->getName() : $args[1];
 					$isBaby = false;
-					if(count($args) == 3){
+					if(count($args) == 3) {
 						$isBaby = strcmp(strtolower($args[2]), "true") == 0;
 					}
-					foreach($this->getServer()->getOnlinePlayers() as $player){
-						if(strcasecmp($player->getName(), $playerName) == 0){
+					foreach($this->getServer()->getOnlinePlayers() as $player) {
+						if(strcasecmp($player->getName(), $playerName) == 0) {
 							// find a mob with the name issued
 							$mobName = strtolower($args[0]);
-							foreach(self::$registeredClasses as $registeredClass){
-								if(strcmp($mobName, (new \ReflectionClass($registeredClass))->getShortName())){
+							foreach(self::$registeredClasses as $registeredClass) {
+								if(strcmp($mobName, (new \ReflectionClass($registeredClass))->getShortName())) {
 									self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster", $isBaby);
 									$sender->sendMessage("Spawned $mobName");
 									return true;
@@ -441,11 +371,83 @@ class PureEntities extends PluginBase implements CommandExecutor{
 		return $commandSuccessful;
 	}
 
-	public static function getPositionNearPlayer(Player $player, int $minimumDistanceToPlayer = 8, int $maximumDistanceToPlayer = 40) : Position{
-		// Random method used to get 8 block difference from player to entity spawn)
-		$x = $player->x + (mt_rand($minimumDistanceToPlayer, $maximumDistanceToPlayer) * (mt_rand(0, 1) === 0 ? 1 : -1));
-		$z = $player->z + (mt_rand($minimumDistanceToPlayer, $maximumDistanceToPlayer) * (mt_rand(0, 1) === 0 ? 1 : -1));
+	/**
+	 * Logs an output to the plugin's logfile ...
+	 *
+	 * @param string $logline the output to be appended
+	 * @param string $type the type of output to log
+	 */
+	public static function logOutput(string $logline, string $type = \LogLevel::DEBUG) {
+		switch($type) {
+			case \LogLevel::DEBUG:
+				self::$instance->getLogger()->debug($logline);
+				break;
+			case \LogLevel::WARNING:
+				self::$instance->getLogger()->warning($logline);
+				break;
+			case \LogLevel::INFO:
+			default:
+				self::$instance->getLogger()->info($logline);
+				break;
+		}
+	}
 
-		return new Position($x, $player->y, $z, $player->getLevel());
+	/**
+	 * @param Position $pos
+	 * @param int $entityid
+	 * @param Level $level
+	 * @param string $type
+	 * @param bool $baby
+	 * @param Entity|null $parentEntity
+	 * @param Player|null $owner
+	 *
+	 * @return null|Entity
+	 */
+	public function scheduleCreatureSpawn(Position $pos, int $entityid, Level $level, string $type, bool $baby = false, Entity $parentEntity = null, Player $owner = null) {
+		$this->getServer()->getPluginManager()->callEvent($event = new CreatureSpawnEvent($this, $pos, $entityid, $level, $type));
+
+		if($event->isCancelled()) {
+			return null;
+		}else{
+			$entity = self::create($entityid, $pos);
+			if($entity !== null) {
+				if($entity instanceof IntfCanBreed and $baby and $entity->getBreedingComponent() !== false) {
+					$entity->getBreedingComponent()->setAge(-6000); // in 5 minutes it will be a an adult (atm only sheep)
+					if($parentEntity != null) {
+						$entity->getBreedingComponent()->setParent($parentEntity);
+					}
+				}
+				// new: a baby's parent (like a wolf) may belong to a player - if so, the baby is also owned by the player!
+				if($owner !== null && $entity instanceof IntfTameable) {
+					$entity->setTamed(true);
+					$entity->setOwner($owner);
+				}
+				self::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", \LogLevel::DEBUG);
+				$entity->spawnToAll();
+
+				// additionally: mob equipment
+				if($entity instanceof BaseEntity) {
+					MobEquipper::equipMob($entity);
+				}
+
+				return $entity;
+			}
+			self::logOutput("Cannot create entity [entityId:$entityid]", \LogLevel::WARNING);
+			return null;
+		}
+	}
+
+	/**
+	 * @param int|string $type
+	 * @param Position $source
+	 * @param            $args
+	 *
+	 * @return Entity
+	 */
+	public static function create($type, Position $source, ...$args) {
+
+		$nbt = Entity::createBaseNBT($source->asVector3(), null, $source instanceof Location ? $source->yaw : 0, $source instanceof Location ? $source->pitch : 0);
+
+		return Entity::createEntity($type, $source->getLevel(), $nbt, ...$args);
 	}
 }

@@ -20,13 +20,13 @@
 
 namespace revivalpmmp\pureentities\event;
 
-use pocketmine\event\plugin\PluginEvent;
-use revivalpmmp\pureentities\PureEntities;
 use pocketmine\event\Cancellable;
-use pocketmine\level\Position;
+use pocketmine\event\plugin\PluginEvent;
 use pocketmine\level\Level;
+use pocketmine\level\Position;
+use revivalpmmp\pureentities\PureEntities;
 
-class CreatureSpawnEvent extends PluginEvent implements Cancellable{
+class CreatureSpawnEvent extends PluginEvent implements Cancellable {
 	public static $handlerList = null;
 
 	private $pos;
@@ -36,12 +36,12 @@ class CreatureSpawnEvent extends PluginEvent implements Cancellable{
 
 	/**
 	 * @param PureEntities $plugin
-	 * @param Position     $pos
-	 * @param int          $entityid
-	 * @param Level        $level
-	 * @param string       $type
+	 * @param Position $pos
+	 * @param int $entityid
+	 * @param Level $level
+	 * @param string $type
 	 */
-	public function __construct(PureEntities $plugin, Position $pos, int $entityid, Level $level, string $type){
+	public function __construct(PureEntities $plugin, Position $pos, int $entityid, Level $level, string $type) {
 		parent::__construct($plugin);
 		PureEntities::logOutput("New Creature Spawn Event! Entity ID = $entityid and Type $type");
 		$this->pos = $pos;
@@ -54,7 +54,7 @@ class CreatureSpawnEvent extends PluginEvent implements Cancellable{
 	 * Returns the position the entity is about to be spawned at.
 	 * @return Position
 	 */
-	public function getPosition(){
+	public function getPosition() {
 		return $this->pos;
 	}
 
@@ -62,7 +62,7 @@ class CreatureSpawnEvent extends PluginEvent implements Cancellable{
 	 * Returns the Network ID from the entity about to be spawned.
 	 * @return int
 	 */
-	public function getEntityId() : int{
+	public function getEntityId() : int {
 		return $this->entityid;
 	}
 
@@ -70,7 +70,7 @@ class CreatureSpawnEvent extends PluginEvent implements Cancellable{
 	 * Returns the level the entity is about to spawn in.
 	 * @return Level
 	 */
-	public function getLevel(){
+	public function getLevel() {
 		return $this->level;
 	}
 
@@ -78,7 +78,7 @@ class CreatureSpawnEvent extends PluginEvent implements Cancellable{
 	 * Returns the type of the entity about to be spawned. (Animal/Monster)
 	 * @return string
 	 */
-	public function getType() : string{
+	public function getType() : string {
 		return $this->type;
 	}
 }

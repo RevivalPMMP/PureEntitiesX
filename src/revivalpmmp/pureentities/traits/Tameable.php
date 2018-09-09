@@ -21,20 +21,20 @@
 namespace revivalpmmp\pureentities\traits;
 
 use pocketmine\entity\Entity;
+use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
-use pocketmine\math\Vector3;
 use revivalpmmp\pureentities\data\NBTConst;
+use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\entity\BaseEntity;
 
 /**
  * This trait should be used by mobs that can be tamed. It's intention is to reduce
  * the duplication of code between entities.  This concept was developled while
  * updating movement code for getting owner positions.
  */
-trait Tameable{
+trait Tameable {
 
 	// -----------------------------------------------------------------------------------------------
 	// Variables
@@ -90,39 +90,48 @@ trait Tameable{
 	// -----------------------------------------------------------------------------------------------
 
 
-	public function saveTameNBT(){
+	public function saveTameNBT() {
 
-		if(PluginConfiguration::$enableNBT){
+		if(PluginConfiguration::$enableNBT) {
 			$this->namedtag->setByte(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0, true);
-			if($this->getOwnerName() !== null){
+			if($this->getOwnerName() !== null) {
 				$this->namedtag->setString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, $this->getOwnerName(), true); // only for our own (server side)
 			}
-			if($this->owner !== null){
+			if($this->owner !== null) {
 				$this->namedtag->setString(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString(), true); // set owner UUID
 				$this->namedtag->setLong(NBTConst::NBT_KEY_OWNER_EID, $this->propertyManager->getLong(Entity::DATA_OWNER_EID), true);
 			}
 		}
 	}
 
-	public function loadTameNBT(){
-		if(PluginConfiguration::$enableNBT){
-			if($this->namedtag->hasTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME)){
+	/**
+	 * Returns the name of the owner
+	 *
+	 * @return null
+	 */
+	public function getOwnerName() {
+		return $this->ownerName;
+	}
+
+	public function loadTameNBT() {
+		if(PluginConfiguration::$enableNBT) {
+			if($this->namedtag->hasTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME)) {
 				$owner = $this->namedtag->getString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, NBTConst::NBT_INVALID_STRING);
 				$ownerEID = $this->namedtag->getLong(NBTConst::NBT_KEY_OWNER_EID, NBTConst::NBT_INVALID_LONG, true);
-				if(($owner !== NBTConst::NBT_INVALID_LONG) and ($ownerEID !== NBTConst::NBT_INVALID_LONG)){
+				if(($owner !== NBTConst::NBT_INVALID_LONG) and ($ownerEID !== NBTConst::NBT_INVALID_LONG)) {
 					$this->ownerName = $owner;
 					$this->propertyManager->setLong(Entity::DATA_OWNER_EID, $ownerEID);
 				}
 				$this->setTamed(true);
-				foreach($this->getLevel()->getPlayers() as $levelPlayer){
-					if(strcasecmp($levelPlayer->getName(), $owner) == 0){
+				foreach($this->getLevel()->getPlayers() as $levelPlayer) {
+					if(strcasecmp($levelPlayer->getName(), $owner) == 0) {
 						$this->owner = $levelPlayer;
 						break;
 					}
 				}
 			}
 
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SITTING)){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SITTING)) {
 				$sitting = $this->namedtag->getByte(NBTConst::NBT_KEY_SITTING, false, true);
 				$this->setSitting((bool) $sitting);
 
@@ -134,24 +143,57 @@ trait Tameable{
 	}
 
 	/**
+	 * This function is used to set the commandedToSit flag.
+	 * This should only be called when the owner of a tame
+	 * ocelot commands it to sit or gives it a command to stand
+	 * when it did not seat itself.
+	 *
+	 * @param bool $command
+	 */
+
+	public function setCommandedToSit(bool $command = true) {
+		$this->commandedToSit = $command;
+	}
+
+	/**
+	 * Returns if the entity is sitting or not
+	 *
+	 * @return bool
+	 */
+	public function isSitting() : bool {
+		return $this->sitting;
+	}
+
+	/**
+	 * Sets entity sitting or not.
+	 *
+	 * @param bool $sit
+	 */
+	public function setSitting(bool $sit = true) {
+		$this->sitting = $sit;
+		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, $sit);
+	}
+
+	/**
 	 * Call this method when a player tries to tame an entity
 	 *
 	 * @param Player $player
+	 *
 	 * @return bool
 	 */
-	public function attemptToTame(Player $player) : bool{
+	public function attemptToTame(Player $player) : bool {
 		// This shouldn't be necessary but just in case...
-		if($this->isTamed()){
+		if($this->isTamed()) {
 			return null;
 		}
 		$tameSuccess = mt_rand(0, $this->tameChance - 1) === 0;
 		$itemInHand = $player->getInventory()->getItemInHand();
-		if($itemInHand != null and in_array($itemInHand->getId(), $this->getTameFoods())){
+		if($itemInHand != null and in_array($itemInHand->getId(), $this->getTameFoods())) {
 			$player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
 		}else{
 			return false;
 		}
-		if($tameSuccess){
+		if($tameSuccess) {
 			$pk = new EntityEventPacket();
 			$pk->entityRuntimeId = $this->getId();
 			$pk->event = EntityEventPacket::TAME_SUCCESS; // this "plays" success animation on entity
@@ -177,61 +219,12 @@ trait Tameable{
 	}
 
 	/**
-	 * Returns a position near the player (owner) of this entity
-	 *
-	 * @return Vector3|null the position near the owner
-	 */
-
-	private function getPositionNearOwner(Player $owner, BaseEntity $pet) : Vector3{
-		$x = $owner->x + (mt_rand(2, 3) * (mt_rand(0, 1) == 1 ?: -1));
-		$z = $owner->z + (mt_rand(2, 3) * (mt_rand(0, 1) == 1 ?: -1));
-		$pos = PureEntities::getInstance()->getSuitableHeightPosition($x, $owner->y, $z, $pet->getLevel());
-		if($pos !== null){
-			return new Vector3($x, $pos->y, $z);
-		}else{
-			return null;
-		}
-	}
-
-	/**
-	 * Returns the items the entity can be tamed with (maybe multiple!)
-	 *
-	 * @return array
-	 */
-	public function getTameFoods(){
-		return $this->tameFoods;
-	}
-
-	/**
-	 * Sets entity sitting or not.
-	 *
-	 * @param bool $sit
-	 */
-	public function setSitting(bool $sit = true){
-		$this->sitting = $sit;
-		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_SITTING, $sit);
-	}
-
-	/**
-	 * Returns if the entity is sitting or not
+	 * Only returns true when this entity is tamed and owned by a player (who is not necessary online!)
 	 *
 	 * @return bool
 	 */
-	public function isSitting() : bool{
-		return $this->sitting;
-	}
-
-	/**
-	 * This function is used to set the commandedToSit flag.
-	 * This should only be called when the owner of a tame
-	 * ocelot commands it to sit or gives it a command to stand
-	 * when it did not seat itself.
-	 *
-	 * @param bool $command
-	 */
-
-	public function setCommandedToSit(bool $command = true){
-		$this->commandedToSit = $command;
+	public function isTamed() : bool {
+		return $this->tamed;
 	}
 
 	/**
@@ -239,8 +232,8 @@ trait Tameable{
 	 *
 	 * @param bool $option
 	 */
-	public function setTamed(bool $option){
-		if($option){
+	public function setTamed(bool $option) {
+		if($option) {
 			$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED, true); // set tamed
 		}else{
 			$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_TAMED, false); // set not tamed
@@ -249,12 +242,12 @@ trait Tameable{
 	}
 
 	/**
-	 * Only returns true when this entity is tamed and owned by a player (who is not necessary online!)
+	 * Returns the items the entity can be tamed with (maybe multiple!)
 	 *
-	 * @return bool
+	 * @return array
 	 */
-	public function isTamed() : bool{
-		return $this->tamed;
+	public function getTameFoods() {
+		return $this->tameFoods;
 	}
 
 	/**
@@ -262,17 +255,8 @@ trait Tameable{
 	 *
 	 * @return null|Player
 	 */
-	public function getOwner(){
+	public function getOwner() {
 		return $this->owner;
-	}
-
-	/**
-	 * Returns the name of the owner
-	 *
-	 * @return null
-	 */
-	public function getOwnerName(){
-		return $this->ownerName;
 	}
 
 	/**
@@ -280,7 +264,7 @@ trait Tameable{
 	 *
 	 * @param Player $player
 	 */
-	public function setOwner(Player $player){
+	public function setOwner(Player $player) {
 		$this->owner = $player;
 		$this->ownerName = $player->getName();
 		$this->propertyManager->setLong(self::DATA_OWNER_EID, self::DATA_TYPE_LONG, $player->getId());
@@ -291,15 +275,32 @@ trait Tameable{
 	 * This method has to be called as soon as a owner name is set. It searches online players for the owner name
 	 * and then sets it as owner here
 	 */
-	public function mapOwner(){
-		if($this->ownerName !== null){
-			foreach($this->getLevel()->getPlayers() as $player){
-				if(strcasecmp($this->ownerName, $player->getName()) == 0){
+	public function mapOwner() {
+		if($this->ownerName !== null) {
+			foreach($this->getLevel()->getPlayers() as $player) {
+				if(strcasecmp($this->ownerName, $player->getName()) == 0) {
 					$this->owner = $player;
 					PureEntities::logOutput("$this: mapOwner to $player", \LogLevel::INFO);
 					break;
 				}
 			}
+		}
+	}
+
+	/**
+	 * Returns a position near the player (owner) of this entity
+	 *
+	 * @return Vector3|null the position near the owner
+	 */
+
+	private function getPositionNearOwner(Player $owner, BaseEntity $pet) : Vector3 {
+		$x = $owner->x + (mt_rand(2, 3) * (mt_rand(0, 1) == 1 ?: -1));
+		$z = $owner->z + (mt_rand(2, 3) * (mt_rand(0, 1) == 1 ?: -1));
+		$pos = PureEntities::getInstance()->getSuitableHeightPosition($x, $owner->y, $z, $pet->getLevel());
+		if($pos !== null) {
+			return new Vector3($x, $pos->y, $z);
+		}else{
+			return null;
 		}
 	}
 
@@ -317,7 +318,7 @@ trait Tameable{
 	 *
 	 * @param Player $player
 	 */
-	private function onTameSuccess(Player $player){
+	private function onTameSuccess(Player $player) {
 		return;
 	}
 
@@ -327,7 +328,7 @@ trait Tameable{
 	 *
 	 * @param Player $player
 	 */
-	private function onTameFail(Player $player){
+	private function onTameFail(Player $player) {
 		return;
 	}
 }

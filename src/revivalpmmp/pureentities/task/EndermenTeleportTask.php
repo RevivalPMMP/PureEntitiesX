@@ -29,14 +29,14 @@ use revivalpmmp\pureentities\PureEntities;
  *
  * @package revivalpmmp\pureentities\task
  */
-class EndermenTeleportTask extends Task{
+class EndermenTeleportTask extends Task {
 	private $plugin;
 
-	public function __construct(PureEntities $plugin){
+	public function __construct(PureEntities $plugin) {
 		$this->plugin = $plugin;
 	}
 
-	public function onRun(int $currentTick){
+	public function onRun(int $currentTick) {
 		//
 	}
 }

@@ -20,22 +20,22 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\entity\Entity;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
-use pocketmine\entity\Entity;
-use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class WitherSkeleton extends WalkingMonster{
+class WitherSkeleton extends WalkingMonster {
 	const NETWORK_ID = Data::NETWORK_IDS["wither_skeleton"];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -43,19 +43,19 @@ class WitherSkeleton extends WalkingMonster{
 		$this->setDamage([0, 3, 4, 6]);
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Wither Skeleton";
 	}
 
-	public function setHealth(float $amount): void{
+	public function setHealth(float $amount) : void {
 		parent::setHealth($amount);
 
-		if($this->isAlive()){
-			if(15 < $this->getHealth()){
+		if($this->isAlive()) {
+			if(15 < $this->getHealth()) {
 				$this->setDamage([0, 2, 3, 4]);
-			}else if(10 < $this->getHealth()){
+			}elseif(10 < $this->getHealth()){
 				$this->setDamage([0, 3, 4, 6]);
-			}else if(5 < $this->getHealth()){
+			}elseif(5 < $this->getHealth()){
 				$this->setDamage([0, 3, 5, 7]);
 			}else{
 				$this->setDamage([0, 4, 6, 9]);
@@ -63,7 +63,7 @@ class WitherSkeleton extends WalkingMonster{
 		}
 	}
 
-	public function spawnTo(Player $player) : void{
+	public function spawnTo(Player $player) : void {
 		parent::spawnTo($player);
 
 		$pk = new MobEquipmentPacket();
@@ -79,24 +79,24 @@ class WitherSkeleton extends WalkingMonster{
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 10 && $this->distanceSquared($player) < 2){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
 			$this->attackDelay = 0;
 
 			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			                                    MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
 			$player->attack($ev);
 
 			$this->checkTamedMobsAttack($player);
 		}
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed()){
+		if($this->isLootDropAllowed()) {
 			array_push($drops, Item::get(Item::COAL, 0, mt_rand(0, 1)));
 			array_push($drops, Item::get(Item::BONE, 0, mt_rand(0, 2)));
-			switch(mt_rand(0, 8)){
+			switch(mt_rand(0, 8)) {
 				case 1:
 					array_push($drops, Item::get(Item::MOB_HEAD, 1, mt_rand(0, 2)));
 					break;
@@ -105,11 +105,11 @@ class WitherSkeleton extends WalkingMonster{
 		return $drops;
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 20;
 	}
 
-	public function getXpDropAmount() : int{
+	public function getXpDropAmount() : int {
 		return 5;
 	}
 

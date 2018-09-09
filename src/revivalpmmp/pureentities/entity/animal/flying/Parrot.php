@@ -21,89 +21,89 @@ namespace revivalpmmp\pureentities\entity\animal\flying;
 
 
 use pocketmine\entity\Creature;
+use pocketmine\item\Item;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\FlyingAnimal;
-use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\traits\Tameable;
 
-class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
+class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract {
 	use Tameable;
 
 	const NETWORK_ID = Data::NETWORK_IDS["parrot"];
 	private $birdType; // 0 = red, 1 = blue, 2 = green, 3 = cyan, 4 = silver
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
 		$this->fireProof = false;
-		$this->tameFoods = array(
+		$this->tameFoods = [
 			Item::SEEDS,
 			Item::BEETROOT_SEEDS,
 			Item::MELON_SEEDS,
 			Item::PUMPKIN_SEEDS,
 			Item::WHEAT_SEEDS
-		);
-		if(empty($this->birdType)){
+		];
+		if(empty($this->birdType)) {
 			$this->setBirdType($this->getRandomBirdType());
 		}
 
-		if($this->isTamed()){
+		if($this->isTamed()) {
 			$this->mapOwner();
-			if($this->owner === null){
+			if($this->owner === null) {
 				PureEntities::logOutput("$this: is tamed but player not online. Cannot set tamed owner. Will be set when player logs in ..", \LogLevel::INFO);
 			}
 		}
 	}
 
-	public function loadNBT(){
-		if(PluginConfiguration::$enableNBT){
+	public function getRandomBirdType() : int {
+		return mt_rand(0, 4);
+	}
+
+	public function loadNBT() {
+		if(PluginConfiguration::$enableNBT) {
 			parent::loadNBT();
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_BIRDTYPE)){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_BIRDTYPE)) {
 				$birdType = $this->namedtag->getByte(NBTConst::NBT_KEY_BIRDTYPE, $this->getRandomBirdType(), true);
 				$this->setBirdType($birdType);
 			}
 		}
 	}
 
-	public function saveNBT() : void{
-		if(PluginConfiguration::$enableNBT){
+	public function saveNBT() : void {
+		if(PluginConfiguration::$enableNBT) {
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_BIRDTYPE, $this->birdType, true);
 		}
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Parrot";
 	}
 
-	public function targetOption(Creature $creature, float $distance) : bool{
+	public function targetOption(Creature $creature, float $distance) : bool {
 		return false;
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		return [Item::get(Item::FEATHER, 0, mt_rand(1, 2))];
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 6;
 	}
 
-	public function getRandomBirdType() : int{
-		return mt_rand(0, 4);
+	public function getBirdType() {
+		return $this->birdType;
 	}
 
-	public function setBirdType(int $type){
+	public function setBirdType(int $type) {
 		$this->birdType = $type;
 		$this->getDataPropertyManager()->setPropertyValue(self::DATA_VARIANT, self::DATA_TYPE_INT, $type);
-	}
-
-	public function getBirdType(){
-		return $this->birdType;
 	}
 }

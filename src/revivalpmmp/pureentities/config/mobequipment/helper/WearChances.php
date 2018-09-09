@@ -27,7 +27,7 @@ use revivalpmmp\pureentities\PureEntities;
  * Class WearChances
  * @package revivalpmmp\pureentities\config\mobequipment\helper
  */
-class WearChances{
+class WearChances {
 
 	/**
 	 * @var array
@@ -54,7 +54,7 @@ class WearChances{
 	 */
 	private $server;
 
-	public function __construct(string $entityName){
+	public function __construct(string $entityName) {
 		$plugin = PureEntities::getInstance();
 		$this->helmet[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet.easy");
 		$this->helmet[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet.normal");
@@ -77,36 +77,37 @@ class WearChances{
 		PureEntities::logOutput("WearChances successfully loaded for $entityName", \LogLevel::INFO);
 	}
 
-	public function getHelmetChance(){
+	public function getHelmetChance() {
 		return $this->getChance($this->helmet);
-	}
-
-	public function getHelmetChestplateChance(){
-		return $this->getChance($this->helmetChestplate);
-	}
-
-	public function getHelmetChestplateLeggingsChance(){
-		return $this->getChance($this->helmetChestplateLeggings);
-	}
-
-	public function getFullChance(){
-		return $this->getChance($this->full);
 	}
 
 	/**
 	 * Helper method
 	 *
 	 * @param array $arrayToCheck
+	 *
 	 * @return int|mixed
 	 */
-	private function getChance(array $arrayToCheck){
+	private function getChance(array $arrayToCheck) {
 		$difficulty = $this->server->getDifficulty(); // 1 -easy, 2 - normal, 3-hard
 		$chance = 0;
 
-		if($difficulty > 0){
+		if($difficulty > 0) {
 			return $arrayToCheck[$difficulty - 1];
 		}
 
 		return $chance;
+	}
+
+	public function getHelmetChestplateChance() {
+		return $this->getChance($this->helmetChestplate);
+	}
+
+	public function getHelmetChestplateLeggingsChance() {
+		return $this->getChance($this->helmetChestplateLeggings);
+	}
+
+	public function getFullChance() {
+		return $this->getChance($this->full);
 	}
 }

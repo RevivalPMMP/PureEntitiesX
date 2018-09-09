@@ -20,12 +20,12 @@
 
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
+use pocketmine\item\Item;
 use revivalpmmp\pureentities\components\BreedingComponent;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use pocketmine\item\Item;
 use revivalpmmp\pureentities\features\IntfCanBreed;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -33,30 +33,30 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\traits\Shearable;
 
-class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable{
+class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable {
 	use Shearable, Breedable, Feedable;
 	const NETWORK_ID = Data::NETWORK_IDS["mooshroom"];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
-		$this->feedableItems = array(Item::WHEAT);
+		$this->feedableItems = [Item::WHEAT];
 		$this->breedableClass = new BreedingComponent($this);
 		$this->breedableClass->init();
 		$this->maxShearDrops = 5;
 		$this->shearItems = Item::RED_MUSHROOM;
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Mooshroom";
 	}
 
-	public function loadNBT(){
-		if(PluginConfiguration::$enableNBT){
+	public function loadNBT() {
+		if(PluginConfiguration::$enableNBT) {
 			parent::loadNBT();
 
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SHEARED)){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SHEARED)) {
 
 				$sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, false, true);
 				$this->sheared = (bool) $sheared;
@@ -64,19 +64,19 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 		}
 	}
 
-	public function saveNBT() : void{
-		if(PluginConfiguration::$enableNBT){
+	public function saveNBT() : void {
+		if(PluginConfiguration::$enableNBT) {
 			parent::saveNBT();
 			$this->breedableClass->saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_SHEARED, $this->isSheared() ? 0 : 1, true);
 		}
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed()){
+		if($this->isLootDropAllowed()) {
 			array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
-			if($this->isOnFire()){
+			if($this->isOnFire()) {
 				array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
 			}else{
 				array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
@@ -85,12 +85,12 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 		return $drops;
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 10;
 	}
 
-	public function getXpDropAmount() : int{
-		if($this->getBreedingComponent()->isBaby()){
+	public function getXpDropAmount() : int {
+		if($this->getBreedingComponent()->isBaby()) {
 			return mt_rand(1, 7);
 		}
 		return mt_rand(1, 3);

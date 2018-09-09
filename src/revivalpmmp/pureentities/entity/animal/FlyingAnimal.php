@@ -20,51 +20,71 @@
 
 namespace revivalpmmp\pureentities\entity\animal;
 
-use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\InteractionHelper;
-use revivalpmmp\pureentities\entity\FlyingEntity;
-use revivalpmmp\pureentities\features\IntfTameable;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
-// use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use revivalpmmp\pureentities\entity\FlyingEntity;
+use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PureEntities;
 
-abstract class FlyingAnimal extends FlyingEntity implements Animal{
+// use pocketmine\event\Timings;
 
-	public function getSpeed() : float{
+abstract class FlyingAnimal extends FlyingEntity implements Animal {
+
+	public function getSpeed() : float {
 		return 0.7;
 	}
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 
-		if($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null){
+		if($this->getDataFlag(self::DATA_FLAG_BABY, 0) === null) {
 			$this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
 		}
 	}
 
-	public function isBaby() : bool{
+	public function isBaby() : bool {
 		return $this->getDataFlag(self::DATA_FLAG_BABY, 0);
 	}
 
-	public function entityBaseTick(int $tickDiff = 1) : bool{
+	public function showButton(Player $player) {
+		if($this instanceof IntfTameable) {
+			$itemInHand = $player->getInventory()->getItemInHand()->getId();
+			$tameFood = $this->getTameFoods();
+			if(!$this->isTamed() and in_array($itemInHand, $tameFood)) {
+				InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
+				PureEntities::logOutput("Button text set to Tame.");
+			}elseif($this->isTamed()){ // Offer sit or stand.
+				if($this->isSitting()) {
+					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
+					PureEntities::logOutput("Button text set to Stand.");
+				}else{
+					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
+					PureEntities::logOutput("Button text set to Sit.");
+				}
+			}
+		}
+	}
+
+	public function entityBaseTick(int $tickDiff = 1) : bool {
 		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		// BaseEntity::entityBaseTick checks and can trigger despawn.  After calling it, we need to verify
 		// that the entity is still valid for updates before performing any other tasks on it.
-		if($this->isClosed() or !$this->isAlive()){
+		if($this->isClosed() or !$this->isAlive()) {
 			// Timings::$timerEntityBaseTick->stopTiming();
 			return false;
 		}
 
-		if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isUnderwater()){
+		if(!$this->hasEffect(Effect::WATER_BREATHING) && $this->isUnderwater()) {
 			$hasUpdate = true;
 			$airTicks = $this->getDataPropertyManager()->getPropertyValue(self::DATA_AIR, Entity::DATA_TYPE_SHORT) - $tickDiff;
-			if($airTicks <= -20){
+			if($airTicks <= -20) {
 				$airTicks = 0;
 				$ev = new EntityDamageEvent($this, EntityDamageEvent::CAUSE_DROWNING, 2);
 				$this->attack($ev);
@@ -78,9 +98,10 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 		return $hasUpdate;
 	}
 
-	public function onUpdate(int $currentTick) : bool{
-		if($this->getLevel() == null) return false;
-		if($this->isClosed() or !$this->isAlive()){
+	public function onUpdate(int $currentTick) : bool {
+		if($this->getLevel() == null)
+			return false;
+		if($this->isClosed() or !$this->isAlive()) {
 			return parent::onUpdate($currentTick);
 		}
 
@@ -89,8 +110,8 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 		$this->entityBaseTick($tickDiff);
 
 		$target = $this->updateMove($tickDiff);
-		if($target instanceof Player){
-			if($this->distance($target) <= 2){
+		if($target instanceof Player) {
+			if($this->distance($target) <= 2) {
 				$this->pitch = 22;
 				$this->x = $this->lastX;
 				$this->y = $this->lastY;
@@ -105,23 +126,5 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 		return true;
 	}
 
-	public function showButton(Player $player){
-		if($this instanceof IntfTameable){
-			$itemInHand = $player->getInventory()->getItemInHand()->getId();
-			$tameFood = $this->getTameFoods();
-			if(!$this->isTamed() and in_array($itemInHand, $tameFood)){
-				InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
-				PureEntities::logOutput("Button text set to Tame.");
-			}else if($this->isTamed()){ // Offer sit or stand.
-				if($this->isSitting()){
-					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
-					PureEntities::logOutput("Button text set to Stand.");
-				}else{
-					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
-					PureEntities::logOutput("Button text set to Sit.");
-				}
-			}
-		}
-	}
 
 }

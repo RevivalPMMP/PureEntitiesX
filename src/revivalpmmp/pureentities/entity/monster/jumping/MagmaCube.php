@@ -20,26 +20,26 @@
 
 namespace revivalpmmp\pureentities\entity\monster\jumping;
 
-use pocketmine\item\Item;
-use revivalpmmp\pureentities\data\NBTConst;
-use revivalpmmp\pureentities\entity\monster\JumpingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\Item;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\data\NBTConst;
+use revivalpmmp\pureentities\entity\monster\JumpingMonster;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class MagmaCube extends JumpingMonster{
+class MagmaCube extends JumpingMonster {
 	const NETWORK_ID = Data::NETWORK_IDS["magma_cube"];
 
 	private $cubeSize = -1; // 0 = Tiny, 1 = Small, 2 = Big
-	private $cubeDimensions = array(0.51, 1.02, 2.04);
+	private $cubeDimensions = [0.51, 1.02, 2.04];
 
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
-		if($this->cubeSize == -1){
+		if($this->cubeSize == -1) {
 			$this->cubeSize = self::getRandomCubeSize();
 			$this->saveNBT();
 		}
@@ -52,29 +52,19 @@ class MagmaCube extends JumpingMonster{
 		$this->setDamage([0, 3, 4, 6]);
 	}
 
-	public function saveNBT() : void{
-		if(PluginConfiguration::$enableNBT){
+	public static function getRandomCubeSize() : int {
+		return mt_rand(0, 2);
+	}
+
+	public function saveNBT() : void {
+		if(PluginConfiguration::$enableNBT) {
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_CUBE_SIZE, $this->cubeSize, true);
 		}
 	}
 
-	public function loadFromNBT(){
-		if(PluginConfiguration::$enableNBT){
-			parent::loadNBT();
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_CUBE_SIZE)){
-				$cubeSize = $this->namedtag->getByte(NBTConst::NBT_KEY_CUBE_SIZE, self::getRandomCubeSize());
-				$this->cubeSize = $cubeSize;
-			}
-		}
-	}
-
-	public function getName() : string{
+	public function getName() : string {
 		return "MagmaCube";
-	}
-
-	public static function getRandomCubeSize() : int{
-		return mt_rand(0, 2);
 	}
 
 	/**
@@ -82,21 +72,21 @@ class MagmaCube extends JumpingMonster{
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 10 && $this->distanceSquared($player) < 1){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 1) {
 			$this->attackDelay = 0;
 			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			                                    MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
 			$player->attack($ev);
 
 			$this->checkTamedMobsAttack($player);
 		}
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed()){
-			switch(mt_rand(0, 1)){
+		if($this->isLootDropAllowed()) {
+			switch(mt_rand(0, 1)) {
 				case 0:
 					$drops[] = Item::get(Item::NETHERRACK, 0, 1);
 					break;
@@ -108,14 +98,24 @@ class MagmaCube extends JumpingMonster{
 		return $drops;
 	}
 
-	public function getXpDropAmount() : int{
+	public function getXpDropAmount() : int {
 		// normally it would be set by small/medium/big sized - but as we have it not now - i'll make it more static
-		if($this->cubeSize == 2){
+		if($this->cubeSize == 2) {
 			return 4;
-		}else if($this->cubeSize == 1){
+		}elseif($this->cubeSize == 1){
 			return 2;
 		}else{
 			return 1;
+		}
+	}
+
+	public function loadFromNBT() {
+		if(PluginConfiguration::$enableNBT) {
+			parent::loadNBT();
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_CUBE_SIZE)) {
+				$cubeSize = $this->namedtag->getByte(NBTConst::NBT_KEY_CUBE_SIZE, self::getRandomCubeSize());
+				$this->cubeSize = $cubeSize;
+			}
 		}
 	}
 

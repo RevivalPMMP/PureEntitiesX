@@ -25,14 +25,14 @@ use pocketmine\block\Block;
 use pocketmine\block\Dirt;
 use pocketmine\block\Grass;
 use pocketmine\block\TallGrass;
-use pocketmine\network\mcpe\protocol\EntityEventPacket;
-use revivalpmmp\pureentities\components\BreedingComponent;
-use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use pocketmine\item\Item;
 use pocketmine\nbt\tag\ByteTag;
+use pocketmine\network\mcpe\protocol\EntityEventPacket;
+use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
+use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
@@ -44,7 +44,7 @@ use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\traits\Shearable;
 
-class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable, IntfCanPanic{
+class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable, IntfCanPanic {
 	use Breedable, CanPanic, Feedable, Shearable;
 	const NETWORK_ID = Data::NETWORK_IDS["sheep"];
 
@@ -56,42 +56,39 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 	 */
 	private $color = Color::WHITE; // default: white
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Sheep";
 	}
 
-	public static function getRandomColor() : int{
-		$rand = "";
-		$rand .= str_repeat(Color::WHITE . " ", 818);
-		$rand .= str_repeat(Color::GRAY . " ", 50);
-		$rand .= str_repeat(Color::LIGHT_GRAY . " ", 50);
-		$rand .= str_repeat(Color::BROWN . " ", 30);
-		$rand .= str_repeat(Color::BLACK . " ", 50);
-		$rand .= str_repeat(Color::PINK . " ", 2);
-		$arr = explode(" ", $rand);
-		return intval($arr[mt_rand(0, count($arr) - 1)]);
-	}
-
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
 		$this->breedableClass = new BreedingComponent($this);
 		$this->breedableClass->init();
-		$this->feedableItems = array(Item::WHEAT);
+		$this->feedableItems = [Item::WHEAT];
 		$this->maxShearDrops = 3;
 		$this->shearItems = Item::WOOL;
 		$this->setColor($this->getColor());
 		$this->setSheared($this->isSheared());
 	}
 
-	public function checkTarget(bool $checkSkip = true){
-		if(($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip){
-			if($this->isSheared()){
+	/**
+	 * Gets the color of the sheep
+	 *
+	 * @return int
+	 */
+	public function getColor() : int {
+		return $this->color;
+	}
+
+	public function checkTarget(bool $checkSkip = true) {
+		if(($checkSkip and $this->isCheckTargetAllowedBySkip()) or !$checkSkip) {
+			if($this->isSheared()) {
 				$currentBlock = $this->getCurrentBlock();
 				if($currentBlock !== null and
-					($currentBlock instanceof Grass or $currentBlock instanceof TallGrass or strcmp($currentBlock->getName(), "Double Tallgrass") == 0)
-				){ // only grass blocks are eatable by sheep)
+				   ($currentBlock instanceof Grass or $currentBlock instanceof TallGrass or strcmp($currentBlock->getName(), "Double Tallgrass") == 0)
+				) { // only grass blocks are eatable by sheep)
 					$this->blockOfInterestReached($currentBlock);
 				}
 			}
@@ -100,12 +97,43 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 		}
 	}
 
-	public function getDrops() : array{
+	/**
+	 * When a sheep is sheared, it tries to eat grass. This method signalizes, that the entity reached
+	 * a grass block or something that can be eaten.
+	 *
+	 * @param Block $block
+	 */
+	protected function blockOfInterestReached($block) {
+		PureEntities::logOutput("$this(blockOfInterestReached): $block");
+		$this->stayTime = 100; // let this entity stay still
+		// play eat grass animation but only when there are players near ...
+		foreach($this->getLevel()->getPlayers() as $player) { // don't know if this is the correct one :/
+			if($player->distance($this) <= 49) {
+				$pk = new EntityEventPacket();
+				$pk->entityRuntimeId = $this->getId();
+				$pk->event = EntityEventPacket::EAT_GRASS_ANIMATION;
+				$player->dataPacket($pk);
+			}
+		}
+		// after the eat grass has been played, we reset the block through air
+		if($block->getId() == Block::GRASS or $block->getId() == Block::TALL_GRASS) { // grass blocks are replaced by dirt blocks ...
+			$this->getLevel()->setBlock($block, new Dirt());
+		}else{
+			$this->getLevel()->setBlock($block, new Air());
+		}
+		// this sheep is not sheared anymore ... ;)
+		$this->setSheared(false);
+		// reset base target. otherwise the entity will not move anymore :D
+		$this->setBaseTarget(null);
+		$this->checkTarget(false); // find a new target to move to ...
+	}
+
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed() and !$this->isSheared() && !$this->getBreedingComponent()->isBaby()){
+		if($this->isLootDropAllowed() and !$this->isSheared() && !$this->getBreedingComponent()->isBaby()) {
 			// http://minecraft.gamepedia.com/Sheep - drop 1 wool when not a baby and died
 			array_push($drops, Item::get(Item::WOOL, self::getColor(), 1));
-			if($this->isOnFire()){
+			if($this->isOnFire()) {
 				array_push($drops, Item::get(Item::MUTTON_COOKED, 0, mt_rand(1, 2)));
 			}else{
 				array_push($drops, Item::get(Item::MUTTON_RAW, 0, mt_rand(1, 2)));
@@ -119,32 +147,48 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 	 *
 	 * @return int
 	 */
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 8;
 	}
 
 	/**
 	 * loads data from nbt and fills internal variables
 	 */
-	public function loadNBT(){
-		if(PluginConfiguration::$enableNBT){
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SHEARED)){
+	public function loadNBT() {
+		if(PluginConfiguration::$enableNBT) {
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SHEARED)) {
 				$sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, false, true);
 				$this->sheared = (bool) $sheared;
 			}
 
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_COLOR)){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_COLOR)) {
 				$color = $this->namedtag->getByte(NBTConst::NBT_KEY_COLOR, self::getRandomColor());
 				$this->color = (int) $color;
 			}
 		}
 	}
 
+	// ------------------------------------------------------------
+	// very sheep specific functions
+	// ------------------------------------------------------------
+
+	public static function getRandomColor() : int {
+		$rand = "";
+		$rand .= str_repeat(Color::WHITE . " ", 818);
+		$rand .= str_repeat(Color::GRAY . " ", 50);
+		$rand .= str_repeat(Color::LIGHT_GRAY . " ", 50);
+		$rand .= str_repeat(Color::BROWN . " ", 30);
+		$rand .= str_repeat(Color::BLACK . " ", 50);
+		$rand .= str_repeat(Color::PINK . " ", 2);
+		$arr = explode(" ", $rand);
+		return intval($arr[mt_rand(0, count($arr) - 1)]);
+	}
+
 	/**
 	 * Stores internal variables to NBT
 	 */
-	public function saveNBT() : void{
-		if(PluginConfiguration::$enableNBT){
+	public function saveNBT() : void {
+		if(PluginConfiguration::$enableNBT) {
 			parent::saveNBT();
 			$this->namedtag->setTag(new ByteTag(NBTConst::NBT_KEY_SHEARED, $this->sheared));
 			$this->namedtag->setTag(new ByteTag(NBTConst::NBT_KEY_COLOR, $this->color));
@@ -152,18 +196,11 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 		$this->breedableClass->saveNBT();
 	}
 
-	// ------------------------------------------------------------
-	// very sheep specific functions
-	// ------------------------------------------------------------
-
-
-	/**
-	 * Gets the color of the sheep
-	 *
-	 * @return int
-	 */
-	public function getColor() : int{
-		return $this->color;
+	public function getXpDropAmount() : int {
+		if($this->getBreedingComponent()->isBaby()) {
+			return mt_rand(1, 7);
+		}
+		return mt_rand(1, 3);
 	}
 
 	/**
@@ -171,47 +208,9 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 	 *
 	 * @param int $color
 	 */
-	public function setColor(int $color){
+	public function setColor(int $color) {
 		$this->color = $color;
 		$this->getDataPropertyManager()->setPropertyValue(self::DATA_COLOUR, self::DATA_TYPE_BYTE, $color);
-	}
-
-	/**
-	 * When a sheep is sheared, it tries to eat grass. This method signalizes, that the entity reached
-	 * a grass block or something that can be eaten.
-	 *
-	 * @param Block $block
-	 */
-	protected function blockOfInterestReached($block){
-		PureEntities::logOutput("$this(blockOfInterestReached): $block");
-		$this->stayTime = 100; // let this entity stay still
-		// play eat grass animation but only when there are players near ...
-		foreach($this->getLevel()->getPlayers() as $player){ // don't know if this is the correct one :/
-			if($player->distance($this) <= 49){
-				$pk = new EntityEventPacket();
-				$pk->entityRuntimeId = $this->getId();
-				$pk->event = EntityEventPacket::EAT_GRASS_ANIMATION;
-				$player->dataPacket($pk);
-			}
-		}
-		// after the eat grass has been played, we reset the block through air
-		if($block->getId() == Block::GRASS or $block->getId() == Block::TALL_GRASS){ // grass blocks are replaced by dirt blocks ...
-			$this->getLevel()->setBlock($block, new Dirt());
-		}else{
-			$this->getLevel()->setBlock($block, new Air());
-		}
-		// this sheep is not sheared anymore ... ;)
-		$this->setSheared(false);
-		// reset base target. otherwise the entity will not move anymore :D
-		$this->setBaseTarget(null);
-		$this->checkTarget(false); // find a new target to move to ...
-	}
-
-	public function getXpDropAmount() : int{
-		if($this->getBreedingComponent()->isBaby()){
-			return mt_rand(1, 7);
-		}
-		return mt_rand(1, 3);
 	}
 
 

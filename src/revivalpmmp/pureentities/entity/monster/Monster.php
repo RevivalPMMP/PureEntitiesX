@@ -22,7 +22,7 @@ namespace revivalpmmp\pureentities\entity\monster;
 
 use pocketmine\entity\Entity;
 
-interface Monster{
+interface Monster {
 
 	public function attackEntity(Entity $player);
 

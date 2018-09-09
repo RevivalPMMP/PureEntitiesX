@@ -20,6 +20,6 @@
 
 namespace revivalpmmp\pureentities\entity\animal;
 
-interface Animal{
+interface Animal {
 
 }

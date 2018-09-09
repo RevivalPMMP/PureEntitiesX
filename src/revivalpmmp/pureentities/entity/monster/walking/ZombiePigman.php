@@ -20,18 +20,17 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\item\ItemIds;
-use revivalpmmp\pureentities\components\BreedingComponent;
-use revivalpmmp\pureentities\components\MobEquipment;
-use revivalpmmp\pureentities\entity\monster\Monster;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
-//use pocketmine\event\Timings;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
+use revivalpmmp\pureentities\components\BreedingComponent;
+use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\Monster;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\PureEntities;
@@ -39,7 +38,9 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monster{
+//use pocketmine\event\Timings;
+
+class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monster {
 
 	// Base Derived from Zombie
 	// TODO Update Methods to be Zombie Pigman Specific
@@ -61,7 +62,7 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 	 */
 	private $pickUpLoot = [];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -80,19 +81,19 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "ZombiePigman";
 	}
 
-	public function setHealth(float $amount) : void{
+	public function setHealth(float $amount) : void {
 		parent::setHealth($amount);
 
-		if($this->isAlive()){
-			if(15 < $this->getHealth()){
+		if($this->isAlive()) {
+			if(15 < $this->getHealth()) {
 				$this->setDamage([0, 2, 3, 4]);
-			}else if(10 < $this->getHealth()){
+			}elseif(10 < $this->getHealth()){
 				$this->setDamage([0, 3, 4, 6]);
-			}else if(5 < $this->getHealth()){
+			}elseif(5 < $this->getHealth()){
 				$this->setDamage([0, 3, 5, 7]);
 			}else{
 				$this->setDamage([0, 4, 6, 9]);
@@ -105,14 +106,14 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 	 *
 	 * @param EntityDamageEvent $source
 	 */
-	public function attack(EntityDamageEvent $source) : void{
+	public function attack(EntityDamageEvent $source) : void {
 		$damage = $this->getDamage();
 		PureEntities::logOutput("$this: attacked with original damage of $damage", \LogLevel::DEBUG);
 		$reduceDamagePercent = 0;
-		if($this->getMobEquipment() !== null){
+		if($this->getMobEquipment() !== null) {
 			$reduceDamagePercent = $this->getMobEquipment()->getArmorDamagePercentToReduce();
 		}
-		if($reduceDamagePercent > 0){
+		if($reduceDamagePercent > 0) {
 			$reduceBy = $damage * $reduceDamagePercent / 100;
 			PureEntities::logOutput("$this: reduce damage by $reduceBy", \LogLevel::DEBUG);
 			$damage = $damage - $reduceBy;
@@ -124,29 +125,37 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 	}
 
 	/**
+	 * @return MobEquipment
+	 */
+	public function getMobEquipment() : MobEquipment {
+		return $this->mobEquipment;
+	}
+
+	/**
 	 * This zombie attacks a player
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 10 && $this->distanceSquared($player) < 2){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 10 && $this->distanceSquared($player) < 2) {
 			$this->attackDelay = 0;
 			// maybe this needs some rework ... as it should be calculated within the event class and take
 			// mob's weapon into account. for now, i just add the damage from the weapon the mob wears
 			$damage = $this->getDamage();
-			if($this->getMobEquipment() !== null){
+			if($this->getMobEquipment() !== null) {
 				$damage = $damage + $this->getMobEquipment()->getWeaponDamageToAdd();
 			}
 			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-				MobDamageCalculator::calculateFinalDamage($player, $damage));
+			                                    MobDamageCalculator::calculateFinalDamage($player, $damage));
 			$player->attack($ev);
 
 			$this->checkTamedMobsAttack($player);
 		}
 	}
 
-	public function entityBaseTick(int $tickDiff = 1) : bool{
-		if($this->isClosed()) return false;
+	public function entityBaseTick(int $tickDiff = 1) : bool {
+		if($this->isClosed())
+			return false;
 		// Timings::$timerEntityBaseTick->startTiming();
 
 		$this->getMobEquipment()->entityBaseTick($tickDiff);
@@ -157,20 +166,20 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 		if(
 			!$this->isOnFire()
 			&& ($time < Level::TIME_NIGHT || $time > Level::TIME_SUNRISE)
-		){
+		) {
 			$this->setOnFire(100);
 		}
 		// Timings::$timerEntityBaseTick->stopTiming();
 		return $hasUpdate;
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed()){
+		if($this->isLootDropAllowed()) {
 			array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
 			// 2.5 percent chance of dropping one of these items.
-			if(mt_rand(1, 1000) % 25 == 0){
-				switch(mt_rand(1, 3)){
+			if(mt_rand(1, 1000) % 25 == 0) {
+				switch(mt_rand(1, 3)) {
 					case 1:
 						array_push($drops, Item::get(Item::CARROT, 0, 1));
 						break;
@@ -186,31 +195,24 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 		return $drops;
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 20;
-	}
-
-	public function getXpDropAmount() : int{
-		if($this->getBreedingComponent()->isBaby()){
-			return 12;
-		}
-		return 5;
 	}
 
 
 	// -------------------- equipment methods --------------------
 
-	/**
-	 * @return MobEquipment
-	 */
-	public function getMobEquipment() : MobEquipment{
-		return $this->mobEquipment;
+	public function getXpDropAmount() : int {
+		if($this->getBreedingComponent()->isBaby()) {
+			return 12;
+		}
+		return 5;
 	}
 
 	/**
 	 * @return array
 	 */
-	public function getPickupLoot() : array{
+	public function getPickupLoot() : array {
 		return $this->pickUpLoot;
 	}
 

@@ -29,7 +29,7 @@ use revivalpmmp\pureentities\PureEntities;
  * Class EntityConfig
  * @package revivalpmmp\pureentities\config\mobequipment
  */
-class EntityConfig{
+class EntityConfig {
 
 	/**
 	 * @var string
@@ -56,14 +56,14 @@ class EntityConfig{
 	 */
 	private $armorTypeChances;
 
-	public function __construct(string $entityName){
+	public function __construct(string $entityName) {
 		$this->entityName = $entityName;
 		$this->plugin = PureEntities::getInstance();
 		$this->init();
 	}
 
-	private function init(){
-		if($this->plugin->getConfig()->getNested("mob-equipment." . strtolower($this->entityName)) !== null){
+	private function init() {
+		if($this->plugin->getConfig()->getNested("mob-equipment." . strtolower($this->entityName)) !== null) {
 			$this->wearPickupChance = new WearPickupChance($this->entityName);
 			$this->wearChances = new WearChances($this->entityName);
 			$this->armorTypeChances = new ArmorTypeChances($this->entityName);
@@ -75,28 +75,28 @@ class EntityConfig{
 	/**
 	 * @return string
 	 */
-	public function getEntityName() : string{
+	public function getEntityName() : string {
 		return $this->entityName;
 	}
 
 	/**
 	 * @return WearPickupChance
 	 */
-	public function getWearPickupChance() : WearPickupChance{
+	public function getWearPickupChance() : WearPickupChance {
 		return $this->wearPickupChance;
 	}
 
 	/**
 	 * @return WearChances
 	 */
-	public function getWearChances() : WearChances{
+	public function getWearChances() : WearChances {
 		return $this->wearChances;
 	}
 
 	/**
 	 * @return ArmorTypeChances
 	 */
-	public function getArmorTypeChances() : ArmorTypeChances{
+	public function getArmorTypeChances() : ArmorTypeChances {
 		return $this->armorTypeChances;
 	}
 

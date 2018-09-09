@@ -35,14 +35,14 @@ use pocketmine\Player;
 use pocketmine\tile\Tile;
 use revivalpmmp\pureentities\tile\MobSpawner;
 
-class MonsterSpawnerPEX extends MonsterSpawner{
+class MonsterSpawnerPEX extends MonsterSpawner {
 	private $entityId = -1;
 
-	public function __construct(int $meta = 0){
+	public function __construct(int $meta = 0) {
 		$this->meta = $meta;
 	}
 
-	public function canBeActivated(): bool{
+	public function canBeActivated() : bool {
 		return true;
 	}
 
@@ -52,12 +52,13 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 	 * It will need to be updated in the future when additional tags are supported.
 	 *
 	 *
-	 * @param Item        $item
+	 * @param Item $item
 	 * @param Player|null $player
+	 *
 	 * @return bool
 	 */
-	public function onActivate(Item $item, Player $player = null) : bool{
-		if($item->getId() !== Item::SPAWN_EGG){
+	public function onActivate(Item $item, Player $player = null) : bool {
+		if($item->getId() !== Item::SPAWN_EGG) {
 			return false;
 		}
 		$this->entityId = $item->getDamage();
@@ -65,41 +66,13 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 		return true;
 	}
 
-
-	/**
-	 * Additional method for updating MobSpawner tile detals.  This will also need
-	 * to be updated in the future when additional tag info is supported.
-	 *
-	 *
-	 * @param Item        $item
-	 * @param Block       $blockReplace
-	 * @param Block       $blockClicked
-	 * @param int         $face
-	 * @param Vector3     $clickVector
-	 * @param Player|null $player
-	 * @return bool
-	 */
-	public function place(Item $item, Block $blockReplace, Block $blockClicked, int $face, Vector3 $clickVector, Player $player = null) : bool{
-		$return = parent::place($item, $blockReplace, $blockClicked, $face, $clickVector, $player);
-
-		if($item->getDamage() > 9){
-			$this->meta = 0;
-			$this->entityId = $item->getDamage();
-			$this->getLevel()->setBlock($this, $this, true, false);
-			$this->generateSpawnerTile();
-		}
-
-		return $return;
-	}
-
-
 	/**
 	 * Checks for the presence of a MobSpawner in the same location as the MonsterSpawner block.
 	 * If not there, it creates one, then updates the EntityId.
 	 */
 	private function generateSpawnerTile() {
 		$tile = $this->getLevel()->getTile($this);
-		if(!$tile instanceof MobSpawner){
+		if(!$tile instanceof MobSpawner) {
 			$nbt = MobSpawner::createNBT($this);
 			$nbt->setString(Tile::TAG_ID, Tile::MOB_SPAWNER);
 
@@ -109,15 +82,42 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 		$tile->setSpawnEntityType($this->entityId);
 	}
 
+	/**
+	 * Additional method for updating MobSpawner tile detals.  This will also need
+	 * to be updated in the future when additional tag info is supported.
+	 *
+	 *
+	 * @param Item $item
+	 * @param Block $blockReplace
+	 * @param Block $blockClicked
+	 * @param int $face
+	 * @param Vector3 $clickVector
+	 * @param Player|null $player
+	 *
+	 * @return bool
+	 */
+	public function place(Item $item, Block $blockReplace, Block $blockClicked, int $face, Vector3 $clickVector, Player $player = null) : bool {
+		$return = parent::place($item, $blockReplace, $blockClicked, $face, $clickVector, $player);
+
+		if($item->getDamage() > 9) {
+			$this->meta = 0;
+			$this->entityId = $item->getDamage();
+			$this->getLevel()->setBlock($this, $this, true, false);
+			$this->generateSpawnerTile();
+		}
+
+		return $return;
+	}
 
 	/**
 	 * Vanilla MonsterSpanwers don't drop themselves under any circumstance.  May add the ability
 	 * drop itself through config options.
 	 *
 	 * @param Item $item
+	 *
 	 * @return array
 	 */
-	public function getSilkTouchDrops(Item $item) : array{
+	public function getSilkTouchDrops(Item $item) : array {
 		return [];
 	}
 }

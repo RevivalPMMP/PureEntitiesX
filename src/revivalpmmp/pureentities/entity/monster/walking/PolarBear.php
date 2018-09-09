@@ -20,25 +20,24 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use revivalpmmp\pureentities\components\BreedingComponent;
-use revivalpmmp\pureentities\entity\monster\Monster;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\entity\monster\Monster;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class PolarBear extends WalkingMonster implements Monster{
+class PolarBear extends WalkingMonster implements Monster {
 
 	// Base created from Spider.
 	// TODO: Update Polar Bear specific methods.
 
 	const NETWORK_ID = Data::NETWORK_IDS["polar_bear"];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -47,7 +46,7 @@ class PolarBear extends WalkingMonster implements Monster{
 		$this->setDamage([0, 2, 2, 3]);
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "PolarBear";
 	}
 
@@ -56,22 +55,22 @@ class PolarBear extends WalkingMonster implements Monster{
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
-		if($this->attackDelay > 10 && (($this->isFriendly() && !($player instanceof Player)) || !$this->isFriendly())){
+	public function attackEntity(Entity $player) {
+		if($this->attackDelay > 10 && (($this->isFriendly() && !($player instanceof Player)) || !$this->isFriendly())) {
 			$this->attackDelay = 0;
 
 			$ev = new EntityDamageByEntityEvent($this, $player, EntityDamageEvent::CAUSE_ENTITY_ATTACK,
-				MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
+			                                    MobDamageCalculator::calculateFinalDamage($player, $this->getDamage()));
 			$player->attack($ev);
 
 			$this->checkTamedMobsAttack($player);
 		}
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed()){
-			if(mt_rand(0, 3) > 0){
+		if($this->isLootDropAllowed()) {
+			if(mt_rand(0, 3) > 0) {
 				array_push($drops, Item::get(Item::RAW_FISH, 0, mt_rand(0, 2)));
 			}else{
 				array_push($drops, Item::get(Item::RAW_SALMON, 0, mt_rand(0, 2)));
@@ -80,11 +79,11 @@ class PolarBear extends WalkingMonster implements Monster{
 		return $drops;
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 30;
 	}
 
-	public function getXpDropAmount() : int{
+	public function getXpDropAmount() : int {
 		return 5;
 	}
 

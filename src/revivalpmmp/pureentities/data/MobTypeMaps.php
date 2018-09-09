@@ -20,8 +20,8 @@
 namespace revivalpmmp\pureentities\data;
 
 
-class MobTypeMaps{
-	const PASSIVE_DRY_MOBS = array(
+class MobTypeMaps {
+	const PASSIVE_DRY_MOBS = [
 		"bat",
 		"chicken",
 		"cow",
@@ -36,13 +36,13 @@ class MobTypeMaps{
 		"pig",
 		"rabbit",
 		"sheep",
-	);
+	];
 
-	const PASSIVE_WET_MOBS = array(
+	const PASSIVE_WET_MOBS = [
 		"squid"
-	);
+	];
 
-	const OVERWORLD_HOSTILE_MOBS = array(
+	const OVERWORLD_HOSTILE_MOBS = [
 		"cave_spider",
 		"creeper",
 		"enderman",
@@ -56,9 +56,9 @@ class MobTypeMaps{
 		"witch",
 		"wolf",
 		"zombie"
-	);
+	];
 
-	const NETHER_HOSTILE_MOBS = array(
+	const NETHER_HOSTILE_MOBS = [
 		"blaze",
 		"enderman",
 		"ghast",
@@ -66,5 +66,5 @@ class MobTypeMaps{
 		"skeleton",
 		"wither_skeleton",
 		"zombie_pigman"
-	);
+	];
 }

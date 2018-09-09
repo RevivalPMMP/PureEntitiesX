@@ -27,13 +27,13 @@ namespace revivalpmmp\pureentities\utils;
  *
  * @package revivalpmmp\pureentities\utils
  */
-class TickCounter{
+class TickCounter {
 
 	private $currentCounter = 0;
 
 	private $maxCounter = 100; // 100 ticks default
 
-	public function __construct(int $maxCounter){
+	public function __construct(int $maxCounter) {
 		$this->maxCounter = $maxCounter;
 	}
 
@@ -42,10 +42,11 @@ class TickCounter{
 	 * false is returned and the tick counter itself is increased
 	 *
 	 * @param int $tickDiff
+	 *
 	 * @return bool
 	 */
-	public function isTicksExpired($tickDiff = 1) : bool{
-		if($this->currentCounter >= $this->maxCounter){
+	public function isTicksExpired($tickDiff = 1) : bool {
+		if($this->currentCounter >= $this->maxCounter) {
 			$this->currentCounter = 0;
 			return true;
 		}
@@ -54,33 +55,33 @@ class TickCounter{
 	}
 
 	/**
-	 * Sets the max tick counter to be expired before isTickExpired returns true
-	 *
-	 * @param $maxCounter
+	 * @return int
 	 */
-	public function setMaxCounter($maxCounter){
-		$this->maxCounter = $maxCounter;
+	public function getCurrentCounter() : int {
+		return $this->currentCounter;
 	}
 
 	/**
 	 * @param int $currentCounter
 	 */
-	public function setCurrentCounter(int $currentCounter){
+	public function setCurrentCounter(int $currentCounter) {
 		$this->currentCounter = $currentCounter;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getCurrentCounter() : int{
-		return $this->currentCounter;
+	public function getMaxCounter() : int {
+		return $this->maxCounter;
 	}
 
 	/**
-	 * @return int
+	 * Sets the max tick counter to be expired before isTickExpired returns true
+	 *
+	 * @param $maxCounter
 	 */
-	public function getMaxCounter() : int{
-		return $this->maxCounter;
+	public function setMaxCounter($maxCounter) {
+		$this->maxCounter = $maxCounter;
 	}
 
 

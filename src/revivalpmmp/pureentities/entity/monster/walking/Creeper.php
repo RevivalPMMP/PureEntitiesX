@@ -20,19 +20,19 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
-use pocketmine\event\entity\ExplosionPrimeEvent;
-use revivalpmmp\pureentities\data\NBTConst;
-use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Explosive;
-use pocketmine\level\Explosion;
+use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\item\Item;
+use pocketmine\level\Explosion;
 use revivalpmmp\pureentities\data\Data;
+use revivalpmmp\pureentities\data\NBTConst;
+use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
-class Creeper extends WalkingMonster implements Explosive{
+class Creeper extends WalkingMonster implements Explosive {
 	const NETWORK_ID = Data::NETWORK_IDS["creeper"];
 	const DATA_POWERED = 19;
 
@@ -42,7 +42,7 @@ class Creeper extends WalkingMonster implements Explosive{
 
 	private $powered = 0;
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -50,73 +50,55 @@ class Creeper extends WalkingMonster implements Explosive{
 		$this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) == 0 ? false : true);
 	}
 
-	public function isPowered(){
-		return $this->powered;
-	}
-
-	public function setPowered($value = true){
-		$value ? $this->powered = 1 : $this->powered = 0;
-		$this->getDataPropertyManager()->setPropertyValue(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->powered);
-	}
-
-	public function loadNBT(){
-		if(PluginConfiguration::$enableNBT){
+	public function loadNBT() {
+		if(PluginConfiguration::$enableNBT) {
 			parent::loadNBT();
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_POWERED)){
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_POWERED)) {
 				$this->powered = $this->namedtag->getInt(NBTConst::NBT_KEY_POWERED, 0, true);
 				$this->setPowered($this->powered);
 			}
 		}
 	}
 
-	public function saveNBT() : void{
-		if(PluginConfiguration::$enableNBT){
+	public function setPowered($value = true) {
+		$value ? $this->powered = 1 : $this->powered = 0;
+		$this->getDataPropertyManager()->setPropertyValue(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->powered);
+	}
+
+	public function saveNBT() : void {
+		if(PluginConfiguration::$enableNBT) {
 			parent::saveNBT();
 			$this->namedtag->setInt(NBTConst::NBT_KEY_POWERED, $this->powered, true);
 		}
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Creeper";
 	}
 
-	public function explode(){
-		$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
-
-		if(!$ev->isCancelled()){
-			$explosion = new Explosion($this, $ev->getForce(), $this);
-			$ev->setBlockBreaking($this->explodeBlocks); // this is configuration!
-			if($ev->isBlockBreaking()){
-				$explosion->explodeA();
-			}
-			$explosion->explodeB();
-		}
-		$this->kill();
-	}
-
-	public function onUpdate(int $currentTick) : bool{
+	public function onUpdate(int $currentTick) : bool {
 		$tickDiff = $currentTick - $this->lastUpdate;
 
-		if($this->getBaseTarget() !== null){
+		if($this->getBaseTarget() !== null) {
 			$x = $this->getBaseTarget()->x - $this->x;
 			$y = $this->getBaseTarget()->y - $this->y;
 			$z = $this->getBaseTarget()->z - $this->z;
 
 			$diff = abs($x) + abs($z);
 
-			if($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->distanceSquared($this) <= 4.5){
+			if($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->distanceSquared($this) <= 4.5) {
 				$this->bombTime += $tickDiff;
-				if($this->bombTime >= 64 && $this->isAlive()){
+				if($this->bombTime >= 64 && $this->isAlive()) {
 					$this->explode();
 					return false;
 				}
 			}else{
 				$this->bombTime -= $tickDiff;
-				if($this->bombTime < 0){
+				if($this->bombTime < 0) {
 					$this->bombTime = 0;
 				}
 			}
-			if($diff > 0){
+			if($diff > 0) {
 				$this->motion->x = $this->getSpeed() * 0.15 * ($x / $diff);
 				$this->motion->z = $this->getSpeed() * 0.15 * ($z / $diff);
 				$this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
@@ -127,24 +109,28 @@ class Creeper extends WalkingMonster implements Explosive{
 		return parent::onUpdate($currentTick);
 	}
 
-	public function attackEntity(Entity $player){
+	public function attackEntity(Entity $player) {
 		// the creeper doesn't attack - it simply explodes
 	}
 
-	public function getDrops() : array{
-		if($this->isLootDropAllowed()){
+	public function getDrops() : array {
+		if($this->isLootDropAllowed()) {
 			return [Item::get(Item::GUNPOWDER, 0, mt_rand(0, 2))];
 		}else{
 			return [];
 		}
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 20;
 	}
 
-	public function getXpDropAmount() : int{
+	public function getXpDropAmount() : int {
 		return 5;
+	}
+
+	public function isPowered() {
+		return $this->powered;
 	}
 
 

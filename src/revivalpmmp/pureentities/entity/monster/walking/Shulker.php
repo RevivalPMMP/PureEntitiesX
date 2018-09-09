@@ -20,18 +20,13 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\entity\Entity;
+use pocketmine\item\Item;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
-use pocketmine\entity\Entity;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\item\Item;
-use pocketmine\Player;
-use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\utils\MobDamageCalculator;
 
-class Shulker extends WalkingMonster implements Monster{
+class Shulker extends WalkingMonster implements Monster {
 
 	// Base created from Spider
 	// TODO Lots!  Fix shell color
@@ -43,7 +38,7 @@ class Shulker extends WalkingMonster implements Monster{
 
 	const NETWORK_ID = Data::NETWORK_IDS["shulker"];
 
-	public function initEntity() : void{
+	public function initEntity() : void {
 		parent::initEntity();
 		$this->width = Data::WIDTHS[self::NETWORK_ID];
 		$this->height = Data::HEIGHTS[self::NETWORK_ID];
@@ -52,7 +47,7 @@ class Shulker extends WalkingMonster implements Monster{
 		$this->setDamage([0, 2, 2, 3]);
 	}
 
-	public function getName() : string{
+	public function getName() : string {
 		return "Shulker";
 	}
 
@@ -61,14 +56,14 @@ class Shulker extends WalkingMonster implements Monster{
 	 *
 	 * @param Entity $player
 	 */
-	public function attackEntity(Entity $player){
+	public function attackEntity(Entity $player) {
 		// TODO Add Attack Function;
 	}
 
-	public function getDrops() : array{
+	public function getDrops() : array {
 		$drops = [];
-		if($this->isLootDropAllowed()){
-			switch(mt_rand(0, 1)){
+		if($this->isLootDropAllowed()) {
+			switch(mt_rand(0, 1)) {
 				case 0:
 					array_push($drops, Item::get(Item::SHULKER_SHELL, 0, 1));
 					break;
@@ -77,11 +72,11 @@ class Shulker extends WalkingMonster implements Monster{
 		return $drops;
 	}
 
-	public function getMaxHealth() : int{
+	public function getMaxHealth() : int {
 		return 30;
 	}
 
-	public function getXpDropAmount() : int{
+	public function getXpDropAmount() : int {
 		return 5;
 	}
 

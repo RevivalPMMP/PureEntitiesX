@@ -30,7 +30,7 @@ use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\PureEntities;
 
-trait Shearable{
+trait Shearable {
 
 	private $sheared = false;
 	private $timeSheared = 0; // Used to determine how many ticks the Entity has been sheared.
@@ -41,19 +41,20 @@ trait Shearable{
 	 * This needs to be overridden in each class to handle drop specifics.
 	 *
 	 * @param Player $player
+	 *
 	 * @return bool
 	 */
-	public function shear(Player $player) : bool{
-		if($this->isSheared() or ($this instanceof IntfCanBreed and $this->getBreedingComponent()->isBaby())){
+	public function shear(Player $player) : bool {
+		if($this->isSheared() or ($this instanceof IntfCanBreed and $this->getBreedingComponent()->isBaby())) {
 			return false;
 		}else{
 			$meta = ($this instanceof Sheep ? $this->color : 0);
-			if($this->maxShearDrops <= 1){
+			if($this->maxShearDrops <= 1) {
 				$dropCount = ($this->maxShearDrops == 1 ? 1 : 0);
 			}else{
 				$dropCount = mt_rand(1, $this->maxShearDrops);
 			}
-			if($dropCount != 0){
+			if($dropCount != 0) {
 				$player->getLevel()->dropItem($this->asVector3(), Item::get($this->shearItems, $meta, $dropCount));
 			}
 			$this->setSheared(true);
@@ -61,24 +62,24 @@ trait Shearable{
 		}
 	}
 
-	public function isSheared() : bool{
+	public function isSheared() : bool {
 		return $this->sheared;
 	}
 
-	public function setSheared(bool $sheared){
+	public function setSheared(bool $sheared) {
 		$this->sheared = $sheared;
 		$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, $sheared);
-		if($this instanceof Mooshroom and $sheared == true){
+		if($this instanceof Mooshroom and $sheared == true) {
 
 			/**
 			 * @var Cow $newCow
 			 */
 			$newCow = PureEntities::create(Data::NETWORK_IDS["cow"], $this->asLocation());
 			$loaded = false;
-			while(!$loaded){
+			while(!$loaded) {
 				$newCow->setPosition($this->asVector3());
 				$newCow->setRotation($this->getYaw(), $this->getPitch());
-				if($newCow->temporalVector !== null){
+				if($newCow->temporalVector !== null) {
 					$loaded = true;
 				}
 			}
