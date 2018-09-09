@@ -20,31 +20,44 @@
 
 namespace revivalpmmp\pureentities\entity\monster\walking;
 
+use pocketmine\block\Water;
 use pocketmine\entity\Entity;
 use pocketmine\entity\projectile\Projectile;
 use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\EntityShootBowEvent;
 use pocketmine\event\entity\ProjectileLaunchEvent;
-use pocketmine\item\Bow;
 use pocketmine\item\Item;
+use pocketmine\item\ItemFactory;
 use pocketmine\level\Level;
 use pocketmine\level\sound\LaunchSound;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
-use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
-use pocketmine\Player;
+use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
+use revivalpmmp\pureentities\features\IntfCanEquip;
 
 // use pocketmine\event\Timings;
 
-class Skeleton extends WalkingMonster implements ProjectileSource{
+class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 	const NETWORK_ID = Data::NETWORK_IDS["skeleton"];
+
+	/**
+	 * @var MobEquipment
+	 */
+	protected $mobEquipment;
+
+	protected $pickUpLoot = [];
 
 	public function initEntity() : void{
 		parent::initEntity();
+		$this->mobEquipment = new MobEquipment($this);
+		$this->mobEquipment->init();
+		if($this->mobEquipment->getMainHand() === null){
+			$this->equipDefaultMainHand();
+		}
 	}
 
 	public function getName() : string{
@@ -103,17 +116,6 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
 		}
 	}
 
-	public function spawnTo(Player $player) : void{
-		parent::spawnTo($player);
-
-		$pk = new MobEquipmentPacket();
-		$pk->entityRuntimeId = $this->getId();
-		$pk->item = new Bow();
-		$pk->inventorySlot = 10;
-		$pk->hotbarSlot = 10;
-		$player->dataPacket($pk);
-	}
-
 	public function entityBaseTick(int $tickDiff = 1) : bool{
 		if($this->isClosed() or $this->getLevel() == null) return false;
 		// Timings::$timerEntityBaseTick->startTiming();
@@ -147,5 +149,17 @@ class Skeleton extends WalkingMonster implements ProjectileSource{
 
 	public function getXpDropAmount() : int{
 		return 5;
+	}
+
+	public function getMobEquipment() : MobEquipment{
+		return $this->mobEquipment;
+	}
+
+	public function getPickupLoot() : array{
+		return $this->pickUpLoot;
+	}
+
+	protected function equipDefaultMainHand() : void{
+		$this->mobEquipment->setMainHand(ItemFactory::get(Item::BOW));
 	}
 }
