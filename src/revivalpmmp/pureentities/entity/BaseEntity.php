@@ -21,17 +21,27 @@
 namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
+use pocketmine\block\Water;
+use pocketmine\entity\Creature;
+use pocketmine\entity\Entity;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\level\Level;
+use pocketmine\math\Math;
+use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use pocketmine\Player;
 use revivalpmmp\pureentities\components\IdlingComponent;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 use revivalpmmp\pureentities\entity\monster\Monster;
-use pocketmine\entity\Creature;
-use pocketmine\entity\Entity;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDamageEvent;
+use revivalpmmp\pureentities\entity\monster\walking\Wolf;
+use revivalpmmp\pureentities\features\IntfCanPanic;
+use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\PluginConfiguration;
+use revivalpmmp\pureentities\PureEntities;
+
 //use pocketmine\event\Timings;
 
 abstract class BaseEntity extends Creature{
@@ -297,6 +307,10 @@ abstract class BaseEntity extends Creature{
 
 		if($this->moveTime > 0){
 			$this->moveTime -= $tickDiff;
+		}
+
+		if($this->isOnFire() and $this->level->getBlock($this) instanceof Water){
+			$this->extinguish();
 		}
 
 		// check panic tick
