@@ -63,13 +63,9 @@ class EntityConfig{
 	}
 
 	private function init(){
-		if($this->plugin->getConfig()->getNested("mob-equipment." . strtolower($this->entityName)) !== null){
-			$this->wearPickupChance = new WearPickupChance($this->entityName);
-			$this->wearChances = new WearChances($this->entityName);
-			$this->armorTypeChances = new ArmorTypeChances($this->entityName);
-		}else{
-			PureEntities::logOutput("Cannot load mob equipment parameters from config for " . $this->entityName, PureEntities::WARN);
-		}
+		$this->wearPickupChance = new WearPickupChance($this->entityName);
+		$this->wearChances = new WearChances($this->entityName);
+		$this->armorTypeChances = new ArmorTypeChances($this->entityName);
 	}
 
 	/**

@@ -32,22 +32,22 @@ class WearChances{
 	/**
 	 * @var array
 	 */
-	private $helmet = [];
+	private $helmet = [0, 0, 0];
 
 	/**
 	 * @var array
 	 */
-	private $helmetChestplate = [];
+	private $helmetChestplate = [0, 0, 0];
 
 	/**
 	 * @var array
 	 */
-	private $helmetChestplateLeggings = [];
+	private $helmetChestplateLeggings = [0, 0, 0];
 
 	/**
 	 * @var array
 	 */
-	private $full = [];
+	private $full = [0, 0, 0];
 
 	/**
 	 * @var Server
@@ -56,21 +56,29 @@ class WearChances{
 
 	public function __construct(string $entityName){
 		$plugin = PureEntities::getInstance();
-		$this->helmet[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet.easy");
-		$this->helmet[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet.normal");
-		$this->helmet[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet.hard");
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.helmet") !== null){
+			$this->helmet[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet.easy");
+			$this->helmet[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet.normal");
+			$this->helmet[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet.hard");
+		}
 
-		$this->helmetChestplate[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate.easy");
-		$this->helmetChestplate[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate.normal");
-		$this->helmetChestplate[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate.hard");
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.helmet-chestplate") !== null){
+			$this->helmetChestplate[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate.easy");
+			$this->helmetChestplate[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate.normal");
+			$this->helmetChestplate[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate.hard");
+		}
 
-		$this->helmetChestplateLeggings[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate-leggings.easy");
-		$this->helmetChestplateLeggings[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate-leggings.normal");
-		$this->helmetChestplateLeggings[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate-leggings.hard");
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.helmet-chestpate-leggings") !== null){
+			$this->helmetChestplateLeggings[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate-leggings.easy");
+			$this->helmetChestplateLeggings[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate-leggings.normal");
+			$this->helmetChestplateLeggings[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.helmet-chestplate-leggings.hard");
+		}
 
-		$this->full[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.full.easy");
-		$this->full[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.full.normal");
-		$this->full[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.full.hard");
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.full") !== null){
+			$this->full[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.full.easy");
+			$this->full[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.full.normal");
+			$this->full[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-chances.full.hard");
+		}
 
 		$this->server = Server::getInstance();
 

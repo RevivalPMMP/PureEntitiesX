@@ -40,11 +40,21 @@ class ArmorTypeChances{
 
 	public function __construct(string $entityName){
 		$plugin = PureEntities::getInstance();
-		$this->leather = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.leather");
-		$this->gold = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.gold");
-		$this->chain = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.chain");
-		$this->iron = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.iron");
-		$this->diamond = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.diamond");
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.leather") !== null){
+			$this->leather = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.leather");
+		}
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.gold") !== null){
+			$this->gold = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.gold");
+		}
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.chain") !== null){
+			$this->chain = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.chain");
+		}
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.iron") !== null){
+			$this->iron = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.iron");
+		}
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.") !== null){
+			$this->diamond = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".armor-types.diamond");
+		}
 
 		PureEntities::logOutput("ArmorTypeChances successfully loaded for $entityName", PureEntities::NORM);
 	}

@@ -32,17 +32,17 @@ class WearPickupChance{
 	/**
 	 * @var array
 	 */
-	private $canPickupLoot = [];
+	private $canPickupLoot = [0,0,0];
 
 	/**
 	 * @var array
 	 */
-	private $armor = [];
+	private $armor = [0,0,0];
 
 	/**
 	 * @var array
 	 */
-	private $weapon = [];
+	private $weapon = [0,0,0];
 
 	/**
 	 * @var Server
@@ -51,21 +51,24 @@ class WearPickupChance{
 
 	public function __construct(string $entityName){
 		$plugin = PureEntities::getInstance();
-		$this->canPickupLoot[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.easy");
-		$this->canPickupLoot[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.normal");
-		$this->canPickupLoot[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.hard");
-
-		$this->armor[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.easy");
-		$this->armor[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.normal");
-		$this->armor[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.hard");
-
-		$this->weapon[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.easy");
-		$this->weapon[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.normal");
-		$this->weapon[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.hard");
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot") !== null){
+			$this->canPickupLoot[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.easy");
+			$this->canPickupLoot[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.normal");
+			$this->canPickupLoot[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.can-pickup-loot.hard");
+		}
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor") !== null){
+			$this->armor[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.easy");
+			$this->armor[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.normal");
+			$this->armor[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.armor.hard");
+		}
+		if($plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon") !== null){
+			$this->weapon[0] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.easy");
+			$this->weapon[1] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.normal");
+			$this->weapon[2] = $plugin->getConfig()->getNested("mob-equipment." . strtolower($entityName) . ".wear-pickup-chances.weapon.hard");
+		}
+		PureEntities::logOutput("WearPickupChance successfully loaded for $entityName");
 
 		$this->server = Server::getInstance();
-
-		PureEntities::logOutput("WearPickupChance successfully loaded for $entityName", PureEntities::NORM);
 	}
 
 	public function getCanPickupLootChance(){
