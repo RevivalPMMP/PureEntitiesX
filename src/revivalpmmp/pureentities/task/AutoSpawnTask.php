@@ -27,6 +27,7 @@ use pocketmine\level\Position;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\scheduler\Task;
+use pocketmine\Server;
 use revivalpmmp\pureentities\data\BiomeInfo;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\MobTypeMaps;
@@ -62,6 +63,7 @@ class AutoSpawnTask extends Task{
 
 		foreach($this->plugin->getServer()->getLevels() as $level){
 			if(count($this->spawnerWorlds) > 0 and !in_array($level->getName(), $this->spawnerWorlds)){
+				Server::getInstance()->getLogger()->info("§5AutoSpawnTask Skipping world §6{$level->getName()}");
 				continue;
 			}
 			$this->hostileMobs = 0;
@@ -81,7 +83,6 @@ class AutoSpawnTask extends Task{
 			PureEntities::logOutput("AutoSpawnTask: Hostiles = $this->hostileMobs");
 			PureEntities::logOutput("AutoSpawnTask: Passives(Dry) = $this->passiveDryMobs");
 			PureEntities::logOutput("AutoSpawnTask: Passives(Wet) = $this->passiveWetMobs");
-			$total = ($this->hostileMobs + $this->passiveWetMobs + $this->passiveDryMobs);
 
 			$playerLocations = [];
 
