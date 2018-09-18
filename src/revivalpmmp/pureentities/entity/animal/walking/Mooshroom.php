@@ -21,29 +21,20 @@
 namespace revivalpmmp\pureentities\entity\animal\walking;
 
 use pocketmine\item\Item;
-use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
-use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
-use revivalpmmp\pureentities\features\IntfCanBreed;
-use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\PluginConfiguration;
-use revivalpmmp\pureentities\traits\Breedable;
-use revivalpmmp\pureentities\traits\Feedable;
 use revivalpmmp\pureentities\traits\Shearable;
 
-class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfShearable{
+class Mooshroom extends Cow implements IntfShearable{
 
-	use Shearable, Breedable, Feedable;
+	use Shearable;
 
 	const NETWORK_ID = Data::NETWORK_IDS["mooshroom"];
 
 	public function initEntity() : void{
 		parent::initEntity();
-		$this->feedableItems = array(Item::WHEAT);
-		$this->breedableClass = new BreedingComponent($this);
-		$this->breedableClass->init();
 		$this->maxShearDrops = 5;
 		$this->shearItems = Item::RED_MUSHROOM;
 	}
@@ -67,26 +58,9 @@ class Mooshroom extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, 
 	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->breedableClass->saveNBT();
+			$this->getBreedingComponent()->saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_SHEARED, $this->isSheared() ? 0 : 1, true);
 		}
-	}
-
-	public function getDrops() : array{
-		$drops = [];
-		if($this->isLootDropAllowed()){
-			array_push($drops, Item::get(Item::LEATHER, 0, mt_rand(0, 2)));
-			if($this->isOnFire()){
-				array_push($drops, Item::get(Item::COOKED_BEEF, 0, mt_rand(1, 3)));
-			}else{
-				array_push($drops, Item::get(Item::RAW_BEEF, 0, mt_rand(1, 3)));
-			}
-		}
-		return $drops;
-	}
-
-	public function getMaxHealth() : int{
-		return 10;
 	}
 
 	public function getXpDropAmount() : int{
