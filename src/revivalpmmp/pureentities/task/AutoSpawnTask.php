@@ -63,7 +63,6 @@ class AutoSpawnTask extends Task{
 
 		foreach($this->plugin->getServer()->getLevels() as $level){
 			if(count($this->spawnerWorlds) > 0 and !in_array($level->getName(), $this->spawnerWorlds)){
-				Server::getInstance()->getLogger()->info("§5AutoSpawnTask Skipping world §6{$level->getName()}");
 				continue;
 			}
 			$this->hostileMobs = 0;
