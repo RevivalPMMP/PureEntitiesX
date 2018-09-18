@@ -46,7 +46,6 @@ use revivalpmmp\pureentities\PureEntities;
 
 abstract class BaseEntity extends Creature{
 
-	protected $networkId = null;
 	public $stayTime = 0;
 	protected $moveTime = 0;
 
@@ -162,18 +161,6 @@ abstract class BaseEntity extends Creature{
 			PureEntities::logOutput("$this: setBaseTarget to $baseTarget", PureEntities::DEBUG);
 			$this->baseTarget = $baseTarget;
 		}
-	}
-
-	public function setNetworkId(int $networkId){
-		$this->networkId = $networkId;
-	}
-
-
-	/*
-	 * Returns the appropriate Network Id for this entity.
-	 */
-	public function getNetworkId(){
-		return $this->networkId;
 	}
 
 	/**
