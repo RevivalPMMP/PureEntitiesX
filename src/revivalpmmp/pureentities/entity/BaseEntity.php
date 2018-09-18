@@ -211,7 +211,7 @@ abstract class BaseEntity extends Creature{
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_MOVEMENT, $this->isMovement(), true);
 			$this->namedtag->setByte(NBTConst::NBT_KEY_WALL_CHECK, $this->isWallCheck(), true);
-			$this->namedtag->setInt(NBTConst::NBT_KEY_AGE_IN_TICKS, $this->age, true);
+			$this->namedtag->setInt(NBTConst::NBT_KEY_AGE_IN_TICKS, $this->ticksLived, true);
 
 			// No reason to attempt this if getEnableNBT is false.
 			$this->idlingComponent->saveNBT();
@@ -231,7 +231,7 @@ abstract class BaseEntity extends Creature{
 			}
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_AGE_IN_TICKS)){
 				$age = $this->namedtag->getInt(NBTConst::NBT_KEY_AGE_IN_TICKS, 0, true);
-				$this->age = $age;
+				$this->ticksLived = $age;
 			}
 		}
 	}
@@ -330,7 +330,7 @@ abstract class BaseEntity extends Creature{
 	 */
 	private function checkDespawn() : bool{
 		// when entity is at least x ticks old and it's not tamed, we should remove it
-		if($this->age > $this->maxAge and
+		if($this->ticksLived > $this->maxAge and
 			(!$this instanceof IntfTameable or ($this instanceof IntfTameable and !$this->isTamed()))
 		){
 			PureEntities::logOutput("Despawn entity " . $this->getName(), PureEntities::NORM);
