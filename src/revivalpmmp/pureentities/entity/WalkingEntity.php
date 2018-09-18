@@ -271,17 +271,44 @@ abstract class WalkingEntity extends BaseEntity{
 	 */
 	public function findRandomLocation(){
 		PureEntities::logOutput("$this(findRandomLocation): entering");
-		$x = mt_rand(20, 100);
-		$z = mt_rand(20, 100);
-		$this->moveTime = mt_rand(300, 1200);
+		$x = mt_rand(-10, 10) + $this->x;
+		$z = mt_rand(-10, 10) + $this->z;
+		$this->moveTime = mt_rand(60, 120);
 
 		// set a real y coordinate ...
-		$yPos = PureEntities::getSuitableHeightPosition($x, $this->y, $z, $this->getLevel());
+		$y = $this->findTargetFloor($x, $z);
 
-		$this->setBaseTarget(new Vector3(
-			mt_rand(0, 1) ? $this->x + $x : $this->x - $x,
-			$yPos !== null ? $yPos->y : $this->y,
-			mt_rand(0, 1) ? $this->z + $z : $this->z - $z));
+
+		$this->setBaseTarget(new Vector3($x,$y,$z));
+	}
+
+
+	/**
+	 * Checks the given X and Z location to find a close air block.
+	 * If one cannot be found within 3 blocks above, or below the
+	 * current Y location, then the current Y location is returned.
+	 *
+	 * @param $x float|int
+	 * @param $z float|int
+	 * @return float|int
+	 */
+	public function findTargetFloor($x, $z) {
+		if($this->level->getBlock(new Vector3($x, $this->y, $z))->getId() == Block::AIR){
+			return $this->y;
+		}
+		//Check from current y up for air.
+		for($yScan = 1; $yScan < 3 ;$yScan++){
+			if($this->level->getBlock(new Vector3($x, $this->y + $yScan, $z))->getId() == Block::AIR){
+				return $this->y + $yScan;
+			}
+		}
+
+		for($yScan = -1; $yScan > -3; $yScan--){
+			if($this->level->getBlock(new Vector3($x, $this->y + $yScan, $z))->getId() == Block::AIR){
+				return $this->y + $yScan;
+			}
+		}
+		return $this->y;
 	}
 
 
