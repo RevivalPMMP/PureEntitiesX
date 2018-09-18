@@ -155,7 +155,7 @@ abstract class BaseEntity extends Creature{
 	 * @param $baseTarget
 	 */
 	public function setBaseTarget($baseTarget){
-		if($baseTarget instanceof Player and $baseTarget->getGamemode() === Player::SPECTATOR){
+		if($baseTarget instanceof Player and !in_array($baseTarget->getGamemode(), [Player::ADVENTURE, Player::SURVIVAL])){
 			return;
 		}
 		if($baseTarget !== $this->baseTarget){
