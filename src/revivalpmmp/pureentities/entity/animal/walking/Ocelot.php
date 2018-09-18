@@ -279,25 +279,13 @@ class Ocelot extends WalkingAnimal implements IntfTameable, IntfCanBreed, IntfCa
 		}
 	}
 
-
-	/**
-	 * Generates and returns a random value from 1 to 3.
-	 * This is used to determine number of XP Orbs dropped
-	 * after killing the entity.
-	 * @return int
-	 */
-
-	// This function needs to be moved to a parent class
-	// that can be used by all mobs that drop experience
-	// when killed.
-	//
-	// When moved, method needs to be changed to
-	// getKillExperience(int $minXp, int $maxXp) {
-	//     return mt_rand($minXp, $maxXp);
-	// }
-
-	public function getXpDropAmount() : int{
-		return mt_rand(1, 3);
+	public function updateXpDropAmount() : void{
+		if($this->getBreedingComponent()->checkInLove()){
+			$this->xpDropAmount = mt_rand(1, 7);
+		}
+		if(!$this->getBreedingComponent()->isBaby()){
+			$this->xpDropAmount = mt_rand(1, 3);
+		}
 	}
 
 }

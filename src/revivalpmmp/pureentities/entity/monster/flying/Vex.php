@@ -204,7 +204,7 @@ class Vex extends FlyingMonster implements Monster{
 		return [];
 	}
 
-	public function getXpDropAmount() : int{
-		return 10;
+	public function updateXpDropAmount() : void{
+		$this->xpDropAmount = 10;
 	}
 }

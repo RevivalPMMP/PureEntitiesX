@@ -119,13 +119,13 @@ class Slime extends JumpingMonster{
 		return 4;
 	}
 
-	public function getXpDropAmount() : int{
+	public function updateXpDropAmount() : void{
 		if($this->cubeSize == 2){
-			return 4;
+			$this->xpDropAmount = 4;
 		}else if($this->cubeSize == 1){
-			return 2;
+			$this->xpDropAmount = 2;
 		}else{
-			return 1;
+			$this->xpDropAmount = 1;
 		}
 	}
 

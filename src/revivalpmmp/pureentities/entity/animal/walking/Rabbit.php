@@ -92,10 +92,12 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
 		return 3;
 	}
 
-	public function getXpDropAmount() : int{
-		if($this->getBreedingComponent()->isBaby()){
-			return mt_rand(1, 4);
+	public function updateXpDropAmount() : void{
+		if($this->getBreedingComponent()->checkInLove()){
+			$this->xpDropAmount = mt_rand(1, 4);
 		}
-		return mt_rand(1, 3);
+		if(!$this->getBreedingComponent()->isBaby()){
+			$this->xpDropAmount = mt_rand(1, 3);
+		}
 	}
 }

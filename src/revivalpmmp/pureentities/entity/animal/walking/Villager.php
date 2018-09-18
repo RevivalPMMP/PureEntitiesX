@@ -43,8 +43,9 @@ class Villager extends WalkingAnimal{
 		return 10;
 	}
 
-	public function getXpDropAmount() : int{
-		return mt_rand(3, 6);
+	public function updateXpDropAmount() : void{
+		// Villagers don't drop any xp unless "willing" (breeding) or trading.
+		//TODO: Update this when Villagers get breeding and trading updates.
 	}
 
 }

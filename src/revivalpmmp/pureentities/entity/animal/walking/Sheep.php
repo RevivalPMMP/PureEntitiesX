@@ -207,11 +207,13 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 		$this->checkTarget(false); // find a new target to move to ...
 	}
 
-	public function getXpDropAmount() : int{
-		if($this->getBreedingComponent()->isBaby()){
-			return mt_rand(1, 7);
+	public function updateXpDropAmount() : void{
+		if($this->getBreedingComponent()->checkInLove()){
+			$this->xpDropAmount = mt_rand(1, 7);
 		}
-		return mt_rand(1, 3);
+		if(!$this->getBreedingComponent()->isBaby()){
+			$this->xpDropAmount = mt_rand(1, 3);
+		}
 	}
 
 

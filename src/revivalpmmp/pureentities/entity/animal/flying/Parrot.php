@@ -92,6 +92,10 @@ class Parrot extends FlyingAnimal implements IntfTameable, IntfCanInteract{
 		return 6;
 	}
 
+	public function updateXpDropAmount() : void{
+		$this->xpDropAmount = mt_rand(1, 3);
+	}
+
 	public function getRandomBirdType() : int{
 		return mt_rand(0, 4);
 	}

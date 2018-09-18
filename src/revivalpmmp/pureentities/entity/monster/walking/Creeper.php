@@ -141,8 +141,8 @@ class Creeper extends WalkingMonster implements Explosive{
 		return 20;
 	}
 
-	public function getXpDropAmount() : int{
-		return 5;
+	public function updateXpDropAmount() : void{
+		$this->xpDropAmount = 5;
 	}
 
 

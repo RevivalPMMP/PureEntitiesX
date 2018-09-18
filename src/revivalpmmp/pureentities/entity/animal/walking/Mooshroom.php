@@ -63,11 +63,4 @@ class Mooshroom extends Cow implements IntfShearable{
 		}
 	}
 
-	public function getXpDropAmount() : int{
-		if($this->getBreedingComponent()->isBaby()){
-			return mt_rand(1, 7);
-		}
-		return mt_rand(1, 3);
-	}
-
 }

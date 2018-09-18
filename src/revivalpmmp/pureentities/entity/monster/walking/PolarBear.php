@@ -81,8 +81,8 @@ class PolarBear extends WalkingMonster implements Monster{
 		return 30;
 	}
 
-	public function getXpDropAmount() : int{
-		return 5;
+	public function updateXpDropAmount() : void{
+		$this->xpDropAmount = 5;
 	}
 
 

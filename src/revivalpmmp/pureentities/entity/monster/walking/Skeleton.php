@@ -154,8 +154,8 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 		return 20;
 	}
 
-	public function getXpDropAmount() : int{
-		return 5;
+	public function updateXpDropAmount() : void{
+		$this->xpDropAmount = 5;
 	}
 
 	public function getMobEquipment() : MobEquipment{

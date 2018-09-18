@@ -70,8 +70,8 @@ class Endermite extends WalkingMonster{
 		return 8;
 	}
 
-	public function getXpDropAmount() : int{
-		return 5;
+	public function updateXpDropAmount() : void{
+		$this->xpDropAmount = 5;
 	}
 
 

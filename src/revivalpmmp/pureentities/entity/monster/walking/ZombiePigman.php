@@ -193,11 +193,12 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 		return 20;
 	}
 
-	public function getXpDropAmount() : int{
+	public function updateXpDropAmount() : void{
 		if($this->getBreedingComponent()->isBaby()){
-			return 12;
+			$this->xpDropAmount = 12;
+			return;
 		}
-		return 5;
+		$this->xpDropAmount = 5;
 	}
 
 

@@ -24,6 +24,7 @@ use pocketmine\block\Block;
 use pocketmine\block\Water;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
+use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\level\Level;
@@ -77,13 +78,16 @@ abstract class BaseEntity extends Creature{
 	 */
 	private $checkTargetSkipCounter = 0;
 
+	protected $damagedByPlayer = false;
+
 	/**
 	 * @var IdlingComponent
 	 */
 	protected $idlingComponent;
 
-
 	protected $maxAge = 0;
+
+	protected $xpDropAmount = 0;
 
 	public function __destruct(){
 	}
@@ -106,12 +110,20 @@ abstract class BaseEntity extends Creature{
 
 	public abstract function updateMove($tickDiff);
 
+	public function updateXpDropAmount() : void {
+		$this->xpDropAmount = 0;
+	}
+
 	/**
 	 * Should return the experience dropped by the entity when killed
 	 * @return int
 	 */
 	public function getXpDropAmount() : int{
-		return 0; // default no experience drops
+		if(!$this->damagedByPlayer){
+			return 0;
+		}
+		$this->updateXpDropAmount();
+		return $this->xpDropAmount;
 	}
 
 	public function getSaveId() : string{
@@ -257,7 +269,13 @@ abstract class BaseEntity extends Creature{
 		$this->moveTime = 0;
 
 		if($source instanceof EntityDamageByEntityEvent){
+			if($source instanceof EntityDamageByChildEntityEvent and $source->getChild()->getOwningEntity() instanceof Player){
+				$this->damagedByPlayer = true;
+			}
 			$sourceOfDamage = $source->getDamager();
+			if($sourceOfDamage instanceof Player){
+				$this->damagedByPlayer = true;
+			}
 			$motion = (new Vector3($this->x - $sourceOfDamage->x, $this->y - $sourceOfDamage->y, $this->z - $sourceOfDamage->z))->normalize();
 			$this->motion->x = $motion->x * 0.19;
 			$this->motion->z = $motion->z * 0.19;

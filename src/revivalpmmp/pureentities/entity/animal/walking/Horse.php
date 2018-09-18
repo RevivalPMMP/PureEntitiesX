@@ -57,8 +57,8 @@ class Horse extends WalkingAnimal implements Rideable{
 		return 20;
 	}
 
-	public function getXpDropAmount() : int{
-		return mt_rand(1, 3);
+	public function updateXpDropAmount() : void{
+		$this->xpDropAmount = mt_rand(1, 3);
 	}
 
 	/**

@@ -98,9 +98,9 @@ class Evoker extends WalkingMonster implements Monster{
 		return 20;
 	}
 
-	public function getXpDropAmount() : int{
-		// adult: 5, baby: 12
-		return 5;
+	public function updateXpDropAmount() : void{
+		// Babies drop 12;
+		$this->xpDropAmount = 5;
 	}
 
 

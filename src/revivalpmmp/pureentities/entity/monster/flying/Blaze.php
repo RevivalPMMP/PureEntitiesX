@@ -245,8 +245,8 @@ class Blaze extends FlyingMonster implements ProjectileSource{
 		}
 	}
 
-	public function getXpDropAmount() : int{
-		return 10;
+	public function updateXpDropAmount() : void{
+		$this->xpDropAmount = 10;
 	}
 
 

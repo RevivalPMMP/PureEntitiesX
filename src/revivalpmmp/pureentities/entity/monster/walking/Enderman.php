@@ -75,8 +75,8 @@ class Enderman extends WalkingMonster{
 	}
 
 
-	public function getXpDropAmount() : int{
-		return 5;
+	public function updateXpDropAmount() : void{
+		$this->xpDropAmount = 5;
 	}
 
 	/**

@@ -101,8 +101,8 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 		return 10;
 	}
 
-	public function getXpDropAmount() : int{
-		return 5;
+	public function updateXpDropAmount() : void{
+		$this->xpDropAmount = 5;
 	}
 
 
