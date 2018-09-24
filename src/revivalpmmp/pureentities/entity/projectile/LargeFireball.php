@@ -17,13 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Created by PhpStorm.
- * User: aaron
- * Date: 2/4/2018
- * Time: 12:00 AM
- */
-
 namespace revivalpmmp\pureentities\entity\projectile;
 
 use pocketmine\entity\Entity;
