@@ -27,12 +27,11 @@ use pocketmine\level\Position;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\scheduler\Task;
-use pocketmine\Server;
 use revivalpmmp\pureentities\data\BiomeInfo;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\MobTypeMaps;
-use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\PluginConfiguration;
+use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\utils\PeTimings;
 
 

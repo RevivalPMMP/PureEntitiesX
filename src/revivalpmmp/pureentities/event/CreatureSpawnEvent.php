@@ -20,11 +20,11 @@
 
 namespace revivalpmmp\pureentities\event;
 
-use pocketmine\event\plugin\PluginEvent;
-use revivalpmmp\pureentities\PureEntities;
 use pocketmine\event\Cancellable;
-use pocketmine\level\Position;
+use pocketmine\event\plugin\PluginEvent;
 use pocketmine\level\Level;
+use pocketmine\level\Position;
+use revivalpmmp\pureentities\PureEntities;
 
 class CreatureSpawnEvent extends PluginEvent implements Cancellable{
 	public static $handlerList = null;

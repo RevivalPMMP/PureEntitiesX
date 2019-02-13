@@ -20,13 +20,14 @@
 
 namespace revivalpmmp\pureentities\entity\animal;
 
-use revivalpmmp\pureentities\entity\SwimmingEntity;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
-// use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use revivalpmmp\pureentities\entity\SwimmingEntity;
+
+// use pocketmine\event\Timings;
 
 abstract class SwimmingAnimal extends SwimmingEntity implements Animal{
 

@@ -20,17 +20,17 @@
 
 namespace revivalpmmp\pureentities\entity\monster\jumping;
 
+use pocketmine\entity\Creature;
+use pocketmine\entity\Entity;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\JumpingMonster;
-use pocketmine\entity\Entity;
-use pocketmine\item\Item;
-use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\entity\Creature;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\utils\MobDamageCalculator;
 

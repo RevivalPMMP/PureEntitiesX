@@ -20,29 +20,29 @@
 
 namespace revivalpmmp\pureentities\entity\monster;
 
-use pocketmine\entity\Creature;
-use pocketmine\item\Item;
-use pocketmine\Item\ItemIds;
-use revivalpmmp\pureentities\entity\animal\Animal;
-use revivalpmmp\pureentities\entity\monster\walking\Enderman;
-use revivalpmmp\pureentities\entity\monster\walking\Wolf;
-use revivalpmmp\pureentities\entity\WalkingEntity;
 use pocketmine\block\Water;
+use pocketmine\entity\Creature;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
-// use pocketmine\event\Timings;
+use pocketmine\item\Item;
+use pocketmine\Item\ItemIds;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
+use revivalpmmp\pureentities\entity\animal\Animal;
+use revivalpmmp\pureentities\entity\monster\walking\Enderman;
+use revivalpmmp\pureentities\entity\monster\walking\Wolf;
+use revivalpmmp\pureentities\entity\WalkingEntity;
 use revivalpmmp\pureentities\features\IntfCanBreed;
-use revivalpmmp\pureentities\features\IntfFeedable;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
+
+// use pocketmine\event\Timings;
 
 abstract class WalkingMonster extends WalkingEntity implements Monster{
 

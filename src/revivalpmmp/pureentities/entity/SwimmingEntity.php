@@ -20,10 +20,10 @@
 
 namespace revivalpmmp\pureentities\entity;
 
-use revivalpmmp\pureentities\entity\animal\Animal;
+use pocketmine\entity\Creature;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
-use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\entity\animal\Animal;
 
 abstract class SwimmingEntity extends BaseEntity{
 

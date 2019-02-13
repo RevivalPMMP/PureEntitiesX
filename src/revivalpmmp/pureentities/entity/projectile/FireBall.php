@@ -20,17 +20,15 @@
 
 namespace revivalpmmp\pureentities\entity\projectile;
 
+use pocketmine\entity\Entity;
+use pocketmine\entity\projectile\Projectile;
 use pocketmine\event\entity\ExplosionPrimeEvent;
+use pocketmine\level\Explosion;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
-use pocketmine\entity\projectile\Projectile;
-use pocketmine\entity\Entity;
-use pocketmine\level\Explosion;
-use revivalpmmp\pureentities\data\Data;
-use pocketmine\math\Vector3;
 
 abstract class FireBall extends Projectile{
 

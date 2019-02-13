@@ -20,13 +20,13 @@
 
 namespace revivalpmmp\pureentities\entity;
 
-use revivalpmmp\pureentities\entity\animal\Animal;
-use revivalpmmp\pureentities\entity\monster\flying\Blaze;
+use pocketmine\entity\Creature;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
-use pocketmine\entity\Creature;
+use revivalpmmp\pureentities\entity\animal\Animal;
+use revivalpmmp\pureentities\entity\monster\flying\Blaze;
 
 abstract class FlyingEntity extends BaseEntity{
 

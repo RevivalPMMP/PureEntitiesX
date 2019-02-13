@@ -20,16 +20,17 @@
 
 namespace revivalpmmp\pureentities\entity\animal;
 
-use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\InteractionHelper;
-use revivalpmmp\pureentities\entity\FlyingEntity;
-use revivalpmmp\pureentities\features\IntfTameable;
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
-// use pocketmine\event\Timings;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use revivalpmmp\pureentities\entity\FlyingEntity;
+use revivalpmmp\pureentities\features\IntfTameable;
+use revivalpmmp\pureentities\InteractionHelper;
+use revivalpmmp\pureentities\PureEntities;
+
+// use pocketmine\event\Timings;
 
 abstract class FlyingAnimal extends FlyingEntity implements Animal{
 

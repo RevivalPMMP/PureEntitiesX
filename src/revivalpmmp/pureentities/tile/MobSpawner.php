@@ -21,13 +21,13 @@
 namespace revivalpmmp\pureentities\tile;
 
 use pocketmine\level\Level;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
+use pocketmine\tile\Spawnable;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\tile\Spawnable;
 
 class MobSpawner extends Spawnable{
 

@@ -21,13 +21,13 @@
 namespace revivalpmmp\pureentities\traits;
 
 use pocketmine\entity\Entity;
+use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
-use pocketmine\math\Vector3;
 use revivalpmmp\pureentities\data\NBTConst;
+use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
-use revivalpmmp\pureentities\entity\BaseEntity;
 
 /**
  * This trait should be used by mobs that can be tamed. It's intention is to reduce

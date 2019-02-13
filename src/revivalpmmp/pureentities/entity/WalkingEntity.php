@@ -21,19 +21,19 @@
 namespace revivalpmmp\pureentities\entity;
 
 use pocketmine\block\Block;
-use pocketmine\block\StoneSlab;
-use pocketmine\block\Stair;
-use pocketmine\entity\object\ItemEntity;
-use pocketmine\Player;
-use revivalpmmp\pureentities\entity\animal\Animal;
-use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
-use pocketmine\block\Liquid;
 use pocketmine\block\Fence;
 use pocketmine\block\FenceGate;
+use pocketmine\block\Liquid;
+use pocketmine\block\Stair;
+use pocketmine\block\StoneSlab;
+use pocketmine\entity\Creature;
+use pocketmine\entity\object\ItemEntity;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
-use pocketmine\entity\Creature;
+use pocketmine\Player;
+use revivalpmmp\pureentities\entity\animal\Animal;
+use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
 use revivalpmmp\pureentities\features\IntfCanEquip;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PureEntities;
