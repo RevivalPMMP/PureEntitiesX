@@ -232,10 +232,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 		$enabled = self::$loggingEnabled = PluginConfiguration::getInstance()->getLogEnabled();
 		if($enabled){
 			$level = self::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", self::NORM));
-			self::$logger = new PEXCustomLogger(strcmp($level, self::DEBUG) === 0);
-			self::$logger->registerClassLoader();
-			self::$logger->registerStatic();
-			ThreadManager::getInstance()->{spl_object_hash(self::$logger)} = self::$logger; // just in case the logger isn't shut down by the plugin
 			$this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . $level);
 
 			$this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
@@ -244,9 +240,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	}
 
 	public function onDisable(){
-		if(static::$loggingEnabled){
-			self::$logger->quit();
-		}
 		$this->getServer()->getLogger()->notice("[PureEntitiesX] Disabled!");
 	}
 
@@ -316,18 +309,18 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 */
 	public static function logOutput(string $logline, string $type = self::DEBUG){
 		if(self::$loggingEnabled){
-			switch($type){
-				case self::DEBUG:
-					self::$logger->debug($logline);
-					break;
-				case self::WARN:
-					self::$logger->warning($logline);
-					break;
-				case self::NORM:
-				default:
-					self::$logger->info($logline);
-					break;
-			}
+            switch($type){
+                case self::DEBUG:
+                    self::getInstance()->getLogger()->debug($logline);
+                    break;
+                case self::WARN:
+                    self::getInstance()->getLogger()->warning($logline);
+                    break;
+                case self::NORM:
+                default:
+                    self::getInstance()->getLogger()->info($logline);
+                    break;
+            }
 			return true;
 		}
 		return false;
