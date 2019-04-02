@@ -41,10 +41,10 @@ class MobTypeMaps{
 	const PASSIVE_WET_MOBS = array(
 		"squid",
 		"salmon",
-		"pufferfish",                                                                                                               
+		"pufferfish",
 		"tropicalfish",
 		"cod",
-		"dolphin"                                                                                                                   
+		"dolphin"
 	);
 
 	const OVERWORLD_HOSTILE_MOBS = array(
