@@ -40,6 +40,11 @@ use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\flying\Bat;
 use revivalpmmp\pureentities\entity\animal\flying\Parrot;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
+use revivalpmmp\pureentities\entity\animal\swimming\Salmon;                                                                                 
+use revivalpmmp\pureentities\entity\animal\swimming\Pufferfish;                                                                             
+use revivalpmmp\pureentities\entity\animal\swimming\Tropicalfish;                                                                           
+use revivalpmmp\pureentities\entity\animal\swimming\Cod;                                                                                    
+use revivalpmmp\pureentities\entity\animal\swimming\Dolphin;                                                                                
 use revivalpmmp\pureentities\entity\animal\walking\Chicken;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Donkey;
@@ -140,8 +145,10 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Blaze::class,
 			CaveSpider::class,
 			Chicken::class,
+			Cod::class,
 			Cow::class,
 			Creeper::class,
+			Dolphin::class,
 			Donkey::class,
 			//ElderGuardian::class,
 			//EnderCharge::class,
@@ -164,7 +171,9 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Pig::class,
 			PigZombie::class,
 			PolarBear::class,
+			Pufferfish::class,
 			Rabbit::class,
+			Salmon::class,
 			Sheep::class,
 			Shulker::class,
 			Silverfish::class,
@@ -176,6 +185,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			Spider::class,
 			Squid::class,
 			Stray::class,
+			Tropicalfish::class,
 			Vex::class,
 			Villager::class,
 			Vindicator::class,
