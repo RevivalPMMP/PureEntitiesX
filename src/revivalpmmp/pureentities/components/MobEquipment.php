@@ -622,12 +622,10 @@ class MobEquipment{
 	private function createArmorEquipPacket() : MobArmorEquipmentPacket{
 		$pk = new MobArmorEquipmentPacket();
 		$pk->entityRuntimeId = $this->entity->getId();
-		$pk->slots = [
-			$this->helmet !== null ? $this->helmet : Item::get(ItemIds::AIR),
-			$this->chestplate !== null ? $this->chestplate : Item::get(ItemIds::AIR),
-			$this->leggings !== null ? $this->leggings : Item::get(ItemIds::AIR),
-			$this->boots !== null ? $this->boots : Item::get(ItemIds::AIR)
-		];
+		$pk->head = $this->helmet ?? Item::get(ItemIds::AIR);
+		$pk->chest = $this->chestplate ?? Item::get(ItemIds::AIR);
+		$pk->legs = $this->leggings ?? Item::get(ItemIds::AIR);
+		$pk->feet = $this->boots ?? Item::get(ItemIds::AIR);
 		$pk->encode();
 		$pk->isEncoded = true;
 		return $pk;
