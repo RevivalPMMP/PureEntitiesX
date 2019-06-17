@@ -19,7 +19,7 @@
 
 declare(strict_types=1);
 
-namespace RevivalPMMP\pureentities\task\async;
+namespace revivalpmmp\pureentities\task\async;
 
 
 use pocketmine\block\Solid;
