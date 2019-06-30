@@ -215,11 +215,7 @@ class Blaze extends FlyingMonster implements ProjectileSource{
 				$this->level
 			);
 
-			$motion = new Vector3(
-				-sin(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f,
-				-sin(rad2deg($pitch)) * $f * $f,
-				cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f
-			);
+			$motion = $player->subtract($this);
 			$nbt = Entity::createBaseNBT($pos, $motion, $yaw, $pitch);
 			$fireball = Entity::createEntity("SmallFireball", $this->level, $nbt);
 			if(!($fireball instanceof SmallFireball)){
