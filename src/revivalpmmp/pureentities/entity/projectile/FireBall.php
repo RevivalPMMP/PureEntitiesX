@@ -87,12 +87,13 @@ abstract class FireBall extends Projectile{
 		}
 
 		$this->timings->stopTiming();
+
 		return $hasUpdate;
 	}
 
 	public function spawnTo(Player $player) : void{
 		$pk = new AddEntityPacket();
-		$pk->type = self::NETWORK_ID;
+		$pk->type = static::NETWORK_ID;
 		$pk->entityRuntimeId = $this->getId();
 		$pk->position = $this->asVector3();
 		$pk->motion = $this->getMotion();
