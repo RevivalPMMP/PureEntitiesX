@@ -27,7 +27,6 @@ use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Location;
 use pocketmine\level\sound\LaunchSound;
-use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\FlyingMonster;
@@ -67,11 +66,7 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 				$this->level
 			);
 
-			$motion = new Vector3(
-				-sin(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f,
-				-sin(rad2deg($pitch)) * $f * $f,
-				cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f
-			);
+			$motion = $player->subtract($this);
 			$nbt = Entity::createBaseNBT($pos, $motion, $yaw, $pitch);
 			$fireball = new LargeFireball($this->level, $nbt, $this);
 
