@@ -73,10 +73,8 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 				cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f
 			);
 			$nbt = Entity::createBaseNBT($pos, $motion, $yaw, $pitch);
-			$fireball = Entity::createEntity("LargeFireball", $this->level, $nbt);
-			if(!($fireball instanceof LargeFireball)){
-				return;
-			}
+			$fireball = new LargeFireball($this->level, $nbt, $this);
+
 			$fireball->setExplode(true);
 
 			$this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($fireball));
