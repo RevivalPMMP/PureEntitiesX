@@ -25,8 +25,10 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\item\Item;
+use pocketmine\level\Level;
 use pocketmine\level\Location;
 use pocketmine\level\sound\LaunchSound;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\FlyingMonster;
@@ -34,6 +36,12 @@ use revivalpmmp\pureentities\entity\projectile\LargeFireball;
 
 class Ghast extends FlyingMonster implements ProjectileSource{
 	const NETWORK_ID = Data::NETWORK_IDS["ghast"];
+
+	public function __construct(Level $level, CompoundTag $nbt){
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		parent::__construct($level, $nbt);
+	}
 
 	public function initEntity() : void{
 		parent::initEntity();
