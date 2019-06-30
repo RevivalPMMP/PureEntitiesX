@@ -71,7 +71,7 @@ abstract class FireBall extends Projectile{
 			$this->isCritical = false;
 		}
 
-		if($this->age > 1200 or $this->isCollided){
+		if($this->ticksLived > 1200 or $this->isCollided){
 			if($this->isCollided and $this->canExplode){
 				$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
 				if(!$ev->isCancelled() && $this->getLevel() != null){
