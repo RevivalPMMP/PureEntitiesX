@@ -73,7 +73,8 @@ abstract class FireBall extends Projectile{
 
 		if($this->ticksLived > 1200 or $this->isCollided){
 			if($this->isCollided and $this->canExplode){
-				$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
+				$ev = $ev = new ExplosionPrimeEvent($this, 2.8);
+				$ev->call();
 				if(!$ev->isCancelled() && $this->getLevel() != null){
 					$explosion = new Explosion($this, $ev->getForce(), $this->getOwningEntity());
 					if($ev->isBlockBreaking()){
