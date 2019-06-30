@@ -72,7 +72,8 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 
 			$fireball->setExplode(true);
 
-			$this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($fireball));
+			$launch = new ProjectileLaunchEvent($fireball);
+			$launch->call();
 			if($launch->isCancelled()){
 				$fireball->kill();
 			}else{
