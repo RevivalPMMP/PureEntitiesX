@@ -41,8 +41,8 @@ abstract class FireBall extends Projectile{
 	protected $canExplode = false;
 
 	public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
-		parent::__construct($level, $nbt, $shootingEntity);
 		$this->isCritical = $critical;
+		parent::__construct($level, $nbt, $shootingEntity);
 	}
 
 	public function isExplode() : bool{
@@ -62,7 +62,7 @@ abstract class FireBall extends Projectile{
 
 		$hasUpdate = parent::onUpdate($currentTick);
 
-		if(!$this->hadCollision and $this->isCritical){
+		if(!$this->isCollided and $this->isCritical){
 			$this->level->addParticle(new CriticalParticle($this->add(
 				$this->width / 2 + mt_rand(-100, 100) / 500,
 				$this->height / 2 + mt_rand(-100, 100) / 500,
