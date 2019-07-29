@@ -22,7 +22,7 @@ namespace revivalpmmp\pureentities\components;
 
 
 use pocketmine\entity\Entity;
-use pocketmine\network\mcpe\protocol\EntityEventPacket;
+use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\BaseEntity;
@@ -326,9 +326,9 @@ class BreedingComponent{
 			if($this->inLoveTimer >= self::IN_LOVE_EMIT_DELAY and $this->emitLoveParticles){
 				foreach($this->entity->getLevel()->getPlayers() as $player){ // don't know if this is the correct one :/
 					if($player->distance($this->entity) <= 49){
-						$pk = new EntityEventPacket();
+						$pk = new ActorEventPacket();
 						$pk->entityRuntimeId = $this->entity->getId();
-						$pk->event = EntityEventPacket::TAME_SUCCESS; // i think this plays the "heart" animation
+						$pk->event = ActorEventPacket::TAME_SUCCESS; // i think this plays the "heart" animation
 						$player->dataPacket($pk);
 					}
 				}
@@ -433,9 +433,9 @@ class BreedingComponent{
 	 */
 	public function feed(Player $player) : bool{
 		if($this->getAge() > 0){
-			$pk = new EntityEventPacket();
+			$pk = new ActorEventPacket();
 			$pk->entityRuntimeId = $this->entity->getId();
-			$pk->event = EntityEventPacket::TAME_FAIL; // this "plays" fail animation on entity
+			$pk->event = ActorEventPacket::TAME_FAIL; // this "plays" fail animation on entity
 			$player->dataPacket($pk);
 			return false;
 		}
@@ -448,9 +448,9 @@ class BreedingComponent{
 			$this->setInLove(self::DEFAULT_IN_LOVE_TICKS);
 			// checkTarget method recognizes the "in love" and tries to find a partner
 			// when feeding was successful and entity is in love mode emit heart particles (only once for now)
-			$pk = new EntityEventPacket();
+			$pk = new ActorEventPacket();
 			$pk->entityRuntimeId = $this->entity->getId();
-			$pk->event = EntityEventPacket::TAME_SUCCESS; // i think this plays the "heart" animation
+			$pk->event = ActorEventPacket::TAME_SUCCESS; // i think this plays the "heart" animation
 			$player->dataPacket($pk);
 		}
 		return true;

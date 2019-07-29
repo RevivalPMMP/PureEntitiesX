@@ -22,7 +22,7 @@ namespace revivalpmmp\pureentities\traits;
 
 use pocketmine\entity\Entity;
 use pocketmine\math\Vector3;
-use pocketmine\network\mcpe\protocol\EntityEventPacket;
+use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\BaseEntity;
@@ -152,9 +152,9 @@ trait Tameable{
 			return false;
 		}
 		if($tameSuccess){
-			$pk = new EntityEventPacket();
+			$pk = new ActorEventPacket();
 			$pk->entityRuntimeId = $this->getId();
-			$pk->event = EntityEventPacket::TAME_SUCCESS; // this "plays" success animation on entity
+			$pk->event = ActorEventPacket::TAME_SUCCESS; // this "plays" success animation on entity
 			$player->dataPacket($pk);
 
 			// set the properties accordingly
@@ -165,9 +165,9 @@ trait Tameable{
 			// Perform creature specific options related becoming tamed.
 			$this->onTameSuccess($player);
 		}else{
-			$pk = new EntityEventPacket();
+			$pk = new ActorEventPacket();
 			$pk->entityRuntimeId = $this->getId();
-			$pk->event = EntityEventPacket::TAME_FAIL; // this "plays" fail animation on entity
+			$pk->event = ActorEventPacket::TAME_FAIL; // this "plays" fail animation on entity
 			$player->dataPacket($pk);
 
 			// Perform entitiy specific options for failed attempts to tame
