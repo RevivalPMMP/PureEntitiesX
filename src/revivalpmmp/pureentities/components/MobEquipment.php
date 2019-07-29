@@ -51,7 +51,7 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\network\mcpe\protocol\DataPacket;
 use pocketmine\network\mcpe\protocol\MobArmorEquipmentPacket;
 use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
-use pocketmine\network\mcpe\protocol\TakeItemEntityPacket;
+use pocketmine\network\mcpe\protocol\TakeItemActorPacket;
 use pocketmine\Player;
 use pocketmine\Server;
 use revivalpmmp\pureentities\config\mobequipment\EntityConfig;
@@ -153,7 +153,7 @@ class MobEquipment{
 		$this->putInCorrectSlot($item->getItem());
 
 		// broadcast pick up item (plays pickup animation)
-		$pk = new TakeItemEntityPacket ();
+		$pk = new TakeItemActorPacket();
 		$pk->eid = $this->entity->getId();
 		$pk->target = $item->getId();
 		Server::getInstance()->broadcastPacket($this->entity->getViewers(), $pk);
