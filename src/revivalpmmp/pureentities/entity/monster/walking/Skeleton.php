@@ -22,6 +22,7 @@ namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\block\Water;
 use pocketmine\entity\Entity;
+use pocketmine\entity\projectile\Arrow;
 use pocketmine\entity\projectile\Projectile;
 use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\EntityShootBowEvent;
@@ -30,10 +31,6 @@ use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\level\Level;
 use pocketmine\level\sound\LaunchSound;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\DoubleTag;
-use pocketmine\nbt\tag\FloatTag;
-use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\data\Data;
@@ -54,6 +51,7 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 
 	public function initEntity() : void{
 		parent::initEntity();
+		$this->attackDistance = 16;
 		$this->mobEquipment = new MobEquipment($this);
 		$this->mobEquipment->init();
 		if($this->mobEquipment->getMainHand() === null){
@@ -80,36 +78,21 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 			$this->attackDelay = 0;
 
 			$f = 1.2;
-			$yaw = $this->yaw + mt_rand(-220, 220) / 10;
-			$pitch = $this->pitch + mt_rand(-120, 120) / 10;
-			$nbt = new CompoundTag("", [
-				"Pos" => new ListTag("Pos", [
-					new DoubleTag("", $this->x + (-sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5)),
-					new DoubleTag("", $this->y + 1.62),
-					new DoubleTag("", $this->z + (cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * 0.5))
-				]),
-				"Motion" => new ListTag("Motion", [
-					new DoubleTag("", -sin($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * $f),
-					new DoubleTag("", -sin($pitch / 180 * M_PI) * $f),
-					new DoubleTag("", cos($yaw / 180 * M_PI) * cos($pitch / 180 * M_PI) * $f)
-				]),
-				"Rotation" => new ListTag("Rotation", [
-					new FloatTag("", $yaw),
-					new FloatTag("", $pitch)
-				]),
-			]);
+			$motion = $this->subtract($player);
+			$nbt = Entity::createBaseNBT($this, $motion, $this->yaw, $this->pitch);
 
 			/** @var Projectile $arrow */
-			$arrow = Entity::createEntity("Arrow", $this->getLevel(), $nbt, $this);
-
-			$ev = new EntityShootBowEvent($this, Item::get(Item::ARROW, 0, 1), $arrow, $f);
-			$this->server->getPluginManager()->callEvent($ev);
+			$arrow = new Arrow($this->getLevel(), $nbt, $this);
+			$bow = $this->mobEquipment->getMainHand();
+			$ev = new EntityShootBowEvent($this, $bow, $arrow, $f);
+			$ev->call();
 
 			$projectile = $ev->getProjectile();
 			if($ev->isCancelled()){
 				$projectile->kill();
 			}elseif($projectile instanceof Projectile){
-				$this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($projectile));
+				$launch = new ProjectileLaunchEvent($projectile);
+				$launch->call();
 				if($launch->isCancelled()){
 					$projectile->kill();
 				}else{
