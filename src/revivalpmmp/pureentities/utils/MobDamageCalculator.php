@@ -100,12 +100,9 @@ class MobDamageCalculator{
 							$reductionInPercent += $reduction;
 						}
 
-						$enchantments = $armorItem->getEnchantments();
-						if($enchantments !== null and sizeof($enchantments) > 0){
-							foreach($enchantments as $enchantment){
-								if($enchantment->getId() === Enchantment::PROTECTION){
-									$enchantEpf += $enchantment->getLevel(); // see http://minecraft.gamepedia.com/Armor#Enchantments
-								}
+						foreach($armorItem->getEnchantments() as $enchantment){
+							if($enchantment->getId() === Enchantment::PROTECTION){
+								$enchantEpf += $enchantment->getLevel(); // see http://minecraft.gamepedia.com/Armor#Enchantments
 							}
 						}
 					}else{
