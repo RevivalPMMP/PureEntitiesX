@@ -21,7 +21,9 @@
 namespace revivalpmmp\pureentities\task\delayed;
 
 
+use pocketmine\level\Level;
 use pocketmine\Player;
+use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\Task;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\features\IntfCanEquip;
@@ -39,11 +41,10 @@ use revivalpmmp\pureentities\PureEntities;
  */
 class ShowMobEquipmentTask extends Task{
 
-	/**
-	 * @var PureEntities
-	 */
+	/** @var PureEntities */
 	private $plugin;
 
+	/** @var Player */
 	private $playerJoined;
 
 	/**
@@ -64,7 +65,15 @@ class ShowMobEquipmentTask extends Task{
 	 * @param $currentTick
 	 */
 	public function onRun(int $currentTick){
-		foreach($this->playerJoined->getLevel()->getEntities() as $entity){
+		if(!$this->playerJoined instanceof PluginBase or $this->playerJoined->isClosed() or $this->playerJoined->isFlaggedForDespawn()){
+			return;
+		}
+		$level = $this->playerJoined->getLevel();
+		if(!$level instanceof Level){
+			return;
+		}
+
+		foreach($level->getEntities() as $entity){
 			if($entity->isAlive() and !$entity->isClosed() and $entity instanceof IntfCanEquip and $entity instanceof WalkingMonster){
 				$entity->getMobEquipment()->sendEquipmentUpdate($this->playerJoined);
 			}
