@@ -153,7 +153,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->setInt(NBTConst::NBT_KEY_PUMPKIN, $this->sheared ? 0 : 1); // default: has pumpkin on his head (1 - pumpkin on head, 0 - pumpkin off!)
+			$this->namedtag->setByte(NBTConst::NBT_KEY_PUMPKIN, $this->sheared ? 0 : 1); // default: has pumpkin on his head (1 - pumpkin on head, 0 - pumpkin off!)
 		}
 	}
 
