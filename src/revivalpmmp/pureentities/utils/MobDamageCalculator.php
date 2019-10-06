@@ -20,6 +20,7 @@
 namespace revivalpmmp\pureentities\utils;
 
 use pocketmine\entity\Entity;
+use pocketmine\inventory\ArmorInventory;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
 use pocketmine\item\ItemIds;
@@ -75,12 +76,12 @@ class MobDamageCalculator{
 	/**
 	 * Returns the final damage for a specific player and the amount of base damage coming in
 	 *
-	 * @param Entity $player the player to be checked
+	 * @param Entity $player           the player to be checked
 	 * @param float  $damageFromEntity the final damage from the entity
 	 * @return float the final damage calculated with respect to armor etc. pp worn by player
 	 */
 	public static function calculateFinalDamage(Entity $player, float $damageFromEntity) : float{
-		if($player instanceof Player and $player->getArmorInventory() !== null){
+		if($player instanceof Player and $player->getArmorInventory() instanceof ArmorInventory){
 			$playerArmor = $player->getArmorInventory();
 			$armorItems = [$playerArmor->getHelmet(), $playerArmor->getChestplate(), $playerArmor->getLeggings(), $playerArmor->getBoots()];
 
