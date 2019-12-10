@@ -152,10 +152,13 @@ abstract class SwimmingMonster extends SwimmingEntity implements Monster{
 	}
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
-		if($this->isClosed() or $this->getLevel() == null) return false;
 		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
+
+		if($this->isClosed() or $this->getLevel() === null) {
+			return $hasUpdate;
+		}
 
 		$this->attackDelay += $tickDiff;
 		if(!$this->hasEffect(Effect::WATER_BREATHING) && !$this->isUnderwater()){

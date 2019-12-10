@@ -27,7 +27,7 @@ use pocketmine\block\Grass;
 use pocketmine\block\TallGrass;
 use pocketmine\item\Item;
 use pocketmine\nbt\tag\ByteTag;
-use pocketmine\network\mcpe\protocol\EntityEventPacket;
+use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\data\Data;
@@ -188,9 +188,9 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 		// play eat grass animation but only when there are players near ...
 		foreach($this->getLevel()->getPlayers() as $player){ // don't know if this is the correct one :/
 			if($player->distance($this) <= 49){
-				$pk = new EntityEventPacket();
+				$pk = new ActorEventPacket();
 				$pk->entityRuntimeId = $this->getId();
-				$pk->event = EntityEventPacket::EAT_GRASS_ANIMATION;
+				$pk->event = ActorEventPacket::EAT_GRASS_ANIMATION;
 				$player->dataPacket($pk);
 			}
 		}

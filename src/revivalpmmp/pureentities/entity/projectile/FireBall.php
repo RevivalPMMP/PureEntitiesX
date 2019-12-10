@@ -27,7 +27,7 @@ use pocketmine\level\Explosion;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use pocketmine\network\mcpe\protocol\AddActorPacket;
 use pocketmine\Player;
 
 abstract class FireBall extends Projectile{
@@ -41,8 +41,8 @@ abstract class FireBall extends Projectile{
 	protected $canExplode = false;
 
 	public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
-		parent::__construct($level, $nbt, $shootingEntity);
 		$this->isCritical = $critical;
+		parent::__construct($level, $nbt, $shootingEntity);
 	}
 
 	public function isExplode() : bool{
@@ -62,7 +62,7 @@ abstract class FireBall extends Projectile{
 
 		$hasUpdate = parent::onUpdate($currentTick);
 
-		if(!$this->hadCollision and $this->isCritical){
+		if(!$this->isCollided and $this->isCritical){
 			$this->level->addParticle(new CriticalParticle($this->add(
 				$this->width / 2 + mt_rand(-100, 100) / 500,
 				$this->height / 2 + mt_rand(-100, 100) / 500,
@@ -71,10 +71,11 @@ abstract class FireBall extends Projectile{
 			$this->isCritical = false;
 		}
 
-		if($this->age > 1200 or $this->isCollided){
+		if($this->ticksLived > 1200 or $this->isCollided){
 			if($this->isCollided and $this->canExplode){
-				$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
-				if(!$ev->isCancelled() && $this->getLevel() != null){
+				$ev = $ev = new ExplosionPrimeEvent($this, 2.8);
+				$ev->call();
+				if(!$ev->isCancelled() && $this->getLevel() !== null){
 					$explosion = new Explosion($this, $ev->getForce(), $this->getOwningEntity());
 					if($ev->isBlockBreaking()){
 						$explosion->explodeA();
@@ -87,12 +88,13 @@ abstract class FireBall extends Projectile{
 		}
 
 		$this->timings->stopTiming();
+
 		return $hasUpdate;
 	}
 
 	public function spawnTo(Player $player) : void{
-		$pk = new AddEntityPacket();
-		$pk->type = self::NETWORK_ID;
+		$pk = new AddActorPacket();
+		$pk->type = static::NETWORK_ID;
 		$pk->entityRuntimeId = $this->getId();
 		$pk->position = $this->asVector3();
 		$pk->motion = $this->getMotion();

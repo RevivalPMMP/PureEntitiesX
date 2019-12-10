@@ -208,7 +208,6 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 	}
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
-		if($this->isClosed() or $this->getLevel() == null) return false;
 		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
@@ -217,7 +216,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 		// that the entity is still valid for updates before performing any other tasks on it.
 		if($this->isClosed() or !$this->isAlive()){
 			// Timings::$timerEntityBaseTick->stopTiming();
-			return false;
+			return $hasUpdate;
 		}
 
 		$this->attackDelay += $tickDiff;

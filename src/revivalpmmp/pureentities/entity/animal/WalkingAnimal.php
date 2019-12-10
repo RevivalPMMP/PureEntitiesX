@@ -50,7 +50,6 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 	}
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
-		if($this->isClosed() or $this->getLevel() == null) return false;
 		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
@@ -59,7 +58,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 		// that the entity is still valid for updates before performing any other tasks on it.
 		if($this->isClosed() or !$this->isAlive()){
 			// Timings::$timerEntityBaseTick->stopTiming();
-			return false;
+			return $hasUpdate;
 		}
 
 		if($this->getLevel() !== null && !$this->hasEffect(Effect::WATER_BREATHING) && $this->isUnderwater()){

@@ -25,9 +25,10 @@ use pocketmine\entity\Entity;
 use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\item\Item;
+use pocketmine\level\Level;
 use pocketmine\level\Location;
 use pocketmine\level\sound\LaunchSound;
-use pocketmine\math\Vector3;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\FlyingMonster;
@@ -35,6 +36,12 @@ use revivalpmmp\pureentities\entity\projectile\LargeFireball;
 
 class Ghast extends FlyingMonster implements ProjectileSource{
 	const NETWORK_ID = Data::NETWORK_IDS["ghast"];
+
+	public function __construct(Level $level, CompoundTag $nbt){
+		$this->height = Data::HEIGHTS[self::NETWORK_ID];
+		$this->width = Data::WIDTHS[self::NETWORK_ID];
+		parent::__construct($level, $nbt);
+	}
 
 	public function initEntity() : void{
 		parent::initEntity();
@@ -67,19 +74,14 @@ class Ghast extends FlyingMonster implements ProjectileSource{
 				$this->level
 			);
 
-			$motion = new Vector3(
-				-sin(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f,
-				-sin(rad2deg($pitch)) * $f * $f,
-				cos(rad2deg($yaw)) * cos(rad2deg($pitch)) * $f * $f
-			);
+			$motion = $player->subtract($this);
 			$nbt = Entity::createBaseNBT($pos, $motion, $yaw, $pitch);
-			$fireball = Entity::createEntity("LargeFireball", $this->level, $nbt);
-			if(!($fireball instanceof LargeFireball)){
-				return;
-			}
+			$fireball = new LargeFireball($this->level, $nbt, $this);
+
 			$fireball->setExplode(true);
 
-			$this->server->getPluginManager()->callEvent($launch = new ProjectileLaunchEvent($fireball));
+			$launch = new ProjectileLaunchEvent($fireball);
+			$launch->call();
 			if($launch->isCancelled()){
 				$fireball->kill();
 			}else{
