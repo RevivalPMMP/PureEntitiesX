@@ -49,7 +49,7 @@ class BiomeInfo{
 		Biome::MOUNTAINS => [Data::NETWORK_IDS["llama"]],            // Extreme Hills
 		14 => [Data::NETWORK_IDS["mooshroom"]],                            // Mushroom Island
 		15 => [Data::NETWORK_IDS["mooshroom"]],                            // Mushroom Island Shore
-		Biome::OCEAN => [Data::NETWORK_IDS["squid"]], [Data::NETWORK_IDS["salmon"]], [Data::NETWORK_IDS["pufferfish"]], [Data::NETWORK_IDS["tropicalfish"]], [Data::NETWORK_IDS["cod"]], [Data::NETWORK_IDS["dolphin"]], 
+		Biome::OCEAN => [Data::NETWORK_IDS["squid"], [Data::NETWORK_IDS["salmon"], [Data::NETWORK_IDS["pufferfish"], [Data::NETWORK_IDS["tropicalfish"], [Data::NETWORK_IDS["cod"], [Data::NETWORK_IDS["dolphin"]], 
 		Biome::PLAINS => [Data::NETWORK_IDS["chicken"], Data::NETWORK_IDS["cow"], Data::NETWORK_IDS["pig"], Data::NETWORK_IDS["rabbit"], Data::NETWORK_IDS["sheep"]],
 		32 => [],                            // Redwood Taiga or Mega Taiga
 		33 => [],                            // Redwood Taiga Hills or Mega Taiga Hills
