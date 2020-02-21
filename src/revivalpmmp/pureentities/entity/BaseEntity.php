@@ -464,6 +464,7 @@ abstract class BaseEntity extends Creature{
 		if($player->isClosed()) return [];
 		foreach($player->getLevel()->getEntities() as $entity){
 			if($entity instanceof IntfTameable and
+				$entity->getOwner() !== null and
 				$entity->isTamed() and
 				strcasecmp($entity->getOwner()->getName(), $player->getName()) === 0 and
 				$entity->isAlive()
