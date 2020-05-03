@@ -130,7 +130,9 @@ abstract class SwimmingMonster extends SwimmingEntity implements Monster{
 		if($this->isFriendly()){
 			if(!($target instanceof Player)){
 				if($target instanceof Entity){
-					$this->attackEntity($target);
+					if(!$target->isClosed()){
+						$this->attackEntity($target);
+					}
 				}elseif(
 					$target instanceof Vector3
 					&& (($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
@@ -140,7 +142,9 @@ abstract class SwimmingMonster extends SwimmingEntity implements Monster{
 			}
 		}else{
 			if($target instanceof Entity){
-				$this->attackEntity($target);
+				if(!$target->isClosed()){
+					$this->attackEntity($target);
+				}
 			}elseif(
 				$target instanceof Vector3
 				&& (($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1

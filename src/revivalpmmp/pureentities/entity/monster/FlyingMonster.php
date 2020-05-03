@@ -127,7 +127,7 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 		$this->entityBaseTick($tickDiff);
 
 		$target = $this->updateMove($tickDiff);
-		if($target instanceof Player){
+		if($target instanceof Player && !$target->isClosed()){
 			$this->attackEntity($target);
 		}elseif(
 			$target instanceof Vector3
