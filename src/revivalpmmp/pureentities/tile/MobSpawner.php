@@ -79,11 +79,13 @@ class MobSpawner extends Spawnable{
 				$x = $this->x + mt_rand(-$this->spawnRange, $this->spawnRange);
 				$z = $this->z + mt_rand(-$this->spawnRange, $this->spawnRange);
 				$pos = PureEntities::getSuitableHeightPosition($x, $y, $z, $this->level);
-				$pos->y += Data::HEIGHTS[$this->entityId];
-				$entity = PureEntities::create($this->entityId, $pos);
-				if($entity != null){
-					PureEntities::logOutput("MobSpawner: spawn $entity to $pos");
-					$entity->spawnToAll();
+				if(!$pos === null){
+					$pos->y += Data::HEIGHTS[$this->entityId];
+					$entity = PureEntities::create($this->entityId, $pos);
+					if($entity !== null){
+						PureEntities::logOutput("MobSpawner: spawn $entity to $pos");
+						$entity->spawnToAll();
+					}
 				}
 			}
 		}
