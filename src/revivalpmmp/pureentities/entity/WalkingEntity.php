@@ -251,6 +251,8 @@ abstract class WalkingEntity extends BaseEntity{
 			
 		}
 		//TODO: If one of the block i'm colliding is ok, could i jump on it ?
+		//Tested currently with 'lowestBlock', but if i want to jump over 2 block, and the block of the left or rigth (colliding)
+		//is OK for jump, monster will go up ... MAgic :D
 		PureEntities::logOutput("$this: CollisionBlock : highestBlock: $highestBlock");
 		if ($lowestBlock > 0 && $lowestBlock <=0.5 && $lowestBlock <= $this->getMaxJumpHeight()) {
 			// STAIR jump					
@@ -273,71 +275,6 @@ abstract class WalkingEntity extends BaseEntity{
 		}
 		return false;
 		
-		// Problem, sometimes this is not the current block, and the next, e the third block ... depend of the size of the entity ...
-		// if(empty($blockingBlock->getCollisionBoxes())){ // when we can pass through the current block then the next block is blocking the way
-			// try{
-				// PureEntities::logOutput("$this: Try: current block [$blockingBlock] then the next block is blocking the way. Pos: [x:" . $blockingBlock->x . "] [y:" . $blockingBlock->y . "] [z:" . $blockingBlock->z . "]");
-				// switch($this->getDirection()){
-					// case 0:
-						// $blockingBlock = $this->getLevel()->getBlock($blockingBlock->add(1, 0, 0));
-						// break;
-					// case 1:
-						// $blockingBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 0, 1));
-						// break;
-					// case 2:
-						// $blockingBlock = $this->getLevel()->getBlock($blockingBlock->add(-1, 0, 0));
-						// break;
-					// case 3:
-						// $blockingBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 0, -1));
-						// break;
-				// }
-				// PureEntities::logOutput("$this: Try: New block is [$blockingBlock]. Pos: [x:" . $blockingBlock->x . "] [y:" . $blockingBlock->y . "] [z:" . $blockingBlock->z . "]");
-			// }catch(\InvalidStateException $ex){
-				// PureEntities::logOutput("Caught InvalidStateException for getTargetBlock", PureEntities::DEBUG);
-				// return false;
-			// }
-		// }
-
-		if($blockingBlock != null and !empty($blockingBlock->getCollisionBoxes()) and $this->getMaxJumpHeight() > 0){
-			
-			// we cannot pass through the block that is directly in front of entity - check if jumping is possible
-			$upperBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 1, 0));
-			$secondUpperBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 2, 0));
-			PureEntities::logOutput("$this: checkJump(): block in front is $blockingBlock, upperBlock is $upperBlock, second Upper block is $secondUpperBlock");
-			// check if we can get through the upper of the block directly in front of the entity
-			if(empty($upperBlock->getCollisionBoxes()) and empty($secondUpperBlock->getCollisionBoxes()) ){
-						$newPos = $upperBlock;
-                        foreach($upperBlock->getCollisionBoxes() as $_ => $bb){
-                            if($newPos->y < $bb->maxY){
-                                $newPos->y = $bb->maxY;
-                            }
-                        }
-						
-						var_dump($newPos->y);
-						var_dump($upperBlock->y);
-				if($blockingBlock instanceof Fence || $blockingBlock instanceof FenceGate){ // cannot pass fence or fence gate ...
-					$this->motion->y = $this->gravity;
-					PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
-				}else if($blockingBlock instanceof StoneSlab or $blockingBlock instanceof Stair){ // on stairs entities shouldn't jump THAT high
-					$this->motion->y = $this->gravity * 4;
-					PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
-				}else if($this->motion->y < ($this->gravity * 3.2)){ // Magic
-					PureEntities::logOutput("$this: checkJump(): set motion to gravity * 4!", PureEntities::DEBUG);
-					$this->motion->y = $this->gravity * 4;
-				}else{
-					PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
-					$this->motion->y += $this->gravity * 0.25;
-				}
-				return true;
-			}elseif(!$upperBlock->canPassThrough()){
-				PureEntities::logOutput("$this: checkJump(): cannot pass through the upper blocks!", PureEntities::DEBUG);
-				$this->yaw = $this->getYaw() + mt_rand(-120, 120) / 10;
-			}
-		}else{
-			PureEntities::logOutput("$this: checkJump(): no need to jump. Block can be passed! [canPassThrough:" . $blockingBlock->canPassThrough() . "] " .
-				"[jumpHeight:" . $this->getMaxJumpHeight() . "] [checkedBlock:" . $blockingBlock . "]", PureEntities::DEBUG);
-		}
-		return false;
 	}
 	
     public function getLookingBlock() {
