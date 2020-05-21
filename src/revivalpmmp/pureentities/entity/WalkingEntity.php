@@ -29,6 +29,7 @@ use pocketmine\block\StoneSlab;
 use pocketmine\entity\Creature;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\math\Math;
+use pocketmine\level\Position;
 use pocketmine\math\Vector2;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -222,25 +223,98 @@ abstract class WalkingEntity extends BaseEntity{
 
 		PureEntities::logOutput("$this: checkJump(): position is [x:" . $this->x . "] [y:" . $this->y . "] [z:" . $this->z . "]");
 
-		// sometimes entities overlap blocks and the current position is already the next block in front ...
-		// they overlap especially when following an entity - you can see it when the entity (e.g. creeper) is looking
-		// in your direction but cannot jump (is stuck). Then the next line should apply
-		$blockingBlock = $this->getLevel()->getBlock($this->getPosition());
-		if($blockingBlock->canPassThrough()){ // when we can pass through the current block then the next block is blocking the way
-			try{
-				$blockingBlock = $this->getTargetBlock(2); // just for correction use 2 blocks ...
-			}catch(\InvalidStateException $ex){
-				PureEntities::logOutput("Caught InvalidStateException for getTargetBlock", PureEntities::DEBUG);
-				return false;
+		$blockingBlock = $this->getLevel()->getBlock(new Position((int)($this->x), (int)($this->y), (int)($this->z), $this->level));
+		
+		//I'm in collision with these block, so if the hightest can be passed, jump, else, look if one of these can be passed, and go to him
+		$highestBlock = 0;
+		$lowestBlock = null;
+		foreach($this->level->getCollisionBlocks($this->boundingBox->addCoord($this->motion->x, $this->motion->y, $this->motion->z)) as $_ => $block){
+			if( ($block->getCollisionBoxes()[0]->maxY - $this->boundingBox->minY) <= 0){ // WTF?
+				continue;
 			}
+			
+		
+
+			$blockBox = $block->getCollisionBoxes()[0] ?? null;
+			$blockBoxDiff = $blockBox === null ? 0 : $blockBox->maxY - $blockBox->minY;
+			//Do the same for the upper block, id there is any collisionBox, consider as a block
+			//If i jump and have 2 slab or stair, so i cannot jump over these 2
+			PureEntities::logOutput("$this: CollisionBlock : $block --Height: $blockBoxDiff-- Pos: [x:" . $block->x . "] [y:" . $block->y . "] [z:" . $block->z . "]");
+			$upperblock = $this->getLevel()->getBlock($block->add(0, 1, 0));
+			if (!empty($upperblock->getCollisionBoxes())) {
+				$blockBoxDiff = $blockBoxDiff + 1;
+				PureEntities::logOutput("$this: CollisionBlock - upperBlock Detected - New Height($blockBoxDiff) : $upperblock - Pos: [x:" . $upperblock->x . "] [y:" . $upperblock->y . "] [z:" . $upperblock->z . "]");
+			}
+			if ($blockBoxDiff > $highestBlock) $highestBlock = $blockBoxDiff;
+			if ($lowestBlock == null) $lowestBlock = $blockBoxDiff;
+			elseif ($lowestBlock > $blockBoxDiff) $lowestBlock = $blockBoxDiff;
+			
 		}
-		if($blockingBlock != null and !$blockingBlock->canPassThrough() and $this->getMaxJumpHeight() > 0){
+		//TODO: If one of the block i'm colliding is ok, could i jump on it ?
+		PureEntities::logOutput("$this: CollisionBlock : highestBlock: $highestBlock");
+		if ($lowestBlock > 0 && $lowestBlock <=0.5 && $lowestBlock <= $this->getMaxJumpHeight()) {
+			// STAIR jump					
+			$this->motion->y = $this->gravity * 4;
+			PureEntities::logOutput("$this: highestBlock($highestBlock)/lowestBlock($lowestBlock): found slab or stair!", PureEntities::DEBUG);	
+			return true;
+		}
+		elseif ($lowestBlock > 0 && $lowestBlock <= $this->getMaxJumpHeight()) {
+			//Normal jump
+			PureEntities::logOutput("$this: highestBlock($highestBlock)lowestBlock($lowestBlock): Normal Jump - set motion to gravity * 3.2!", PureEntities::DEBUG);
+			$this->motion->y = $this->gravity * 3.2;
+			return true;
+		}
+		elseif ($lowestBlock > 0 && $lowestBlock > $this->getMaxJumpHeight()) {
+			PureEntities::logOutput("$this: highestBlock($highestBlock)lowestBlock($lowestBlock): cannot pass through the upper blocks!", PureEntities::DEBUG);
+			$this->yaw = $this->getYaw() + mt_rand(-120, 120) / 10;
+		}
+		else {
+			PureEntities::logOutput("$this: highestBlock($highestBlock)lowestBlock($lowestBlock): no need to jump. Block can be passed!");
+		}
+		return false;
+		
+		// Problem, sometimes this is not the current block, and the next, e the third block ... depend of the size of the entity ...
+		// if(empty($blockingBlock->getCollisionBoxes())){ // when we can pass through the current block then the next block is blocking the way
+			// try{
+				// PureEntities::logOutput("$this: Try: current block [$blockingBlock] then the next block is blocking the way. Pos: [x:" . $blockingBlock->x . "] [y:" . $blockingBlock->y . "] [z:" . $blockingBlock->z . "]");
+				// switch($this->getDirection()){
+					// case 0:
+						// $blockingBlock = $this->getLevel()->getBlock($blockingBlock->add(1, 0, 0));
+						// break;
+					// case 1:
+						// $blockingBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 0, 1));
+						// break;
+					// case 2:
+						// $blockingBlock = $this->getLevel()->getBlock($blockingBlock->add(-1, 0, 0));
+						// break;
+					// case 3:
+						// $blockingBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 0, -1));
+						// break;
+				// }
+				// PureEntities::logOutput("$this: Try: New block is [$blockingBlock]. Pos: [x:" . $blockingBlock->x . "] [y:" . $blockingBlock->y . "] [z:" . $blockingBlock->z . "]");
+			// }catch(\InvalidStateException $ex){
+				// PureEntities::logOutput("Caught InvalidStateException for getTargetBlock", PureEntities::DEBUG);
+				// return false;
+			// }
+		// }
+
+		if($blockingBlock != null and !empty($blockingBlock->getCollisionBoxes()) and $this->getMaxJumpHeight() > 0){
+			
 			// we cannot pass through the block that is directly in front of entity - check if jumping is possible
 			$upperBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 1, 0));
 			$secondUpperBlock = $this->getLevel()->getBlock($blockingBlock->add(0, 2, 0));
 			PureEntities::logOutput("$this: checkJump(): block in front is $blockingBlock, upperBlock is $upperBlock, second Upper block is $secondUpperBlock");
 			// check if we can get through the upper of the block directly in front of the entity
-			if($upperBlock->canPassThrough() && $secondUpperBlock->canPassThrough()){
+			if(empty($upperBlock->getCollisionBoxes()) and empty($secondUpperBlock->getCollisionBoxes()) ){
+						$newPos = $upperBlock;
+                        foreach($upperBlock->getCollisionBoxes() as $_ => $bb){
+                            if($newPos->y < $bb->maxY){
+                                $newPos->y = $bb->maxY;
+                            }
+                        }
+						
+						var_dump($newPos->y);
+						var_dump($upperBlock->y);
 				if($blockingBlock instanceof Fence || $blockingBlock instanceof FenceGate){ // cannot pass fence or fence gate ...
 					$this->motion->y = $this->gravity;
 					PureEntities::logOutput("$this: checkJump(): found fence or fence gate!", PureEntities::DEBUG);
@@ -248,8 +322,8 @@ abstract class WalkingEntity extends BaseEntity{
 					$this->motion->y = $this->gravity * 4;
 					PureEntities::logOutput("$this: checkJump(): found slab or stair!", PureEntities::DEBUG);
 				}else if($this->motion->y < ($this->gravity * 3.2)){ // Magic
-					PureEntities::logOutput("$this: checkJump(): set motion to gravity * 3.2!", PureEntities::DEBUG);
-					$this->motion->y = $this->gravity * 3.2;
+					PureEntities::logOutput("$this: checkJump(): set motion to gravity * 4!", PureEntities::DEBUG);
+					$this->motion->y = $this->gravity * 4;
 				}else{
 					PureEntities::logOutput("$this: checkJump(): nothing else!", PureEntities::DEBUG);
 					$this->motion->y += $this->gravity * 0.25;
@@ -265,6 +339,27 @@ abstract class WalkingEntity extends BaseEntity{
 		}
 		return false;
 	}
+	
+    public function getLookingBlock() {
+		$blockingBlock2 = $this->getLevel()->getBlock($pos);
+
+        switch($this->getDirection()){
+            case 0:
+                $block = $this->getLevel()->getBlock($this->add(1, 0, 0));
+                break;
+            case 1:
+                $block = $this->getLevel()->getBlock($this->add(0, 0, 1));
+                break;
+            case 2:
+                $block = $this->getLevel()->getBlock($this->add(-1, 0, 0));
+                break;
+            case 3:
+                $block = $this->getLevel()->getBlock($this->add(0, 0, -1));
+                break;
+        }
+        return $block;
+    }
+	
 
 	/**
 	 * Finds the next random location starting from current x/y/z and sets it as base target
