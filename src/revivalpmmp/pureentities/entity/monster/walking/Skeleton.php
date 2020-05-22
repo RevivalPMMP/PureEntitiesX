@@ -117,6 +117,7 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 			&& ($time < Level::TIME_SUNSET || $time > Level::TIME_SUNRISE) // If time inferior of TIME_NIGHT and superior of TIME_SUNRISE
 			&& !($this->getLevel()->getBlock($this) instanceof Water) // IF not in water
 			&& $this->level->getBlockSkyLightAt($this->x, $this->y, $this->z) >= 14 //If is in the sun
+			&& $this->getMobEquipment()->getHelmet() == null
 		){
 			$this->setOnFire(2);
 		}
