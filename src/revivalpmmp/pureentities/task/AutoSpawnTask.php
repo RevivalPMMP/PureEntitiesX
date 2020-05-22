@@ -223,8 +223,7 @@ class AutoSpawnTask extends Task{
 			$x = mt_rand(-20, 20) + $center->x;
 			$z = mt_rand(-20, 20) + $center->z;
 			$pos = new Position($x, $center->y, $z, $level);
-
-			if($this->isValidDrySpawnLocation($pos) and $this->isSpawnAllowedByBiome($entityId, $level->getBiomeId($x, $z))){
+			if($this->isValidDrySpawnLocation($pos) and $this->isSpawnAllowedByBiome($entityId, $level->getBiomeId($x, $z)) and !$this->checkSpawnProtection($pos, $level)){
 				PureEntities::logOutput("AutoSpawnTask: Spawning Mob (ID = $entityId) to location: $x, $center->y, $z", PureEntities::NORM);
 				$success = PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityId, $level, $type, $isBaby) !== null;
 				if($success){
@@ -235,6 +234,23 @@ class AutoSpawnTask extends Task{
 		}
 		return;
 
+	}
+
+	//return true if spawn had to be canceled
+	protected function checkSpawnProtection(Position $pos, Level $level) : bool{
+		//GET configuration parameter for spawn protection radius
+		$spawnProtectionRadius = PluginConfiguration::getInstance()->getSpawnProtectionRadius();
+		//check if protection enabled
+		if (($distance = $spawnProtectionRadius) > -1){
+			$t = new Vector2($pos->x, $pos->z);
+			$spawnLocation = $level->getSpawnLocation();
+			$s = new Vector2($spawnLocation->x, $spawnLocation->z);
+			if($t->distance($s) <= $distance){
+				return true;
+			}
+
+		return false;
+		}
 	}
 
 	private function isValidSpawnLocation(Position $spawnLocation){

@@ -33,6 +33,7 @@ class PluginConfiguration{
 	/** @var  PureEntities $instance */
 	private static $instance;
 
+	private $spawnProtectionRadius = 20; // this is standard (may be overridden by config!)
 	private $maxInteractDistance = 4; // this is standard (may be overridden by config!)
 	private $maxFindPartnerDistance = 49; // this is standard (may be overridden by config!)
 	private $blockOfInterestTicks = 300; // defines the ticks should pass by before a block of interest check is done
@@ -77,6 +78,7 @@ class PluginConfiguration{
 		$this->enableLookingTasks = $pluginBase->getConfig()->getNested("tasks.looking", true);
 
 		// read some more config which we need internally (read once, give access to them via this class!)
+		$this->spawnProtectionRadius = $pluginBase->getConfig()->getNested("distances.spawnProtectionRadius", 20);
 		$this->maxFindPartnerDistance = $pluginBase->getConfig()->getNested("distances.find-partner", 49);
 		$this->maxInteractDistance = $pluginBase->getConfig()->getNested("distances.interact", 4);
 		$this->tamedTeleportBlocks = $pluginBase->getConfig()->getNested("distances.tamed-teleport", 12);
@@ -120,6 +122,14 @@ class PluginConfiguration{
 			" [panicEnabled:" . $this->enablePanic . "] [panicTicks:" . $this->panicTicks . "] [entityMaxAge:" . $this->maxAge . "]");
 
 		self::$instance = $this;
+	}
+
+	/**
+	 * Returns the distance for mob protection radius
+	 * @return int
+	 */
+	public function getSpawnProtectionRadius() : int{
+		return $this->spawnProtectionRadius;
 	}
 
 	/**

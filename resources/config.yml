@@ -39,6 +39,7 @@ logfile:
 
 # describes the distances that are used for specific actions
 distances:
+  spawnProtectionRadius: 20 #Spawn protection radius for spawning mobs
   interact: 3 # defines until which distance an interaction with an entity is possible
   find-partner: 49 # defines whe maximum distance when love mode is active and is searching for another partner
   tamed-teleport: 20 # defines how many blocks the player can move until the tamed entity teleports to it's owner (when not sitting)
