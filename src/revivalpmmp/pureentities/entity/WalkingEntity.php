@@ -201,16 +201,16 @@ abstract class WalkingEntity extends BaseEntity{
 			$this->stayTime -= $tickDiff;
 			$this->move(0, $this->motion->y * $tickDiff, 0);
 		}
-		//I cannot jump, so am i collided and cannot jump ? (Without target creature)
-		elseif ($this->isCollidedHorizontally && !$isJump && !$this->getBaseTarget() instanceof Creature && $before === $this->getBaseTarget()){
+		//I cannot jump, so am i collided and cannot jump ? (Without target creature, and on ground)
+		elseif ($this->isCollidedHorizontally && !$isJump && !$this->getBaseTarget() instanceof Creature && $before === $this->getBaseTarget() && $this->isOnGround()){
 			$this->move(0, $this->motion->y * $tickDiff, 0);
 			// $this->yaw = $this->getYaw() + mt_rand(-120, 120);
 			$this->motion->x = 0;
 			$this->motion->z = 0;
 			$this->setBaseTarget(null);
 		}
-		//I cannot jump, so am i collided and cannot jump ? (with target)
-		elseif ($this->isCollidedHorizontally && !$isJump){
+		//I cannot jump, so am i collided and cannot jump ? (with target, and on ground)
+		elseif ($this->isCollidedHorizontally && !$isJump && $this->isOnGround()){
 			$this->motion->x = 0;
 			$this->motion->z = 0;
 			$this->move(0, $this->motion->y * $tickDiff, 0);	
