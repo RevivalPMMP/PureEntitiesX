@@ -103,7 +103,7 @@ class IdlingComponent{
 	 * While idling the entity just moves yaw and pitch.
 	 * @return bool when the entity was set to idle mode
 	 */
-	public function checkAndSetIdling() : bool{
+	public function checkAndSetIdling($force = false) : bool{
 		$setToIdle = false;
 		if(!$this->idling and // of course it should not idle currently
 			($this->baseEntity instanceof IntfCanBreed and $this->baseEntity->getBreedingComponent()->getInLove() <= 0) and // do not rest while in love!
@@ -111,7 +111,7 @@ class IdlingComponent{
 			!$this->baseEntity->getBaseTarget() instanceof Creature and // chasing a creature? no idle!
 			$this->isLastIdleLongEnough() // we do not want idling too often
 		){
-			if(mt_rand(0, 100) <= $this->idleChance){ // with a chance of x percent the entity starts to idle
+			if(mt_rand(0, 100) <= $this->idleChance or $force){ // with a chance of x percent the entity starts to idle
 				$this->idling = true;
 				$this->idlingTickCounter = new TickCounter(mt_rand($this->idleMin, $this->idleMax)); // idle x and x ticks
 				$this->baseEntity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_IDLING, true);
