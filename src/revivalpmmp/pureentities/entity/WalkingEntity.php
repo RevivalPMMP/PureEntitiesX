@@ -285,6 +285,12 @@ abstract class WalkingEntity extends BaseEntity{
 		}
 
 		PureEntities::logOutput("$this: checkJump(): position is [x:" . $this->x . "] [y:" . $this->y . "] [z:" . $this->z . "]");
+		//Is there anything upper ? If yes, i cannot jump ...
+		$entityUpperBlock = $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), Math::floorFloat($this->y + $this->height) + 1, Math::floorFloat($this->z)));
+		if (!empty($entityUpperBlock->getCollisionBoxes())) {
+			PureEntities::logOutput("$this: checkJump(): There is block upper the entity: $entityUpperBlock");
+			return false;
+		}
 		
 		//I'm in collision with these block, so if the hightest can be passed, jump, else, look if one of these can be passed, and go to him
 		$highestBlock = 0;
