@@ -33,6 +33,7 @@ use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
 
+
 class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCanPanic{
 
 	use Breedable, CanPanic, Feedable;
@@ -49,6 +50,7 @@ class Rabbit extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Int
 			Item::DANDELION);
 		$this->breedableClass = new BreedingComponent($this);
 		$this->breedableClass->init();
+		$this->jumper = true;
 	}
 
 	public function saveNBT() : void{

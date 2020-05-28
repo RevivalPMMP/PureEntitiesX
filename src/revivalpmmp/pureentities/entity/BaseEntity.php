@@ -57,6 +57,8 @@ abstract class BaseEntity extends Creature{
 	protected $friendly = false;
 	private $wallcheck = true;
 	protected $fireProof = false;
+	
+	public $jumper = false;
 
 	/**
 	 * Default is 1.2 blocks because entities need to be able to jump
