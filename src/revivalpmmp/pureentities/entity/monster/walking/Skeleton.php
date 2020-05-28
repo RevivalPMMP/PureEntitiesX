@@ -22,20 +22,17 @@ namespace revivalpmmp\pureentities\entity\monster\walking;
 
 use pocketmine\block\Water;
 use pocketmine\entity\Entity;
-use pocketmine\entity\projectile\Arrow;
-use pocketmine\entity\projectile\Projectile;
 use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\EntityShootBowEvent;
-use pocketmine\event\entity\ProjectileLaunchEvent;
 use pocketmine\item\Item;
 use pocketmine\item\ItemFactory;
 use pocketmine\level\Level;
-use pocketmine\level\sound\LaunchSound;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\MobEquipment;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
 use revivalpmmp\pureentities\features\IntfCanEquip;
+use revivalpmmp\pureentities\utils\ProjectileHelper;
 
 // use pocketmine\event\Timings;
 
@@ -78,30 +75,15 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 			$this->attackDelay = 0;
 
 			$f = 1.2;
-			$motion = $this->subtract($player);
-			$nbt = Entity::createBaseNBT($this, $motion, $this->yaw, $this->pitch);
-
-			/** @var Projectile $arrow */
-			$arrow = new Arrow($this->getLevel(), $nbt, $this);
+			$pos = $this->asPosition();
+			$pos->y = $this->y + $this->getEyeHeight();
+			$arrow = ProjectileHelper::createProjectile(self::ARROW, $pos, $player->add(0,$player->height / 2,0));
+			$arrow->setOwningEntity($this);
+			$arrow->setMotion($this->getDirectionVector());
 			$bow = $this->mobEquipment->getMainHand();
 			$ev = new EntityShootBowEvent($this, $bow, $arrow, $f);
 			$ev->call();
-
-			$projectile = $ev->getProjectile();
-			if($ev->isCancelled()){
-				$projectile->kill();
-			}elseif($projectile instanceof Projectile){
-				$launch = new ProjectileLaunchEvent($projectile);
-				$launch->call();
-				if($launch->isCancelled()){
-					$projectile->kill();
-				}else{
-					$projectile->spawnToAll();
-					$this->level->addSound(new LaunchSound($this), $this->getViewers());
-				}
-			}
-
-			$this->checkTamedMobsAttack($player);
+			ProjectileHelper::launchProjectile($ev->getProjectile());
 		}
 	}
 
