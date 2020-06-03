@@ -1,6 +1,6 @@
 name: PureEntitiesX
 main: revivalpmmp\pureentities\PureEntities
-version: 0.6.6
+version: 0.6.7
 api: [3.9.0]
 
 load: STARTUP
