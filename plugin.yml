@@ -1,7 +1,7 @@
 name: PureEntitiesX
 main: revivalpmmp\pureentities\PureEntities
 version: 0.6.7
-api: [3.9.0]
+api: [3.11.8]
 
 load: STARTUP
 authors: ["milk0417", "RevivalPMMP"]
