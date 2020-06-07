@@ -462,6 +462,44 @@ class PureEntities extends PluginBase implements CommandExecutor{
 					$commandSuccessful = true;
 				}
 				break;
+      case "pesumloc":
+				if (count($args) >= 5) {
+					$isBaby = false;
+					if (count($args) == 6) {
+						$isBaby = strcmp(strtolower($args[5]), "true") == 0;
+					}
+					$mobName = strtolower($args[0]);
+					foreach (self::$registeredClasses as $registeredClass) {
+						if (strcmp($mobName, strtolower($this->getShortClassName($registeredClass))) == 0) {
+							$world = $args[1];
+							$x = (float)$args[2];
+							$y = (float)$args[3];
+							$z = (float)$args[4];
+							$level = $this->getServer()->getLevelByName($world);
+							if ($level == null) {
+								if ($sender instanceof Player) {
+									$sender->sendMessage("Can not summon to that world. Is it loaded?");
+								} else {
+									$this->getServer()->getLogger()->info("Can not summon to that world. Is it loaded?");
+								}
+								return true;
+							}
+							$position = new Position($x, $y, $z, $level);
+							self::scheduleCreatureSpawn($position, $registeredClass::NETWORK_ID, $level, "Monster", $isBaby);
+							if ($sender instanceof Player) {
+								$sender->sendMessage("Spawned $mobName");
+							} else {
+								$this->getServer()->getLogger()->info("Spawned $mobName");
+							}
+							return true;
+						}
+					}
+					return true;
+				} else {
+					$sender->sendMessage("Usage: pesumloc <mob-name> <world> <x> <y> <z> [isBaby(true|false)]");
+					$commandSuccessful = true;
+				}
+				break;
 		}
 		return $commandSuccessful;
 	}
