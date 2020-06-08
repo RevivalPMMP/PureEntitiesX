@@ -20,13 +20,15 @@
 
 namespace revivalpmmp\pureentities\data;
 
+use revivalpmmp\pureentities\PureEntities;
+
 class Color{
 
-	const COLOR_DYE_BLACK = 0;//dye colors
+	const COLOR_DYE_INK_SAC = 0;//dye colors
 	const COLOR_DYE_RED = 1;
 	const COLOR_DYE_GREEN = 2;
-	const COLOR_DYE_BROWN = 3;
-	const COLOR_DYE_BLUE = 4;
+	const COLOR_DYE_COCOA_BEAN = 3;
+	const COLOR_DYE_LAPIS_LAZULI = 4;
 	const COLOR_DYE_PURPLE = 5;
 	const COLOR_DYE_CYAN = 6;
 	const COLOR_DYE_LIGHT_GRAY = 7;
@@ -37,7 +39,12 @@ class Color{
 	const COLOR_DYE_LIGHT_BLUE = 12;
 	const COLOR_DYE_MAGENTA = 13;
 	const COLOR_DYE_ORANGE = 14;
-	const COLOR_DYE_WHITE = 15;
+	const COLOR_DYE_BONE_MEAL = 15;
+	const COLOR_DYE_BLACK = 16;
+	const COLOR_DYE_BROWN = 17;
+	const COLOR_DYE_BLUE = 18;
+	const COLOR_DYE_WHITE = 19;
+
 
 
 	const WHITE = 0;
@@ -72,32 +79,36 @@ class Color{
 
 	public static function init(){
 		if(self::$dyeColors === null){
-			self::$dyeColors = new \SplFixedArray(16); //What's the point of making a 256-long array for 16 objects?
-			self::$dyeColors[self::COLOR_DYE_BLACK] = Color::getRGB(30, 27, 27);
-			self::$dyeColors[self::COLOR_DYE_RED] = Color::getRGB(179, 49, 44);
-			self::$dyeColors[self::COLOR_DYE_GREEN] = Color::getRGB(61, 81, 26);
-			self::$dyeColors[self::COLOR_DYE_BROWN] = Color::getRGB(81, 48, 26);
-			self::$dyeColors[self::COLOR_DYE_BLUE] = Color::getRGB(37, 49, 146);
-			self::$dyeColors[self::COLOR_DYE_PURPLE] = Color::getRGB(123, 47, 190);
-			self::$dyeColors[self::COLOR_DYE_CYAN] = Color::getRGB(40, 118, 151);
-			self::$dyeColors[self::COLOR_DYE_LIGHT_GRAY] = Color::getRGB(153, 153, 153);
-			self::$dyeColors[self::COLOR_DYE_GRAY] = Color::getRGB(67, 67, 67);
-			self::$dyeColors[self::COLOR_DYE_PINK] = Color::getRGB(216, 129, 152);
-			self::$dyeColors[self::COLOR_DYE_LIME] = Color::getRGB(65, 205, 52);
-			self::$dyeColors[self::COLOR_DYE_YELLOW] = Color::getRGB(222, 207, 42);
-			self::$dyeColors[self::COLOR_DYE_LIGHT_BLUE] = Color::getRGB(102, 137, 211);
-			self::$dyeColors[self::COLOR_DYE_MAGENTA] = Color::getRGB(195, 84, 205);
-			self::$dyeColors[self::COLOR_DYE_ORANGE] = Color::getRGB(235, 136, 68);
-			self::$dyeColors[self::COLOR_DYE_WHITE] = Color::getRGB(240, 240, 240);
+			self::$dyeColors = new \SplFixedArray(20); //What's the point of making a 256-long array for 20 objects?
+			self::$dyeColors[self::COLOR_DYE_INK_SAC] = self::getRGB(30, 27, 27);
+			self::$dyeColors[self::COLOR_DYE_RED] = self::getRGB(179, 49, 44);
+			self::$dyeColors[self::COLOR_DYE_GREEN] = self::getRGB(61, 81, 26);
+			self::$dyeColors[self::COLOR_DYE_COCOA_BEAN] = self::getRGB(81, 48, 26);
+			self::$dyeColors[self::COLOR_DYE_LAPIS_LAZULI] = self::getRGB(37, 49, 146);
+			self::$dyeColors[self::COLOR_DYE_PURPLE] = self::getRGB(123, 47, 190);
+			self::$dyeColors[self::COLOR_DYE_CYAN] = self::getRGB(40, 118, 151);
+			self::$dyeColors[self::COLOR_DYE_LIGHT_GRAY] = self::getRGB(153, 153, 153);
+			self::$dyeColors[self::COLOR_DYE_GRAY] = self::getRGB(67, 67, 67);
+			self::$dyeColors[self::COLOR_DYE_PINK] = self::getRGB(216, 129, 152);
+			self::$dyeColors[self::COLOR_DYE_LIME] = self::getRGB(65, 205, 52);
+			self::$dyeColors[self::COLOR_DYE_YELLOW] = self::getRGB(222, 207, 42);
+			self::$dyeColors[self::COLOR_DYE_LIGHT_BLUE] = self::getRGB(102, 137, 211);
+			self::$dyeColors[self::COLOR_DYE_MAGENTA] = self::getRGB(195, 84, 205);
+			self::$dyeColors[self::COLOR_DYE_ORANGE] = self::getRGB(235, 136, 68);
+			self::$dyeColors[self::COLOR_DYE_BONE_MEAL] = self::getRGB(240, 240, 240);
+			self::$dyeColors[self::COLOR_DYE_BLACK] = self::getRGB(30, 27, 27);
+			self::$dyeColors[self::COLOR_DYE_BROWN] = self::getRGB(81, 48, 26);
+			self::$dyeColors[self::COLOR_DYE_BLUE] = self::getRGB(37, 49, 146);
+			self::$dyeColors[self::COLOR_DYE_WHITE] = self::getRGB(240, 240, 240);
 		}
 
 		if(self::$convertedColors === null){
-			self::$convertedColors = new \SplFixedArray(16);
-			self::$convertedColors[self::COLOR_DYE_BLACK] = self::BLACK;
+			self::$convertedColors = new \SplFixedArray(20);
+			self::$convertedColors[self::COLOR_DYE_INK_SAC] = self::BLACK;
 			self::$convertedColors[self::COLOR_DYE_RED] = self::RED;
 			self::$convertedColors[self::COLOR_DYE_GREEN] = self::GREEN;
-			self::$convertedColors[self::COLOR_DYE_BROWN] = self::BROWN;
-			self::$convertedColors[self::COLOR_DYE_BLUE] = self::BLUE;
+			self::$convertedColors[self::COLOR_DYE_COCOA_BEAN] = self::BROWN;
+			self::$convertedColors[self::COLOR_DYE_LAPIS_LAZULI] = self::BLUE;
 			self::$convertedColors[self::COLOR_DYE_PURPLE] = self::PURPLE;
 			self::$convertedColors[self::COLOR_DYE_CYAN] = self::CYAN;
 			self::$convertedColors[self::COLOR_DYE_LIGHT_GRAY] = self::LIGHT_GRAY;
@@ -108,6 +119,10 @@ class Color{
 			self::$convertedColors[self::COLOR_DYE_LIGHT_BLUE] = self::LIGHT_BLUE;
 			self::$convertedColors[self::COLOR_DYE_MAGENTA] = self::MAGENTA;
 			self::$convertedColors[self::COLOR_DYE_ORANGE] = self::ORANGE;
+			self::$convertedColors[self::COLOR_DYE_BONE_MEAL] = self::WHITE;
+			self::$convertedColors[self::COLOR_DYE_BLACK] = self::BLACK;
+			self::$convertedColors[self::COLOR_DYE_BROWN] = self::BROWN;
+			self::$convertedColors[self::COLOR_DYE_BLUE] = self::BLUE;
 			self::$convertedColors[self::COLOR_DYE_WHITE] = self::WHITE;
 		}
 	}
@@ -127,7 +142,7 @@ class Color{
 			$tb += $c->getBlue();
 			++$count;
 		}
-		return Color::getRGB($tr / $count, $tg / $count, $tb / $count);
+		return self::getRGB($tr / $count, $tg / $count, $tb / $count);
 	}
 
 	public function getRed(){
@@ -160,6 +175,10 @@ class Color{
 	 * @return int
 	 */
 	public static function convert(int $dyeColor) : int{
+		if(!isset(self::$convertedColors[$dyeColor])){
+			PureEntities::logOutput("Found invalid dye color code $dyeColor", PureEntities::WARN);
+			return self::WHITE;
+		}
 		return self::$convertedColors[$dyeColor];
 	}
 
