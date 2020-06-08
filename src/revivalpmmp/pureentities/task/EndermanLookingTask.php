@@ -57,6 +57,9 @@ class EndermanLookingTask extends Task{
 	public function onRun(int $currentTick){
 		foreach($this->plugin->getServer()->getOnlinePlayers() as $player){
 
+			if($player->isClosed() or !$player->isOnline() or !$player->spawned){
+				continue;
+			}
 			// Exceeding a max distance of 30 seems to cause problems with entity detection.
 			// TODO: Find route cause of failures above max distance of 30.
 			$entity = InteractionHelper::getEntityPlayerLookingAt($player, 30, $this->isInteractiveButtonCorrectionSet);

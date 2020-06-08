@@ -21,6 +21,7 @@
 namespace revivalpmmp\pureentities;
 
 use pocketmine\entity\Entity;
+use pocketmine\entity\Living;
 use pocketmine\math\VoxelRayTrace;
 use pocketmine\Player;
 use revivalpmmp\pureentities\utils\PeTimings;
@@ -63,6 +64,9 @@ class InteractionHelper{
 	 * @return mixed|null|Entity    either NULL if no entity is found or an instance of the entity
 	 */
 	public static function getEntityPlayerLookingAt(Player $player, int $maxDistance, bool $useCorrection = false){
+		if($player->isClosed() or !$player->isOnline() or !$player->spawned){
+			return null;
+		}
 		PeTimings::startTiming("getEntityPlayerLookingAt [distance:$maxDistance]");
 		/**
 		 * @var Entity
@@ -79,12 +83,15 @@ class InteractionHelper{
 
 					$block = $player->level->getBlockAt($vector3->x, $vector3->y, $vector3->z);
 					$entity = self::getEntityAtPosition($nearbyEntities, $block->x, $block->y, $block->z, $useCorrection);
-					if($entity !== null){
+					if($entity !== null and $entity instanceof Living){
 						break;
 					}
 				}
 			}catch(\InvalidStateException $e){
 				// nothing to log here!
+			}catch(\DivisionByZeroError $e){
+				PureEntities::logOutput("InteractionHelper: Got division by zero error when testing player " . $player->getName() . " with LengthSquared of " . $player->lengthSquared(), PureEntities::WARN);
+				PureEntities::logOutput("TemporalVector was (". $player->temporalVector->x . ", " . $player->temporalVector->y . ", " . $player->temporalVector->z . ")", PureEntities::WARN);
 			}
 		}
 

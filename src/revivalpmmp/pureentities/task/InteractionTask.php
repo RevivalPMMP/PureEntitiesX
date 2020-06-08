@@ -54,6 +54,9 @@ class InteractionTask extends Task{
 	 */
 	public function onRun(int $currentTick){
 		foreach($this->plugin->getServer()->getOnlinePlayers() as $player){
+			if($player->isClosed() or !$player->isOnline() or !$player->spawned){
+				continue;
+			}
 			$entity = InteractionHelper::getEntityPlayerLookingAt($player, PluginConfiguration::getInstance()->getMaxInteractDistance(),
 				PluginConfiguration::getInstance()->isInteractiveButtonCorrection());
 			PureEntities::logOutput("InteractionTask: $player is looking at $entity", PureEntities::DEBUG);
