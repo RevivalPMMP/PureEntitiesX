@@ -21,9 +21,7 @@
 namespace revivalpmmp\pureentities;
 
 use pocketmine\block\BlockFactory;
-use pocketmine\command\Command;
 use pocketmine\command\CommandExecutor;
-use pocketmine\command\CommandSender;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
@@ -31,11 +29,11 @@ use pocketmine\level\Location;
 use pocketmine\level\Position;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\Server;
-use pocketmine\ThreadManager;
 use pocketmine\tile\Tile;
 use pocketmine\utils\TextFormat;
 use revivalpmmp\pureentities\block\MonsterSpawnerPEX;
+use revivalpmmp\pureentities\commands\RemoveEntitiesCommand;
+use revivalpmmp\pureentities\commands\SummonCommand;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\flying\Bat;
 use revivalpmmp\pureentities\entity\animal\flying\Parrot;
@@ -123,6 +121,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	const BUTTON_TEXT_STAND = "Stand";
 	const BUTTON_TEXT_DYE = "Dye";
 
+	/** @var string[] */
 	private static $registeredClasses = [];
 
 	/**
@@ -140,7 +139,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 
 
 	public function onLoad(){
-		self::$registeredClasses = [
+		$temp = [
 			Bat::class,
 			Blaze::class,
 			CaveSpider::class,
@@ -198,6 +197,9 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			ZombieVillager::class
 		];
 
+		foreach($temp as $class){
+			self::$registeredClasses[strtolower($this->getShortClassName($class))] = $class;
+		}
 
 		foreach(self::$registeredClasses as $name){
 			Entity::registerEntity($name);
@@ -244,6 +246,8 @@ class PureEntities extends PluginBase implements CommandExecutor{
 			$level = self::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", self::NORM));
 			$this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . $level);
 
+			$this->getServer()->getCommandMap()->register("PureEntitiesX", new SummonCommand());
+			$this->getServer()->getCommandMap()->register("PureEntitiesX", new RemoveEntitiesCommand());
 			$this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
 			$this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
 		}
@@ -390,83 +394,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	}
 
 	/**
-	 * @param CommandSender $sender
-	 * @param Command       $command
-	 * @param string        $label
-	 * @param array         $args
-	 * @return bool
-	 */
-	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
-		$commandSuccessful = false;
-
-		switch($command->getName()){
-			case "peremove":
-				if(count($args) <= 1){
-					$counterLivingEntities = 0;
-					$counterOtherEntities = 0;
-					foreach(Server::getInstance()->getLevels() as $level){
-						foreach($level->getEntities() as $entity){
-							if(count($args) === 0){
-								if(!$entity instanceof Player and $entity->namedtag->hasTag("generatedByPEX")){
-									$entity->close();
-									if($entity instanceof BaseEntity){
-										$counterLivingEntities++;
-									}else{
-										$counterOtherEntities++;
-									}
-								}
-							}elseif(strcmp(strtolower($args[0]), "all") == 0){
-								if(!$entity instanceof Player){
-									$entity->close();
-									if($entity instanceof BaseEntity){
-										$counterLivingEntities++;
-									}else{
-										$counterOtherEntities++;
-									}
-								}
-							}
-						}
-					}
-					$sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
-					self::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", self::NORM);
-					$commandSuccessful = true;
-				}else{
-					$sender->sendMessage("Usage: peremove <opt:all>");
-					$commandSuccessful = true;
-				}
-				break;
-			case "pesummon":
-				if(($sender instanceof Player and count($args) >= 1 and count($args) <= 3) or (!$sender instanceof Player and count($args) > 1)){
-					$playerName = count($args) == 1 ? $sender->getName() : $args[1];
-					$isBaby = false;
-					if(count($args) == 3){
-						$isBaby = strcmp(strtolower($args[2]), "true") == 0;
-					}
-					foreach($this->getServer()->getOnlinePlayers() as $player){
-						if(strcasecmp($player->getName(), $playerName) == 0){
-							// find a mob with the name issued
-							$mobName = strtolower($args[0]);
-							foreach(self::$registeredClasses as $registeredClass){
-								if(strcmp($mobName, strtolower($this->getShortClassName($registeredClass))) == 0){
-									self::scheduleCreatureSpawn($player->getPosition(), $registeredClass::NETWORK_ID, $player->getLevel(), "Monster", $isBaby);
-									$sender->sendMessage("Spawned $mobName");
-									return true;
-								}
-							}
-							$sender->sendMessage("Entity not found: $mobName");
-							return true;
-						}
-					}
-				}else{
-					$sender->sendMessage("Usage: pesummon <mobname> <opt:player_name> <opt:baby>");
-					$commandSuccessful = true;
-				}
-				break;
-		}
-		return $commandSuccessful;
-	}
-
-	/**
 	 * Returns the "short" name of a class without namespace ...
 	 *
 	 * @param string $longClassName
@@ -487,6 +414,10 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 */
 	public static function getRegisteredClasses() : array{
 		return self::$registeredClasses;
+	}
+
+	public function getRegisteredClassNameFromShortName(string $shortName) : ?string{
+		return self::$registeredClasses[strtolower($shortName)] ?? null;
 	}
 
 	public static function getPositionNearPlayer(Player $player, int $minimumDistanceToPlayer = 8, int $maximumDistanceToPlayer = 40) : Position{
