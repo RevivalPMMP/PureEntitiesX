@@ -90,7 +90,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 	 * entry point when it comes to tracing how all that stuff works. With each server
 	 * tick each entity is ticked by calling this entry method.
 	 *
-	 * @param $currentTick
+	 * @param int $currentTick
 	 * @return bool
 	 */
 	public function onUpdate(int $currentTick) : bool{
