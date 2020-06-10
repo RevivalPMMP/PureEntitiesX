@@ -124,7 +124,7 @@ class MobEquipment{
 			$entityConfig = MobEquipmentConfigHolder::getConfig($this->entity->getName());
 			$pickupByChance = mt_rand(0, 100) <= $entityConfig->getWearPickupChance()->getCanPickupLootChance();
 			PureEntities::logOutput($this->entity . ": got mob equipment config: " . ($entityConfig !== null) .
-				" and pickupByChance is $pickupByChance", PureEntities::DEBUG);
+				" and pickupByChance is $pickupByChance");
 			/**
 			 * @var $entityConfig EntityConfig
 			 */
@@ -132,10 +132,10 @@ class MobEquipment{
 				$itemsOfInterest = $this->getLootOfInterest(2); // check 2 blocks around ...
 				if($itemsOfInterest !== null && sizeof($itemsOfInterest) > 0){
 					// we need some additional checks if the items to be picked up are better than the items currently holding
-					PureEntities::logOutput($this->entity . ": found interesting loot. Set target to " . $itemsOfInterest[0], PureEntities::DEBUG);
+					PureEntities::logOutput($this->entity . ": found interesting loot. Set target to " . $itemsOfInterest[0]);
 					$this->entity->setBaseTarget($itemsOfInterest[0]);
 				}else{
-					PureEntities::logOutput($this->entity . ": no interesting loot found.", PureEntities::DEBUG);
+					PureEntities::logOutput($this->entity . ": no interesting loot found.");
 				}
 			}
 		}
@@ -147,7 +147,7 @@ class MobEquipment{
 	 * @param ItemEntity $item
 	 */
 	public function itemReached(ItemEntity $item){
-		PureEntities::logOutput($this->entity . ": reached $item. Pick it up!", PureEntities::DEBUG);
+		PureEntities::logOutput($this->entity . ": reached $item. Pick it up!");
 		$this->entity->stayTime = 50; // first: stay here!
 		$this->entity->getLevel()->removeEntity($item); // remove item from level
 		$this->putInCorrectSlot($item->getItem());
@@ -274,11 +274,11 @@ class MobEquipment{
 	public function sendEquipmentUpdate(Player $player){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_ARMOR_ITEMS)){
-				PureEntities::logOutput("sendEquipmentUpdate: armor to " . $player->getName(), PureEntities::DEBUG);
+				PureEntities::logOutput("sendEquipmentUpdate: armor to " . $player->getName());
 				$player->dataPacket($this->createArmorEquipPacket());
 			}
 			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_HAND_ITEMS)){
-				PureEntities::logOutput("sendEquipmentUpdate: hand items to " . $player->getName(), PureEntities::DEBUG);
+				PureEntities::logOutput("sendEquipmentUpdate: hand items to " . $player->getName());
 				$player->dataPacket($this->createHandItemsEquipPacket());
 			}
 		}else{
@@ -298,7 +298,7 @@ class MobEquipment{
 
 		foreach($this->entity->getLevel()->getNearbyEntities($this->entity->boundingBox->expandedCopy($blocksAround, $blocksAround, $blocksAround)) as $entity){
 			if($entity instanceof ItemEntity and in_array($entity->getItem()->getId(), $this->entity->getPickupLoot())){
-				PureEntities::logOutput($this->entity . ": found interesting loot: " . $entity->getItem(), PureEntities::DEBUG);
+				PureEntities::logOutput($this->entity . ": found interesting loot: " . $entity->getItem());
 				$itemsAround[] = $entity;
 			}
 		}
@@ -571,9 +571,9 @@ class MobEquipment{
 
 	private function loadFromNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			PureEntities::logOutput("MobEquipment: loadFromNBT for " . $this->entity, PureEntities::DEBUG);
+			PureEntities::logOutput("MobEquipment: loadFromNBT for " . $this->entity);
 			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_ARMOR_ITEMS)){
-				PureEntities::logOutput("MobEquipment: armorItems set for " . $this->entity, PureEntities::DEBUG);
+				PureEntities::logOutput("MobEquipment: armorItems set for " . $this->entity);
 				$nbt = $this->entity->namedtag->getListTag(NBTConst::NBT_KEY_ARMOR_ITEMS);
 				if($nbt instanceof ListTag){
 					$itemId = $nbt->get(0)->getInt(NBTConst::NBT_KEY_ARMOR_ID);
@@ -585,16 +585,16 @@ class MobEquipment{
 					$itemId = $nbt->get(3)->getInt(NBTConst::NBT_KEY_ARMOR_ID);
 					$this->helmet = Item::get($itemId);
 					PureEntities::logOutput("MobEquipment: loaded from NBT [boots:" . $this->boots . "] [legs:" . $this->leggings . "] " .
-						"[chest:" . $this->chestplate . "] [helmet:" . $this->helmet . "]", PureEntities::DEBUG);
+						"[chest:" . $this->chestplate . "] [helmet:" . $this->helmet . "]");
 				}
 			}
 
 			if($this->entity->namedtag->hasTag(NBTConst::NBT_KEY_HAND_ITEMS)){
-				PureEntities::logOutput("MobEquipment: handItems set for " . $this->entity, PureEntities::DEBUG);
+				PureEntities::logOutput("MobEquipment: handItems set for " . $this->entity);
 				$nbt = $this->entity->namedtag->getListTag(NBTConst::NBT_KEY_HAND_ITEMS);
 				if($nbt instanceof ListTag){
 					$itemId = $nbt[0]["id"];
-					PureEntities::logOutput("MobEquipment: found hand item (id): $itemId -> set it now!", PureEntities::DEBUG);
+					PureEntities::logOutput("MobEquipment: found hand item (id): $itemId -> set it now!");
 					$this->mainHand = Item::get($itemId);
 				}
 			}

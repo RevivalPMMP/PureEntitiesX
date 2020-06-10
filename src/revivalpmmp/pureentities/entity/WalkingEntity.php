@@ -317,15 +317,15 @@ abstract class WalkingEntity extends BaseEntity{
 		if($lowestBlock > 0 && $lowestBlock <= 0.5 && $lowestBlock <= $this->getMaxJumpHeight()){
 			// STAIR jump					
 			$this->motion->y = $this->gravity * 4;
-			PureEntities::logOutput("$this: highestBlock($highestBlock)/lowestBlock($lowestBlock): found slab or stair!", PureEntities::DEBUG);
+			PureEntities::logOutput("$this: highestBlock($highestBlock)/lowestBlock($lowestBlock): found slab or stair!");
 			return true;
 		}elseif($lowestBlock > 0 && $lowestBlock <= $this->getMaxJumpHeight()){
 			//Normal jump
-			PureEntities::logOutput("$this: highestBlock($highestBlock)lowestBlock($lowestBlock): Normal Jump - set motion to gravity * 3.2!", PureEntities::DEBUG);
+			PureEntities::logOutput("$this: highestBlock($highestBlock)lowestBlock($lowestBlock): Normal Jump - set motion to gravity * 3.2!");
 			$this->motion->y = $this->gravity * 3.2;
 			return true;
 		}elseif($lowestBlock > 0 && $lowestBlock > $this->getMaxJumpHeight()){
-			PureEntities::logOutput("$this: highestBlock($highestBlock)lowestBlock($lowestBlock): cannot pass through the upper blocks!", PureEntities::DEBUG);
+			PureEntities::logOutput("$this: highestBlock($highestBlock)lowestBlock($lowestBlock): cannot pass through the upper blocks!");
 		}else{
 			PureEntities::logOutput("$this: highestBlock($highestBlock)lowestBlock($lowestBlock): no need to jump. Block can be passed!");
 		}

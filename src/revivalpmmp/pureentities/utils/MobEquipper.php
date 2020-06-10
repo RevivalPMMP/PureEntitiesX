@@ -72,9 +72,9 @@ class MobEquipper{
 				// 1/3 chance of iron sword, 2/3 iron shovel
 				$weaponItem = Item::get((mt_rand(0, 3) <= 1) ? ItemIds::IRON_SWORD : ItemIds::IRON_SHOVEL);
 				$entity->getMobEquipment()->setMainHand($weaponItem);
-				PureEntities::logOutput("[MobEquipper] set $weaponItem as weapon for " . $entity, PureEntities::DEBUG);
+				PureEntities::logOutput("[MobEquipper] set $weaponItem as weapon for " . $entity);
 			}else{
-				PureEntities::logOutput("[MobEquipper] set nothing as weapon for " . $entity, PureEntities::DEBUG);
+				PureEntities::logOutput("[MobEquipper] set nothing as weapon for " . $entity);
 			}
 
 			if($wearArmor){
@@ -84,24 +84,24 @@ class MobEquipper{
 					$entity->getMobEquipment()->setLeggings(self::getLeggings($armorType));
 					$entity->getMobEquipment()->setBoots(self::getBoots($armorType));
 					$entity->getMobEquipment()->setChestplate(self::getChestplate($armorType));
-					PureEntities::logOutput("Full $armorType armor for $entity", PureEntities::DEBUG);
+					PureEntities::logOutput("Full $armorType armor for $entity");
 				}else if(mt_rand(0, 100) <= $wearChances->getHelmetChestplateLeggingsChance()){ // all without boots
 					$entity->getMobEquipment()->setHelmet(self::getHelmet($armorType));
 					$entity->getMobEquipment()->setLeggings(self::getLeggings($armorType));
 					$entity->getMobEquipment()->setChestplate(self::getChestplate($armorType));
-					PureEntities::logOutput("Helmet, leggings and chestplate of $armorType for $entity", PureEntities::DEBUG);
+					PureEntities::logOutput("Helmet, leggings and chestplate of $armorType for $entity");
 				}else if(mt_rand(0, 100) <= $wearChances->getHelmetChestplateChance()){ // only helmet and chestplate
 					$entity->getMobEquipment()->setHelmet(self::getHelmet($armorType));
 					$entity->getMobEquipment()->setChestplate(self::getChestplate($armorType));
-					PureEntities::logOutput("Helmet and chestplate of type $armorType for $entity", PureEntities::DEBUG);
+					PureEntities::logOutput("Helmet and chestplate of type $armorType for $entity");
 				}else if(mt_rand(0, 100) <= $wearChances->getHelmetChance()){ // only helmet
 					$entity->getMobEquipment()->setHelmet(self::getHelmet($armorType));
-					PureEntities::logOutput("$armorType helmet for $entity", PureEntities::DEBUG);
+					PureEntities::logOutput("$armorType helmet for $entity");
 				}else{
-					PureEntities::logOutput("No armor via chance selected for $entity", PureEntities::DEBUG);
+					PureEntities::logOutput("No armor via chance selected for $entity");
 				}
 			}else{
-				PureEntities::logOutput("[MobEquipper] set no armor for " . $entity, PureEntities::DEBUG);
+				PureEntities::logOutput("[MobEquipper] set no armor for " . $entity);
 			}
 		}
 	}
@@ -202,7 +202,7 @@ class MobEquipper{
 		}else if(mt_rand(0, 100) <= $chances->getLeather()){
 			return self::LEATHER;
 		}else{
-			PureEntities::logOutput("[MobEquipper] No type of armor selected. Fallback to leather", PureEntities::DEBUG);
+			PureEntities::logOutput("[MobEquipper] No type of armor selected. Fallback to leather");
 		}
 		return self::LEATHER;
 	}

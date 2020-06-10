@@ -172,7 +172,7 @@ abstract class BaseEntity extends Creature{
 			return;
 		}
 		if($baseTarget !== $this->baseTarget){
-			PureEntities::logOutput("$this: setBaseTarget to $baseTarget", PureEntities::DEBUG);
+			PureEntities::logOutput("$this: setBaseTarget to $baseTarget");
 			$this->baseTarget = $baseTarget;
 		}
 	}
