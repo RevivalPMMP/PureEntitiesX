@@ -45,7 +45,6 @@ class PluginConfiguration{
 	private $tamedPlayerMaxDistance = 10; // default: until the player is not x blocks away the tamed entities are walking around aimlessly
 	private $xpEnabled = false; // default is false!
 	private $pickupLootTicks = 10; // default: 10
-	private $logEnabled = false; // enable or disable file logging
 	private $enableSpawning = true; // enable spawning of entities
 	private $enabledWorlds = []; // worlds where spawning of entities is allowed
 	private $enableAsyncTasks = true; // enable async tasks for setting owner of tamed and setting mob equipment
@@ -87,7 +86,6 @@ class PluginConfiguration{
 		$this->checkTargetSkipTicks = $pluginBase->getConfig()->getNested("performance.check-target-tick-skip", 1); // default: do not skip ticks asking checkTarget method
 		$this->interactiveButtonCorrection = $pluginBase->getConfig()->getNested("performance.check-interactive-correction", false); // default: do not check other blocks for the entity for button display
 		$this->pickupLootTicks = $pluginBase->getConfig()->getNested("performance.check-pickup-loot", 10); // default: check every 10 ticks for picking up loot
-		$this->logEnabled = $pluginBase->getConfig()->getNested("performance.enable-logging", false); // default: false - do not use logging
 		$this->enableNBT = $pluginBase->getConfig()->getNested("performance.enable-nbt-storage", true); // default: enable storage and loading of NBT
 
 		$this->useBlockLightForSpawn = $pluginBase->getConfig()->getNested("spawn-task.use-block-light", false); // default: do not use block light
@@ -111,7 +109,7 @@ class PluginConfiguration{
 		$pluginBase->getServer()->getLogger()->notice("[PureEntitiesX] Configuration loaded:" .
 			" [enableNBT:" . $this->enableNBT . "]" .
 			" [enableSpawn:" . $this->enableSpawning . "] [enableAsyncTasks:" . $this->enableAsyncTasks . "] [enableLookingTasks:" . $this->enableLookingTasks . "]" .
-			" [loggingEnabled:" . $this->logEnabled . "] [findPartnerDistance:" . $this->maxFindPartnerDistance . "] [interactDistance:" . $this->maxInteractDistance . "]" .
+			"] [findPartnerDistance:" . $this->maxFindPartnerDistance . "] [interactDistance:" . $this->maxInteractDistance . "]" .
 			" [teleportTamedDistance:" . $this->tamedTeleportBlocks . "] [tamedFollowDistance:" . $this->tamedPlayerMaxDistance . "]" .
 			" [blockOfInterestTicks:" . $this->blockOfInterestTicks . "] [checkTargetSkipTicks:" . $this->checkTargetSkipTicks . "] [pickupLootTicks:" . $this->pickupLootTicks . "]" .
 			" [interactiveButtonCorrection:" . $this->interactiveButtonCorrection . "] [useBlockLight:" . $this->useBlockLightForSpawn . "] [useSkyLight:" . $this->useSkyLightForSpawn . "]" .
@@ -238,13 +236,6 @@ class PluginConfiguration{
 	 */
 	public function getIdleTimeBetween() : int{
 		return $this->idleTimeBetween;
-	}
-
-	/**
-	 * @return bool|mixed
-	 */
-	public function getLogEnabled(){
-		return $this->logEnabled;
 	}
 
 	/**

@@ -100,11 +100,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	/** @var  PureEntities $instance */
 	private static $instance;
 
-	/** @var string $loglevel */
-	private static $loglevel;
-	/** @var PEXCustomLogger $logger */
-	private static $logger;
-
 	// logging constants for method call 'logOutput'
 	const NORM = \LogLevel::INFO;
 	const WARN = \LogLevel::WARNING;
@@ -122,11 +117,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 
 	/** @var string[] */
 	private static $registeredClasses = [];
-
-	/**
-	 * @var bool
-	 */
-	private static $loggingEnabled = false;
 
 	/**
 	 * Returns the plugin instance to get access to config e.g.
@@ -306,10 +296,8 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 * Logs an output to the plugin's logfile ...
 	 * @param string $logline the output to be appended
 	 * @param string $type the type of output to log
-	 * @return bool returns false on failure
 	 */
-	public static function logOutput(string $logline, string $type = self::DEBUG){
-		if(self::$loggingEnabled){
+	public static function logOutput(string $logline, string $type = self::DEBUG) : void{
 			switch($type){
 				case self::DEBUG:
 					self::getInstance()->getLogger()->debug($logline);
@@ -322,9 +310,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 					self::getInstance()->getLogger()->info($logline);
 					break;
 			}
-			return true;
-		}
-		return false;
 	}
 
 	/**
