@@ -41,12 +41,16 @@ class SummonCommand extends PureEntitiesXCommand{
 
 	private function validateArgs(CommandSender $sender, array &$args) : bool{
 		$valid = true;
+		if(!isset($args[0])){
+			$this->sendUsage($sender);
+			return false;
+		}
 		if(!$sender instanceof Player and count($args) !== 5){
 			$sender->sendMessage(TextFormat::RED . "When using this command from the console, the coordinates and world must be provided");
 			$sender->sendMessage(TextFormat::GOLD . $this->usageMessage);
 			return false;
 		}
-		if(!isset($args[0]) or (PureEntities::getInstance()->getRegisteredClassNameFromShortName($args[0]) === null)){
+		if(PureEntities::getInstance()->getRegisteredClassNameFromShortName($args[0]) === null){
 			$sender->sendMessage(TextFormat::GOLD . $args[0] . TextFormat::RED . " is not a valid mob type.");
 			$valid = false;
 		}
