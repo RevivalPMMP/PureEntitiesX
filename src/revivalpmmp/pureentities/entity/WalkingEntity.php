@@ -358,8 +358,8 @@ abstract class WalkingEntity extends BaseEntity{
 	 * If one cannot be found within 3 blocks above, or below the
 	 * current Y location, then the current Y location is returned.
 	 *
-	 * @param $x float|int
-	 * @param $z float|int
+	 * @param float|int $x
+	 * @param float|int $z
 	 * @return float|int
 	 */
 	public function findTargetFloor($x, $z){
