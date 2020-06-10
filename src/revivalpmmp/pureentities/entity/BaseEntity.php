@@ -191,9 +191,9 @@ abstract class BaseEntity extends Creature{
 	}
 
 	/**
-	 * @return int
+	 * @return float
 	 */
-	public function getMaxJumpHeight() : int{
+	public function getMaxJumpHeight() : float{
 		return $this->maxJumpHeight;
 	}
 
