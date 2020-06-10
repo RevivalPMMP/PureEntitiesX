@@ -237,7 +237,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	/**
 	 * @param int|string $type
 	 * @param Position   $source
-	 * @param            $args
+	 * @param array      $args
 	 *
 	 * @return Entity
 	 */
@@ -287,8 +287,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 
 				return $entity;
 			}
-			self::logOutput("Cannot create entity [entityId:$entityid]", self::WARN);
-			return null;
 		}
 	}
 
