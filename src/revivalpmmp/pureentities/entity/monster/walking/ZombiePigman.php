@@ -53,9 +53,9 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 	use Breedable, Feedable;
 	const NETWORK_ID = Data::NETWORK_IDS["zombie_pigman"];
 
-    /**
-     * @var int
-     */
+	/**
+	 * @var int
+	 */
 	private $angryValue = 0;
 
 	/**
@@ -84,56 +84,57 @@ class ZombiePigman extends WalkingMonster implements IntfCanEquip, IntfCanBreed,
 		$this->breedableClass->init();
 		$this->mobEquipment->setMainHand(Item::get(ItemIds::GOLDEN_SWORD));
 	}
-    /**
-     * Loads data from NBT and stores to local variables
-     */
-    public function loadNBT(){
-        if(PluginConfiguration::getInstance()->getEnableNBT()){
-            parent::loadNBT();
-            if($this->namedtag->hasTag(NBTConst::NBT_KEY_ANGRY)){
-                $angry = $this->namedtag->getInt(NBTConst::NBT_KEY_ANGRY, 0, true);
-                $this->setAngry($angry);
-            }
-        }
-    }
 
-    // TODO: Determine cause of collar color being improperly applied.
+	/**
+	 * Loads data from NBT and stores to local variables
+	 */
+	public function loadNBT(){
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::loadNBT();
+			if($this->namedtag->hasTag(NBTConst::NBT_KEY_ANGRY)){
+				$angry = $this->namedtag->getInt(NBTConst::NBT_KEY_ANGRY, 0, true);
+				$this->setAngry($angry);
+			}
+		}
+	}
 
-    /**
-     * Saves important variables to the NBT
-     */
-    public function saveNBT() : void{
-        if(PluginConfiguration::getInstance()->getEnableNBT()){
-            parent::saveNBT();
-            $this->namedtag->setInt(NBTConst::NBT_KEY_ANGRY, $this->angryValue, true);
-        }
-        $this->breedableClass->saveNBT();
-    }
+	// TODO: Determine cause of collar color being improperly applied.
 
-    /**
-     * @return bool
-     */
-    public function isAngry() : bool{
-        return $this->angryValue > 0;
-    }
+	/**
+	 * Saves important variables to the NBT
+	 */
+	public function saveNBT() : void{
+		if(PluginConfiguration::getInstance()->getEnableNBT()){
+			parent::saveNBT();
+			$this->namedtag->setInt(NBTConst::NBT_KEY_ANGRY, $this->angryValue, true);
+		}
+		$this->breedableClass->saveNBT();
+	}
 
-    /**
-     * @param int $val
-     * @param bool $init
-     */
-    public function setAngry(int $val, bool $init = false){
-        if($val < 0){
-            $val = 0;
-        }
-        $valueBefore = $this->angryValue;
-        $this->angryValue = $val;
-        // only change the data property when aggression mode changes or in init phase
-        if(($valueBefore > 0 and $val <= 0) or ($valueBefore <= 0 and $val > 0) or $init){
-            $this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_ANGRY, $val > 0);
-        }
-    }
+	/**
+	 * @return bool
+	 */
+	public function isAngry() : bool{
+		return $this->angryValue > 0;
+	}
 
-	protected function sendSpawnPacket(Player $player) : void {
+	/**
+	 * @param int  $val
+	 * @param bool $init
+	 */
+	public function setAngry(int $val, bool $init = false){
+		if($val < 0){
+			$val = 0;
+		}
+		$valueBefore = $this->angryValue;
+		$this->angryValue = $val;
+		// only change the data property when aggression mode changes or in init phase
+		if(($valueBefore > 0 and $val <= 0) or ($valueBefore <= 0 and $val > 0) or $init){
+			$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_ANGRY, $val > 0);
+		}
+	}
+
+	protected function sendSpawnPacket(Player $player) : void{
 		parent::sendSpawnPacket($player);
 		$this->mobEquipment->sendEquipmentUpdate($player);
 	}

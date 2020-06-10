@@ -56,7 +56,7 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 		}
 	}
 
-	protected function sendSpawnPacket(Player $player) : void {
+	protected function sendSpawnPacket(Player $player) : void{
 		parent::sendSpawnPacket($player);
 		$this->mobEquipment->sendEquipmentUpdate($player);
 	}
@@ -77,7 +77,7 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 			$f = 1.2;
 			$pos = $this->asPosition();
 			$pos->y = $this->y + $this->getEyeHeight();
-			$arrow = ProjectileHelper::createProjectile(self::ARROW, $pos, $player->add(0,$player->height / 2,0));
+			$arrow = ProjectileHelper::createProjectile(self::ARROW, $pos, $player->add(0, $player->height / 2, 0));
 			$arrow->setOwningEntity($this);
 			$arrow->setMotion($this->getDirectionVector());
 			$bow = $this->mobEquipment->getMainHand();
@@ -92,7 +92,7 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
-		
+
 		$time = $this->getLevel() ? $this->getLevel()->getTime() % Level::TIME_FULL : Level::TIME_NIGHT;
 		if(
 			!$this->isOnFire() //if not already on fire

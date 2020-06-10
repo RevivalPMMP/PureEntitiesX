@@ -32,17 +32,17 @@ class WearPickupChance{
 	/**
 	 * @var array
 	 */
-	private $canPickupLoot = [0,0,0];
+	private $canPickupLoot = [0, 0, 0];
 
 	/**
 	 * @var array
 	 */
-	private $armor = [0,0,0];
+	private $armor = [0, 0, 0];
 
 	/**
 	 * @var array
 	 */
-	private $weapon = [0,0,0];
+	private $weapon = [0, 0, 0];
 
 	/**
 	 * @var Server

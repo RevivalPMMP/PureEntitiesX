@@ -143,7 +143,7 @@ abstract class FlyingMonster extends FlyingEntity implements Monster{
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
-		if($this->isClosed() or $this->getLevel() === null) {
+		if($this->isClosed() or $this->getLevel() === null){
 			return false;
 		}
 

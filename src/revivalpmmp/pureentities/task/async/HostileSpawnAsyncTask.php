@@ -36,7 +36,7 @@ class HostileSpawnAsyncTask extends BaseAsyncSpawnTask{
 		$counts = unserialize($this->currentMobCounts);
 
 		foreach($chunks as $chunk){
-			if(ItemFactory::get($chunk->getBlockId(mt_rand(0,15), mt_rand(0 , 255), mt_rand(0,15))) instanceof Solid){
+			if(ItemFactory::get($chunk->getBlockId(mt_rand(0, 15), mt_rand(0, 255), mt_rand(0, 15))) instanceof Solid){
 				continue;
 			}
 

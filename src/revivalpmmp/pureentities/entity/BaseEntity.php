@@ -57,7 +57,7 @@ abstract class BaseEntity extends Creature{
 	protected $friendly = false;
 	private $wallcheck = true;
 	protected $fireProof = false;
-	
+
 	public $jumper = false;
 
 	/**
@@ -112,7 +112,7 @@ abstract class BaseEntity extends Creature{
 
 	public abstract function updateMove($tickDiff);
 
-	public function updateXpDropAmount() : void {
+	public function updateXpDropAmount() : void{
 		$this->xpDropAmount = 0;
 	}
 

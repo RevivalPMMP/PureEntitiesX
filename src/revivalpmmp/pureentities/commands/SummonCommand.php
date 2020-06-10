@@ -55,7 +55,7 @@ class SummonCommand extends PureEntitiesXCommand{
 			$valid = false;
 		}
 		if(isset($args[1])){
-			if(!is_numeric($args[1]) or !isset($args[2]) or !is_numeric($args[2])  or !isset($args[3]) or !is_numeric($args[3])){
+			if(!is_numeric($args[1]) or !isset($args[2]) or !is_numeric($args[2]) or !isset($args[3]) or !is_numeric($args[3])){
 				$sender->sendMessage(TextFormat::RED . "The provided coordinates appear to be invalid.");
 				$valid = false;
 			}

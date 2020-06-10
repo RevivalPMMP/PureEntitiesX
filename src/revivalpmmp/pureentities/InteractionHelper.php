@@ -91,7 +91,7 @@ class InteractionHelper{
 				// nothing to log here!
 			}catch(\DivisionByZeroError $e){
 				PureEntities::logOutput("InteractionHelper: Got division by zero error when testing player " . $player->getName() . " with LengthSquared of " . $player->lengthSquared(), PureEntities::WARN);
-				PureEntities::logOutput("TemporalVector was (". $player->temporalVector->x . ", " . $player->temporalVector->y . ", " . $player->temporalVector->z . ")", PureEntities::WARN);
+				PureEntities::logOutput("TemporalVector was (" . $player->temporalVector->x . ", " . $player->temporalVector->y . ", " . $player->temporalVector->z . ")", PureEntities::WARN);
 			}
 		}
 

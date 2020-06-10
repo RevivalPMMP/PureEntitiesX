@@ -46,7 +46,6 @@ class Color{
 	const COLOR_DYE_WHITE = 19;
 
 
-
 	const WHITE = 0;
 	const ORANGE = 1;
 	const MAGENTA = 2;

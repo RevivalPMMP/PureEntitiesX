@@ -44,7 +44,7 @@ class WitherSkeleton extends Skeleton{
 		return "Wither Skeleton";
 	}
 
-	public function setHealth(float $amount): void{
+	public function setHealth(float $amount) : void{
 		parent::setHealth($amount);
 
 		if($this->isAlive()){

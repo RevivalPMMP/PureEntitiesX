@@ -42,7 +42,7 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 		$this->meta = $meta;
 	}
 
-	public function canBeActivated(): bool{
+	public function canBeActivated() : bool{
 		return true;
 	}
 
@@ -97,7 +97,7 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 	 * Checks for the presence of a MobSpawner in the same location as the MonsterSpawner block.
 	 * If not there, it creates one, then updates the EntityId.
 	 */
-	private function generateSpawnerTile() {
+	private function generateSpawnerTile(){
 		$tile = $this->getLevel()->getTile($this);
 		if(!$tile instanceof MobSpawner){
 			$nbt = MobSpawner::createNBT($this);

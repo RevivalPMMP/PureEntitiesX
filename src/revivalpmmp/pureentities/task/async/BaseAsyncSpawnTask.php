@@ -35,7 +35,7 @@ abstract class BaseAsyncSpawnTask extends AsyncTask{
 
 	protected $mobCaps;
 
-	public function __construct(array $chunks, array $mobCaps = [],array $currentMobCounts = []){
+	public function __construct(array $chunks, array $mobCaps = [], array $currentMobCounts = []){
 		$this->chunks = $chunks;
 	}
 

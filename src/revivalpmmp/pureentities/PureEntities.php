@@ -30,19 +30,18 @@ use pocketmine\level\Position;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\tile\Tile;
-use pocketmine\utils\TextFormat;
 use revivalpmmp\pureentities\block\MonsterSpawnerPEX;
 use revivalpmmp\pureentities\commands\RemoveEntitiesCommand;
 use revivalpmmp\pureentities\commands\SummonCommand;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\flying\Bat;
 use revivalpmmp\pureentities\entity\animal\flying\Parrot;
+use revivalpmmp\pureentities\entity\animal\swimming\Cod;
+use revivalpmmp\pureentities\entity\animal\swimming\Dolphin;
+use revivalpmmp\pureentities\entity\animal\swimming\Pufferfish;
+use revivalpmmp\pureentities\entity\animal\swimming\Salmon;
 use revivalpmmp\pureentities\entity\animal\swimming\Squid;
-use revivalpmmp\pureentities\entity\animal\swimming\Salmon;                                                                                 
-use revivalpmmp\pureentities\entity\animal\swimming\Pufferfish;                                                                             
-use revivalpmmp\pureentities\entity\animal\swimming\Tropicalfish;                                                                           
-use revivalpmmp\pureentities\entity\animal\swimming\Cod;                                                                                    
-use revivalpmmp\pureentities\entity\animal\swimming\Dolphin;                                                                                
+use revivalpmmp\pureentities\entity\animal\swimming\Tropicalfish;
 use revivalpmmp\pureentities\entity\animal\walking\Chicken;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Donkey;
@@ -311,18 +310,18 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 */
 	public static function logOutput(string $logline, string $type = self::DEBUG){
 		if(self::$loggingEnabled){
-            switch($type){
-                case self::DEBUG:
-                    self::getInstance()->getLogger()->debug($logline);
-                    break;
-                case self::WARN:
-                    self::getInstance()->getLogger()->warning($logline);
-                    break;
-                case self::NORM:
-                default:
-                    self::getInstance()->getLogger()->info($logline);
-                    break;
-            }
+			switch($type){
+				case self::DEBUG:
+					self::getInstance()->getLogger()->debug($logline);
+					break;
+				case self::WARN:
+					self::getInstance()->getLogger()->warning($logline);
+					break;
+				case self::NORM:
+				default:
+					self::getInstance()->getLogger()->info($logline);
+					break;
+			}
 			return true;
 		}
 		return false;

@@ -172,7 +172,7 @@ class MobEquipment{
 	/**
 	 * @return null|Item
 	 */
-	public function getMainHand(): ?Item{
+	public function getMainHand() : ?Item{
 		return $this->mainHand;
 	}
 
