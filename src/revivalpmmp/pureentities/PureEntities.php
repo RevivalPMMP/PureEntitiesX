@@ -320,11 +320,11 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 * When the given coordinates are NOT an AIR block coordinate we search upwards until the first air block is found
 	 * which is then returned to the caller.
 	 *
-	 * @param       $x                int the x position to start search
-	 * @param       $y                int the y position to start search
-	 * @param       $z                int the z position to start searching
-	 * @param Level $level Level the level object to search in
-	 * @return null|Position    either NULL if no valid position was found or the final AIR spawn position
+	 * @param float|int  $x                the x position to start search
+	 * @param float|int  $y                the y position to start search
+	 * @param float|int  $z                the z position to start searching
+	 * @param Level $level                 Level the level object to search in
+	 * @return null|Position               NULL if no valid position was found or the final AIR spawn position
 	 */
 	public static function getSuitableHeightPosition($x, $y, $z, Level $level){
 		$newPosition = null;
