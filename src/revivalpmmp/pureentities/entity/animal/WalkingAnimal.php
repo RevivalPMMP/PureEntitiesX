@@ -28,7 +28,6 @@ use pocketmine\item\Item;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
-use revivalpmmp\pureentities\entity\BaseEntity;
 use revivalpmmp\pureentities\entity\WalkingEntity;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\features\IntfShearable;
@@ -142,24 +141,21 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 	 * @return array an array of Block
 	 */
 	protected function getBlocksFlatAround(int $range){
-		if($this instanceof BaseEntity){
-			$blocksAround = [];
+		$blocksAround = [];
 
-			$minX = $this->x - $range;
-			$maxX = $this->x + $range;
-			$minZ = $this->z - $range;
-			$maxZ = $this->z + $range;
-			$temporalVector = new Vector3($this->x, $this->y - $this->height / 2, $this->z);
+		$minX = $this->x - $range;
+		$maxX = $this->x + $range;
+		$minZ = $this->z - $range;
+		$maxZ = $this->z + $range;
+		$temporalVector = new Vector3($this->x, $this->y - $this->height / 2, $this->z);
 
-			for($x = $minX; $x <= $maxX; $x++){
-				for($z = $minZ; $z <= $maxZ; $z++){
-					$blocksAround[] = $this->level->getBlock($temporalVector->setComponents($x, $temporalVector->y, $this->z));
-				}
+		for($x = $minX; $x <= $maxX; $x++){
+			for($z = $minZ; $z <= $maxZ; $z++){
+				$blocksAround[] = $this->level->getBlock($temporalVector->setComponents($x, $temporalVector->y, $this->z));
 			}
-
-			return $blocksAround;
 		}
-		return [];
+
+		return $blocksAround;
 	}
 
 	/**
