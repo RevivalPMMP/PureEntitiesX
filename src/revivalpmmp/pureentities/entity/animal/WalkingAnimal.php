@@ -25,7 +25,6 @@ use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item;
-use pocketmine\Item\ItemIds;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
@@ -245,7 +244,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 				if($hasFeedableItemsInHand){
 					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
 					PureEntities::logOutput("Button text set to Feed.");
-				}else if($this instanceof Sheep and $itemInHand == ItemIds::DYE and
+				}else if($this instanceof Sheep and $itemInHand == Item::DYE and
 					$player->getInventory()->getItemInHand()->getDamage() > 0
 				){
 					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_DYE, $player);
