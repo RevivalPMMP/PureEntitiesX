@@ -248,13 +248,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 		if($enabled){
 			$level = self::$loglevel = strtolower($this->getConfig()->getNested("logfile.loglevel", self::NORM));
 			$this->getServer()->getLogger()->info(TextFormat::GOLD . "[PureEntitiesX] Setting loglevel of logfile to " . $level);
-			$this->getServer()->getLogger()->notice("[PureEntitiesX] Enabled!");
-			$this->getServer()->getLogger()->notice("[PureEntitiesX] You're Running " . $this->getDescription()->getFullName());
 		}
-	}
-
-	public function onDisable(){
-		$this->getServer()->getLogger()->notice("[PureEntitiesX] Disabled!");
 	}
 
 	/**
