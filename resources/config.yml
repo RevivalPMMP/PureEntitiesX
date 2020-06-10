@@ -31,12 +31,6 @@ creeper:
 breeding:
   emit-love-particles-constantly: true
 
-# control logfile logging
-# possible: debug, warn, info
-# in productional environment info or warn should be set - otherwise it will take a lot of performance!
-logfile:
-  loglevel: info
-
 # describes the distances that are used for specific actions
 distances:
   interact: 3 # defines until which distance an interaction with an entity is possible
@@ -114,7 +108,6 @@ performance:
   check-interactive-correction: true # setting this to true the interactive button finding is a lot better but more unprecise and consumes more performance
   check-enderman-looking: 10 # how often does the plugin check if a player looks at an enderman
   check-pickup-loot: 10 # how often do entities look after things they can pick up (configure ticks between checks)
-  enable-logging: false # enable file logging (set to false for productive environments)
   enable-nbt-storage: true # enable to store to NBT - this has to be set to true to work properly
 
 # mob equipment configuration
