@@ -94,7 +94,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 	 * @return bool
 	 */
 	public function onUpdate(int $currentTick) : bool{
-		if($this->getLevel() == null) return false;
+		if($this->getLevel() === null) return false;
 		if($this->isClosed() or !$this->isAlive()){
 			return parent::onUpdate($currentTick);
 		}
@@ -244,7 +244,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 				if($hasFeedableItemsInHand){
 					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
 					PureEntities::logOutput("Button text set to Feed.");
-				}else if($this instanceof Sheep and $itemInHand == Item::DYE and
+				}else if($this instanceof Sheep and $itemInHand === Item::DYE and
 					$player->getInventory()->getItemInHand()->getDamage() > 0
 				){
 					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_DYE, $player);
