@@ -30,7 +30,7 @@ namespace revivalpmmp\pureentities;
  */
 class PluginConfiguration{
 
-	/** @var  PureEntities $instance */
+	/** @var  PluginConfiguration $instance */
 	private static $instance;
 
 	private $maxInteractDistance = 4; // this is standard (may be overridden by config!)
