@@ -82,7 +82,7 @@ class WearChances{
 
 		$this->server = Server::getInstance();
 
-		PureEntities::logOutput("WearChances successfully loaded for $entityName", PureEntities::NORM);
+		PureEntities::logOutput("WearChances successfully loaded for $entityName");
 	}
 
 	public function getHelmetChance(){

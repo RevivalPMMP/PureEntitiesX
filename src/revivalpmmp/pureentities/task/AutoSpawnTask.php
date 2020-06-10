@@ -225,7 +225,7 @@ class AutoSpawnTask extends Task{
 			$pos = new Position($x, $center->y, $z, $level);
 
 			if($this->isValidDrySpawnLocation($pos) and $this->isSpawnAllowedByBiome($entityId, $level->getBiomeId($x, $z))){
-				PureEntities::logOutput("AutoSpawnTask: Spawning Mob (ID = $entityId) to location: $x, $center->y, $z", PureEntities::NORM);
+				PureEntities::logOutput("AutoSpawnTask: Spawning Mob (ID = $entityId) to location: $x, $center->y, $z");
 				$success = PureEntities::getInstance()->scheduleCreatureSpawn($pos, $entityId, $level, $type, $isBaby) !== null;
 				if($success){
 					$currentPackSize++;
@@ -299,7 +299,7 @@ class AutoSpawnTask extends Task{
 				return true;
 			}
 		}
-		PureEntities::logOutput("Biome test failed with Entity: $entityId and Biome: $trialBiome", PureEntities::NORM);
+		PureEntities::logOutput("Biome test failed with Entity: $entityId and Biome: $trialBiome");
 		return false;
 	}
 }

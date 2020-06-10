@@ -340,7 +340,7 @@ abstract class BaseEntity extends Creature{
 		if($this->ticksLived > $this->maxAge and
 			(!$this instanceof IntfTameable or ($this instanceof IntfTameable and !$this->isTamed()))
 		){
-			PureEntities::logOutput("Despawn entity " . $this->getName(), PureEntities::NORM);
+			PureEntities::logOutput("Despawn entity " . $this->getName());
 			$this->close();
 			return true;
 		}

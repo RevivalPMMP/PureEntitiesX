@@ -48,7 +48,7 @@ class RemoveEntitiesCommand extends PureEntitiesXCommand{
 				}
 			}
 			$sender->sendMessage("Removed entities. BaseEntities removed: $counterLivingEntities, other Entities: $counterOtherEntities");
-			PureEntities::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ", PureEntities::NORM);
+			PureEntities::logOutput("PeRemove: Removed $counterLivingEntities living entities and $counterOtherEntities other entities: ");
 		}
 	}
 }
