@@ -244,6 +244,9 @@ abstract class BaseEntity extends Creature{
 	}
 
 	public function isInsideOfSolid() : bool{
+		if($this->isClosed() or $this->level === null){
+			return false;
+		}
 		$block = $this->level->getBlock($this->temporalVector->setComponents(Math::floorFloat($this->x), Math::floorFloat($this->y + $this->height - 0.18), Math::floorFloat($this->z)));
 		$bb = $block->getBoundingBox();
 		return $bb !== null and $block->isSolid() and !$block->isTransparent() and $bb->intersectsWith($this->getBoundingBox());
@@ -304,6 +307,9 @@ abstract class BaseEntity extends Creature{
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
 		//Timings::$timerEntityBaseTick->startTiming();
+		if($this->isClosed() or $this->level === null){
+			return false;
+		}
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
 
