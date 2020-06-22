@@ -27,8 +27,6 @@ use pocketmine\level\Explosion;
 use pocketmine\level\Level;
 use pocketmine\level\particle\CriticalParticle;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\protocol\AddActorPacket;
-use pocketmine\Player;
 
 abstract class FireBall extends Projectile{
 
@@ -90,18 +88,6 @@ abstract class FireBall extends Projectile{
 		$this->timings->stopTiming();
 
 		return $hasUpdate;
-	}
-
-	public function spawnTo(Player $player) : void{
-		$pk = new AddActorPacket();
-		$pk->type = static::NETWORK_ID;
-		$pk->entityRuntimeId = $this->getId();
-		$pk->position = $this->asVector3();
-		$pk->motion = $this->getMotion();
-		$pk->metadata = $this->propertyManager->getAll();
-		$player->dataPacket($pk);
-
-		parent::spawnTo($player);
 	}
 
 }
