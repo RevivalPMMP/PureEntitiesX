@@ -67,7 +67,8 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 			return;
 		}
 		if($this instanceof IntfTameable and $this->isTamed()){
-			if($player instanceof Player and strcasecmp($player->getName(), $this->getOwner()->getName()) === 0){
+			$owner = $this->getOwner();
+			if($player instanceof Player and $owner instanceof Player and $player->getName() === $owner->getName()){
 				// a tamed entity doesn't attack it's owner!
 				return;
 			}
