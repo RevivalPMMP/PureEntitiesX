@@ -26,52 +26,24 @@ use pocketmine\entity\Explosive;
 use pocketmine\event\entity\ExplosionPrimeEvent;
 use pocketmine\item\Item;
 use pocketmine\level\Explosion;
+use pocketmine\network\mcpe\protocol\LevelEventPacket;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
-use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class Creeper extends WalkingMonster implements Explosive{
 	const NETWORK_ID = Data::NETWORK_IDS["creeper"];
-	const DATA_POWERED = 19;
-
-	private $bombTime = 0;
+    public const TAG_POWERED = "powered";
+    public const TAG_IGNITED = "ignited";
+    public const TAG_FUSE = "fuse";
+    public const TAG_EXPLOSION_RADIUS = "explosionRadius";
 
 	private $explodeBlocks = false;
 
-	private $powered = 0;
-
-	public function initEntity() : void{
+    public function initEntity() : void{
 		parent::initEntity();
 		$this->speed = 0.9;
 		$this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) == 0 ? false : true);
-	}
-
-	public function isPowered(){
-		return $this->powered;
-	}
-
-	public function setPowered($value = true){
-		$value ? $this->powered = 1 : $this->powered = 0;
-		$this->getDataPropertyManager()->setPropertyValue(self::DATA_POWERED, self::DATA_TYPE_BYTE, $this->powered);
-	}
-
-	public function loadNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			parent::loadNBT();
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_POWERED)){
-				$this->powered = $this->namedtag->getInt(NBTConst::NBT_KEY_POWERED, 0, true);
-				$this->setPowered($this->powered);
-			}
-		}
-	}
-
-	public function saveNBT() : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			parent::saveNBT();
-			$this->namedtag->setInt(NBTConst::NBT_KEY_POWERED, $this->powered, true);
-		}
 	}
 
 	public function getName() : string{
@@ -79,9 +51,10 @@ class Creeper extends WalkingMonster implements Explosive{
 	}
 
 	public function explode(){
-		$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
-
+		$ev = new ExplosionPrimeEvent($this, 3);
+		$ev->call();
 		if(!$ev->isCancelled()){
+            if($this->isPowered()) $ev->setForce($ev->getForce()*2);
 			$explosion = new Explosion($this, $ev->getForce(), $this);
 			$ev->setBlockBreaking($this->explodeBlocks); // this is configuration!
 			if($ev->isBlockBreaking()){
@@ -92,36 +65,66 @@ class Creeper extends WalkingMonster implements Explosive{
 		$this->kill();
 	}
 
+    public function isIgnited(): bool{
+        return ($this->getGenericFlag(self::DATA_FLAG_IGNITED) || boolval($this->namedtag->getByte(self::TAG_IGNITED, 0)));
+    }
+
+    public function resetFuse(): void{
+        $this->namedtag->setShort(self::TAG_FUSE, 30);
+    }
+
+    public function getFuse(): int{
+        return $this->namedtag->getShort(self::TAG_FUSE, 30);
+    }
+
+    public function setFuse(int $fuse): void{
+        $this->namedtag->setShort(self::TAG_FUSE, $fuse);
+    }
+
 	public function onUpdate(int $currentTick) : bool{
 		$tickDiff = $currentTick - $this->lastUpdate;
-
 		if($this->getBaseTarget() !== null){
 			$x = $this->getBaseTarget()->x - $this->x;
 			$y = $this->getBaseTarget()->y - $this->y;
 			$z = $this->getBaseTarget()->z - $this->z;
-
-			$diff = abs($x) + abs($z);
-
-			if($this->getBaseTarget() instanceof Creature && $this->getBaseTarget()->distanceSquared($this) <= 4.5){
-				$this->bombTime += $tickDiff;
-				if($this->bombTime >= 64 && $this->isAlive()){
-					$this->explode();
-					return false;
-				}
-			}else{
-				$this->bombTime -= $tickDiff;
-				if($this->bombTime < 0){
-					$this->bombTime = 0;
-				}
-			}
+            $diff = abs($x) + abs($z);
+            if($this->isIgnited()){
+                if($this->getBaseTarget()->distance($this) >= $this->getExplosionRadius()){
+                    $this->setMovement(true);
+                    $this->setIgnited(false);
+                }
+                else{
+                    $this->setMovement(false);
+                    $fuse = $this->getFuse() - $tickDiff;
+                    $this->setFuse($fuse);
+                    if($fuse <= 0){
+                        $this->resetFuse();
+                        $this->explode();
+                    }
+                }
+            }else{
+                if($this->getBaseTarget()->distance($this) <= 3 && $this->getBaseTarget() instanceof Creature){
+                    $this->setMovement(false);
+                    $this->setIgnited(true);
+                }else{
+                    $this->setMovement(true);
+                }
+            }
 			if($diff > 0){
 				$this->motion->x = $this->getSpeed() * 0.15 * ($x / $diff);
 				$this->motion->z = $this->getSpeed() * 0.15 * ($z / $diff);
 				$this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
 			}
 			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
-		}
-
+		}elseif($this->isIgnited()){ // using flint and steel manual ignition
+            $this->setMovement(false);
+            $fuse = $this->getFuse() - $tickDiff;
+            $this->setFuse($fuse);
+            if($fuse <= 0){
+                $this->resetFuse();
+                $this->explode();
+            }
+        }
 		return parent::onUpdate($currentTick);
 	}
 
@@ -145,5 +148,18 @@ class Creeper extends WalkingMonster implements Explosive{
 		$this->xpDropAmount = 5;
 	}
 
+    public function getExplosionRadius(): int{
+        return $this->namedtag->getByte(self::TAG_EXPLOSION_RADIUS, 7);
+    }
 
+    public function setIgnited(bool $ignited): void{
+        if($ignited) $this->getLevel()->broadcastLevelEvent($this, LevelEventPacket::EVENT_SOUND_IGNITE);
+        $this->resetFuse();
+        $this->namedtag->setByte(self::TAG_IGNITED, intval($ignited));
+        $this->setGenericFlag(self::DATA_FLAG_IGNITED, $ignited);
+    }
+
+    public function isPowered(): bool{
+        return ($this->getGenericFlag(self::DATA_FLAG_POWERED) || boolval($this->namedtag->getByte(self::TAG_POWERED, 0)));
+    }
 }
