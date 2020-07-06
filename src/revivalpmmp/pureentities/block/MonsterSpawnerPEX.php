@@ -120,4 +120,11 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 	public function getSilkTouchDrops(Item $item) : array{
 		return [];
 	}
+
+	public function onBreak(Item $item, Player $player = null) : bool{
+		$tile = $this->level->getTile($this);
+		if($tile instanceof MobSpawner){
+			$tile->close();
+		}
+	}
 }

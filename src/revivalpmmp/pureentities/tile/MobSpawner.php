@@ -20,29 +20,40 @@
 
 namespace revivalpmmp\pureentities\tile;
 
+use pocketmine\block\BlockIds;
 use pocketmine\level\Level;
+use pocketmine\level\Position;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 use pocketmine\tile\Spawnable;
-use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class MobSpawner extends Spawnable{
 
+	/** @var int */
 	protected $entityId = -1;
+
+	/** @var int */
 	protected $spawnRange = 8;
 	protected $maxNearbyEntities = 6;
 	protected $requiredPlayerRange = 16;
 
+	/** @var int */
 	protected $delay = 0;
 
+	/** @var int */
 	protected $minSpawnDelay = 200;
+
+	/** @var int */
 	protected $maxSpawnDelay = 800;
+
+	/** @var int */
 	protected $spawnCount = 0;
 
 	public function __construct(Level $level, CompoundTag $nbt){
+		$this->name = "Monster Spawner";
 
 		parent::__construct($level, $nbt);
 
@@ -51,6 +62,7 @@ class MobSpawner extends Spawnable{
 	}
 
 	public function onUpdate() : bool{
+		PureEntities::logOutput("MobSpawner::onUpdate()");
 		if($this->isClosed()){
 			return false;
 		}
@@ -58,39 +70,53 @@ class MobSpawner extends Spawnable{
 			PureEntities::logOutput("onUpdate Called with EntityID of -1");
 			return false;
 		}
-
-		if($this->delay++ >= mt_rand($this->minSpawnDelay, $this->maxSpawnDelay)){
-			$this->delay = 0;
-
-			$list = [];
-			$isValid = false;
-			foreach($this->level->getEntities() as $entity){
-				if($entity->distance($this) <= $this->requiredPlayerRange){
-					if($entity instanceof Player){
-						$isValid = true;
-					}
-					$list[] = $entity;
-					break;
+		$this->scheduleUpdate();
+		if($this->delay > 0 ){
+			$this->delay--;
+			return true;
+		}
+		$count = 0;
+		$isValid = false;
+		foreach($this->level->getEntities() as $entity){
+			$distance = $entity->distance($this);
+			if($distance <= $this->requiredPlayerRange){
+				if($entity instanceof Player){
+					$isValid = true;
 				}
+				break;
+			}elseif($distance < $this->spawnRange and $entity->getId() === $this->entityId){
+				$count++;
 			}
+		}
+		if(!$isValid){
+			return false;
+		}
 
-			if($isValid && count($list) <= $this->maxNearbyEntities){
-				$y = $this->y;
-				$x = $this->x + mt_rand(-$this->spawnRange, $this->spawnRange);
-				$z = $this->z + mt_rand(-$this->spawnRange, $this->spawnRange);
-				$pos = PureEntities::getSuitableHeightPosition($x, $y, $z, $this->level);
-				if(!$pos === null){
-					$pos->y += Data::HEIGHTS[$this->entityId];
-					$entity = PureEntities::create($this->entityId, $pos);
-					if($entity !== null){
-						PureEntities::logOutput("MobSpawner: spawn $entity to $pos");
-						$entity->spawnToAll();
-					}
+		if(($count <= $this->maxNearbyEntities) and $this->attempMobSpawns()){
+			$this->delay = mt_rand($this->minSpawnDelay, $this->maxSpawnDelay);
+		}
+
+		return true;
+	}
+
+	private function attempMobSpawns() : bool{
+		$success = false;
+		for($attempts = 0; $attempts < 4; $attempts++){
+			$y = $this->y + mt_rand(-1, 1);
+			$x = $this->x + mt_rand(-$this->spawnRange, $this->spawnRange);
+			$z = $this->z + mt_rand(-$this->spawnRange, $this->spawnRange);
+			$pos = new Position($x, $y, $z, $this->level);
+			if($this->level->getBlock($pos)->getId() === BlockIds::AIR){
+				//TODO: Vaildate light levels and other required spawn conditions.
+				$entity = PureEntities::create($this->entityId, $pos);
+				if($entity !== null){
+					$success = true;
+					PureEntities::logOutput("MobSpawner: spawn $entity to $pos");
+					$entity->spawnToAll();
 				}
 			}
 		}
-		$this->scheduleUpdate();
-		return true;
+		return $success;
 	}
 
 	public function setSpawnEntityType(int $entityId){
