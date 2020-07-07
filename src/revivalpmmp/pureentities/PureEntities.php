@@ -103,16 +103,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	/** @var  PureEntities $instance */
 	private static $instance;
 
-	// button texts ...
-	// TODO Move these into their own Class under Data.
-	const BUTTON_TEXT_SHEAR = "Shear";
-	const BUTTON_TEXT_FEED = "Feed";
-	const BUTTON_TEXT_MILK = "Milk";
-	const BUTTON_TEXT_TAME = "Tame";
-	const BUTTON_TEXT_SIT = "Sit";
-	const BUTTON_TEXT_STAND = "Stand";
-	const BUTTON_TEXT_DYE = "Dye";
-
 	/** @var string[] */
 	private static $registeredClasses = [];
 

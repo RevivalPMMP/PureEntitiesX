@@ -24,6 +24,7 @@ namespace revivalpmmp\pureentities\entity\animal\walking;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\components\BreedingComponent;
+use revivalpmmp\pureentities\data\ButtonText;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\entity\animal\WalkingAnimal;
 use revivalpmmp\pureentities\features\IntfCanBreed;
@@ -111,7 +112,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
 		if($player->getInventory() != null){ // sometimes, we get null on getInventory?! F**k
 			$itemInHand = $player->getInventory()->getItemInHand();
 			if($itemInHand->getId() === Item::BUCKET && $itemInHand->getDamage() === 0){ // empty bucket
-				InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_MILK, $player);
+				InteractionHelper::displayButtonText(ButtonText::MILK, $player);
 				return;
 			}
 		}

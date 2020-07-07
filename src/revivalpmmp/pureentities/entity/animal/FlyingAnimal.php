@@ -26,6 +26,7 @@ use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\ButtonText;
 use revivalpmmp\pureentities\entity\FlyingEntity;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\InteractionHelper;
@@ -112,14 +113,14 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 			$itemInHand = $player->getInventory()->getItemInHand()->getId();
 			$tameFood = $this->getTameFoods();
 			if(!$this->isTamed() and in_array($itemInHand, $tameFood)){
-				InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
+				InteractionHelper::displayButtonText(ButtonText::TAME, $player);
 				PureEntities::logOutput("Button text set to Tame.");
 			}else if($this->isTamed()){ // Offer sit or stand.
 				if($this->isSitting()){
-					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
+					InteractionHelper::displayButtonText(ButtonText::STAND, $player);
 					PureEntities::logOutput("Button text set to Stand.");
 				}else{
-					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
+					InteractionHelper::displayButtonText(ButtonText::SIT, $player);
 					PureEntities::logOutput("Button text set to Sit.");
 				}
 			}

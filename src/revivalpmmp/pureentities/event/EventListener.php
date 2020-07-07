@@ -32,6 +32,7 @@ use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
+use revivalpmmp\pureentities\data\ButtonText;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
 use revivalpmmp\pureentities\entity\animal\walking\Ocelot;
@@ -77,14 +78,14 @@ class EventListener implements Listener{
 				$entity = $player->level->getEntity($packet->trData->entityRuntimeId);
 				PureEntities::logOutput("$entity with button text $btnTxt");
 				if($entity instanceof IntfShearable and !$entity->isSheared() and
-					strcmp($btnTxt, PureEntities::BUTTON_TEXT_SHEAR) == 0){
+					strcmp($btnTxt, ButtonText::SHEAR) == 0){
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->shear");
 					$return = $entity->shear($player);
-				}else if($entity instanceof Cow and strcmp($btnTxt, PureEntities::BUTTON_TEXT_MILK) == 0){
+				}else if($entity instanceof Cow and strcmp($btnTxt, ButtonText::MILK) == 0){
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->milk");
 					$return = $entity->milk($player);
 				}else if($entity instanceof IntfCanBreed and
-					strcmp($btnTxt, PureEntities::BUTTON_TEXT_FEED) == 0 and
+				strcmp($btnTxt, ButtonText::FEED) == 0 and
 					$entity->getBreedingComponent() !== false
 				){ // normally, this shouldn't be needed (because IntfCanBreed needs this method!
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->feed");
@@ -94,24 +95,24 @@ class EventListener implements Listener{
 					if($itemInHand != null){
 						$player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
 					}
-				}else if($entity instanceof IntfTameable and !$entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_TAME) == 0){
+				}else if($entity instanceof IntfTameable and !$entity->isTamed() and strcmp($btnTxt, ButtonText::TAME) == 0){
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame");
 					$return = $entity->attemptToTame($player);
-				}else if($entity instanceof IntfTameable and $entity->isTamed() and strcmp($btnTxt, PureEntities::BUTTON_TEXT_SIT) == 0){
+				}else if($entity instanceof IntfTameable and $entity->isTamed() and strcmp($btnTxt, ButtonText::SIT) == 0){
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit");
 					$entity->setSitting(true);
 					if($entity instanceof Ocelot){
 						$entity->setCommandedToSit(true);
 					}
 					$return = true;
-				}else if($entity instanceof IntfTameable and $entity->isTamed() and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_STAND) == 0){
+				}else if($entity instanceof IntfTameable and $entity->isTamed() and strcmp(InteractionHelper::getButtonText($player), ButtonText::STAND) == 0){
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->stand");
 					$entity->setSitting(false);
 					if($entity instanceof Ocelot){
 						$entity->setCommandedToSit(false);
 					}
 					$return = true;
-				}else if((($entity instanceof Wolf) or ($entity instanceof Sheep)) and strcmp(InteractionHelper::getButtonText($player), PureEntities::BUTTON_TEXT_DYE) == 0){
+				}else if((($entity instanceof Wolf) or ($entity instanceof Sheep)) and strcmp(InteractionHelper::getButtonText($player), ButtonText::DYE) == 0){
 					$color = Color::convert($player->getInventory()->getItemInHand()->getDamage());
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->dye with color: $color");
 					if($entity instanceof Wolf){

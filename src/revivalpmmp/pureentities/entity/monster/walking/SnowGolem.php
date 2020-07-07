@@ -33,6 +33,7 @@ use pocketmine\nbt\tag\DoubleTag;
 use pocketmine\nbt\tag\FloatTag;
 use pocketmine\nbt\tag\ListTag;
 use pocketmine\Player;
+use revivalpmmp\pureentities\data\ButtonText;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;
@@ -130,7 +131,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	public function showButton(Player $player){
 		if($player->getInventory() != null){ // sometimes, we get null on getInventory?! F**k
 			if($player->getInventory()->getItemInHand()->getId() === ItemIds::SHEARS && !$this->isSheared()){
-				InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $player);
+				InteractionHelper::displayButtonText(ButtonText::SHEAR, $player);
 				return;
 			}
 		}

@@ -32,6 +32,7 @@ use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 use pocketmine\Server;
+use revivalpmmp\pureentities\data\ButtonText;
 use revivalpmmp\pureentities\entity\animal\Animal;
 use revivalpmmp\pureentities\entity\monster\walking\Enderman;
 use revivalpmmp\pureentities\entity\monster\walking\Wolf;
@@ -284,7 +285,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 			if($player->getInventory() != null){ // sometimes, we get null on getInventory?!
 				$itemInHand = $player->getInventory()->getItemInHand()->getId();
 				if($this instanceof IntfShearable and $itemInHand === Item::SHEARS and !$this->isSheared()){
-					InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SHEAR, $player);
+					InteractionHelper::displayButtonText(ButtonText::SHEAR, $player);
 					PureEntities::logOutput("Button text set to Shear.");
 
 				}else if($this instanceof IntfTameable){
@@ -293,20 +294,20 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 					$hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
 					$tameFood = $this->getTameFoods();
 					if(!$this->isTamed() and in_array($itemInHand, $tameFood)){
-						InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_TAME, $player);
+						InteractionHelper::displayButtonText(ButtonText::TAME, $player);
 						PureEntities::logOutput("Button text set to Tame.");
 					}else if($this->isTamed() and $hasFeedableItemsInHand){
-						InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
+						InteractionHelper::displayButtonText(ButtonText::FEED, $player);
 						PureEntities::logOutput("Button text set to Feed for tameable entity.");
 					}else if($this instanceof Wolf and $this->isTamed() and $itemInHand == ItemIds::DYE){
-						InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_DYE, $player);
+						InteractionHelper::displayButtonText(ButtonText::DYE, $player);
 						PureEntities::logOutput("Button text was set to Dye for tamed Wolf.");
 					}else if($this->isTamed()){ // Offer sit or stand.
 						if($this->isSitting()){
-							InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_STAND, $player);
+							InteractionHelper::displayButtonText(ButtonText::STAND, $player);
 							PureEntities::logOutput("Button text set to Stand.");
 						}else{
-							InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_SIT, $player);
+							InteractionHelper::displayButtonText(ButtonText::SIT, $player);
 							PureEntities::logOutput("Button text set to Sit.");
 						}
 					}
@@ -315,7 +316,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 					$feedableItems = $this->getFeedableItems();
 					$hasFeedableItemsInHand = in_array($itemInHand, $feedableItems);
 					if($hasFeedableItemsInHand){
-						InteractionHelper::displayButtonText(PureEntities::BUTTON_TEXT_FEED, $player);
+						InteractionHelper::displayButtonText(ButtonText::FEED, $player);
 						PureEntities::logOutput("Button text set to Feed.");
 					}
 				}else{ // No button type interactions necessary.
