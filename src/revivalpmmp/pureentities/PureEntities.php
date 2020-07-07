@@ -24,7 +24,6 @@ namespace revivalpmmp\pureentities;
 use LogLevel;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockIds;
-use pocketmine\command\CommandExecutor;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
