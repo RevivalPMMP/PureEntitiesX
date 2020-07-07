@@ -31,6 +31,7 @@ use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\item\Item;
+use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
@@ -155,55 +156,57 @@ class EventListener implements Listener{
 		}
 
 		$block = $ev->getBlock();
-		if($block->getId() === Item::JACK_O_LANTERN || $block->getId() === Item::PUMPKIN){
+		$level = $block->getLevel();
+		if(($block->getId() !== Item::JACK_O_LANTERN && $block->getId() !== Item::PUMPKIN) || !$level instanceof Level){
+			return;
+		}
+		if(
+			$block->getSide(Vector3::SIDE_DOWN)->getId() === Item::SNOW_BLOCK
+			&& $block->getSide(Vector3::SIDE_DOWN, 2)->getId() === Item::SNOW_BLOCK
+		){
+			for($y = 1; $y < 3; $y++){
+				$level->setBlock($block->add(0, -$y, 0), new Air());
+			}
+			$entity = PureEntities::create("SnowGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
+			if($entity !== null){
+				$entity->spawnToAll();
+			}
+			$ev->setCancelled();
+		}elseif(
+			$block->getSide(Vector3::SIDE_DOWN)->getId() === Item::IRON_BLOCK
+			&& $block->getSide(Vector3::SIDE_DOWN, 2)->getId() === Item::IRON_BLOCK
+		){
+			$first = $block->getSide(Vector3::SIDE_EAST);
+			$second = $block->getSide(Vector3::SIDE_EAST);
 			if(
-				$block->getSide(Vector3::SIDE_DOWN)->getId() === Item::SNOW_BLOCK
-				&& $block->getSide(Vector3::SIDE_DOWN, 2)->getId() === Item::SNOW_BLOCK
+				$first->getId() === Item::IRON_BLOCK
+				&& $second->getId() === Item::IRON_BLOCK
 			){
-				for($y = 1; $y < 3; $y++){
-					$block->getLevel()->setBlock($block->add(0, -$y, 0), new Air());
-				}
-				$entity = PureEntities::create("SnowGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
-				if($entity !== null){
-					$entity->spawnToAll();
-				}
-				$ev->setCancelled();
-			}elseif(
-				$block->getSide(Vector3::SIDE_DOWN)->getId() === Item::IRON_BLOCK
-				&& $block->getSide(Vector3::SIDE_DOWN, 2)->getId() === Item::IRON_BLOCK
-			){
-				$first = $block->getSide(Vector3::SIDE_EAST);
-				$second = $block->getSide(Vector3::SIDE_EAST);
+				$level->setBlock($first, new Air());
+				$level->setBlock($second, new Air());
+			}else{
+				$first = $block->getSide(Vector3::SIDE_NORTH);
+				$second = $block->getSide(Vector3::SIDE_SOUTH);
 				if(
 					$first->getId() === Item::IRON_BLOCK
 					&& $second->getId() === Item::IRON_BLOCK
 				){
-					$block->getLevel()->setBlock($first, new Air());
-					$block->getLevel()->setBlock($second, new Air());
+					$level->setBlock($first, new Air());
+					$level->setBlock($second, new Air());
 				}else{
-					$first = $block->getSide(Vector3::SIDE_NORTH);
-					$second = $block->getSide(Vector3::SIDE_SOUTH);
-					if(
-						$first->getId() === Item::IRON_BLOCK
-						&& $second->getId() === Item::IRON_BLOCK
-					){
-						$block->getLevel()->setBlock($first, new Air());
-						$block->getLevel()->setBlock($second, new Air());
-					}else{
-						return;
-					}
+					return;
+				}
+			}
+
+			if($second !== null){
+				$entity = PureEntities::create("IronGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
+				if($entity !== null){
+					$entity->spawnToAll();
 				}
 
-				if($second !== null){
-					$entity = PureEntities::create("IronGolem", Position::fromObject($block->add(0.5, -2, 0.5), $block->level));
-					if($entity !== null){
-						$entity->spawnToAll();
-					}
-
-					$block->getLevel()->setBlock($entity, new Air());
-					$block->getLevel()->setBlock($block->add(0, -1, 0), new Air());
-					$ev->setCancelled();
-				}
+				$level->setBlock($entity, new Air());
+				$level->setBlock($block->add(0, -1, 0), new Air());
+				$ev->setCancelled();
 			}
 		}
 	}
