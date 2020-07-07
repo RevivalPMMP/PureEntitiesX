@@ -30,7 +30,7 @@ use revivalpmmp\pureentities\components\BreedingComponent;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
-use revivalpmmp\pureentities\entity\animal\jumping\Rabbit;
+use revivalpmmp\pureentities\entity\animal\walking\Rabbit;
 use revivalpmmp\pureentities\entity\animal\walking\Sheep;
 use revivalpmmp\pureentities\entity\monster\Monster;
 use revivalpmmp\pureentities\entity\monster\WalkingMonster;

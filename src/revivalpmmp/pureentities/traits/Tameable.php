@@ -23,6 +23,7 @@ namespace revivalpmmp\pureentities\traits;
 
 use pocketmine\entity\Entity;
 use pocketmine\math\Vector3;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\NBTConst;

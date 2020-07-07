@@ -203,7 +203,7 @@ abstract class BaseEntity extends Creature{
 
 		$this->loadNBT();
 
-		$this->setDataFlag(self::DATA_FLAG_NO_AI, self::DATA_TYPE_BYTE, 1);
+		$this->setDataFlag(self::DATA_FLAG_NO_AI, self::DATA_TYPE_BYTE, true);
 
 		$this->idlingComponent->loadFromNBT();
 	}
@@ -211,8 +211,8 @@ abstract class BaseEntity extends Creature{
 	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->setByte(NBTConst::NBT_KEY_MOVEMENT, $this->isMovement(), true);
-			$this->namedtag->setByte(NBTConst::NBT_KEY_WALL_CHECK, $this->isWallCheck(), true);
+			$this->namedtag->setByte(NBTConst::NBT_KEY_MOVEMENT, (int) $this->isMovement(), true);
+			$this->namedtag->setByte(NBTConst::NBT_KEY_WALL_CHECK, (int) $this->isWallCheck(), true);
 			$this->namedtag->setInt(NBTConst::NBT_KEY_AGE_IN_TICKS, $this->ticksLived, true);
 
 			// No reason to attempt this if getEnableNBT is false.
@@ -223,12 +223,12 @@ abstract class BaseEntity extends Creature{
 	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_MOVEMENT)){
-				$movement = $this->namedtag->getByte(NBTConst::NBT_KEY_MOVEMENT, false, true);
+				$movement = $this->namedtag->getByte(NBTConst::NBT_KEY_MOVEMENT, 0, true);
 				$this->setMovement((bool) $movement);
 			}
 
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_WALL_CHECK)){
-				$wallCheck = $this->namedtag->getByte(NBTConst::NBT_KEY_WALL_CHECK, false, true);
+				$wallCheck = $this->namedtag->getByte(NBTConst::NBT_KEY_WALL_CHECK, 0, true);
 				$this->setWallCheck((bool) $wallCheck);
 			}
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_AGE_IN_TICKS)){

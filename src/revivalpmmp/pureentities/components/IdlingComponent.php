@@ -239,14 +239,14 @@ class IdlingComponent{
 			$entityTag = $this->baseEntity->namedtag;
 			$idleCompound = new CompoundTag(NBTConst::NBT_KEY_IDLE_SETTINGS);
 			if($this->idling){
-				$idleCompound->setInt(NBTConst::NBT_KEY_IDLING, $this->idling);
+				$idleCompound->setInt(NBTConst::NBT_KEY_IDLING, (int) $this->idling);
 				$idleCompound->setInt(NBTConst::NBT_KEY_IDLING_COUNTER, $this->idlingCounter->getCurrentCounter());
 				$idleCompound->setInt(NBTConst::NBT_KEY_MAX_IDLING_COUNTER, $this->idlingCounter->getMaxCounter());
 				$idleCompound->setInt(NBTConst::NBT_KEY_IDLING_TICK_COUNTER, $this->idlingTickCounter->getCurrentCounter());
 				$idleCompound->setInt(NBTConst::NBT_KEY_MAX_IDLING_TICK_COUNTER, $this->idlingTickCounter->getMaxCounter());
 				$idleCompound->setInt(NBTConst::NBT_KEY_LAST_IDLE_STATUS, $this->lastIdleStatus);
 			}else{
-				$idleCompound->getInt(NBTConst::NBT_KEY_IDLING, $this->idling);
+				$idleCompound->getInt(NBTConst::NBT_KEY_IDLING, (int) $this->idling);
 				$idleCompound->getInt(NBTConst::NBT_KEY_LAST_IDLE_STATUS, $this->lastIdleStatus);
 			}
 			$entityTag->setTag($idleCompound);

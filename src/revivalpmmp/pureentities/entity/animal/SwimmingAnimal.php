@@ -40,7 +40,7 @@ abstract class SwimmingAnimal extends SwimmingEntity implements Animal{
 		parent::initEntity();
 
 		if($this->getDataPropertyManager()->getPropertyValue(self::DATA_FLAG_BABY, 0) === null){
-			$this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, 0);
+			$this->setDataFlag(self::DATA_FLAG_BABY, self::DATA_TYPE_BYTE, false);
 		}
 	}
 

@@ -101,7 +101,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 	}
 
 	public function getDamage(int $difficulty = null) : float{
-		return mt_rand($this->getMinDamage($difficulty), $this->getMaxDamage($difficulty));
+		return mt_rand((int) $this->getMinDamage($difficulty), (int) $this->getMaxDamage($difficulty));
 	}
 
 	public function getMinDamage(int $difficulty = null) : float{

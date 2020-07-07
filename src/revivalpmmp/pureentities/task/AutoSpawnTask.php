@@ -199,9 +199,9 @@ class AutoSpawnTask extends Task{
 	 * @return Vector3
 	 */
 	private function getRandomLocationInChunk(Vector2 $chunk) : Vector3{
-		$x = mt_rand($chunk->x * 16, (($chunk->x * 16) + 15));
+		$x = mt_rand((int) $chunk->x * 16, (int) (($chunk->x * 16) + 15));
 		$y = mt_rand(0, 255);
-		$z = mt_rand($chunk->y * 16, (($chunk->y * 16) + 15));
+		$z = mt_rand((int) $chunk->y * 16, (int) (($chunk->y * 16) + 15));
 
 		return new Vector3($x, $y, $z);
 	}
