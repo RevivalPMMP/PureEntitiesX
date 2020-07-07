@@ -85,7 +85,7 @@ class EventListener implements Listener{
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->milk");
 					$return = $entity->milk($player);
 				}else if($entity instanceof IntfCanBreed and
-				strcmp($btnTxt, ButtonText::FEED) === 0 and
+					strcmp($btnTxt, ButtonText::FEED) === 0 and
 					$entity->getBreedingComponent() !== false
 				){ // normally, this shouldn't be needed (because IntfCanBreed needs this method!
 					PureEntities::logOutput("$entity: dataPacketReceiveEvent->feed");

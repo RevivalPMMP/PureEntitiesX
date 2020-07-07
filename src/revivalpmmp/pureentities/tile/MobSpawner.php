@@ -72,7 +72,7 @@ class MobSpawner extends Spawnable{
 			return false;
 		}
 		$this->scheduleUpdate();
-		if($this->delay > 0 ){
+		if($this->delay > 0){
 			$this->delay--;
 			return true;
 		}

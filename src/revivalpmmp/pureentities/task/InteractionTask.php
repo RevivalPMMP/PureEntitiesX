@@ -59,7 +59,7 @@ class InteractionTask extends Task{
 				continue;
 			}
 			$entity = InteractionHelper::getEntityPlayerLookingAt($player, PluginConfiguration::getInstance()->getMaxInteractDistance(),
-			PluginConfiguration::getInstance()->isInteractiveButtonCorrection());
+				PluginConfiguration::getInstance()->isInteractiveButtonCorrection());
 			if($entity === null){
 				return;
 			}

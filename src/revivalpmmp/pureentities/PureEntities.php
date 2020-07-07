@@ -285,33 +285,33 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 */
 	public static function logOutput(string $message, string $type = LogLevel::DEBUG) : void{
 		$logger = self::getInstance()->getLogger();
-			switch($type){
-				case LogLevel::EMERGENCY:
-					$logger->emergency($message);
-					break;
-				case LogLevel::ALERT:
-					$logger->alert($message);
-					break;
-				case LogLevel::CRITICAL:
-					$logger->critical($message);
-					break;
-				case LogLevel::ERROR:
-					$logger->error($message);
-					break;
-				case LogLevel::WARNING:
-					$logger->warning($message);
-					break;
-				case LogLevel::NOTICE:
-					$logger->notice($message);
-					break;
-				case LogLevel::INFO:
-					$logger->info($message);
-					break;
-				case LogLevel::DEBUG:
-				default:
-					$logger->debug($message);
-					break;
-			}
+		switch($type){
+			case LogLevel::EMERGENCY:
+				$logger->emergency($message);
+				break;
+			case LogLevel::ALERT:
+				$logger->alert($message);
+				break;
+			case LogLevel::CRITICAL:
+				$logger->critical($message);
+				break;
+			case LogLevel::ERROR:
+				$logger->error($message);
+				break;
+			case LogLevel::WARNING:
+				$logger->warning($message);
+				break;
+			case LogLevel::NOTICE:
+				$logger->notice($message);
+				break;
+			case LogLevel::INFO:
+				$logger->info($message);
+				break;
+			case LogLevel::DEBUG:
+			default:
+				$logger->debug($message);
+				break;
+		}
 	}
 
 	/**
@@ -319,10 +319,10 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	 *
 	 *
 	 *
-	 * @param float|int  $x                the x position to start search
-	 * @param float|int  $y                the y position to start search
-	 * @param float|int  $z                the z position to start searching
-	 * @param Level      $level                 Level the level object to search in
+	 * @param float|int $x the x position to start search
+	 * @param float|int $y the y position to start search
+	 * @param float|int $z the z position to start searching
+	 * @param Level     $level Level the level object to search in
 	 * @return null|Position               NULL if no valid position was found or the final AIR spawn position
 	 */
 	public static function getSuitableHeightPosition($x, $y, $z, Level $level){
