@@ -43,7 +43,7 @@ class PeTimings{
 	 * @param string $description
 	 */
 	public static function startTiming(string $description){
-		self::$timingsHolder[$description] = round(microtime(1));
+		self::$timingsHolder[$description] = round(microtime(true));
 	}
 
 	/**
@@ -54,7 +54,7 @@ class PeTimings{
 	 * @return float
 	 */
 	public static function stopTiming(string $description, bool $logToFile = false){
-		$timeExpired = round(microtime(1)) - self::$timingsHolder[$description];
+		$timeExpired = round(microtime(true)) - self::$timingsHolder[$description];
 
 		if($logToFile){
 			PureEntities::logOutput("PeTimings[$description]: took $timeExpired microseconds to complete.");
