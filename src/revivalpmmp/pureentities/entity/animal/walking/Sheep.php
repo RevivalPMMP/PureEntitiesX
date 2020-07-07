@@ -128,7 +128,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 	public function loadNBT(){
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			if($this->namedtag->hasTag(NBTConst::NBT_KEY_SHEARED)){
-				$sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, false, true);
+				$sheared = $this->namedtag->getByte(NBTConst::NBT_KEY_SHEARED, 0, true);
 				$this->sheared = (bool) $sheared;
 			}
 
@@ -147,7 +147,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 	public function saveNBT() : void{
 		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
-			$this->namedtag->setTag(new ByteTag(NBTConst::NBT_KEY_SHEARED, $this->sheared));
+			$this->namedtag->setTag(new ByteTag(NBTConst::NBT_KEY_SHEARED, (int) $this->sheared));
 			$this->namedtag->setTag(new ByteTag(NBTConst::NBT_KEY_COLOR, $this->color));
 		}
 		$this->breedableClass->saveNBT();
