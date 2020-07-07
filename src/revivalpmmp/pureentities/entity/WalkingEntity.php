@@ -23,6 +23,7 @@ namespace revivalpmmp\pureentities\entity;
 use pocketmine\block\Block;
 use pocketmine\block\Liquid;
 use pocketmine\entity\Creature;
+use pocketmine\entity\Living;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\math\Math;
 use pocketmine\math\Vector2;
@@ -172,7 +173,11 @@ abstract class WalkingEntity extends BaseEntity{
 				$this->motion->z = $this->getSpeed() * 0.15 * ($z / $diff);
 				$this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
 			}
-			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
+			if($this->getBaseTarget() instanceof Living){
+				$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
+			}else{
+				$this->pitch = 0;
+			}
 
 		}else if(($target = $this->getBaseTarget()) instanceof ItemEntity and $this instanceof IntfCanEquip){ // mob equipment
 			$distance = $this->distanceSquared($this->getBaseTarget());
