@@ -168,7 +168,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 	public function targetOption(Creature $creature, float $distance) : bool{
 		$targetOption = false;
 		if($creature instanceof Player){ // a player requests the target option
-			if($creature != null and $creature->getInventory() != null){ // sometimes, we get null on getInventory?!
+			if($creature !== null and $creature->getInventory() !== null){ // sometimes, we get null on getInventory?!
 				$itemInHand = $creature->getInventory()->getItemInHand()->getId();
 				if($this instanceof IntfTameable){
 					$tameFood = $this->getTameFoods();
@@ -206,7 +206,7 @@ abstract class WalkingAnimal extends WalkingEntity implements Animal{
 	 * @param Player $player
 	 */
 	public function showButton(Player $player){
-		if($player->getInventory() != null){ // sometimes, we get null on getInventory?!
+		if($player->getInventory() !== null){ // sometimes, we get null on getInventory?!
 			$itemInHand = $player->getInventory()->getItemInHand()->getId();
 			// Redefining how to determine button circumstance.  There are several animals that are breedable
 			// without being tameable (ie. Sheep, Cows, Mooshroom, Pigs, Chicken)

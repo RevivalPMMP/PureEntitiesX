@@ -114,7 +114,7 @@ class InteractionHelper{
 	 */
 	private static function getEntityAtPosition(array $nearbyEntities, int $x, int $y, int $z, bool $useCorrection){
 		foreach($nearbyEntities as $nearbyEntity){
-			if($nearbyEntity->getFloorX() == $x and $nearbyEntity->getFloorY() == $y and $nearbyEntity->getFloorZ() == $z){
+			if($nearbyEntity->getFloorX() === $x and $nearbyEntity->getFloorY() === $y and $nearbyEntity->getFloorZ() === $z){
 				return $nearbyEntity;
 			}else if($useCorrection){ // when using correction, we search not only in front also 1 block up/down/left/right etc. pp
 				return self::getCorrectedEntity($nearbyEntity, $x, $y, $z);
@@ -140,7 +140,7 @@ class InteractionHelper{
 		for($searchX = ($x - 1); $searchX <= ($x + 1); $searchX++){
 			for($searchY = ($y - 1); $searchY <= ($y + 1); $searchY++){
 				for($searchZ = ($z - 1); $searchZ <= ($z + 1); $searchZ++){
-					if($entityX == $searchX and $entityY == $searchY and $entityZ == $searchZ){
+					if($entityX === $searchX and $entityY === $searchY and $entityZ === $searchZ){
 						return $entity;
 					}
 				}

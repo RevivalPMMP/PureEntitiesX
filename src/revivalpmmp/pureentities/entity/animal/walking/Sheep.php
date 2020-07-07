@@ -89,7 +89,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 			if($this->isSheared()){
 				$currentBlock = $this->getCurrentBlock();
 				if($currentBlock !== null and
-					($currentBlock instanceof Grass or $currentBlock instanceof TallGrass or strcmp($currentBlock->getName(), "Double Tallgrass") == 0)
+					($currentBlock instanceof Grass or $currentBlock instanceof TallGrass or strcmp($currentBlock->getName(), "Double Tallgrass") === 0)
 				){ // only grass blocks are eatable by sheep)
 					$this->blockOfInterestReached($currentBlock);
 				}
@@ -196,7 +196,7 @@ class Sheep extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, Intf
 			}
 		}
 		// after the eat grass has been played, we reset the block through air
-		if($block->getId() == Block::GRASS or $block->getId() == Block::TALL_GRASS){ // grass blocks are replaced by dirt blocks ...
+		if($block->getId() === Block::GRASS or $block->getId() === Block::TALL_GRASS){ // grass blocks are replaced by dirt blocks ...
 			$this->getLevel()->setBlock($block, new Dirt());
 		}else{
 			$this->getLevel()->setBlock($block, new Air());

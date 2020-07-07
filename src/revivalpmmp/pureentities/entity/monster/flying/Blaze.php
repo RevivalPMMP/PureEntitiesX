@@ -70,7 +70,7 @@ class Blaze extends FlyingMonster implements ProjectileSource{
 						continue;
 					}
 
-					if($creature instanceof BaseEntity && $creature->isFriendly() == $this->isFriendly()){
+					if($creature instanceof BaseEntity && $creature->isFriendly() === $this->isFriendly()){
 						continue;
 					}
 
@@ -107,7 +107,7 @@ class Blaze extends FlyingMonster implements ProjectileSource{
 			return false;
 		}
 
-		if($this->motion->y == $this->gravity * 2){
+		if($this->motion->y === $this->gravity * 2){
 			return $this->level->getBlock(new Vector3(Math::floorFloat($this->x), (int) $this->y, Math::floorFloat($this->z))) instanceof Liquid;
 		}else if($this->level->getBlock(new Vector3(Math::floorFloat($this->x), (int) ($this->y + 0.8), Math::floorFloat($this->z))) instanceof Liquid){
 			$this->motion->y = $this->gravity * 2;
@@ -163,7 +163,7 @@ class Blaze extends FlyingMonster implements ProjectileSource{
 				}
 			}
 			if($diff > 0) $this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
-			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
+			$this->pitch = $y === 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
 		}
 
 		$dx = $this->motion->x * $tickDiff;
@@ -177,7 +177,7 @@ class Blaze extends FlyingMonster implements ProjectileSource{
 			$this->move($dx, $this->motion->y * $tickDiff, $dz);
 			$af = new Vector2($this->x, $this->z);
 
-			if(($be->x != $af->x || $be->y != $af->y) && !$isJump){
+			if(($be->x !== $af->x || $be->y !== $af->y) && !$isJump){
 				$this->moveTime -= 90 * $tickDiff;
 			}
 		}

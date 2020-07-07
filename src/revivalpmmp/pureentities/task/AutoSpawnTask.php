@@ -112,7 +112,7 @@ class AutoSpawnTask extends Task{
 
 					foreach($spawnMap as $chunk){
 						// TODO Find source of null chunks
-						if($chunk != null){
+						if($chunk !== null){
 							if($hostileCap > $this->hostileMobs){
 								$this->spawnHostileMob($chunk, $level);
 							}
@@ -250,9 +250,9 @@ class AutoSpawnTask extends Task{
 	private function isValidDrySpawnLocation(Position $spawnLocation){
 		if(!$spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y - 1, $spawnLocation->z)->isTransparent()
 			and ($spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y, $spawnLocation->z)->isTransparent() and
-				$spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y, $spawnLocation->z)->getId() != Block::WATER)
+				$spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y, $spawnLocation->z)->getId() !== Block::WATER)
 			and ($spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 1, $spawnLocation->z)->isTransparent()
-				and $spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 1, $spawnLocation->z)->getId() != Block::WATER)
+				and $spawnLocation->level->getBlockAt($spawnLocation->x, $spawnLocation->y + 1, $spawnLocation->z)->getId() !== Block::WATER)
 		){
 			return true;
 		}

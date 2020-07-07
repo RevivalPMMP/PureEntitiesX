@@ -44,7 +44,7 @@ class Creeper extends WalkingMonster implements Explosive{
 	public function initEntity() : void{
 		parent::initEntity();
 		$this->speed = 0.9;
-		$this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) == 0 ? false : true);
+		$this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) === 0 ? false : true);
 	}
 
 	public function getName() : string{
@@ -115,7 +115,7 @@ class Creeper extends WalkingMonster implements Explosive{
 				$this->motion->z = $this->getSpeed() * 0.15 * ($z / $diff);
 				$this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
 			}
-			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
+			$this->pitch = $y === 0 ? 0 : rad2deg(-atan2($y, sqrt($x * $x + $z * $z)));
 		}elseif($this->isIgnited()){ // using flint and steel manual ignition
 			$this->setMovement(false);
 			$fuse = $this->getFuse() - $tickDiff;

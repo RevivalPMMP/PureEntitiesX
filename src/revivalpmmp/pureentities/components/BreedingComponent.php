@@ -313,7 +313,7 @@ class BreedingComponent{
 		if($this->getInLove() > 0){
 
 			// check if we are near our breeding partner. if so, set breed!
-			if($this->getBreedPartner() != null and
+			if($this->getBreedPartner() !== null and
 				$this->getBreedPartner()->getBreedingComponent()->getInLove() > 0 and
 				$this->getBreedPartner()->distance($this->entity) <= 2 and
 				!$this->isBreeding()
@@ -340,10 +340,10 @@ class BreedingComponent{
 
 			// search for partner
 			if($this->partnerSearchTimer >= self::SEARCH_FOR_PARTNER_DELAY and
-				$this->getBreedPartner() == null
+				$this->getBreedPartner() === null
 			){
 				$validTarget = $this->findAnotherEntityInLove(PluginConfiguration::getInstance()->getMaxFindPartnerDistance()); // find another target within 20 blocks
-				if($validTarget != false){
+				if($validTarget !== false){
 					$this->setBreedPartner($validTarget); // now my target is my "in love" partner - this entity will move to the other entity
 					/**
 					 * @var $validTarget IntfCanBreed
@@ -371,11 +371,11 @@ class BreedingComponent{
 			/**
 			 * @var $otherEntity IntfCanBreed|BaseEntity
 			 */
-			if(strcmp(get_class($otherEntity), get_class($this->entity)) == 0 and // must be of the same species
+			if(strcmp(get_class($otherEntity), get_class($this->entity)) === 0 and // must be of the same species
 				$otherEntity->distance($this->entity) <= $range and // must be in range
 				$otherEntity->getBreedingComponent()->getInLove() > 0 and // must be in love
-				$otherEntity->getId() != $this->entity->getId() and // should be another entity of the same type
-				$otherEntity->getBreedingComponent()->getBreedPartner() == null
+				$otherEntity->getId() !== $this->entity->getId() and // should be another entity of the same type
+				$otherEntity->getBreedingComponent()->getBreedPartner() === null
 			){ // shouldn't have another breeding partner
 				$entityFound = $otherEntity;
 				break;

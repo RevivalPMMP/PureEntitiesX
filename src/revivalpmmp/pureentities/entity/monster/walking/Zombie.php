@@ -170,7 +170,7 @@ class Zombie extends WalkingMonster implements IntfCanEquip, IntfCanBreed, Monst
 		if($this->isLootDropAllowed()){
 			array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
 			// 2.5 percent chance of dropping one of these items.
-			if(mt_rand(1, 1000) % 25 == 0){
+			if(mt_rand(1, 1000) % 25 === 0){
 				switch(mt_rand(1, 3)){
 					case 1:
 						array_push($drops, Item::get(Item::CARROT, 0, 1));

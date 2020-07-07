@@ -109,7 +109,7 @@ class Cow extends WalkingAnimal implements IntfCanBreed, IntfCanInteract, IntfCa
 	 * @param Player $player the player to show a button eventually to
 	 */
 	public function showButton(Player $player){
-		if($player->getInventory() != null){ // sometimes, we get null on getInventory?! F**k
+		if($player->getInventory() !== null){ // sometimes, we get null on getInventory?! F**k
 			$itemInHand = $player->getInventory()->getItemInHand();
 			if($itemInHand->getId() === Item::BUCKET && $itemInHand->getDamage() === 0){ // empty bucket
 				InteractionHelper::displayButtonText(ButtonText::MILK, $player);

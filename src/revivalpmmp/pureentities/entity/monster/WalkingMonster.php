@@ -171,7 +171,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 	}
 
 	public function onUpdate(int $currentTick) : bool{
-		if($this->getLevel() == null) return false;
+		if($this->getLevel() === null) return false;
 		if($this->server->getDifficulty() < 1){
 			$this->despawnFromAll();
 			$this->close();
@@ -194,7 +194,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 				}elseif(
 					$target instanceof Vector3
 					&& (($this->x - $target->x) ** 2 + ($this->z - $target->z) ** 2) <= 1
-					&& $this->motion->y == 0
+					&& $this->motion->y === 0
 				){
 					$this->moveTime = 0;
 				}
@@ -205,7 +205,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 			}elseif(
 				$target instanceof Vector3
 				&& $this->distanceSquared($target) <= 1
-				&& $this->motion->y == 0
+				&& $this->motion->y === 0
 			){
 				$this->moveTime = 0;
 			}
@@ -282,7 +282,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 	 */
 	public function showButton(Player $player){
 		if($this->isFriendly()){
-			if($player->getInventory() != null){ // sometimes, we get null on getInventory?!
+			if($player->getInventory() !== null){ // sometimes, we get null on getInventory?!
 				$itemInHand = $player->getInventory()->getItemInHand()->getId();
 				if($this instanceof IntfShearable and $itemInHand === Item::SHEARS and !$this->isSheared()){
 					InteractionHelper::displayButtonText(ButtonText::SHEAR, $player);
@@ -299,7 +299,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 					}else if($this->isTamed() and $hasFeedableItemsInHand){
 						InteractionHelper::displayButtonText(ButtonText::FEED, $player);
 						PureEntities::logOutput("Button text set to Feed for tameable entity.");
-					}else if($this instanceof Wolf and $this->isTamed() and $itemInHand == ItemIds::DYE){
+					}else if($this instanceof Wolf and $this->isTamed() and $itemInHand === ItemIds::DYE){
 						InteractionHelper::displayButtonText(ButtonText::DYE, $player);
 						PureEntities::logOutput("Button text was set to Dye for tamed Wolf.");
 					}else if($this->isTamed()){ // Offer sit or stand.
@@ -338,7 +338,7 @@ abstract class WalkingMonster extends WalkingEntity implements Monster{
 
 		if($this->isFriendly()){
 			if(!$this->isTargetMonsterOrAnimal() and $creature instanceof Player){ // a player requests the target option
-				if($creature != null and $creature->getInventory() != null){ // sometimes, we get null on getInventory?! F**k
+				if($creature !== null and $creature->getInventory() !== null){ // sometimes, we get null on getInventory?! F**k
 					$itemInHand = $creature->getInventory()->getItemInHand()->getId();
 					if($this instanceof IntfTameable){
 						$tameFood = $this->getTameFoods();

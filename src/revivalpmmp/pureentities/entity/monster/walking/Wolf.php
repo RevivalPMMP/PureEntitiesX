@@ -128,7 +128,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	 * @return bool
 	 */
 	public function entityBaseTick(int $tickDiff = 1) : bool{
-		if($this->isClosed() or $this->getLevel() == null) return false;
+		if($this->isClosed() or $this->getLevel() === null) return false;
 		$this->checkFollowOwner();
 		return parent::entityBaseTick($tickDiff);
 	}
@@ -332,7 +332,7 @@ class Wolf extends WalkingMonster implements IntfTameable, IntfCanBreed, IntfCan
 	public function mapOwner(){
 		if($this->ownerName !== null){
 			foreach($this->getLevel()->getPlayers() as $player){
-				if(strcasecmp($this->ownerName, $player->getName()) == 0){
+				if(strcasecmp($this->ownerName, $player->getName()) === 0){
 					$this->owner = $player;
 					PureEntities::logOutput("$this: mapOwner to $player");
 					break;

@@ -45,7 +45,7 @@ abstract class FlyingEntity extends BaseEntity{
 						continue;
 					}
 
-					if($creature instanceof BaseEntity && $creature->isFriendly() == $this->isFriendly()){
+					if($creature instanceof BaseEntity && $creature->isFriendly() === $this->isFriendly()){
 						continue;
 					}
 
@@ -105,7 +105,7 @@ abstract class FlyingEntity extends BaseEntity{
 				$this->motion->y = $this->getSpeed() * 0.27 * ($y / $diff);
 				$this->yaw = rad2deg(-atan2($x / $diff, $z / $diff));
 			}
-			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
+			$this->pitch = $y === 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
 		}
 
 		$target = $this->getBaseTarget();
@@ -118,14 +118,14 @@ abstract class FlyingEntity extends BaseEntity{
 		$this->move($dx, $dy, $dz);
 		$af = new Vector2($this->x, $this->z);
 
-		if($be->x != $af->x || $be->y != $af->y){
+		if($be->x !== $af->x || $be->y !== $af->y){
 			if($this instanceof Blaze){
 				$x = 0;
 				$z = 0;
-				if($be->x - $af->x != 0){
+				if($be->x - $af->x !== 0){
 					$x = $be->x > $af->x ? 1 : -1;
 				}
-				if($be->y - $af->y != 0){
+				if($be->y - $af->y !== 0){
 					$z = $be->y > $af->y ? 1 : -1;
 				}
 
@@ -136,7 +136,7 @@ abstract class FlyingEntity extends BaseEntity{
 					$bb = $block2->getBoundingBox();
 					if(
 						$this->motion->y > -$this->gravity * 4
-						&& ($block2->canPassThrough() || ($bb == null || $bb->maxY - $this->y <= 1))
+						&& ($block2->canPassThrough() || ($bb === null || $bb->maxY - $this->y <= 1))
 					){
 						$isJump = true;
 						if($this->motion->y >= 0.3){

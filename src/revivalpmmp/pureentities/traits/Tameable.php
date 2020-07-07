@@ -117,7 +117,7 @@ trait Tameable{
 				}
 				$this->setTamed(true);
 				foreach($this->getLevel()->getPlayers() as $levelPlayer){
-					if(strcasecmp($levelPlayer->getName(), $owner) == 0){
+					if(strcasecmp($levelPlayer->getName(), $owner) === 0){
 						$this->owner = $levelPlayer;
 						break;
 					}
@@ -148,7 +148,7 @@ trait Tameable{
 		}
 		$tameSuccess = mt_rand(0, $this->tameChance - 1) === 0;
 		$itemInHand = $player->getInventory()->getItemInHand();
-		if($itemInHand != null and in_array($itemInHand->getId(), $this->getTameFoods())){
+		if($itemInHand !== null and in_array($itemInHand->getId(), $this->getTameFoods())){
 			$player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
 		}else{
 			return false;
@@ -185,8 +185,8 @@ trait Tameable{
 	 */
 
 	private function getPositionNearOwner(Player $owner, BaseEntity $pet) : Vector3{
-		$x = $owner->x + (mt_rand(2, 3) * (mt_rand(0, 1) == 1 ?: -1));
-		$z = $owner->z + (mt_rand(2, 3) * (mt_rand(0, 1) == 1 ?: -1));
+		$x = $owner->x + (mt_rand(2, 3) * (mt_rand(0, 1) === 1 ?: -1));
+		$z = $owner->z + (mt_rand(2, 3) * (mt_rand(0, 1) === 1 ?: -1));
 		$pos = PureEntities::getInstance()->getSuitableHeightPosition($x, $owner->y, $z, $pet->getLevel());
 		if($pos !== null){
 			return new Vector3($x, $pos->y, $z);
@@ -296,7 +296,7 @@ trait Tameable{
 	public function mapOwner(){
 		if($this->ownerName !== null){
 			foreach($this->getLevel()->getPlayers() as $player){
-				if(strcasecmp($this->ownerName, $player->getName()) == 0){
+				if(strcasecmp($this->ownerName, $player->getName()) === 0){
 					$this->owner = $player;
 					PureEntities::logOutput("$this: mapOwner to $player");
 					break;

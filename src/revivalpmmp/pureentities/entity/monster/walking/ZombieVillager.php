@@ -65,7 +65,7 @@ class ZombieVillager extends WalkingMonster implements Monster{
 	}
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
-		if($this->isClosed() or $this->getLevel() == null) return false;
+		if($this->isClosed() or $this->getLevel() === null) return false;
 		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
@@ -93,7 +93,7 @@ class ZombieVillager extends WalkingMonster implements Monster{
 		if($this->isLootDropAllowed()){
 			array_push($drops, Item::get(Item::ROTTEN_FLESH, 0, mt_rand(0, 2)));
 			// 2.5 percent chance of dropping one of these items.
-			if(mt_rand(1, 1000) % 25 == 0){
+			if(mt_rand(1, 1000) % 25 === 0){
 				switch(mt_rand(1, 3)){
 					case 1:
 						array_push($drops, Item::get(Item::CARROT, 0, 1));

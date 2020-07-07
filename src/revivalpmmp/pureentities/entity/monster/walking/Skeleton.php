@@ -89,7 +89,7 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 	}
 
 	public function entityBaseTick(int $tickDiff = 1) : bool{
-		if($this->isClosed() or $this->getLevel() == null) return false;
+		if($this->isClosed() or $this->getLevel() === null) return false;
 		// Timings::$timerEntityBaseTick->startTiming();
 
 		$hasUpdate = parent::entityBaseTick($tickDiff);
@@ -100,7 +100,7 @@ class Skeleton extends WalkingMonster implements IntfCanEquip, ProjectileSource{
 			&& ($time < Level::TIME_SUNSET || $time > Level::TIME_SUNRISE) // If time inferior of TIME_NIGHT and superior of TIME_SUNRISE
 			&& !($this->getLevel()->getBlock($this) instanceof Water) // IF not in water
 			&& $this->level->getBlockSkyLightAt((int) floor($this->x), (int) floor($this->y), (int) floor($this->z)) >= 14 //If is in the sun
-			&& $this->getMobEquipment()->getHelmet() == null
+			&& $this->getMobEquipment()->getHelmet() === null
 		){
 			$this->setOnFire(2);
 		}

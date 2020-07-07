@@ -57,7 +57,7 @@ abstract class WalkingEntity extends BaseEntity{
 						continue;
 					}
 
-					if($creature instanceof BaseEntity && $creature->isFriendly() == $this->isFriendly()){
+					if($creature instanceof BaseEntity && $creature->isFriendly() === $this->isFriendly()){
 						continue;
 					}
 
@@ -86,7 +86,7 @@ abstract class WalkingEntity extends BaseEntity{
 				return;
 			}
 
-			if(($this->moveTime <= 0 or !($this->getBaseTarget() instanceof Vector3)) and $this->motion->y == 0){
+			if(($this->moveTime <= 0 or !($this->getBaseTarget() instanceof Vector3)) and $this->motion->y === 0){
 				if(!$this->idlingComponent->checkAndSetIdling()){
 					$maxAttempts = 12;
 					for($attempts = 0; $attempts <= $maxAttempts; $attempts++){
@@ -100,7 +100,7 @@ abstract class WalkingEntity extends BaseEntity{
 						$underSecondBlockBox = $underSecondBlock->getCollisionBoxes()[0] ?? null;
 						$underSecondBlockBoxmaxY = $underSecondBlockBox === null ? 0 : $underSecondBlockBox->maxY;
 						//Going into Liquid ? (Avoid strange location too)
-						if($underFirstBlock instanceof Liquid OR ($locationBlockID == 0 AND $underFirstBlockID === 0)){
+						if($underFirstBlock instanceof Liquid OR ($locationBlockID === 0 AND $underFirstBlockID === 0)){
 							//May i walk into this ? (If my height is OK ...)
 							if($this->eyeHeight > ($underFirstBlockBoxmaxY + (1 - $underSecondBlockBoxmaxY))){
 								$this->setBaseTarget($locationBlock);
@@ -130,7 +130,7 @@ abstract class WalkingEntity extends BaseEntity{
 	 * @return null|Vector3
 	 */
 	public function updateMove($tickDiff){
-		if($this->isClosed() or $this->getLevel() == null or !$this->isMovement()){
+		if($this->isClosed() or $this->getLevel() === null or !$this->isMovement()){
 			return null;
 		}
 
@@ -175,7 +175,7 @@ abstract class WalkingEntity extends BaseEntity{
 				$this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
 			}
 			if($this->getBaseTarget() instanceof Living){
-				$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
+				$this->pitch = $y === 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
 			}else{
 				$this->pitch = 0;
 			}
@@ -214,7 +214,7 @@ abstract class WalkingEntity extends BaseEntity{
 			$futureLocation = new Vector2($this->x + $dx, $this->z + $dz);
 			$this->move($dx, $this->motion->y * $tickDiff, $dz);
 			$myLocation = new Vector2($this->x, $this->z);
-			if(($futureLocation->x != $myLocation->x || $futureLocation->y != $myLocation->y) && !$isJump){
+			if(($futureLocation->x !== $myLocation->x || $futureLocation->y !== $myLocation->y) && !$isJump){
 				$this->moveTime -= 90 * $tickDiff;
 			}
 		}
@@ -231,7 +231,7 @@ abstract class WalkingEntity extends BaseEntity{
 			}
 
 			//Handle jumping entity
-			if($this->jumper && (abs($this->motion->x) + abs($this->motion->z)) > 0.05 && $this->motion->y == 0){
+			if($this->jumper && (abs($this->motion->x) + abs($this->motion->z)) > 0.05 && $this->motion->y === 0){
 				$this->jump();
 				foreach($this->getLevel()->getPlayers() as $player){ // don't know if this is the correct one :/
 					if($player->distance($this) <= 49){
@@ -258,8 +258,8 @@ abstract class WalkingEntity extends BaseEntity{
 	 */
 	protected function checkJump($dx, $dz){
 		PureEntities::logOutput("$this: entering checkJump [dx:$dx] [dz:$dz] - level: " . $this->getLevel()->getName());
-		if($this->motion->y == $this->gravity * 2){ // swimming
-			PureEntities::logOutput("$this: checkJump(): motionY == gravity*2");
+		if($this->motion->y === $this->gravity * 2){ // swimming
+			PureEntities::logOutput("$this: checkJump(): motionY === gravity*2");
 			return $this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int) $this->y, Math::floorFloat($this->z))) instanceof Liquid;
 		}else{ // dive up?
 			if($this->getLevel()->getBlock(new Vector3(Math::floorFloat($this->x), (int) ($this->y + 0.8), Math::floorFloat($this->z))) instanceof Liquid){
@@ -310,7 +310,7 @@ abstract class WalkingEntity extends BaseEntity{
 			if($blockBoxDiff > $highestBlock){
 				$highestBlock = $blockBoxDiff;
 			}
-			if($lowestBlock == null){
+			if($lowestBlock === null){
 				$lowestBlock = $blockBoxDiff;
 			}elseif($lowestBlock > $blockBoxDiff){
 				$lowestBlock = $blockBoxDiff;
@@ -369,18 +369,18 @@ abstract class WalkingEntity extends BaseEntity{
 	 * @return float|int
 	 */
 	public function findTargetFloor($x, $z){
-		if($this->level->getBlock(new Vector3($x, $this->y, $z))->getId() == Block::AIR){
+		if($this->level->getBlock(new Vector3($x, $this->y, $z))->getId() === Block::AIR){
 			return $this->y;
 		}
 		//Check from current y up for air.
 		for($yScan = 1; $yScan < 3; $yScan++){
-			if($this->level->getBlock(new Vector3($x, $this->y + $yScan, $z))->getId() == Block::AIR){
+			if($this->level->getBlock(new Vector3($x, $this->y + $yScan, $z))->getId() === Block::AIR){
 				return $this->y + $yScan;
 			}
 		}
 
 		for($yScan = -1; $yScan > -3; $yScan--){
-			if($this->level->getBlock(new Vector3($x, $this->y + $yScan, $z))->getId() == Block::AIR){
+			if($this->level->getBlock(new Vector3($x, $this->y + $yScan, $z))->getId() === Block::AIR){
 				return $this->y + $yScan;
 			}
 		}

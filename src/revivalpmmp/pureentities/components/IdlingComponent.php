@@ -131,7 +131,7 @@ class IdlingComponent{
 	 * @return bool
 	 */
 	public function isLastIdleLongEnough() : bool{
-		return $this->lastIdleStatus == 0 || ($this->lastIdleStatus + $this->idleTimeBetween) < time();
+		return $this->lastIdleStatus === 0 || ($this->lastIdleStatus + $this->idleTimeBetween) < time();
 	}
 
 	/**
@@ -186,10 +186,10 @@ class IdlingComponent{
 			}
 
 			$this->baseEntity->setRotation($yaw, $pitch);
-			if($this->baseEntity->getMotion()->x != 0){
+			if($this->baseEntity->getMotion()->x !== 0){
 				$this->baseEntity->getMotion()->x = 0;
 			}
-			if($this->baseEntity->getMotion()->z != 0){
+			if($this->baseEntity->getMotion()->z !== 0){
 				$this->baseEntity->getMotion()->z = 0;
 			}
 			$this->baseEntity->updateMovement();

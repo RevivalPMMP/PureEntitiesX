@@ -42,7 +42,7 @@ class Slime extends JumpingMonster{
 
 	public function __construct(Level $level, CompoundTag $nbt){
 		$this->loadFromNBT($nbt);
-		if($this->cubeSize == -1){
+		if($this->cubeSize === -1){
 			$this->cubeSize = self::getRandomSlimeSize();
 		}
 
@@ -109,7 +109,7 @@ class Slime extends JumpingMonster{
 	}
 
 	public function getDrops() : array{
-		if($this->isLootDropAllowed() and $this->cubeSize == 0){
+		if($this->isLootDropAllowed() and $this->cubeSize === 0){
 			return [Item::get(Item::SLIMEBALL, 0, mt_rand(0, 2))];
 		}else{
 			return [];
@@ -121,9 +121,9 @@ class Slime extends JumpingMonster{
 	}
 
 	public function updateXpDropAmount() : void{
-		if($this->cubeSize == 2){
+		if($this->cubeSize === 2){
 			$this->xpDropAmount = 4;
-		}else if($this->cubeSize == 1){
+		}else if($this->cubeSize === 1){
 			$this->xpDropAmount = 2;
 		}else{
 			$this->xpDropAmount = 1;

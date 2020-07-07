@@ -47,7 +47,7 @@ abstract class SwimmingEntity extends BaseEntity{
 						continue;
 					}
 
-					if($creature instanceof BaseEntity && $creature->isFriendly() == $this->isFriendly()){
+					if($creature instanceof BaseEntity && $creature->isFriendly() === $this->isFriendly()){
 						continue;
 					}
 
@@ -109,7 +109,7 @@ abstract class SwimmingEntity extends BaseEntity{
 				$this->motion->z = $this->getSpeed() * 0.15 * ($z / $diff);
 				$this->yaw = -atan2($x / $diff, $z / $diff) * 180 / M_PI;
 			}
-			$this->pitch = $y == 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
+			$this->pitch = $y === 0 ? 0 : rad2deg(-atan2($y, sqrt($x ** 2 + $z ** 2)));
 		}
 
 		$dx = $this->motion->x * $tickDiff;
@@ -122,7 +122,7 @@ abstract class SwimmingEntity extends BaseEntity{
 			$this->move($dx, $this->motion->y * $tickDiff, $dz);
 			$af = new Vector2($this->x, $this->z);
 
-			if(($be->x != $af->x || $be->y != $af->y)){
+			if(($be->x !== $af->x || $be->y !== $af->y)){
 				$this->moveTime -= 90 * $tickDiff;
 			}
 		}

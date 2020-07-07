@@ -135,7 +135,7 @@ class Witch extends WalkingMonster implements Monster{
 		$drops = [];
 		if($this->isLootDropAllowed()){
 			// 2.5 percent chance of dropping one of these items.
-			if(mt_rand(1, 1000) % 25 == 0){
+			if(mt_rand(1, 1000) % 25 === 0){
 				switch(mt_rand(1, 3)){
 					case 1:
 						array_push($drops, Item::get(Item::GLASS_BOTTLE, 0, 1));

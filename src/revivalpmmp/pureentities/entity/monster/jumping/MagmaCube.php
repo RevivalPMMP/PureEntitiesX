@@ -40,7 +40,7 @@ class MagmaCube extends JumpingMonster{
 
 	public function __construct(Level $level, CompoundTag $nbt){
 		$this->loadFromNBT($nbt);
-		if($this->cubeSize == -1){
+		if($this->cubeSize === -1){
 			$this->cubeSize = self::getRandomCubeSize();
 		}
 		$this->width = 0.51;
@@ -115,9 +115,9 @@ class MagmaCube extends JumpingMonster{
 
 	public function updateXpDropAmount() : void{
 		// normally it would be set by small/medium/big sized - but as we have it not now - i'll make it more static
-		if($this->cubeSize == 2){
+		if($this->cubeSize === 2){
 			$this->xpDropAmount = 4;
-		}else if($this->cubeSize == 1){
+		}else if($this->cubeSize === 1){
 			$this->xpDropAmount = 2;
 		}else{
 			$this->xpDropAmount = 1;

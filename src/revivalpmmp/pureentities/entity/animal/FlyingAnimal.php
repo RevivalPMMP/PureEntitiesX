@@ -82,7 +82,7 @@ abstract class FlyingAnimal extends FlyingEntity implements Animal{
 	}
 
 	public function onUpdate(int $currentTick) : bool{
-		if($this->getLevel() == null) return false;
+		if($this->getLevel() === null) return false;
 		if($this->isClosed() or !$this->isAlive()){
 			return parent::onUpdate($currentTick);
 		}

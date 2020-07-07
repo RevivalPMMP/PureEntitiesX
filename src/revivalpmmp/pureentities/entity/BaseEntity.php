@@ -420,12 +420,12 @@ abstract class BaseEntity extends Creature{
 					if($entity instanceof IntfTameable and
 						$entity->getOwner() !== null and
 						$entity->isTamed() and
-						strcasecmp($entity->getOwner()->getName(), $attackedBy->getName()) == 0 and
+						strcasecmp($entity->getOwner()->getName(), $attackedBy->getName()) === 0 and
 						$entity instanceof BaseEntity and
 						!$entity->getBaseTarget() instanceof Monster
 					){
 						if($this instanceof IntfTameable and $this->isTamed() and
-							strcasecmp($this->getOwner()->getName(), $attackedBy->getName()) == 0
+							strcasecmp($this->getOwner()->getName(), $attackedBy->getName()) === 0
 						){
 							// this entity belongs to the player. other tamed mobs shouldn't attack!
 							continue;

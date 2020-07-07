@@ -50,11 +50,11 @@ trait Shearable{
 		}else{
 			$meta = ($this instanceof Sheep ? $this->color : 0);
 			if($this->maxShearDrops <= 1){
-				$dropCount = ($this->maxShearDrops == 1 ? 1 : 0);
+				$dropCount = ($this->maxShearDrops === 1 ? 1 : 0);
 			}else{
 				$dropCount = mt_rand(1, $this->maxShearDrops);
 			}
-			if($dropCount != 0){
+			if($dropCount !== 0){
 				$player->getLevel()->dropItem($this->asVector3(), Item::get($this->shearItems, $meta, $dropCount));
 			}
 			$this->setSheared(true);
@@ -69,7 +69,7 @@ trait Shearable{
 	public function setSheared(bool $sheared){
 		$this->sheared = $sheared;
 		$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_SHEARED, $sheared);
-		if($this instanceof Mooshroom and $sheared == true){
+		if($this instanceof Mooshroom and $sheared === true){
 
 			/**
 			 * @var Cow $newCow

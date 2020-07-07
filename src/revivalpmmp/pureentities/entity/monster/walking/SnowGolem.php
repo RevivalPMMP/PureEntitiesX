@@ -129,7 +129,7 @@ class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInter
 	 * @param Player $player the player to show a button eventually to
 	 */
 	public function showButton(Player $player){
-		if($player->getInventory() != null){ // sometimes, we get null on getInventory?! F**k
+		if($player->getInventory() !== null){ // sometimes, we get null on getInventory?! F**k
 			if($player->getInventory()->getItemInHand()->getId() === ItemIds::SHEARS && !$this->isSheared()){
 				InteractionHelper::displayButtonText(ButtonText::SHEAR, $player);
 				return;

@@ -27,7 +27,7 @@ class RemoveEntitiesCommand extends PureEntitiesXCommand{
 			return;
 		}
 		$all = false;
-		if(isset($args[0]) and strcmp(strtolower($args[0]), "all") == 0){
+		if(isset($args[0]) and strcmp(strtolower($args[0]), "all") === 0){
 			$all = true;
 		}
 		$counterLivingEntities = 0;
