@@ -41,7 +41,6 @@ use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfShearable;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
-use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\traits\Shearable;
 
 class SnowGolem extends WalkingMonster implements ProjectileSource, IntfCanInteract, IntfShearable{

@@ -32,7 +32,6 @@ use revivalpmmp\pureentities\features\IntfCanInteract;
 use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
-use revivalpmmp\pureentities\PureEntities;
 use revivalpmmp\pureentities\traits\Breedable;
 use revivalpmmp\pureentities\traits\CanPanic;
 use revivalpmmp\pureentities\traits\Feedable;
