@@ -58,9 +58,12 @@ class InteractionTask extends Task{
 				continue;
 			}
 			$entity = InteractionHelper::getEntityPlayerLookingAt($player, PluginConfiguration::getInstance()->getMaxInteractDistance(),
-				PluginConfiguration::getInstance()->isInteractiveButtonCorrection());
+			PluginConfiguration::getInstance()->isInteractiveButtonCorrection());
+			if($entity === null){
+				return;
+			}
 			PureEntities::logOutput("InteractionTask: $player is looking at $entity");
-			if($entity !== null and $entity instanceof IntfCanInteract){ // player is looking at an entity he can interact with
+			if($entity instanceof IntfCanInteract){ // player is looking at an entity he can interact with
 				$entity->showButton($player);
 			}else{ // the player isn't looking at an entity
 				InteractionHelper::displayButtonText("", $player);
