@@ -22,7 +22,10 @@ declare(strict_types=1);
 namespace revivalpmmp\pureentities\event;
 
 use pocketmine\block\Air;
+use pocketmine\entity\Entity;
+use pocketmine\entity\projectile\Egg;
 use pocketmine\event\block\BlockPlaceEvent;
+use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
@@ -125,6 +128,25 @@ class EventListener implements Listener{
 			}
 		}
 		return $return;
+	}
+
+	public function eggBreak(ProjectileHitEvent $event) : void{
+		$projectile = $event->getEntity();
+		if(!$projectile instanceof Egg){
+			return;
+		}
+		$lucky = mt_rand(1, 8) === 5;
+		if($lucky){
+			$spawnBabies = mt_rand(1, 32) === $lucky;
+			if($spawnBabies){
+				for($c = 0; $c < 4; $c++){
+					$this->plugin->scheduleCreatureSpawn($projectile, Entity::CHICKEN, $projectile->level, "Animal", true);
+				}
+			}else{
+				$this->plugin->scheduleCreatureSpawn($projectile, Entity::CHICKEN, $projectile->level, "Animal");
+			}
+		}
+
 	}
 
 	public function BlockPlaceEvent(BlockPlaceEvent $ev){
