@@ -21,6 +21,7 @@
 namespace revivalpmmp\pureentities;
 
 use pocketmine\block\BlockFactory;
+use pocketmine\block\BlockIds;
 use pocketmine\command\CommandExecutor;
 use pocketmine\entity\Entity;
 use pocketmine\item\Item;
@@ -313,54 +314,37 @@ class PureEntities extends PluginBase implements CommandExecutor{
 	/**
 	 * Returns a suitable Y-position for spawning an entity, starting from the given coordinates.
 	 *
-	 * First, it's checked if the given position is AIR position. If so, we search down the y-coordinate
-	 * to get a first non-air block. When a non-air block is found the position returned is the last found air
-	 * position.
 	 *
-	 * When the given coordinates are NOT an AIR block coordinate we search upwards until the first air block is found
-	 * which is then returned to the caller.
 	 *
 	 * @param float|int  $x                the x position to start search
 	 * @param float|int  $y                the y position to start search
 	 * @param float|int  $z                the z position to start searching
-	 * @param Level $level                 Level the level object to search in
+	 * @param Level      $level                 Level the level object to search in
 	 * @return null|Position               NULL if no valid position was found or the final AIR spawn position
 	 */
 	public static function getSuitableHeightPosition($x, $y, $z, Level $level){
-		$newPosition = null;
-		$id = $level->getBlockIdAt($x, $y, $z);
-		if($id == 0){ // we found an air block - we need to search down step by step to get the correct block which is not an "AIR" block
-			$air = true;
-			$y = $y - 1;
-			while($air){
-				$id = $level->getBlockIdAt($x, $y, $z);
-				if($id != 0){ // this is an air block ...
-					$newPosition = new Position($x, $y + 1, $z, $level);
-					$air = false;
-				}else{
-					$y = $y - 1;
-					if($y < -255){
-						break;
-					}
-				}
+		$startingY = $y;
+		$previousBlockIsAir = $level->getBlockIdAt($x, $y + 1, $z) === BlockIds::AIR;
+		$cycleIncomplete = true;
+		do{
+			$id = $level->getBlockIdAt($x, $y, $z);
+			if($id === BlockIds::AIR){
+				$previousBlockIsAir = true;
+			}elseif($previousBlockIsAir){
+				return new Position($x, $y, $z, $level);
+			}else{
+				$previousBlockIsAir = false;
 			}
-		}else{ // something else than AIR block. search upwards for a valid air block
-			$air = false;
-			while(!$air){
-				$id = $level->getBlockIdAt($x, $y, $z);
-				if($id == 0){ // this is an air block ...
-					$newPosition = new Position($x, $y, $z, $level);
-					$air = true;
-				}else{
-					$y = $y + 1;
-					if($y > 255){
-						break;
-					}
-				}
+			if(--$y < 1){
+				$y = $level->getHighestBlockAt($x, $z) - 1;
+				$previousBlockIsAir = $level->getBlockIdAt($x, $y + 1, $z) === BlockIds::AIR;
 			}
-		}
-
-		return $newPosition;
+			if($y === $startingY){
+				$cycleIncomplete = false;
+			}
+		}while($cycleIncomplete);
+		self::logOutput("No valid spawn position found ");
+		return null;
 	}
 
 	/**
