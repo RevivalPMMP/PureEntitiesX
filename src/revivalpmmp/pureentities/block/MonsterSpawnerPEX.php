@@ -127,5 +127,6 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 		if($tile instanceof MobSpawner){
 			$tile->close();
 		}
+		return true;
 	}
 }
