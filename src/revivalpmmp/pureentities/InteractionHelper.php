@@ -20,6 +20,7 @@
 
 namespace revivalpmmp\pureentities;
 
+use LogLevel;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
 use pocketmine\math\VoxelRayTrace;
@@ -90,8 +91,8 @@ class InteractionHelper{
 			}catch(\InvalidStateException $e){
 				// nothing to log here!
 			}catch(\DivisionByZeroError $e){
-				PureEntities::logOutput("InteractionHelper: Got division by zero error when testing player " . $player->getName() . " with LengthSquared of " . $player->lengthSquared(), PureEntities::WARN);
-				PureEntities::logOutput("TemporalVector was (" . $player->temporalVector->x . ", " . $player->temporalVector->y . ", " . $player->temporalVector->z . ")", PureEntities::WARN);
+				PureEntities::logOutput("InteractionHelper: Got division by zero error when testing player " . $player->getName() . " with LengthSquared of " . $player->lengthSquared(), LogLevel::WARNING);
+				PureEntities::logOutput("TemporalVector was (" . $player->temporalVector->x . ", " . $player->temporalVector->y . ", " . $player->temporalVector->z . ")", LogLevel::WARNING);
 			}
 		}
 

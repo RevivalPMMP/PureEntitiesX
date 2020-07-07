@@ -20,6 +20,7 @@
 
 namespace revivalpmmp\pureentities\data;
 
+use LogLevel;
 use revivalpmmp\pureentities\PureEntities;
 
 class Color{
@@ -175,7 +176,7 @@ class Color{
 	 */
 	public static function convert(int $dyeColor) : int{
 		if(!isset(self::$convertedColors[$dyeColor])){
-			PureEntities::logOutput("Found invalid dye color code $dyeColor", PureEntities::WARN);
+			PureEntities::logOutput("Found invalid dye color code $dyeColor", LogLevel::WARNING);
 			return self::WHITE;
 		}
 		return self::$convertedColors[$dyeColor];

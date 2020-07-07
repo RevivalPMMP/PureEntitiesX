@@ -20,6 +20,7 @@
 
 namespace revivalpmmp\pureentities;
 
+use LogLevel;
 use pocketmine\block\BlockFactory;
 use pocketmine\block\BlockIds;
 use pocketmine\command\CommandExecutor;
@@ -100,11 +101,6 @@ class PureEntities extends PluginBase implements CommandExecutor{
 
 	/** @var  PureEntities $instance */
 	private static $instance;
-
-	// logging constants for method call 'logOutput'
-	const NORM = \LogLevel::INFO;
-	const WARN = \LogLevel::WARNING;
-	const DEBUG = \LogLevel::DEBUG;
 
 	// button texts ...
 	// TODO Move these into their own Class under Data.
@@ -278,7 +274,7 @@ class PureEntities extends PluginBase implements CommandExecutor{
 					$entity->setTamed(true);
 					$entity->setOwner($owner);
 				}
-				self::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]", self::DEBUG);
+				self::logOutput("PureEntities: scheduleCreatureSpawn [type:$entity] [baby:$baby]");
 				$entity->spawnToAll();
 
 				// additionally: mob equipment
@@ -293,20 +289,36 @@ class PureEntities extends PluginBase implements CommandExecutor{
 
 	/**
 	 * Logs an output to the plugin's logfile ...
-	 * @param string $logline the output to be appended
+	 * @param string $message the output to be appended
 	 * @param string $type the type of output to log
 	 */
-	public static function logOutput(string $logline, string $type = self::DEBUG) : void{
+	public static function logOutput(string $message, string $type = LogLevel::DEBUG) : void{
+		$logger = self::getInstance()->getLogger();
 			switch($type){
-				case self::DEBUG:
-					self::getInstance()->getLogger()->debug($logline);
+				case LogLevel::EMERGENCY:
+					$logger->emergency($message);
 					break;
-				case self::WARN:
-					self::getInstance()->getLogger()->warning($logline);
+				case LogLevel::ALERT:
+					$logger->alert($message);
 					break;
-				case self::NORM:
+				case LogLevel::CRITICAL:
+					$logger->critical($message);
+					break;
+				case LogLevel::ERROR:
+					$logger->error($message);
+					break;
+				case LogLevel::WARNING:
+					$logger->warning($message);
+					break;
+				case LogLevel::NOTICE:
+					$logger->notice($message);
+					break;
+				case LogLevel::INFO:
+					$logger->info($message);
+					break;
+				case LogLevel::DEBUG:
 				default:
-					self::getInstance()->getLogger()->info($logline);
+					$logger->debug($message);
 					break;
 			}
 	}

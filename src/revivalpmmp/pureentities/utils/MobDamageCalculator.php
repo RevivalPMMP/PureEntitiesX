@@ -19,6 +19,7 @@
 
 namespace revivalpmmp\pureentities\utils;
 
+use LogLevel;
 use pocketmine\entity\Entity;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
@@ -106,7 +107,7 @@ class MobDamageCalculator{
 							}
 						}
 					}else{
-						PureEntities::logOutput("MobDamageCalculator: undefined armor item set: $armorItem", PureEntities::WARN);
+						PureEntities::logOutput("MobDamageCalculator: undefined armor item set: $armorItem", LogLevel::WARNING);
 					}
 				}
 

@@ -22,6 +22,7 @@
 namespace revivalpmmp\pureentities\components;
 
 
+use LogLevel;
 use pocketmine\entity\object\ItemEntity;
 use pocketmine\item\Armor;
 use pocketmine\item\DiamondBoots;
@@ -282,7 +283,7 @@ class MobEquipment{
 				$player->dataPacket($this->createHandItemsEquipPacket());
 			}
 		}else{
-			PureEntities::logOutput("sendEquipmentUpdate called when EnableNBT is false.", PureEntities::WARN);
+			PureEntities::logOutput("sendEquipmentUpdate called when EnableNBT is false.", LogLevel::WARNING);
 		}
 	}
 
