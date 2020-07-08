@@ -168,22 +168,23 @@ class IdlingComponent{
 			$pitch = $this->baseEntity->pitch;
 
 			// rotate the entity: 0 degrees is south and increases clockwise
-			$yaw = mt_rand(0, 1) ? $yaw + mt_rand(15, 45) : $yaw - mt_rand(15, 45);
+			$adjust = mt_rand(500, 3000) / 100;
+			$yaw = mt_rand(0, 1) ? $yaw -= $adjust : $yaw += $adjust;
 			if($yaw > 360){
-				$yaw = 360;
-			}else if($yaw < 0){
-				$yaw = 0;
+				$yaw -= 360;
+			}
+			if($yaw < 0){
+				$yaw += 360;
 			}
 
 
 			// 0 degrees is horizontal, -90 is up, 90 is down. but 90 degrees looks very silly - so 60 degrees is
 			// completely ok
-			$pitch = mt_rand(0, 1) ? $pitch + mt_rand(10, 20) : $pitch - mt_rand(10, 20);
-			if($pitch > 60){
-				$pitch = 60;
-			}else if($pitch < -60){
-				$pitch = -60;
+			$adjust = mt_rand(500, 3000) / 100;
+			if($pitch > 22){
+				$adjust *= -1;
 			}
+			abs($pitch + $adjust) > 60 ? $pitch = $adjust : $pitch += $adjust;
 
 			$this->baseEntity->setRotation($yaw, $pitch);
 			if($this->baseEntity->getMotion()->x !== 0){
