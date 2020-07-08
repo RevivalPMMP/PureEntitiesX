@@ -191,7 +191,7 @@ trait Tameable{
 	private function getPositionNearOwner(Player $owner, BaseEntity $pet) : Vector3{
 		$x = $owner->x + (mt_rand(2, 3) * (mt_rand(0, 1) === 1 ?: -1));
 		$z = $owner->z + (mt_rand(2, 3) * (mt_rand(0, 1) === 1 ?: -1));
-		$pos = PureEntities::getInstance()->getSuitableHeightPosition($x, $owner->y, $z, $pet->getLevel());
+		$pos = PureEntities::getSuitableHeightPosition($x, $owner->y, $z, $pet->getLevel());
 		if($pos !== null){
 			return new Vector3($x, $pos->y, $z);
 		}else{
