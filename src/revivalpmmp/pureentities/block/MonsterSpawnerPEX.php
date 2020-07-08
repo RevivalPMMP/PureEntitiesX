@@ -123,6 +123,7 @@ class MonsterSpawnerPEX extends MonsterSpawner{
 	}
 
 	public function onBreak(Item $item, Player $player = null) : bool{
+		parent::onBreak($item, $player);
 		$tile = $this->level->getTile($this);
 		if($tile instanceof MobSpawner){
 			$tile->close();
