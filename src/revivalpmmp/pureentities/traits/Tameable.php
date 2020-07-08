@@ -289,7 +289,7 @@ trait Tameable{
 	public function setOwner(Player $player){
 		$this->owner = $player;
 		$this->ownerName = $player->getName();
-		$this->propertyManager->setLong(self::DATA_OWNER_EID, self::DATA_TYPE_LONG, $player->getId());
+		$this->propertyManager->setPropertyValue(self::DATA_OWNER_EID, self::DATA_TYPE_LONG, $player->getId());
 		$this->setBaseTarget($player);
 	}
 
