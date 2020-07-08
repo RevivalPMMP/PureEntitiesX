@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace revivalpmmp\pureentities\features;
 
+use revivalpmmp\pureentities\components\BreedingComponent;
+
 /**
  * Interface IntfCanBreed
  *
@@ -34,7 +36,7 @@ interface IntfCanBreed extends IntfFeedable{
 	/**
 	 * Has to return the Breedable class initiated within entity
 	 *
-	 * @return mixed
+	 * @return BreedingComponent|null
 	 */
 	public function getBreedingComponent();
 
