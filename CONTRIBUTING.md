@@ -1,9 +1,11 @@
 # Contributing to PureEntitiesX 
 
-Please follow Pull Request and Issue Templates when submitting either. That will make it a lot easier and streamline the
-process of reviewal and approval.
+When submitting an Issue or Pull Request, please follow the provided templates. This will help to ensure that we have the information we need for quick resolutions and approvals.
 
 Issue Reporting Guidelines can be found here:
 https://github.com/RevivalPMMP/PureEntitiesX/wiki/Issue-Reporting-Guidelines
+
+Pull Request Guidelines can be found here:
+https://github.com/RevivalPMMP/PureEntitiesX/wiki/Pull-Request-Guidelines
 
 Any malicious material submitted that could be used to harm servers will be promptly rejected.
