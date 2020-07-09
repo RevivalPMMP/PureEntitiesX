@@ -24,7 +24,7 @@ namespace revivalpmmp\pureentities\task;
 
 use pocketmine\entity\Living;
 use pocketmine\scheduler\Task;
-use revivalpmmp\pureentities\entity\monster\walking\Enderman;
+use revivalpmmp\pureentities\entity\Enderman;
 use revivalpmmp\pureentities\InteractionHelper;
 use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;

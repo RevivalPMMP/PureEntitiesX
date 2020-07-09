@@ -37,9 +37,6 @@ use pocketmine\Player;
 use revivalpmmp\pureentities\components\IdlingComponent;
 use revivalpmmp\pureentities\data\Data;
 use revivalpmmp\pureentities\data\NBTConst;
-use revivalpmmp\pureentities\entity\monster\flying\Blaze;
-use revivalpmmp\pureentities\entity\monster\Monster;
-use revivalpmmp\pureentities\entity\monster\walking\Wolf;
 use revivalpmmp\pureentities\features\IntfCanPanic;
 use revivalpmmp\pureentities\features\IntfTameable;
 use revivalpmmp\pureentities\PluginConfiguration;
@@ -48,6 +45,8 @@ use revivalpmmp\pureentities\PureEntities;
 //use pocketmine\event\Timings;
 
 abstract class BaseEntity extends Creature implements ProjectileSource{
+
+	protected $name;
 
 	public $stayTime = 0;
 	protected $moveTime = 0;
@@ -72,8 +71,6 @@ abstract class BaseEntity extends Creature implements ProjectileSource{
 	 */
 	protected $maxJumpHeight = 1.2;
 	protected $checkTargetSkipTicks = 1; // default: no skip
-	public $width = 1.0;
-	public $height = 1.0;
 	public $speed = 1.0;
 
 
@@ -112,7 +109,12 @@ abstract class BaseEntity extends Creature implements ProjectileSource{
 		}
 	}
 
-	public abstract function updateMove($tickDiff);
+	public function getName() : string{
+		if($this->name !== null){
+			return $this->name;
+		}
+		return (new \ReflectionClass(self::class))->getShortName();
+	}
 
 	public function updateXpDropAmount() : void{
 		$this->xpDropAmount = 0;
@@ -210,7 +212,6 @@ abstract class BaseEntity extends Creature implements ProjectileSource{
 	}
 
 	public function saveNBT() : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			parent::saveNBT();
 			$this->namedtag->setByte(NBTConst::NBT_KEY_MOVEMENT, (int) $this->isMovement(), true);
 			$this->namedtag->setByte(NBTConst::NBT_KEY_WALL_CHECK, (int) $this->isWallCheck(), true);
@@ -218,24 +219,21 @@ abstract class BaseEntity extends Creature implements ProjectileSource{
 
 			// No reason to attempt this if getEnableNBT is false.
 			$this->idlingComponent->saveNBT();
-		}
 	}
 
 	public function loadNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_MOVEMENT)){
-				$movement = $this->namedtag->getByte(NBTConst::NBT_KEY_MOVEMENT, 0, true);
-				$this->setMovement((bool) $movement);
-			}
+		if($this->namedtag->hasTag(NBTConst::NBT_KEY_MOVEMENT)){
+			$movement = $this->namedtag->getByte(NBTConst::NBT_KEY_MOVEMENT, 0, true);
+			$this->setMovement((bool) $movement);
+		}
 
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_WALL_CHECK)){
-				$wallCheck = $this->namedtag->getByte(NBTConst::NBT_KEY_WALL_CHECK, 0, true);
-				$this->setWallCheck((bool) $wallCheck);
-			}
-			if($this->namedtag->hasTag(NBTConst::NBT_KEY_AGE_IN_TICKS)){
-				$age = $this->namedtag->getInt(NBTConst::NBT_KEY_AGE_IN_TICKS, 0, true);
-				$this->ticksLived = $age;
-			}
+		if($this->namedtag->hasTag(NBTConst::NBT_KEY_WALL_CHECK)){
+			$wallCheck = $this->namedtag->getByte(NBTConst::NBT_KEY_WALL_CHECK, 0, true);
+			$this->setWallCheck((bool) $wallCheck);
+		}
+		if($this->namedtag->hasTag(NBTConst::NBT_KEY_AGE_IN_TICKS)){
+			$age = $this->namedtag->getInt(NBTConst::NBT_KEY_AGE_IN_TICKS, 0, true);
+			$this->ticksLived = $age;
 		}
 	}
 

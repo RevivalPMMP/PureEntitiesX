@@ -28,7 +28,6 @@ use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
 use pocketmine\tile\Spawnable;
 use revivalpmmp\pureentities\data\NBTConst;
-use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 class MobSpawner extends Spawnable{
@@ -123,9 +122,7 @@ class MobSpawner extends Spawnable{
 	public function setSpawnEntityType(int $entityId){
 		PureEntities::logOutput("setSpawnEntityType called with EntityID of $entityId");
 		$this->entityId = $entityId;
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			$this->writeSaveData($tag = new CompoundTag());
-		}
+		$this->writeSaveData($tag = new CompoundTag());
 		$this->onChanged();
 		$this->scheduleUpdate();
 	}
@@ -179,62 +176,57 @@ class MobSpawner extends Spawnable{
 	}
 
 	public function readSaveData(CompoundTag $nbt) : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
-
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID)){
-				$this->setSpawnEntityType($nbt->getInt(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, -1, true));
-			}
-
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE)){
-				$this->spawnRange = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE, 8, true);
-			}
-
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY)){
-				$this->minSpawnDelay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY, 200, true);
-			}
-
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY)){
-				$this->maxSpawnDelay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY, 800, true);
-			}
-
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_DELAY)){
-				$this->delay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_DELAY, 0, true);
-			}
-
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES)){
-				$this->maxNearbyEntities = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES, 6, true);
-			}
-
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE)){
-				$this->requiredPlayerRange = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE, 16);
-			}
-
-			if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT)){
-				$this->spawnCount = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT, 0, true);
-			}
-
-			// TODO: add SpawnData: Contains tags to copy to the next spawned entity(s) after spawning. Any of the entity or
-			// mob tags may be used. Note that if a spawner specifies any of these tags, almost all variable data such as mob
-			// equipment, villager profession, sheep wool color, etc., will not be automatically generated, and must also be
-			// manually specified (note that this does not apply to position data, which will be randomized as normal unless
-			// Pos is specified. Similarly, unless Size and Health are specified for a Slime or Magma Cube, these will still
-			// be randomized). This, together with EntityId, also determines the appearance of the miniature entity spinning
-			// in the spawner cage. Note: this tag is optional: if it does not exist, the next spawned entity will use
-			// the default vanilla spawning properties for this mob, including potentially randomized armor (this is true even
-			// if SpawnPotentials does exist). Warning: If SpawnPotentials exists, this tag will get overwritten after the
-			// next spawning attempt: see above for more details.
-			// if(!$nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA)){
-			//	 $spawnData = new CompoundTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA, [new IntTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId)]);
-			//	 $nbt->setTag($spawnData);
-			// }
-
+		if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID)){
+			$this->setSpawnEntityType($nbt->getInt(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, -1, true));
 		}
+
+		if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE)){
+			$this->spawnRange = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_RANGE, 8, true);
+		}
+
+		if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY)){
+			$this->minSpawnDelay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MIN_SPAWN_DELAY, 200, true);
+		}
+
+		if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY)){
+			$this->maxSpawnDelay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MAX_SPAWN_DELAY, 800, true);
+		}
+
+		if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_DELAY)){
+			$this->delay = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_DELAY, 0, true);
+		}
+
+		if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES)){
+			$this->maxNearbyEntities = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_MAX_NEARBY_ENTITIES, 6, true);
+		}
+
+		if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE)){
+			$this->requiredPlayerRange = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_REQUIRED_PLAYER_RANGE, 16);
+		}
+
+		if($nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT)){
+			$this->spawnCount = $nbt->getShort(NBTConst::NBT_KEY_SPAWNER_SPAWN_COUNT, 0, true);
+		}
+
+		// TODO: add SpawnData: Contains tags to copy to the next spawned entity(s) after spawning. Any of the entity or
+		// mob tags may be used. Note that if a spawner specifies any of these tags, almost all variable data such as mob
+		// equipment, villager profession, sheep wool color, etc., will not be automatically generated, and must also be
+		// manually specified (note that this does not apply to position data, which will be randomized as normal unless
+		// Pos is specified. Similarly, unless Size and Health are specified for a Slime or Magma Cube, these will still
+		// be randomized). This, together with EntityId, also determines the appearance of the miniature entity spinning
+		// in the spawner cage. Note: this tag is optional: if it does not exist, the next spawned entity will use
+		// the default vanilla spawning properties for this mob, including potentially randomized armor (this is true even
+		// if SpawnPotentials does exist). Warning: If SpawnPotentials exists, this tag will get overwritten after the
+		// next spawning attempt: see above for more details.
+		// if(!$nbt->hasTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA)){
+		//	 $spawnData = new CompoundTag(NBTConst::NBT_KEY_SPAWNER_SPAWN_DATA, [new IntTag(NBTConst::NBT_KEY_SPAWNER_ENTITY_ID, $this->entityId)]);
+		//	 $nbt->setTag($spawnData);
+		// }
+
 	}
 
 	public function writeSaveData(CompoundTag $nbt) : void{
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			$this->addAdditionalSpawnData($nbt);
-		}
 	}
 
 	public function getSpawnCount() : int{

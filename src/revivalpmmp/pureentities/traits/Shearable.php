@@ -25,9 +25,9 @@ use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\Data;
-use revivalpmmp\pureentities\entity\animal\walking\Cow;
-use revivalpmmp\pureentities\entity\animal\walking\Mooshroom;
-use revivalpmmp\pureentities\entity\animal\walking\Sheep;
+use revivalpmmp\pureentities\entity\Cow;
+use revivalpmmp\pureentities\entity\Mooshroom;
+use revivalpmmp\pureentities\entity\Sheep;
 use revivalpmmp\pureentities\features\IntfCanBreed;
 use revivalpmmp\pureentities\PureEntities;
 

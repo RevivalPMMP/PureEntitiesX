@@ -28,7 +28,6 @@ use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\Player;
 use revivalpmmp\pureentities\data\NBTConst;
 use revivalpmmp\pureentities\entity\BaseEntity;
-use revivalpmmp\pureentities\PluginConfiguration;
 use revivalpmmp\pureentities\PureEntities;
 
 /**
@@ -94,7 +93,6 @@ trait Tameable{
 
 	public function saveTameNBT(){
 
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
 			$nbt = $this->namedtag;
 			/** @var $nbt CompoundTag  */
 			$nbt->setByte(NBTConst::NBT_KEY_SITTING, $this->sitting ? 1 : 0, true);
@@ -105,37 +103,34 @@ trait Tameable{
 				$nbt->setString(NBTConst::NBT_KEY_OWNER_UUID, $this->owner->getUniqueId()->toString(), true); // set owner UUID
 				$nbt->setLong(NBTConst::NBT_KEY_OWNER_EID, $this->propertyManager->getLong(Entity::DATA_OWNER_EID), true);
 			}
-		}
 	}
 
 	public function loadTameNBT(){
-		if(PluginConfiguration::getInstance()->getEnableNBT()){
-			$nbt = $this->namedtag;
-			/** @var $nbt CompoundTag */
-			if($nbt->hasTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME)){
-				$owner = $nbt->getString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, NBTConst::NBT_INVALID_STRING);
-				$ownerEID = $nbt->getLong(NBTConst::NBT_KEY_OWNER_EID, NBTConst::NBT_INVALID_LONG, true);
-				if(($owner !== NBTConst::NBT_INVALID_LONG) and ($ownerEID !== NBTConst::NBT_INVALID_LONG)){
-					$this->ownerName = $owner;
-					$this->propertyManager->setLong(Entity::DATA_OWNER_EID, $ownerEID);
-				}
-				$this->setTamed(true);
-				foreach($this->getLevel()->getPlayers() as $levelPlayer){
-					if(strcasecmp($levelPlayer->getName(), $owner) === 0){
-						$this->owner = $levelPlayer;
-						break;
-					}
+		$nbt = $this->namedtag;
+		/** @var $nbt CompoundTag */
+		if($nbt->hasTag(NBTConst::NBT_SERVER_KEY_OWNER_NAME)){
+			$owner = $nbt->getString(NBTConst::NBT_SERVER_KEY_OWNER_NAME, NBTConst::NBT_INVALID_STRING);
+			$ownerEID = $nbt->getLong(NBTConst::NBT_KEY_OWNER_EID, NBTConst::NBT_INVALID_LONG, true);
+			if(($owner !== NBTConst::NBT_INVALID_LONG) and ($ownerEID !== NBTConst::NBT_INVALID_LONG)){
+				$this->ownerName = $owner;
+				$this->propertyManager->setLong(Entity::DATA_OWNER_EID, $ownerEID);
+			}
+			$this->setTamed(true);
+			foreach($this->getLevel()->getPlayers() as $levelPlayer){
+				if(strcasecmp($levelPlayer->getName(), $owner) === 0){
+					$this->owner = $levelPlayer;
+					break;
 				}
 			}
+		}
 
-			if($nbt->hasTag(NBTConst::NBT_KEY_SITTING)){
-				$sitting = $nbt->getByte(NBTConst::NBT_KEY_SITTING, 0, true);
-				$this->setSitting((bool) $sitting);
+		if($nbt->hasTag(NBTConst::NBT_KEY_SITTING)){
+			$sitting = $nbt->getByte(NBTConst::NBT_KEY_SITTING, 0, true);
+			$this->setSitting((bool) $sitting);
 
-				// Until an appropriate NBT key can be attached to this, if the entity is sitting when loaded,
-				// commandedToSit will be set to true so that it doesn't teleport to it's owner by accident.
-				$this->setCommandedToSit($this->isSitting());
-			}
+			// Until an appropriate NBT key can be attached to this, if the entity is sitting when loaded,
+			// commandedToSit will be set to true so that it doesn't teleport to it's owner by accident.
+			$this->setCommandedToSit($this->isSitting());
 		}
 	}
 

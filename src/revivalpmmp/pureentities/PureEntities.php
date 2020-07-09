@@ -36,55 +36,56 @@ use revivalpmmp\pureentities\block\MonsterSpawnerPEX;
 use revivalpmmp\pureentities\commands\RemoveEntitiesCommand;
 use revivalpmmp\pureentities\commands\SummonCommand;
 use revivalpmmp\pureentities\data\Color;
-use revivalpmmp\pureentities\entity\animal\flying\Bat;
-use revivalpmmp\pureentities\entity\animal\flying\Parrot;
-use revivalpmmp\pureentities\entity\animal\swimming\Cod;
-use revivalpmmp\pureentities\entity\animal\swimming\Dolphin;
-use revivalpmmp\pureentities\entity\animal\swimming\Pufferfish;
-use revivalpmmp\pureentities\entity\animal\swimming\Salmon;
-use revivalpmmp\pureentities\entity\animal\swimming\Squid;
-use revivalpmmp\pureentities\entity\animal\swimming\Tropicalfish;
-use revivalpmmp\pureentities\entity\animal\walking\Chicken;
-use revivalpmmp\pureentities\entity\animal\walking\Cow;
-use revivalpmmp\pureentities\entity\animal\walking\Donkey;
-use revivalpmmp\pureentities\entity\animal\walking\Horse;
-use revivalpmmp\pureentities\entity\animal\walking\Llama;
-use revivalpmmp\pureentities\entity\animal\walking\Mooshroom;
-use revivalpmmp\pureentities\entity\animal\walking\Mule;
-use revivalpmmp\pureentities\entity\animal\walking\Ocelot;
-use revivalpmmp\pureentities\entity\animal\walking\Pig;
-use revivalpmmp\pureentities\entity\animal\walking\Rabbit;
-use revivalpmmp\pureentities\entity\animal\walking\Sheep;
-use revivalpmmp\pureentities\entity\animal\walking\SkeletonHorse;
-use revivalpmmp\pureentities\entity\animal\walking\Villager;
+use revivalpmmp\pureentities\entity\Bat;
+use revivalpmmp\pureentities\entity\ElderGuardian;
+use revivalpmmp\pureentities\entity\Parrot;
+use revivalpmmp\pureentities\entity\Cod;
+use revivalpmmp\pureentities\entity\Dolphin;
+use revivalpmmp\pureentities\entity\Pufferfish;
+use revivalpmmp\pureentities\entity\Salmon;
+use revivalpmmp\pureentities\entity\Squid;
+use revivalpmmp\pureentities\entity\Tropicalfish;
+use revivalpmmp\pureentities\entity\Chicken;
+use revivalpmmp\pureentities\entity\Cow;
+use revivalpmmp\pureentities\entity\Donkey;
+use revivalpmmp\pureentities\entity\Horse;
+use revivalpmmp\pureentities\entity\Llama;
+use revivalpmmp\pureentities\entity\Mooshroom;
+use revivalpmmp\pureentities\entity\Mule;
+use revivalpmmp\pureentities\entity\Ocelot;
+use revivalpmmp\pureentities\entity\Pig;
+use revivalpmmp\pureentities\entity\Rabbit;
+use revivalpmmp\pureentities\entity\Sheep;
+use revivalpmmp\pureentities\entity\SkeletonHorse;
+use revivalpmmp\pureentities\entity\Villager;
 use revivalpmmp\pureentities\entity\BaseEntity;
-use revivalpmmp\pureentities\entity\monster\flying\Blaze;
-use revivalpmmp\pureentities\entity\monster\flying\Ghast;
-use revivalpmmp\pureentities\entity\monster\flying\Vex;
-use revivalpmmp\pureentities\entity\monster\jumping\MagmaCube;
-use revivalpmmp\pureentities\entity\monster\jumping\Slime;
-use revivalpmmp\pureentities\entity\monster\walking\CaveSpider;
-use revivalpmmp\pureentities\entity\monster\walking\Creeper;
-use revivalpmmp\pureentities\entity\monster\walking\Enderman;
-use revivalpmmp\pureentities\entity\monster\walking\Endermite;
-use revivalpmmp\pureentities\entity\monster\walking\Evoker;
-use revivalpmmp\pureentities\entity\monster\walking\Husk;
-use revivalpmmp\pureentities\entity\monster\walking\IronGolem;
-use revivalpmmp\pureentities\entity\monster\walking\PigZombie;
-use revivalpmmp\pureentities\entity\monster\walking\PolarBear;
-use revivalpmmp\pureentities\entity\monster\walking\Shulker;
-use revivalpmmp\pureentities\entity\monster\walking\Silverfish;
-use revivalpmmp\pureentities\entity\monster\walking\Skeleton;
-use revivalpmmp\pureentities\entity\monster\walking\SnowGolem;
-use revivalpmmp\pureentities\entity\monster\walking\Spider;
-use revivalpmmp\pureentities\entity\monster\walking\Stray;
-use revivalpmmp\pureentities\entity\monster\walking\Vindicator;
-use revivalpmmp\pureentities\entity\monster\walking\Witch;
-use revivalpmmp\pureentities\entity\monster\walking\WitherSkeleton;
-use revivalpmmp\pureentities\entity\monster\walking\Wolf;
-use revivalpmmp\pureentities\entity\monster\walking\Zombie;
-use revivalpmmp\pureentities\entity\monster\walking\ZombiePigman;
-use revivalpmmp\pureentities\entity\monster\walking\ZombieVillager;
+use revivalpmmp\pureentities\entity\Blaze;
+use revivalpmmp\pureentities\entity\Ghast;
+use revivalpmmp\pureentities\entity\Vex;
+use revivalpmmp\pureentities\entity\MagmaCube;
+use revivalpmmp\pureentities\entity\Slime;
+use revivalpmmp\pureentities\entity\CaveSpider;
+use revivalpmmp\pureentities\entity\Creeper;
+use revivalpmmp\pureentities\entity\Enderman;
+use revivalpmmp\pureentities\entity\Endermite;
+use revivalpmmp\pureentities\entity\Evoker;
+use revivalpmmp\pureentities\entity\Husk;
+use revivalpmmp\pureentities\entity\IronGolem;
+use revivalpmmp\pureentities\entity\PigZombie;
+use revivalpmmp\pureentities\entity\PolarBear;
+use revivalpmmp\pureentities\entity\Shulker;
+use revivalpmmp\pureentities\entity\Silverfish;
+use revivalpmmp\pureentities\entity\Skeleton;
+use revivalpmmp\pureentities\entity\SnowGolem;
+use revivalpmmp\pureentities\entity\Spider;
+use revivalpmmp\pureentities\entity\Stray;
+use revivalpmmp\pureentities\entity\Vindicator;
+use revivalpmmp\pureentities\entity\Witch;
+use revivalpmmp\pureentities\entity\WitherSkeleton;
+use revivalpmmp\pureentities\entity\Wolf;
+use revivalpmmp\pureentities\entity\Zombie;
+use revivalpmmp\pureentities\entity\ZombiePigman;
+use revivalpmmp\pureentities\entity\ZombieVillager;
 use revivalpmmp\pureentities\entity\projectile\LargeFireball;
 use revivalpmmp\pureentities\entity\projectile\SmallFireball;
 use revivalpmmp\pureentities\event\CreatureSpawnEvent;
@@ -125,7 +126,7 @@ class PureEntities extends PluginBase{
 			Creeper::class,
 			Dolphin::class,
 			Donkey::class,
-			//ElderGuardian::class,
+			ElderGuardian::class,
 			//EnderCharge::class,
 			//EnderDragon::class,
 			Enderman::class,
@@ -144,7 +145,6 @@ class PureEntities extends PluginBase{
 			Ocelot::class,
 			Parrot::class,
 			Pig::class,
-			PigZombie::class,
 			PolarBear::class,
 			Pufferfish::class,
 			Rabbit::class,
