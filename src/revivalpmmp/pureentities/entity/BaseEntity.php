@@ -25,6 +25,7 @@ use pocketmine\block\Block;
 use pocketmine\block\Water;
 use pocketmine\entity\Creature;
 use pocketmine\entity\Entity;
+use pocketmine\entity\projectile\ProjectileSource;
 use pocketmine\event\entity\EntityDamageByChildEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
@@ -46,7 +47,7 @@ use revivalpmmp\pureentities\PureEntities;
 
 //use pocketmine\event\Timings;
 
-abstract class BaseEntity extends Creature{
+abstract class BaseEntity extends Creature implements ProjectileSource{
 
 	public $stayTime = 0;
 	protected $moveTime = 0;
