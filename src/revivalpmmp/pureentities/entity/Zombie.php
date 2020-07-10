@@ -23,6 +23,6 @@ namespace revivalpmmp\pureentities\entity;
 
 class Zombie extends BaseEntity{
 
-	const NETWORK_ID = Data::NETWORK_IDS["zombie"];
+	const NETWORK_ID = self::ZOMBIE;
 
 }
