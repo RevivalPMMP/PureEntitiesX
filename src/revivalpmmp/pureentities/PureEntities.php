@@ -326,10 +326,10 @@ class PureEntities extends PluginBase{
 	 */
 	public static function getSuitableHeightPosition($x, $y, $z, Level $level){
 		$startingY = $y;
-		$previousBlockIsAir = $level->getBlockIdAt($x, $y + 1, $z) === BlockIds::AIR;
+		$previousBlockIsAir = $level->getBlockIdAt((int) $x, (int) ($y + 1), (int) $z) === BlockIds::AIR;
 		$cycleIncomplete = true;
 		do{
-			$id = $level->getBlockIdAt($x, $y, $z);
+			$id = $level->getBlockIdAt((int) $x, (int) $y, (int) $z);
 			if($id === BlockIds::AIR){
 				$previousBlockIsAir = true;
 			}elseif($previousBlockIsAir){
@@ -338,8 +338,8 @@ class PureEntities extends PluginBase{
 				$previousBlockIsAir = false;
 			}
 			if(--$y < 1){
-				$y = $level->getHighestBlockAt($x, $z) - 1;
-				$previousBlockIsAir = $level->getBlockIdAt($x, $y + 1, $z) === BlockIds::AIR;
+				$y = $level->getHighestBlockAt((int) $x, (int) $z) - 1;
+				$previousBlockIsAir = $level->getBlockIdAt((int) $x, (int) ($y + 1), (int) $z) === BlockIds::AIR;
 			}
 			if($y === $startingY){
 				$cycleIncomplete = false;
