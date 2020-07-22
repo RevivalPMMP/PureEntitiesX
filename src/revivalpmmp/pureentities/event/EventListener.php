@@ -109,6 +109,7 @@ class EventListener implements Listener{
 					if($itemInHand !== null){
 						$player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
 					}
+					$player->setItemInHand($itemInHand);
 				}
 				break;
 			case ButtonText::TAME:
