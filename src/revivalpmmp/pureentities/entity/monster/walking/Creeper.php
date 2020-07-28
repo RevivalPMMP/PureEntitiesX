@@ -44,7 +44,7 @@ class Creeper extends WalkingMonster implements Explosive{
 	public function initEntity() : void{
 		parent::initEntity();
 		$this->speed = 0.9;
-		$this->explodeBlocks = (PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", 0) === 0 ? false : true);
+		$this->explodeBlocks = PureEntities::getInstance()->getConfig()->getNested("creeper.block-breaking-explosion", false);
 	}
 
 	public function getName() : string{
