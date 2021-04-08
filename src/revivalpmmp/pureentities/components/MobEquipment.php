@@ -39,7 +39,6 @@ use pocketmine\item\IronChestplate;
 use pocketmine\item\IronHelmet;
 use pocketmine\item\IronLeggings;
 use pocketmine\item\Item;
-use pocketmine\item\ItemIds;
 use pocketmine\item\LeatherBoots;
 use pocketmine\item\LeatherCap;
 use pocketmine\item\LeatherPants;
@@ -54,6 +53,7 @@ use pocketmine\network\mcpe\protocol\DataPacket;
 use pocketmine\network\mcpe\protocol\MobArmorEquipmentPacket;
 use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use pocketmine\network\mcpe\protocol\TakeItemActorPacket;
+use pocketmine\network\mcpe\protocol\types\inventory\ItemStackWrapper;
 use pocketmine\Player;
 use pocketmine\Server;
 use revivalpmmp\pureentities\config\mobequipment\EntityConfig;
@@ -337,19 +337,19 @@ class MobEquipment{
 		// see: http://minecraft.gamepedia.com/Sword (section: mobs)
 		if(mt_rand(0, 100) <= 9){
 			// drop all equipment
-			if($this->mainHand !== null && $this->mainHand->getId() !== ItemIds::AIR){
+			if($this->mainHand !== null && $this->mainHand->getId() !== Item::AIR){
 				array_push($existingDrops, $this->mainHand);
 			}
-			if($this->helmet !== null && $this->helmet->getId() !== ItemIds::AIR){
+			if($this->helmet !== null && $this->helmet->getId() !== Item::AIR){
 				array_push($existingDrops, $this->helmet);
 			}
-			if($this->boots !== null && $this->boots->getId() !== ItemIds::AIR){
+			if($this->boots !== null && $this->boots->getId() !== Item::AIR){
 				array_push($existingDrops, $this->boots);
 			}
-			if($this->chestplate !== null && $this->chestplate->getId() !== ItemIds::AIR){
+			if($this->chestplate !== null && $this->chestplate->getId() !== Item::AIR){
 				array_push($existingDrops, $this->chestplate);
 			}
-			if($this->leggings !== null && $this->leggings->getId() !== ItemIds::AIR){
+			if($this->leggings !== null && $this->leggings->getId() !== Item::AIR){
 				array_push($existingDrops, $this->leggings);
 			}
 		}
@@ -437,7 +437,7 @@ class MobEquipment{
 	private function getChestplateArmorPoints() : int{
 		$armor = 0;
 		$item = $this->getChestplate();
-		if($item !== null && $item->getId() !== ItemIds::AIR){
+		if($item !== null && $item->getId() !== Item::AIR){
 			if($item instanceof LeatherTunic){
 				$armor = 3;
 			}else if($item instanceof GoldChestplate){
@@ -461,7 +461,7 @@ class MobEquipment{
 	private function getHelmetArmorPoints() : int{
 		$armor = 0;
 		$item = $this->getHelmet();
-		if($item !== null && $item->getId() !== ItemIds::AIR){
+		if($item !== null && $item->getId() !== Item::AIR){
 			if($item instanceof LeatherCap){
 				$armor = 1;
 			}else if($item instanceof GoldHelmet){
@@ -485,7 +485,7 @@ class MobEquipment{
 	private function getBootsArmorPoints() : int{
 		$armor = 0;
 		$item = $this->getBoots();
-		if($item !== null && $item->getId() !== ItemIds::AIR){
+		if($item !== null && $item->getId() !== Item::AIR){
 			if($item instanceof LeatherBoots){
 				$armor = 1;
 			}else if($item instanceof GoldBoots){
@@ -509,7 +509,7 @@ class MobEquipment{
 	private function getLeggingsArmorPoints() : int{
 		$armor = 0;
 		$item = $this->getBoots();
-		if($item !== null && $item->getId() !== ItemIds::AIR){
+		if($item !== null && $item->getId() !== Item::AIR){
 			if($item instanceof LeatherPants){
 				$armor = 2;
 			}else if($item instanceof GoldLeggings){
@@ -529,7 +529,7 @@ class MobEquipment{
 	 * @return bool
 	 */
 	private function isSwordWorn() : bool{
-		return $this->getMainHand() !== null and $this->getMainHand()->getId() !== ItemIds::AIR and
+		return $this->getMainHand() !== null and $this->getMainHand()->getId() !== Item::AIR and
 			($this->getMainHand() instanceof Sword);
 	}
 
@@ -539,22 +539,22 @@ class MobEquipment{
 			$armor[0] = new CompoundTag("0", [
 				"Count" => new IntTag("Count", 1),
 				"Damage" => new IntTag("Damage", 10),
-				"id" => new IntTag("id", $this->boots !== null ? $this->boots->getId() : ItemIds::AIR),
+				"id" => new IntTag("id", $this->boots !== null ? $this->boots->getId() : Item::AIR),
 			]);
 			$armor[1] = new CompoundTag("1", [
 				"Count" => new IntTag("Count", 1),
 				"Damage" => new IntTag("Damage", 10),
-				"id" => new IntTag("id", $this->leggings !== null ? $this->leggings->getId() : ItemIds::AIR),
+				"id" => new IntTag("id", $this->leggings !== null ? $this->leggings->getId() : Item::AIR),
 			]);
 			$armor[2] = new CompoundTag("2", [
 				"Count" => new IntTag("Count", 1),
 				"Damage" => new IntTag("Damage", 10),
-				"id" => new IntTag("id", $this->chestplate !== null ? $this->chestplate->getId() : ItemIds::AIR),
+				"id" => new IntTag("id", $this->chestplate !== null ? $this->chestplate->getId() : Item::AIR),
 			]);
 			$armor[3] = new CompoundTag("3", [
 				"Count" => new IntTag("Count", 1),
 				"Damage" => new IntTag("Damage", 10),
-				"id" => new IntTag("id", $this->helmet !== null ? $this->helmet->getId() : ItemIds::AIR),
+				"id" => new IntTag("id", $this->helmet !== null ? $this->helmet->getId() : Item::AIR),
 			]);
 			$armorItems = new ListTag(NBTConst::NBT_KEY_ARMOR_ITEMS, $armor);
 
@@ -565,7 +565,7 @@ class MobEquipment{
 			$hands[0] = new CompoundTag("0", [
 				"Count" => new ByteTag("Count", 1),
 				"Damage" => new IntTag("Damage", 10),
-				"id" => new IntTag("id", $this->getMainHand() !== null ? $this->getMainHand()->getId() : ItemIds::AIR),
+				"id" => new IntTag("id", $this->getMainHand() !== null ? $this->getMainHand()->getId() : Item::AIR),
 			]);
 			$this->entity->namedtag->setTag(new ListTag(NBTConst::NBT_KEY_HAND_ITEMS, $hands));
 		}
@@ -623,11 +623,12 @@ class MobEquipment{
 
 	private function createArmorEquipPacket() : MobArmorEquipmentPacket{
 		$pk = new MobArmorEquipmentPacket();
+		//ItemStackWrapper::legacy($this->helmet) ?? ItemStackWrapper::legacy(Item::get(Item::AIR));
 		$pk->entityRuntimeId = $this->entity->getId();
-		$pk->head = $this->helmet ?? Item::get(ItemIds::AIR);
-		$pk->chest = $this->chestplate ?? Item::get(ItemIds::AIR);
-		$pk->legs = $this->leggings ?? Item::get(ItemIds::AIR);
-		$pk->feet = $this->boots ?? Item::get(ItemIds::AIR);
+		$pk->head = $this->helmet ? ItemStackWrapper::legacy($this->helmet) : ItemStackWrapper::legacy(Item::get(Item::AIR));
+		$pk->chest = $this->helmet ? ItemStackWrapper::legacy($this->chestplate) : ItemStackWrapper::legacy(Item::get(Item::AIR));
+		$pk->legs = $this->helmet ? ItemStackWrapper::legacy($this->leggings) : ItemStackWrapper::legacy(Item::get(Item::AIR));
+		$pk->feet = $this->helmet ? ItemStackWrapper::legacy($this->boots) : ItemStackWrapper::legacy(Item::get(Item::AIR));
 		$pk->encode();
 		$pk->isEncoded = true;
 		return $pk;
@@ -636,7 +637,11 @@ class MobEquipment{
 	private function createHandItemsEquipPacket() : MobEquipmentPacket{
 		$pk = new MobEquipmentPacket();
 		$pk->entityRuntimeId = $this->entity->getId();
-		$pk->item = $this->mainHand !== null ? $this->mainHand : Item::get(ItemIds::AIR);
+		if ($this->mainHand instanceof Item) {
+            $pk->item = ItemStackWrapper::legacy($this->mainHand);
+        } else {
+            $pk->item = ItemStackWrapper::legacy(Item::get(Item::AIR));
+        }
 		$pk->inventorySlot = 0;
 		$pk->hotbarSlot = 0;
 		return $pk;

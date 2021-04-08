@@ -76,7 +76,7 @@ class EventListener implements Listener{
 		if($btnTxt === null){
 			return;
 		}
-		if($packet->transactionType !== InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY){
+		if($packet->trData !== InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY){
 			return;
 		}
 		$entity = $player->level->getEntity($packet->trData->entityRuntimeId);
