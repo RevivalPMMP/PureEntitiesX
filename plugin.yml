@@ -4,7 +4,7 @@ version: 0.7.0
 api: 3.19.0
 
 load: STARTUP
-authors: ["milk0417", "RevivalPMMP", "supercrafter333"]
+authors: ["milk0417", "RevivalPMMP"]
 description: Implement all MCPE entities into your worlds
 website: https://github.com/RevivalPMMP/PureEntitiesX
 

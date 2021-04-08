@@ -39,6 +39,7 @@ use pocketmine\item\IronChestplate;
 use pocketmine\item\IronHelmet;
 use pocketmine\item\IronLeggings;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\item\LeatherBoots;
 use pocketmine\item\LeatherCap;
 use pocketmine\item\LeatherPants;
@@ -637,11 +638,7 @@ class MobEquipment{
 	private function createHandItemsEquipPacket() : MobEquipmentPacket{
 		$pk = new MobEquipmentPacket();
 		$pk->entityRuntimeId = $this->entity->getId();
-		if ($this->mainHand instanceof Item) {
-            $pk->item = ItemStackWrapper::legacy($this->mainHand);
-        } else {
-            $pk->item = ItemStackWrapper::legacy(Item::get(Item::AIR));
-        }
+		$pk->item = $this->mainHand instanceof Item ? ItemStackWrapper::legacy($this->mainHand) : ItemStackWrapper::legacy(Item::get(Item::AIR));
 		$pk->inventorySlot = 0;
 		$pk->hotbarSlot = 0;
 		return $pk;
@@ -652,6 +649,4 @@ class MobEquipment{
 			$player->dataPacket($packet);
 		}
 	}
-
-
 }
