@@ -80,7 +80,7 @@ class EventListener implements Listener{
 		if(!$packet->trData instanceof UseItemOnEntityTransactionData){
 			return;
 		}
-		$entity = $player->level->getEntity($packet->trData->entityRuntimeId);
+		$entity = $player->level->getEntity($packet->trData->getEntityRuntimeId());
 		if(!$entity instanceof BaseEntity){
 			return;
 		}
