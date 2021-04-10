@@ -35,6 +35,7 @@ use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
+use pocketmine\network\mcpe\protocol\types\inventory\UseItemOnEntityTransactionData;
 use revivalpmmp\pureentities\data\ButtonText;
 use revivalpmmp\pureentities\data\Color;
 use revivalpmmp\pureentities\entity\animal\walking\Cow;
@@ -76,7 +77,7 @@ class EventListener implements Listener{
 		if($btnTxt === null){
 			return;
 		}
-		if($packet->trData !== InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY){
+		if(!$packet->trData instanceof UseItemOnEntityTransactionData){
 			return;
 		}
 		$entity = $player->level->getEntity($packet->trData->entityRuntimeId);
