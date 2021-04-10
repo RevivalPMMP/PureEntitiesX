@@ -66,92 +66,91 @@ class EventListener implements Listener{
 	 *
 	 * @param DataPacketReceiveEvent $event
 	 */
-	public function dataPacketReceiveEvent(DataPacketReceiveEvent $event)
-    {
-        $packet = $event->getPacket();
-        $player = $event->getPlayer();
-        if (!$packet instanceof InventoryTransactionPacket) {
-            return;
-        }
-        $btnTxt = InteractionHelper::getButtonText($player);
-        if ($btnTxt === null) {
-            return;
-        }
-        if ($packet->trData !== InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY) {
-            return;
-        }
-        $entity = $player->level->getEntity($packet->trData->entityRuntimeId);
-        if (!$entity instanceof BaseEntity) {
-            return;
-        }
-        PureEntities::logOutput("$entity with button text $btnTxt");
-        switch ($btnTxt) {
-            case ButtonText::SHEAR:
-                if ($entity instanceof IntfShearable and !$entity->isSheared()) {
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->shear");
-                    $entity->shear($player);
-                }
-                break;
-            case ButtonText::MILK:
-                if ($entity instanceof Cow) {
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->milk");
-                    $entity->milk($player);
-                }
-                break;
-            case ButtonText::FEED:
-                if ($entity instanceof IntfCanBreed and $entity->getBreedingComponent() !== false) { // normally, this shouldn't be needed (because IntfCanBreed needs this method!
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->feed");
-                    if ($entity->getBreedingComponent()->checkInLove()) {
-                        break;
-                    }
-                    $entity->getBreedingComponent()->feed($player); // feed the entity
-                    // decrease food in players hand
-                    $itemInHand = $player->getInventory()->getItemInHand();
-                    if ($itemInHand !== null) {
-                        $player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
-                    }
-                    $player->getInventory()->setItemInHand($itemInHand);
-                }
-                break;
-            case ButtonText::TAME:
-                if ($entity instanceof IntfTameable and !$entity->isTamed()) {
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame");
-                    $entity->attemptToTame($player);
-                }
-                break;
-            case ButtonText::SIT:
-                if ($entity instanceof IntfTameable and $entity->isTamed()) {
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit");
-                    $entity->setSitting(true);
-                    if ($entity instanceof Ocelot) {
-                        $entity->setCommandedToSit(true);
-                    }
-                }
-                break;
-            case ButtonText::STAND:
-                if ($entity instanceof IntfTameable and $entity->isTamed()) {
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->stand");
-                    $entity->setSitting(false);
-                    if ($entity instanceof Ocelot) {
-                        $entity->setCommandedToSit(false);
-                    }
-                }
-                break;
-            case ButtonText::DYE:
-                if (($entity instanceof Wolf) or ($entity instanceof Sheep)) {
-                    $color = Color::convert($player->getInventory()->getItemInHand()->getDamage());
-                    PureEntities::logOutput("$entity: dataPacketReceiveEvent->dye with color: $color");
-                    if ($entity instanceof Wolf) {
-                        $entity->setCollarColor($color);
-                    } elseif ($entity instanceof Sheep) {
-                        $entity->setColor($color);
-                    }
-                }
-                break;
-            default:
-                return;
-        }
-    }
+	public function dataPacketReceiveEvent(DataPacketReceiveEvent $event){
+		$packet = $event->getPacket();
+		$player = $event->getPlayer();
+		if(!$packet instanceof InventoryTransactionPacket){
+			return;
+		}
+		$btnTxt = InteractionHelper::getButtonText($player);
+		if($btnTxt === null){
+			return;
+		}
+		if($packet->trData !== InventoryTransactionPacket::TYPE_USE_ITEM_ON_ENTITY){
+			return;
+		}
+		$entity = $player->level->getEntity($packet->trData->entityRuntimeId);
+		if(!$entity instanceof BaseEntity){
+			return;
+		}
+		PureEntities::logOutput("$entity with button text $btnTxt");
+		switch($btnTxt){
+			case ButtonText::SHEAR:
+				if($entity instanceof IntfShearable and !$entity->isSheared()){
+					PureEntities::logOutput("$entity: dataPacketReceiveEvent->shear");
+					$entity->shear($player);
+				}
+				break;
+			case ButtonText::MILK:
+				if($entity instanceof Cow){
+					PureEntities::logOutput("$entity: dataPacketReceiveEvent->milk");
+					$entity->milk($player);
+				}
+				break;
+			case ButtonText::FEED:
+				if($entity instanceof IntfCanBreed and $entity->getBreedingComponent() !== false){ // normally, this shouldn't be needed (because IntfCanBreed needs this method!
+					PureEntities::logOutput("$entity: dataPacketReceiveEvent->feed");
+					if($entity->getBreedingComponent()->checkInLove()){
+						break;
+					}
+					$entity->getBreedingComponent()->feed($player); // feed the entity
+					// decrease food in players hand
+					$itemInHand = $player->getInventory()->getItemInHand();
+					if($itemInHand !== null){
+						$player->getInventory()->getItemInHand()->setCount($itemInHand->getCount() - 1);
+					}
+					$player->getInventory()->setItemInHand($itemInHand);
+				}
+				break;
+			case ButtonText::TAME:
+				if($entity instanceof IntfTameable and !$entity->isTamed()){
+					PureEntities::logOutput("$entity: dataPacketReceiveEvent->tame");
+					$entity->attemptToTame($player);
+				}
+				break;
+			case ButtonText::SIT:
+				if($entity instanceof IntfTameable and $entity->isTamed()){
+					PureEntities::logOutput("$entity: dataPacketReceiveEvent->sit");
+					$entity->setSitting(true);
+					if($entity instanceof Ocelot){
+						$entity->setCommandedToSit(true);
+					}
+				}
+				break;
+			case ButtonText::STAND:
+				if($entity instanceof IntfTameable and $entity->isTamed()){
+					PureEntities::logOutput("$entity: dataPacketReceiveEvent->stand");
+					$entity->setSitting(false);
+					if($entity instanceof Ocelot){
+						$entity->setCommandedToSit(false);
+					}
+				}
+				break;
+			case ButtonText::DYE:
+				if(($entity instanceof Wolf) or ($entity instanceof Sheep)){
+					$color = Color::convert($player->getInventory()->getItemInHand()->getDamage());
+					PureEntities::logOutput("$entity: dataPacketReceiveEvent->dye with color: $color");
+					if($entity instanceof Wolf){
+						$entity->setCollarColor($color);
+					}elseif($entity instanceof Sheep){
+						$entity->setColor($color);
+					}
+				}
+				break;
+			default:
+				return;
+		}
+	}
 
 	public function eggBreak(ProjectileHitEvent $event) : void{
 		$projectile = $event->getEntity();
