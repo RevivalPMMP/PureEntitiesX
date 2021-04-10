@@ -627,9 +627,9 @@ class MobEquipment{
 		//ItemStackWrapper::legacy($this->helmet) ?? ItemStackWrapper::legacy(Item::get(Item::AIR));
 		$pk->entityRuntimeId = $this->entity->getId();
 		$pk->head = $this->helmet ? ItemStackWrapper::legacy($this->helmet) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
-		$pk->chest = $this->helmet ? ItemStackWrapper::legacy($this->chestplate) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
-		$pk->legs = $this->helmet ? ItemStackWrapper::legacy($this->leggings) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
-		$pk->feet = $this->helmet ? ItemStackWrapper::legacy($this->boots) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
+		$pk->chest = $this->chestplate ? ItemStackWrapper::legacy($this->chestplate) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
+		$pk->legs = $this->leggings ? ItemStackWrapper::legacy($this->leggings) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
+		$pk->feet = $this->boots ? ItemStackWrapper::legacy($this->boots) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
 		$pk->encode();
 		$pk->isEncoded = true;
 		return $pk;
