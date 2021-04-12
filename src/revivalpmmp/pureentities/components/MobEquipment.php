@@ -54,6 +54,7 @@ use pocketmine\network\mcpe\protocol\DataPacket;
 use pocketmine\network\mcpe\protocol\MobArmorEquipmentPacket;
 use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use pocketmine\network\mcpe\protocol\TakeItemActorPacket;
+use pocketmine\network\mcpe\protocol\types\inventory\ItemStackWrapper;
 use pocketmine\Player;
 use pocketmine\Server;
 use revivalpmmp\pureentities\config\mobequipment\EntityConfig;
@@ -624,10 +625,10 @@ class MobEquipment{
 	private function createArmorEquipPacket() : MobArmorEquipmentPacket{
 		$pk = new MobArmorEquipmentPacket();
 		$pk->entityRuntimeId = $this->entity->getId();
-		$pk->head = $this->helmet ?? Item::get(ItemIds::AIR);
-		$pk->chest = $this->chestplate ?? Item::get(ItemIds::AIR);
-		$pk->legs = $this->leggings ?? Item::get(ItemIds::AIR);
-		$pk->feet = $this->boots ?? Item::get(ItemIds::AIR);
+		$pk->head = $this->helmet ? ItemStackWrapper::legacy($this->helmet) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
+		$pk->chest = $this->chestplate ? ItemStackWrapper::legacy($this->chestplate) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
+		$pk->legs = $this->leggings ? ItemStackWrapper::legacy($this->leggings) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
+		$pk->feet = $this->boots ? ItemStackWrapper::legacy($this->boots) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
 		$pk->encode();
 		$pk->isEncoded = true;
 		return $pk;
@@ -636,7 +637,7 @@ class MobEquipment{
 	private function createHandItemsEquipPacket() : MobEquipmentPacket{
 		$pk = new MobEquipmentPacket();
 		$pk->entityRuntimeId = $this->entity->getId();
-		$pk->item = $this->mainHand !== null ? $this->mainHand : Item::get(ItemIds::AIR);
+		$pk->item = $this->mainHand instanceof Item ? ItemStackWrapper::legacy($this->mainHand) : ItemStackWrapper::legacy(Item::get(ItemIds::AIR));
 		$pk->inventorySlot = 0;
 		$pk->hotbarSlot = 0;
 		return $pk;
@@ -647,6 +648,4 @@ class MobEquipment{
 			$player->dataPacket($packet);
 		}
 	}
-
-
 }
